@@ -43,6 +43,21 @@ trust_level = "trusted"
 [projects."/Users/nasuno.ayumu/Documents/Codex/2026-05-14/superpowers-brainstorming-users-nasuno-ayumu-codex"]
 trust_level = "trusted"
 
+[projects."/Users/nasuno.ayumu/dev/github.com/luvpame/notion-enhancer"]
+trust_level = "trusted"
+
+[projects."/Users/nasuno.ayumu/Documents/Codex/2026-05-18/superpowers-brainstorming-users-nasuno-ayumu-codex"]
+trust_level = "trusted"
+
+[projects."/Users/nasuno.ayumu/dev/github.com/luvpame/github-enhancer"]
+trust_level = "trusted"
+
+[projects."/Users/nasuno.ayumu/Documents/Codex/2026-05-18/browser-extension-template-ghq-get-ci"]
+trust_level = "trusted"
+
+[projects."/Users/nasuno.ayumu/dev/github.com/luvpame/browser-extension-template"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
 last_updated = "2026-05-18T01:54:24Z"
 source_type = "local"
@@ -69,6 +84,9 @@ enabled = true
 enabled = true
 
 [plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."chrome@openai-bundled"]
 enabled = true
 
 [hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:pre_tool_use:0:0"]
