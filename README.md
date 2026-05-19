@@ -81,7 +81,9 @@ sudo -H nix --extra-experimental-features "nix-command flakes" \
 ```bash
 cd <dotfiles_directory>
 just check
+just build
 just switch
+just clean
 ```
 
 ### 適用後の作業
