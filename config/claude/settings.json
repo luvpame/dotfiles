@@ -26,6 +26,7 @@
     "defaultMode": "plan"
   },
   "enableAllProjectMcpServers": true,
+  "useAutoModeDuringPlan": true,
   "hooks": {
     "SessionStart": [
       {
