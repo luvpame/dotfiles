@@ -1,5 +1,5 @@
-function ghq_cd_fzf --description 'Search ghq repositories with fzf and attach to its tmux session'
-    for cmd in ghq fzf roots tmux
+function ghq_cd_fzf --description 'Search ghq repositories with fzf and cd to the selected repository'
+    for cmd in ghq fzf roots
         if not type -q $cmd
             echo "ghq_cd_fzf: $cmd command is not installed." >&2
             return 127
@@ -57,19 +57,5 @@ end
         return
     end
 
-    set -l session_name (__ghq_tmux_session_name "$selected_path")
-    if test -z "$session_name"
-        echo "ghq_cd_fzf: failed to build tmux session name." >&2
-        return 1
-    end
-
-    if not tmux has-session -t "$session_name" 2>/dev/null
-        tmux new-session -d -s "$session_name" -c "$selected_path"
-    end
-
-    if set -q TMUX
-        tmux switch-client -t "$session_name"
-    else
-        tmux attach-session -t "$session_name"
-    end
+    cd "$selected_path"
 end
