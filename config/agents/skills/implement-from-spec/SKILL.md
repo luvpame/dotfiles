@@ -38,7 +38,7 @@ SPEC を実装しつつ、SPEC を読んだだけでは分からない「実装�
 4. **完了時にサマリ**
    実装が一段落したら次の 2 つを必ず出す:
    - **集計行**: `` `implementation-notes.html` に合計 N 件記録（DD: a, Dev: b, TO: c, OQ: d） `` の形で 1 行。略号は **DD** = Design decisions, **Dev** = Deviations, **TO** = Tradeoffs, **OQ** = Open questions
-   - **Open questions 再掲**: Open questions に記録した各 `<li>` の **地の文（本文）を要約せず原文のまま** 1 件 1 行で列挙。`<time>` と `<span class="why">` は省く。`<code>file:line</code>` のファイル位置参照は **末尾に `` `file:line` `` 形式で残す**。最後に「確認をお願いします」と添える
+   - **Open questions 再掲**: Open questions に記録した各 `<li>` の **本文を要約せず原文のまま** 1 件 1 行で列挙。`<time>` と `<span class="why">` は省き、`<code>file:line</code>` は元の位置のまま残す（移動も別形式への変換もしない）。最後に「確認をお願いします」と添える
 
 ## エントリ記載フォーマット
 
