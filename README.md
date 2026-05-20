@@ -73,7 +73,7 @@ switch 後は Home Manager がリンクした `~/.config/git/config.local` と�
 cd nix
 DARWIN_CONFIG_NAME="$(nix eval --file local.nix darwinConfigName --raw)"
 sudo -H nix --extra-experimental-features "nix-command flakes" \
-  run nix-darwin -- switch --flake "path:.#$DARWIN_CONFIG_NAME"
+  run github:LnL7/nix-darwin -- switch --flake "path:.#$DARWIN_CONFIG_NAME"
 ```
 
 初回 switch 後は Home Manager 経由で `just` が使える。
