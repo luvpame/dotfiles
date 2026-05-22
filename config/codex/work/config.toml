@@ -58,8 +58,11 @@ trust_level = "trusted"
 [projects."/Users/nasuno.ayumu/dev/github.com/luvpame/browser-extension-template"]
 trust_level = "trusted"
 
+[projects."/Users/nasuno.ayumu/dev/github.com/luvpame/aggr-hub"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
-last_updated = "2026-05-18T23:44:05Z"
+last_updated = "2026-05-21T00:21:02Z"
 source_type = "local"
 source = "/Users/nasuno.ayumu/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
