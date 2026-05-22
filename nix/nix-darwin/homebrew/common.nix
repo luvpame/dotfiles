@@ -89,6 +89,7 @@ let
     "chatgpt"
     "portkiller"
     "nani"
+    "wallspace"
 
     ### Fonts
     "font-hackgen-nerd"
