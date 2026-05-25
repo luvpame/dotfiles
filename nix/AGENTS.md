@@ -16,7 +16,7 @@
 ## Build, Test, and Development Commands
 - `nix flake check`
   Flake 出力とモジュール評価を検証します。
-- `sudo -H nix run nix-darwin -- switch --flake path:.#<darwinConfigName>`
+- `sudo -H nix run github:LnL7/nix-darwin -- switch --flake path:.#<darwinConfigName>`
   system + Home Manager 設定をホストに適用します。
 - `nix flake update`
   flake input を更新します。
