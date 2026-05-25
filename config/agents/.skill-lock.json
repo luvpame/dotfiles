@@ -1,0 +1,14 @@
+{
+  "version": 3,
+  "skills": {
+    "modern-web-guidance": {
+      "source": "GoogleChrome/modern-web-guidance",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/GoogleChrome/modern-web-guidance.git",
+      "skillPath": "skills/modern-web-guidance/SKILL.md",
+      "skillFolderHash": "8729a5e725e655ba8688a93828e03131fb13857e",
+      "installedAt": "2026-05-25T00:25:35Z",
+      "updatedAt": "2026-05-25T00:30:08Z"
+    }
+  }
+}
