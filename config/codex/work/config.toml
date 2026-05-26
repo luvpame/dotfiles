@@ -1,4 +1,4 @@
-model_reasoning_effort = "low"
+model_reasoning_effort = "high"
 personality = "pragmatic"
 forced_login_method = "chatgpt"
 model = "gpt-5.5"
@@ -63,7 +63,7 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [marketplaces.openai-bundled]
-last_updated = "2026-05-24T23:41:16Z"
+last_updated = "2026-05-25T00:33:27Z"
 source_type = "local"
 source = "/Users/nasuno.ayumu/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
