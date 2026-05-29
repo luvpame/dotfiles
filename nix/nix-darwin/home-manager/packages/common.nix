@@ -5,11 +5,20 @@
   ...
 }:
 let
+  system = pkgs.stdenv.hostPlatform.system;
+
   profilePackages = import (./. + "/${local.profile}.nix") {
     inherit
       inputs
       pkgs
       ;
+  };
+
+  guardAndGuide = inputs.guard-and-guide.packages.${system}.default.overrideAttrs {
+    cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
+      src = inputs.guard-and-guide;
+      hash = "sha256-dho735oPAgtmJobcSVOB105W1+L83YySMe16BqV1Dxs=";
+    };
   };
 
   commonPackages = with pkgs; [
@@ -62,8 +71,8 @@ let
     socat
     ov
     mergiraf
-    inputs.calpeek.packages.${pkgs.stdenv.hostPlatform.system}.default
-    inputs.guard-and-guide.packages.${pkgs.stdenv.hostPlatform.system}.default
+    inputs.calpeek.packages.${system}.default
+    guardAndGuide
     (callPackage ../../../pkgs/site2skill/default.nix { })
     (callPackage ../../../pkgs/tree-sitter-cli/default.nix { })
   ];
