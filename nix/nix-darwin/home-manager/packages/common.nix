@@ -57,6 +57,7 @@ let
     ghq
     terminal-notifier
     direnv
+    devenv
     nix-direnv
     lazygit
     openssl_3

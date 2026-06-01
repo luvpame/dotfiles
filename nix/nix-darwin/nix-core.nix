@@ -1,4 +1,9 @@
-{ inputs, pkgs, ... }:
+{
+  inputs,
+  pkgs,
+  local,
+  ...
+}:
 {
   # nixpkgs の共通設定。
   nixpkgs = {
@@ -23,6 +28,10 @@
       max-jobs = 8;
       keep-outputs = true;
       keep-derivations = true;
+      trusted-users = [
+        "root"
+        local.userName
+      ];
       # claude-code-overlay 用のバイナリキャッシュ。
       extra-substituters = [ "https://ryoppippi.cachix.org" ];
       # claude-code-overlay のバイナリキャッシュ用公開鍵。

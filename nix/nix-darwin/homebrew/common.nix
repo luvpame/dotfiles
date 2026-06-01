@@ -108,6 +108,7 @@ in
       upgrade = true;
       autoUpdate = true;
       cleanup = "zap";
+      extraFlags = [ "--force-cleanup" ];
     };
     brews = commonBrews ++ profileHomebrew.brews;
     taps = commonTaps ++ profileHomebrew.taps;
