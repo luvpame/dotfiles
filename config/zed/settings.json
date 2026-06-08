@@ -16,6 +16,9 @@
       "type": "registry",
     },
     "cursor": {
+      "default_config_options": {
+        "mode": "ask"
+      },
       "favorite_config_option_values": {
         "model": [
           "composer-2[fast=true]"
@@ -77,7 +80,7 @@
       "enabled": true,
     },
   },
-  "disable_ai": true,
+  "disable_ai": false,
   "edit_predictions": {
     "ollama": {
       "model": "qwen3.5:2b",
