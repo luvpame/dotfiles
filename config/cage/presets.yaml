@@ -12,7 +12,7 @@ presets:
       # npm/npx キャッシュ (MCP サーバー等)
       - "$HOME/.npm"
       # pnpm (lefthook)
-      - "/Library/pnpm/.tools/pnpm/"
+      - "$HOME/Library/pnpm/.tools/pnpm/"
       # bun キャッシュ (bunx for ccstatusline 等)
       - "$HOME/.bun"
       # 各種キャッシュ
