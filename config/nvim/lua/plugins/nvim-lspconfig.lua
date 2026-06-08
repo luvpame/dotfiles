@@ -47,6 +47,6 @@ return {
       end,
     })
 
-    vim.lsp.enable({ "nixd", "lua_ls", "efm", "just" })
+    vim.lsp.enable({ "nixd", "lua_ls", "efm", "just", "ruby_lsp" })
   end,
 }
