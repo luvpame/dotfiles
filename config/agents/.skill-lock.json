@@ -9,6 +9,15 @@
       "skillFolderHash": "8729a5e725e655ba8688a93828e03131fb13857e",
       "installedAt": "2026-05-25T00:25:35Z",
       "updatedAt": "2026-05-25T00:30:08Z"
+    },
+    "slidev": {
+      "source": "slidevjs/slidev",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/slidevjs/slidev.git",
+      "skillPath": "skills/slidev/SKILL.md",
+      "skillFolderHash": "15d0e7596290e1b568adf04be0466e6622b69bc8",
+      "installedAt": "2026-06-03T01:28:09Z",
+      "updatedAt": "2026-06-03T01:28:09Z"
     }
   }
 }
