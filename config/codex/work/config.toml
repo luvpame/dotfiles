@@ -9,17 +9,18 @@ approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 
 notify = ["/Users/nasuno.ayumu/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended", "--previous-notify", "[\"$HOME\\/.codex\\/hooks\\/notify-terminal-notifier.sh\"]"]
+service_tier = "fast"
 
 [features]
 shell_snapshot = true
 multi_agent_v2 = true
 prevent_idle_sleep = true
-js_repl = false
 hooks = true
 undo = true
 tool_search = true
 memories = false
 chronicle = false
+js_repl = false
 
 [feedback]
 enabled = false
@@ -28,7 +29,7 @@ enabled = false
 network_access = true
 
 [tui]
-status_line = [ "model-with-reasoning", "project-name", "git-branch", "context-used", "five-hour-limit", "weekly-limit", "codex-version", "pull-request-number", "branch-changes", "run-state", "fast-mode", "thread-title", "task-progress" ]
+status_line = ["model-with-reasoning", "project-name", "git-branch", "context-used", "five-hour-limit", "weekly-limit", "codex-version", "pull-request-number", "branch-changes", "run-state", "fast-mode", "task-progress", "approval-mode"]
 theme = "catppuccin-latte"
 status_line_use_colors = true
 
@@ -62,8 +63,14 @@ trust_level = "trusted"
 [projects."/Users/nasuno.ayumu/dev/github.com/luvpame/aggr-hub"]
 trust_level = "trusted"
 
+[projects."/Users/nasuno.ayumu/Documents/Codex/2026-06-03/imagegen-users-nasuno-ayumu-codex-skills"]
+trust_level = "trusted"
+
+[projects."/Users/nasuno.ayumu/Documents/Codex/2026-06-05/files-mentioned-by-the-user-2026"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
-last_updated = "2026-05-31T23:54:06Z"
+last_updated = "2026-06-05T07:36:17Z"
 source_type = "local"
 source = "/Users/nasuno.ayumu/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
@@ -91,6 +98,9 @@ enabled = true
 enabled = true
 
 [plugins."chrome@openai-bundled"]
+enabled = true
+
+[plugins."hugging-face@openai-curated"]
 enabled = true
 
 [hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:pre_tool_use:0:0"]
@@ -180,9 +190,10 @@ NODE_REPL_NODE_MODULE_DIRS = ""
 NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/node"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/nasuno.ayumu/.codex"
 CODEX_HOME = "/Users/nasuno.ayumu/.codex"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "0b0d41e7a14a4903d2f95b0b3f427ed796b12c8edca2fa392a03df43997075ae"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "a0dc4b6aaefe6a6a82d9a34fb524e77df6e0bf71387f0d4760157a46f52e6a93"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
+BROWSER_USE_CODEX_APP_VERSION = "26.602.30954"
 CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
