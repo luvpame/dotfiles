@@ -14,6 +14,7 @@
     "claude"
     "drawio"
     "tablepro"
+    "cursor"
   ];
 
   # 仕事用だけで入れたい Mac App Store アプリはここに追加する。
