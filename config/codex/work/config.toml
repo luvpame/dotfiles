@@ -1,4 +1,4 @@
-model_reasoning_effort = "medium"
+model_reasoning_effort = "high"
 personality = "pragmatic"
 forced_login_method = "chatgpt"
 model = "gpt-5.5"
@@ -9,18 +9,23 @@ approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 
 notify = ["/Users/nasuno.ayumu/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended", "--previous-notify", "[\"$HOME\\/.codex\\/hooks\\/notify-terminal-notifier.sh\"]"]
-service_tier = "fast"
+service_tier = "default"
 
 [features]
 shell_snapshot = true
-multi_agent_v2 = true
+# https://github.com/openai/codex/issues/26753 が解消されるまで無効化
+multi_agent_v2 = false
 prevent_idle_sleep = true
 hooks = true
 undo = true
 tool_search = true
-memories = false
 chronicle = false
 js_repl = false
+enable_mcp_apps = true
+mentions_v2 = true
+# web_search = "live" の組み込み web namespace と衝突するため無効化
+standalone_web_search = false
+terminal_resize_reflow = true
 
 [feedback]
 enabled = false
@@ -32,6 +37,7 @@ network_access = true
 status_line = ["model-with-reasoning", "project-name", "git-branch", "context-used", "five-hour-limit", "weekly-limit", "codex-version", "pull-request-number", "branch-changes", "run-state", "fast-mode", "task-progress", "approval-mode"]
 theme = "catppuccin-latte"
 status_line_use_colors = true
+pet = "codex"
 
 [tui.model_availability_nux]
 "gpt-5.5" = 4
@@ -70,12 +76,12 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [marketplaces.openai-bundled]
-last_updated = "2026-06-05T07:36:17Z"
+last_updated = "2026-06-09T07:41:08Z"
 source_type = "local"
 source = "/Users/nasuno.ayumu/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-05-25T00:19:05Z"
+last_updated = "2026-06-09T08:20:47Z"
 source_type = "local"
 source = "/Users/nasuno.ayumu/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
@@ -190,10 +196,10 @@ NODE_REPL_NODE_MODULE_DIRS = ""
 NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/node"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/nasuno.ayumu/.codex"
 CODEX_HOME = "/Users/nasuno.ayumu/.codex"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "a0dc4b6aaefe6a6a82d9a34fb524e77df6e0bf71387f0d4760157a46f52e6a93"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "4946b004b23af02244ece97240aceb8d123475207fa6a6fc399486bd7086049f"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.602.30954"
+BROWSER_USE_CODEX_APP_VERSION = "26.602.71036"
 CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"

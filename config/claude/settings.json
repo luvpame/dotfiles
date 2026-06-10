@@ -25,8 +25,8 @@
     ],
     "defaultMode": "plan"
   },
+  "model": "claude-fable-5[1m]",
   "enableAllProjectMcpServers": true,
-  "useAutoModeDuringPlan": true,
   "hooks": {
     "SessionStart": [
       {
@@ -152,6 +152,7 @@
   },
   "autoMemoryEnabled": false,
   "skipAutoPermissionPrompt": true,
+  "useAutoModeDuringPlan": true,
   "voiceEnabled": true,
-  "model": "sonnet"
+  "verbose": false
 }

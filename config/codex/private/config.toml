@@ -12,7 +12,8 @@ sandbox_mode = "workspace-write"
 
 [features]
 shell_snapshot = true
-multi_agent_v2 = true
+# https://github.com/openai/codex/issues/26753 が解消されるまで無効化
+multi_agent_v2 = false
 prevent_idle_sleep = true
 js_repl = true
 hooks = true
