@@ -17,7 +17,7 @@ let
   guardAndGuide = inputs.guard-and-guide.packages.${system}.default.overrideAttrs {
     cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
       src = inputs.guard-and-guide;
-      hash = "sha256-dho735oPAgtmJobcSVOB105W1+L83YySMe16BqV1Dxs=";
+      hash = "sha256-YAwHEhFaJucb/tdj2UJWz1qToEK+IyE/PPce9a1gudw=";
     };
   };
 
