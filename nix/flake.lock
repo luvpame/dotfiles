@@ -1,25 +1,5 @@
 {
   "nodes": {
-    "calpeek": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1781070704,
-        "narHash": "sha256-givAGP4Bx8o7NYVPywdlhFZiZfoZrzZp6UuRMRVRbYc=",
-        "owner": "luvpame",
-        "repo": "calpeek",
-        "rev": "099baf717e0962bc359a3222a4c20984a922e5c5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "luvpame",
-        "repo": "calpeek",
-        "type": "github"
-      }
-    },
     "claude-code-overlay": {
       "inputs": {
         "nixpkgs": [
@@ -228,7 +208,6 @@
     },
     "root": {
       "inputs": {
-        "calpeek": "calpeek",
         "claude-code-overlay": "claude-code-overlay",
         "guard-and-guide": "guard-and-guide",
         "home-manager": "home-manager",

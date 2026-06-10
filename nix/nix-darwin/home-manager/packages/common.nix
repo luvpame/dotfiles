@@ -72,7 +72,6 @@ let
     socat
     ov
     mergiraf
-    inputs.calpeek.packages.${system}.default
     guardAndGuide
     (callPackage ../../../pkgs/site2skill/default.nix { })
     (callPackage ../../../pkgs/tree-sitter-cli/default.nix { })
