@@ -15,6 +15,7 @@
     "drawio"
     "tablepro"
     "cursor"
+    "sequel-ace"
   ];
 
   # 仕事用だけで入れたい Mac App Store アプリはここに追加する。
