@@ -76,7 +76,7 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [marketplaces.openai-bundled]
-last_updated = "2026-06-09T07:41:08Z"
+last_updated = "2026-06-12T00:37:28Z"
 source_type = "local"
 source = "/Users/nasuno.ayumu/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
@@ -100,13 +100,13 @@ enabled = true
 [plugins."presentations@openai-primary-runtime"]
 enabled = true
 
+[plugins."hugging-face@openai-curated"]
+enabled = true
+
 [plugins."browser@openai-bundled"]
 enabled = true
 
 [plugins."chrome@openai-bundled"]
-enabled = true
-
-[plugins."hugging-face@openai-curated"]
 enabled = true
 
 [hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:pre_tool_use:0:0"]
@@ -146,6 +146,8 @@ conversationDetailMode = "STEPS_COMMANDS"
 mac-menu-bar-enabled = false
 show-context-window-usage = true
 appearanceDiffMarkerStyle = "symbols"
+ambient-suggestions-enabled = false
+dock-icon-preference = "codex-light"
 
 [desktop.appearanceLightChromeTheme]
 accent = "#8839ef"
@@ -187,19 +189,19 @@ global = "terminal"
 
 [mcp_servers.node_repl]
 args = []
-command = "/Applications/Codex.app/Contents/Resources/node_repl"
+command = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
 startup_timeout_sec = 120
 
 [mcp_servers.node_repl.env]
 NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
-NODE_REPL_NODE_MODULE_DIRS = ""
-NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/node"
+NODE_REPL_NODE_MODULE_DIRS = "/Applications/Codex.app/Contents/Resources/cua_node/lib/node_modules"
+NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/nasuno.ayumu/.codex"
 CODEX_HOME = "/Users/nasuno.ayumu/.codex"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "4946b004b23af02244ece97240aceb8d123475207fa6a6fc399486bd7086049f"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "a3f3ca79fe2bff56076b895f1f13a8f673168160bd79d880cc34b4500e08a71c"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.602.71036"
+BROWSER_USE_CODEX_APP_VERSION = "26.609.30741"
 CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"

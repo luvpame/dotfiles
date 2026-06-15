@@ -144,13 +144,13 @@
     "notion@claude-plugins-official": true,
     "slack@claude-plugins-official": true,
     "ruby-lsp@claude-plugins-official": true,
-    "terraform@claude-plugins-official": true
+    "terraform@claude-plugins-official": false
   },
   "language": "日本語",
   "sandbox": {
     "enabled": false
   },
-  "autoMemoryEnabled": false,
+  "autoMemoryEnabled": true,
   "skipAutoPermissionPrompt": true,
   "useAutoModeDuringPlan": true,
   "voiceEnabled": true,
