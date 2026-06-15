@@ -14,12 +14,7 @@ let
       ;
   };
 
-  guardAndGuide = inputs.guard-and-guide.packages.${system}.default.overrideAttrs {
-    cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
-      src = inputs.guard-and-guide;
-      hash = "sha256-YAwHEhFaJucb/tdj2UJWz1qToEK+IyE/PPce9a1gudw=";
-    };
-  };
+  guardAndGuide = inputs.guard-and-guide.packages.${system}.default;
 
   commonPackages = with pkgs; [
     efm-langserver
