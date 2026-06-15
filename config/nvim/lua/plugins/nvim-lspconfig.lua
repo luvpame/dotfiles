@@ -4,6 +4,12 @@ return {
   "neovim/nvim-lspconfig",
   event = { "BufReadPre", "BufNewFile" },
   config = function()
+    vim.lsp.config("ruby_lsp", {
+      init_options = {
+        formatter = "rubocop",
+      },
+    })
+
     vim.lsp.config("efm", {
       init_options = {
         documentFormatting = true,
@@ -13,40 +19,46 @@ return {
         "nix",
         "yaml",
         "lua",
+        "typescript",
+        "typescriptreact",
         "sh",
         "bash",
         "zsh",
       },
     })
 
-    local efm_format_filetypes = {
-      bash = true,
-      lua = true,
-      nix = true,
-      sh = true,
-      zsh = true,
+    local formatters = {
+      bash = "efm",
+      lua = "efm",
+      nix = "efm",
+      ruby = "ruby_lsp",
+      sh = "efm",
+      typescript = "efm",
+      typescriptreact = "efm",
+      zsh = "efm",
     }
 
-    local efm_format_group = vim.api.nvim_create_augroup("EfmFormat", { clear = true })
+    local format_group = vim.api.nvim_create_augroup("LspFormat", { clear = true })
     vim.api.nvim_create_autocmd("BufWritePre", {
-      group = efm_format_group,
+      group = format_group,
       callback = function(args)
-        if not efm_format_filetypes[vim.bo[args.buf].filetype] then
+        local formatter = formatters[vim.bo[args.buf].filetype]
+        if not formatter then
           return
         end
 
-        if #vim.lsp.get_clients({ bufnr = args.buf, name = "efm" }) == 0 then
+        if #vim.lsp.get_clients({ bufnr = args.buf, name = formatter }) == 0 then
           return
         end
 
         vim.lsp.buf.format({
           bufnr = args.buf,
-          name = "efm",
+          name = formatter,
           timeout_ms = 1000,
         })
       end,
     })
 
-    vim.lsp.enable({ "nixd", "lua_ls", "efm", "just", "ruby_lsp" })
+    vim.lsp.enable({ "nixd", "lua_ls", "efm", "just", "ruby_lsp", "tsgo" })
   end,
 }

@@ -41,6 +41,10 @@ tools:
     format-command: stylua --search-parent-directories --stdin-filepath ${INPUT} -
     format-stdin: true
 
+  typescript-prettier: &typescript-prettier
+    format-command: prettier --stdin-filepath ${INPUT}
+    format-stdin: true
+
   sh-shellcheck: &sh-shellcheck
     lint-command: shellcheck -f gcc -x ${INPUT}
     lint-stdin: false
@@ -72,6 +76,11 @@ languages:
 
   lua:
     - <<: *lua-stylua
+
+  typescript:
+    - <<: *typescript-prettier
+  typescriptreact:
+    - <<: *typescript-prettier
 
   sh:
     - <<: *sh-shellcheck
