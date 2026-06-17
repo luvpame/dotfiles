@@ -45,6 +45,15 @@ tools:
     format-command: prettier --stdin-filepath ${INPUT}
     format-stdin: true
 
+  css-stylelint: &css-stylelint
+    lint-command: stylelint --formatter unix --stdin --stdin-filename ${INPUT}
+    lint-stdin: true
+    lint-ignore-exit-code: true
+    lint-formats:
+      - "%f:%l:%c: %m"
+    format-command: stylelint --fix --stdin --stdin-filename ${INPUT}
+    format-stdin: true
+
   sh-shellcheck: &sh-shellcheck
     lint-command: shellcheck -f gcc -x ${INPUT}
     lint-stdin: false
@@ -77,10 +86,21 @@ languages:
   lua:
     - <<: *lua-stylua
 
+  javascript:
+    - <<: *typescript-prettier
+  javascriptreact:
+    - <<: *typescript-prettier
   typescript:
     - <<: *typescript-prettier
   typescriptreact:
     - <<: *typescript-prettier
+
+  css:
+    - <<: *css-stylelint
+  scss:
+    - <<: *css-stylelint
+  less:
+    - <<: *css-stylelint
 
   sh:
     - <<: *sh-shellcheck

@@ -1,5 +1,5 @@
 -- nvim-lspconfig のサーバー定義を使い、Neovim 標準 LSP API で有効化します。
--- LSP サーバー本体は Nix/Home Manager 側で宣言的に管理します。
+-- LSP サーバー本体は Nix/Home Manager やプロジェクト環境側で管理します。
 return {
   "neovim/nvim-lspconfig",
   event = { "BufReadPre", "BufNewFile" },
@@ -19,6 +19,11 @@ return {
         "nix",
         "yaml",
         "lua",
+        "css",
+        "scss",
+        "less",
+        "javascript",
+        "javascriptreact",
         "typescript",
         "typescriptreact",
         "sh",
@@ -27,11 +32,23 @@ return {
       },
     })
 
+    local css_capabilities = vim.lsp.protocol.make_client_capabilities()
+    css_capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+    vim.lsp.config("cssls", {
+      capabilities = css_capabilities,
+    })
+
     local formatters = {
       bash = "efm",
+      css = "efm",
+      javascript = "efm",
+      javascriptreact = "efm",
+      less = "efm",
       lua = "efm",
       nix = "efm",
       ruby = "ruby_lsp",
+      scss = "efm",
       sh = "efm",
       typescript = "efm",
       typescriptreact = "efm",
@@ -54,11 +71,29 @@ return {
         vim.lsp.buf.format({
           bufnr = args.buf,
           name = formatter,
-          timeout_ms = 1000,
+          timeout_ms = 3000,
         })
       end,
     })
 
-    vim.lsp.enable({ "nixd", "lua_ls", "efm", "just", "ruby_lsp", "tsgo" })
+    vim.api.nvim_create_autocmd("BufWritePost", {
+      group = format_group,
+      callback = function(args)
+        if not vim.bo[args.buf].endofline then
+          vim.bo[args.buf].endofline = true
+        end
+      end,
+    })
+
+    vim.lsp.enable({
+      "nixd",
+      "lua_ls",
+      "efm",
+      "just",
+      "ruby_lsp",
+      "tsgo",
+      "cssls",
+      "css_variables",
+    })
   end,
 }
