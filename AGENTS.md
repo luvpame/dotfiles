@@ -6,7 +6,7 @@
 - `script/`: ユーティリティ Bash スクリプトを配置するディレクトリ。現状は `set-fish-default.sh` がある。
 - `menubar-script/`: `claude/`、`codex/`、`ime/`、`media/` などのメニューバー連携用スクリプト群。
 - `docs/`: Superpowers の計画書や仕様メモを `docs/superpowers/` 配下に保存する。
-- 補助生成物として `build/`（`download/` と `markdown/` を含む）、運用コマンドの入口としてトップレベルの `justfile` がある。隠しディレクトリとして `.claude/`（`settings.local.json`）に加え、ツール実行時のランタイム状態を保持する `.cache/`・`.data/`・`.state/` がルートに現れる。補助ログとしてトップレベルの `nvim.log` も存在する。
+- 補助生成物として `build/`（`download/` と `markdown/` を含む）、運用コマンドの入口としてトップレベルの `justfile` がある。隠しディレクトリとして `.claude/`（`settings.local.json`）に加え、ツール実行時のキャッシュや状態を保持する `.cache/`・`.data/`・`.state/` がルートに現れる。補助ログとしてトップレベルの `nvim.log` も存在する。
 
 ## ビルド・テスト・開発コマンド
 - `just check` — `nix/` で `nix flake check` を実行し、flake と darwin 設定を検証。
