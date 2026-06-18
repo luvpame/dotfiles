@@ -41,6 +41,7 @@ def is_dark_mode():
 
 
 IS_DARK_MODE = is_dark_mode()
+GIT_ENV = {**os.environ, "GIT_OPTIONAL_LOCKS": "0"}
 LABEL_COLOR = DIM if IS_DARK_MODE else LIGHT_LABEL
 if IS_DARK_MODE:
     HEADER_MODEL_COLOR = rgb(180, 140, 255)
@@ -94,7 +95,7 @@ def fmt(label, pct):
 
 
 def git_run(*args):
-    result = subprocess.run(args, capture_output=True, text=True)
+    result = subprocess.run(args, capture_output=True, text=True, env=GIT_ENV)
     return result.stdout.strip() if result.returncode == 0 else ""
 
 

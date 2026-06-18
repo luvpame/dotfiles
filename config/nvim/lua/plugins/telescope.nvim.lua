@@ -24,10 +24,10 @@ local function git_status_delta_previewer(opts)
       end
 
       local quoted_path = vim.fn.shellescape(path)
-      local diff_command = ("git --no-pager diff --no-ext-diff --color=never HEAD -- %s"):format(quoted_path)
+      local diff_command = ("GIT_OPTIONAL_LOCKS=0 git --no-pager diff --no-ext-diff --color=never HEAD -- %s"):format(quoted_path)
 
       if entry.status == "??" then
-        diff_command = ("git --no-pager diff --no-index --color=never -- /dev/null %s"):format(quoted_path)
+        diff_command = ("GIT_OPTIONAL_LOCKS=0 git --no-pager diff --no-index --color=never -- /dev/null %s"):format(quoted_path)
       end
 
       if vim.fn.executable("delta") == 1 then

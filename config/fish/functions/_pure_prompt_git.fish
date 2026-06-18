@@ -11,7 +11,7 @@ function _pure_prompt_git \
         return $ABORT_FEATURE
     end
 
-    set --local is_git_repository (command git rev-parse --is-inside-work-tree 2>/dev/null)
+    set --local is_git_repository (command env GIT_OPTIONAL_LOCKS=0 git rev-parse --is-inside-work-tree 2>/dev/null)
 
     if test -n "$is_git_repository"
         set --local git_prompt (_pure_prompt_git_branch)(_pure_prompt_git_dirty)(_pure_prompt_git_stash)

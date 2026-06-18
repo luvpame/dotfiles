@@ -4,13 +4,17 @@ set -euo pipefail
 mode="${1:-full}"
 path="${2:-$PWD}"
 
-if ! git -C "$path" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+git_read() {
+	GIT_OPTIONAL_LOCKS=0 git "$@"
+}
+
+if ! git_read -C "$path" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
 	exit 0
 fi
 
-branch="$(git -C "$path" branch --show-current 2>/dev/null || true)"
+branch="$(git_read -C "$path" branch --show-current 2>/dev/null || true)"
 if [[ -z $branch ]]; then
-	branch="$(git -C "$path" rev-parse --short HEAD 2>/dev/null || true)"
+	branch="$(git_read -C "$path" rev-parse --short HEAD 2>/dev/null || true)"
 fi
 
 if [[ -z $branch ]]; then
@@ -35,7 +39,7 @@ print_diff() {
 
 		added_lines=$((added_lines + diff_added))
 		deleted_lines=$((deleted_lines + diff_deleted))
-	done < <(git -C "$path" diff --numstat HEAD -- 2>/dev/null || true)
+	done < <(git_read -C "$path" diff --numstat HEAD -- 2>/dev/null || true)
 
 	while IFS= read -r line; do
 		status="${line:0:2}"
@@ -48,7 +52,7 @@ print_diff() {
 		esac
 
 		[[ $status == *M* || $status == *R* || $status == *C* ]] && ((modified += 1))
-	done < <(git -C "$path" status --porcelain=v1 2>/dev/null || true)
+	done < <(git_read -C "$path" status --porcelain=v1 2>/dev/null || true)
 
 	printf " #[fg=#4c4f69]| L:"
 	printf " #[fg=#40a02b]+%02d" "$added_lines"

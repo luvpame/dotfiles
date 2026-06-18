@@ -6,6 +6,8 @@
 -- スクラッチバッファ、ターミナル、LazyGit、GitHub 連携、ブラウザ表示、集中モードはキーマップから呼び出す。
 -- 現在行の Git blame は Snacks の小さなターミナルウィンドウで確認する。
 -- コマンドラインそのもののリッチ表示は Snacks ではなく noice.nvim 側に任せる。
+vim.env.GIT_OPTIONAL_LOCKS = vim.env.GIT_OPTIONAL_LOCKS or "0"
+
 local function lsp_preview_opts()
   return {
     auto_confirm = false,

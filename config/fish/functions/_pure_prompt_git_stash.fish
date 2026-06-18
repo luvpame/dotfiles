@@ -4,7 +4,7 @@ function _pure_prompt_git_stash
     set --local git_stash_number
 
     set --local git_stash_count (
-        command git rev-list --walk-reflogs --count refs/stash 2> /dev/null
+        command env GIT_OPTIONAL_LOCKS=0 git rev-list --walk-reflogs --count refs/stash 2> /dev/null
         or echo "0"
     )
     if test "$git_stash_count" -gt 0 # has git stash

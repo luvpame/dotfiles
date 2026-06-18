@@ -31,12 +31,12 @@ if test -n \"\$readme\"
 else
     echo \"path: \$repo_path\"
     if test -d \"\$repo_path/.git\"
-        set -l branch (git -C \"\$repo_path\" branch --show-current 2>/dev/null)
+        set -l branch (env GIT_OPTIONAL_LOCKS=0 git -C \"\$repo_path\" branch --show-current 2>/dev/null)
         if test -n \"\$branch\"
             echo \"branch: \$branch\"
         end
 
-        set -l last_commit (git -C \"\$repo_path\" log -1 --pretty=format:'%h %s (%cr)' 2>/dev/null)
+        set -l last_commit (env GIT_OPTIONAL_LOCKS=0 git -C \"\$repo_path\" log -1 --pretty=format:'%h %s (%cr)' 2>/dev/null)
         if test -n \"\$last_commit\"
             echo \"last: \$last_commit\"
         end

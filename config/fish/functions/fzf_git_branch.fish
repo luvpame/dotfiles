@@ -1,6 +1,6 @@
 function fzf_git_branch
     # 現在のブランチを取得
-    set current_branch (git branch --show-current 2>/dev/null)
+    set current_branch (env GIT_OPTIONAL_LOCKS=0 git branch --show-current 2>/dev/null)
 
     # gitリポジトリでない場合は終了
     if test -z "$current_branch"
@@ -9,7 +9,7 @@ function fzf_git_branch
     end
 
     # ブランチ一覧を取得
-    set -l branches (git branch -a | \
+    set -l branches (env GIT_OPTIONAL_LOCKS=0 git branch -a | \
         grep -v HEAD | \
         sed "s/.* //" | \
         sed "s#remotes/[^/]*/##" | \
@@ -68,7 +68,7 @@ function fzf_git_branch
             --prompt="Switch to branch> " \
             --header="Current: $current_branch" \
             --delimiter='\t' \
-            --preview="git log --oneline --graph --color=always {1} | head -20")
+            --preview="env GIT_OPTIONAL_LOCKS=0 git log --oneline --graph --color=always {1} | head -20")
 
     set -l branch (string split -m 1 \t -- "$selected")[1]
 

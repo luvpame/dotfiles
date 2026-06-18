@@ -23,7 +23,7 @@ function _fzf_preview_changed_file --argument-names path_status --description "S
         # Unmerged statuses are mutually exclusive with other statuses, so if we see
         # these, then safe to assume the path is unmerged
         _fzf_report_diff_type Unmerged
-        git diff $diff_opts -- $path
+        env GIT_OPTIONAL_LOCKS=0 git diff $diff_opts -- $path
     else
         if test $index_status != ' '
             _fzf_report_diff_type Staged
@@ -33,17 +33,17 @@ function _fzf_preview_changed_file --argument-names path_status --description "S
             if test $index_status = R
                 # diff the post-rename path with the original path, otherwise the diff will show the entire file as being added
                 set -f orig_and_new_path (string split --max 1 -- ' -> ' $path)
-                git diff --staged $diff_opts -- $orig_and_new_path[1] $orig_and_new_path[2]
+                env GIT_OPTIONAL_LOCKS=0 git diff --staged $diff_opts -- $orig_and_new_path[1] $orig_and_new_path[2]
                 # path currently has the form of "original -> current", so we need to correct it before it's used below
                 set path $orig_and_new_path[2]
             else
-                git diff --staged $diff_opts -- $path
+                env GIT_OPTIONAL_LOCKS=0 git diff --staged $diff_opts -- $path
             end
         end
 
         if test $working_tree_status != ' '
             _fzf_report_diff_type Unstaged
-            git diff $diff_opts -- $path
+            env GIT_OPTIONAL_LOCKS=0 git diff $diff_opts -- $path
         end
     end
 end
