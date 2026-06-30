@@ -39,6 +39,15 @@ return {
       capabilities = css_capabilities,
     })
 
+    vim.lsp.config("css_variables", {
+      settings = {
+        cssVariables = {
+          lookupFiles = { "packages/design-system/build/css/variables.css" },
+          blacklistFolders = {},
+        },
+      },
+    })
+
     local formatters = {
       bash = "efm",
       css = "efm",
