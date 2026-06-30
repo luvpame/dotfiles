@@ -69,12 +69,10 @@ let
     "musaicfm"
     "raycast"
     "stats"
-    # "shottr"
     "scroll-reverser"
     "notchnook"
     "logitech-g-hub"
     "hhkb"
-    # "cap"
     "zed"
     "deskpad"
     "logi-options+"
@@ -94,6 +92,7 @@ let
     "nani"
     "wallspace"
     "macshot"
+    "dockdoor"
 
     ### Fonts
     "font-hackgen-nerd"

@@ -15,6 +15,10 @@
         direnv = prev.direnv.overrideAttrs (_: {
           doCheck = false;
         });
+        # Temporary workaround for mise 2026.6.11 metadata test failing on darwin.
+        mise = prev.mise.overrideAttrs (_: {
+          doCheck = false;
+        });
       })
     ];
   };

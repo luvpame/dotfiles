@@ -27,6 +27,7 @@ let
     shfmt
     stylua
     lua-language-server
+    css-variables-language-server
     yamllint
     fzf
     bat
@@ -67,7 +68,6 @@ let
     rtk
     socat
     ov
-    mergiraf
     guardAndGuide
     tirith
     (callPackage ../../../pkgs/site2skill/default.nix { })
