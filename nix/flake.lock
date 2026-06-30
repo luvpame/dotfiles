@@ -213,7 +213,8 @@
         "home-manager": "home-manager",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs_2",
-        "yazi": "yazi"
+        "yazi": "yazi",
+        "tirith": "tirith"
       }
     },
     "rust-overlay": {
@@ -269,6 +270,41 @@
       "original": {
         "owner": "sxyazi",
         "repo": "yazi",
+        "type": "github"
+      }
+    },
+    "nixpkgs_4": {
+      "locked": {
+        "lastModified": 1770115704,
+        "narHash": "sha256-KHFT9UWOF2yRPlAnSXQJh6uVcgNcWlFqqiAZ7OVlHNc=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "e6eae2ee2110f3d31110d5c222cd395303343b08",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "tirith": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": "nixpkgs_4"
+      },
+      "locked": {
+        "lastModified": 1782724474,
+        "narHash": "sha256-BU8+HtkWa5x5O6WNV+Rs5Xo7I3ZPs7FVhe/zt2uR4Yw=",
+        "owner": "sheeki03",
+        "repo": "tirith",
+        "rev": "637c41c310e650aad8fc0ef56e038a61efbe81c0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sheeki03",
+        "repo": "tirith",
         "type": "github"
       }
     }

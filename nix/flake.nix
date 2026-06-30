@@ -17,6 +17,7 @@
     };
     yazi.url = "github:sxyazi/yazi";
     guard-and-guide.url = "github:kawarimidoll/guard-and-guide";
+    tirith.url = "github:sheeki03/tirith";
   };
 
   outputs =
