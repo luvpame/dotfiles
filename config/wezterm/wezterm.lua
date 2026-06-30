@@ -23,7 +23,7 @@ config.window_decorations = "RESIZE"
 config.window_close_confirmation = "NeverPrompt"
 
 -- Background Settings
-config.window_background_opacity = 0.9
+config.window_background_opacity = 0.85
 config.inactive_pane_hsb = {
   saturation = 0.5,
   brightness = 0.2,
@@ -37,9 +37,26 @@ config.window_frame = {
   active_titlebar_bg = "none",
 }
 config.window_background_gradient = {
-  colors = { "eff1f5" },
+  colors = { "e6e9ef" },
 }
+config.use_fancy_tab_bar = true
 config.show_new_tab_button_in_tab_bar = false
+config.colors = {
+  tab_bar = {
+    active_tab = {
+      bg_color = "#eff1f5",
+      fg_color = "#4c4f69",
+    },
+    inactive_tab = {
+      bg_color = "#ccd0da",
+      fg_color = "#5c5f77",
+    },
+    inactive_tab_hover = {
+      bg_color = "#bcc0cc",
+      fg_color = "#4c4f69",
+    },
+  },
+}
 
 config.macos_forward_to_ime_modifier_mask = "SHIFT|CTRL"
 

@@ -51,7 +51,7 @@ tools:
     lint-ignore-exit-code: true
     lint-formats:
       - "%f:%l:%c: %m"
-    format-command: stylelint --fix --stdin --stdin-filename ${INPUT}
+    format-command: stylelint --fix --stdin --stdin-filename ${INPUT} || true
     format-stdin: true
 
   sh-shellcheck: &sh-shellcheck
