@@ -36,19 +36,6 @@ end try
 APPLESCRIPT
 }
 
-read_player_state() {
-  local app_path="$1"
-
-  case "$app_path" in
-    "$spotify_app")
-      read_spotify_state
-      ;;
-    *)
-      return 1
-      ;;
-  esac
-}
-
 format_playing_line() {
   local icon="$1"
   local fallback_label="$2"
@@ -69,50 +56,26 @@ format_playing_line() {
   printf '%s %s\n' "$icon" "$summary"
 }
 
-paused_candidate=""
-stopped_candidate=""
+player_state="$(read_spotify_state || true)"
 
-for app_path in "$spotify_app"; do
-  player_json="$(read_player_state "$app_path" || true)"
-
-  if [[ -z "$player_json" ]]; then
-    continue
-  fi
-
-  state="$(printf '%s\n' "$player_json" | sed -n '1p')"
-  title="$(printf '%s\n' "$player_json" | sed -n '2p')"
-  artist="$(printf '%s\n' "$player_json" | sed -n '3p')"
-
-  title="$(normalize_text "$title")"
-  artist="$(normalize_text "$artist")"
-
-  case "$state" in
-    playing)
-      format_playing_line "▶" "Playing" "$title" "$artist"
-      exit 0
-      ;;
-    paused)
-      if [[ -z "$paused_candidate" ]]; then
-        paused_candidate="$(format_playing_line "⏸" "Paused" "$title" "$artist")"
-      fi
-      ;;
-    stopped)
-      if [[ -z "$stopped_candidate" ]]; then
-        stopped_candidate="1"
-      fi
-      ;;
-  esac
-done
-
-if [[ -n "$paused_candidate" ]]; then
-  echo "$paused_candidate"
+if [[ -z "$player_state" ]]; then
   exit 0
 fi
 
-if [[ -n "$stopped_candidate" ]]; then
-  echo "⏹ Stopped"
-  exit 0
-fi
+state="$(printf '%s\n' "$player_state" | sed -n '1p')"
+title="$(printf '%s\n' "$player_state" | sed -n '2p')"
+artist="$(printf '%s\n' "$player_state" | sed -n '3p')"
 
-echo "No Media"
+title="$(normalize_text "$title")"
+artist="$(normalize_text "$artist")"
+
+case "$state" in
+  playing)
+    format_playing_line "▶" "Playing" "$title" "$artist"
+    ;;
+  paused)
+    format_playing_line "⏸" "Paused" "$title" "$artist"
+    ;;
+esac
+
 exit 0
