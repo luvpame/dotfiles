@@ -27,34 +27,10 @@
   },
   "enableAllProjectMcpServers": true,
   "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/state-notify.sh idle"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/state-notify.sh working"
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": ".*",
         "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/state-notify.sh working"
-          },
           {
             "type": "command",
             "command": "guard-and-guide"
@@ -77,36 +53,6 @@
           {
             "type": "command",
             "command": "$HOME/.claude/hooks/rtk-rewrite.sh"
-          }
-        ]
-      }
-    ],
-    "Notification": [
-      {
-        "matcher": "permission_prompt",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/state-notify.sh permission_prompt"
-          }
-        ]
-      },
-      {
-        "matcher": "idle_prompt",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/state-notify.sh idle_prompt"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.claude/hooks/state-notify.sh complete"
           }
         ]
       }
