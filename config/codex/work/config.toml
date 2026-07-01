@@ -1,4 +1,4 @@
-model_reasoning_effort = "low"
+model_reasoning_effort = "medium"
 personality = "pragmatic"
 forced_login_method = "chatgpt"
 model = "gpt-5.5"
@@ -127,7 +127,7 @@ enabled = true
 [hooks.state]
 
 [hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:pre_tool_use:0:0"]
-trusted_hash = "sha256:fbce185f06778f6935e18e60df59bbaeb3ba05d558ba9dfbe64b8133f5ce68fb"
+trusted_hash = "sha256:834b651aa08dfd2df53a7236deeea5833d288e73624e6265cff78ea1dd38d3fd"
 
 [hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:pre_tool_use:0:1"]
 trusted_hash = "sha256:834b651aa08dfd2df53a7236deeea5833d288e73624e6265cff78ea1dd38d3fd"
