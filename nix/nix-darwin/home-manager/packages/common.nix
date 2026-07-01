@@ -15,7 +15,6 @@ let
   };
 
   guardAndGuide = inputs.guard-and-guide.packages.${system}.default;
-  tirith = inputs.tirith.packages.${system}.default;
 
   commonPackages = with pkgs; [
     efm-langserver
@@ -69,7 +68,6 @@ let
     socat
     ov
     guardAndGuide
-    tirith
     (callPackage ../../../pkgs/site2skill/default.nix { })
     (callPackage ../../../pkgs/tree-sitter-cli/default.nix { })
   ];
