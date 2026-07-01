@@ -53,7 +53,7 @@ on-mode-changed = []
 
 [[on-window-detected]]
 if.app-id = "com.stengo.DeskPad"
-run = "move-node-to-workspace 0" # DeskPadをワークスペース0に移動
+run = "move-node-to-workspace 1" # DeskPadをワークスペース1に移動
 
 [[on-window-detected]]
 if.app-id = "company.thebrowser.dia"
@@ -64,24 +64,20 @@ if.app-id = "com.tinyspeck.slackmacgap"
 run = "move-node-to-workspace 2" # Slackをワークスペース2に移動
 
 [[on-window-detected]]
-if.app-id = "dev.zed.Zed"
-run = "move-node-to-workspace 3" # Zedをワークスペース3に移動
-
-[[on-window-detected]]
-if.app-id = "com.openai.codex"
-run = "move-node-to-workspace 4" # Codexをワークスペース4に移動
+if.app-id = "com.github.wez.wezterm"
+run = "move-node-to-workspace 3" # WezTermをワークスペース3に移動
 
 [[on-window-detected]]
 if.app-id = "com.anthropic.claudefordesktop"
-run = "move-node-to-workspace 5" # Claudeをワークスペース5に移動
+run = "move-node-to-workspace 4" # Claudeをワークスペース4に移動
 
 [[on-window-detected]]
 if.app-id = "com.spotify.client"
-run = "move-node-to-workspace 7" # Spotifyをワークスペース7に移動
+run = "move-node-to-workspace 8" # Spotifyをワークスペース8に移動
 
 [[on-window-detected]]
 if.app-id = "md.obsidian"
-run = "move-node-to-workspace 8" # Obsidianをワークスペース8に移動
+run = "move-node-to-workspace 9" # Obsidianをワークスペース9に移動
 
 # フローティングで扱うアプリ
 [[on-window-detected]]
@@ -89,19 +85,7 @@ if.app-id = "com.apple.finder" # Finder
 run = "layout floating"
 
 [[on-window-detected]]
-if.app-id = "com.gyazo.menu" # Gyazo
-run = "layout floating"
-
-[[on-window-detected]]
-if.app-id = "lo.cafe.NotchNook" # NotchNook
-run = "layout floating"
-
-[[on-window-detected]]
 if.app-id = "com.1password.1password" # 1Password
-run = "layout floating"
-
-[[on-window-detected]]
-if.app-id = "so.cap.desktop" # Cap
 run = "layout floating"
 
 [[on-window-detected]]
@@ -128,16 +112,16 @@ preset = "qwerty"
 #   複数のパターンを配列で指定可能（最初にマッチしたものが使用される）
 
 [workspace-to-monitor-force-assignment]
-0 = "main"      # ワークスペース0をメインモニターに割り当て
+0 = "DeskPad*"  # ワークスペース0をDeskPad(仮想ディスプレイ)に割り当て
 1 = "main"      # ワークスペース1をメインモニターに割り当て
 2 = "main"      # ワークスペース2をメインモニターに割り当て
 3 = "main"      # ワークスペース3をメインモニターに割り当て
 4 = "main"      # ワークスペース4をメインモニターに割り当て
 5 = "main"      # ワークスペース5をメインモニターに割り当て
 6 = "main"      # ワークスペース6をメインモニターに割り当て
-7 = "^built-in retina display$" # ワークスペース7をセカンダリモニターに割り当て
+7 = "main"      # ワークスペース7をメインモニターに割り当て
 8 = "^built-in retina display$" # ワークスペース8をセカンダリモニターに割り当て
-9 = "DeskPad*"  # ワークスペース9をDeskPad(仮想ディスプレイ)に割り当て
+9 = "^built-in retina display$" # ワークスペース9をセカンダリモニターに割り当て
 
 
 # ウィンドウ間のギャップ(inner-*)とモニター端とのギャップ(outer-*)
@@ -156,13 +140,13 @@ outer.bottom = [
   { monitor.secondary = 3 },
   { monitor.'^built-in retina display$' = 3 },
   { monitor.'DeskPad*' = 3},
-  38,
+  34,
 ]
 outer.top = [
   { monitor.secondary = 7 },
   { monitor.'^built-in retina display$' = 3 },
   { monitor.'DeskPad*' = 3},
-  38,
+  34,
 ]
 outer.right = 5
 
