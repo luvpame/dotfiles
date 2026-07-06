@@ -68,6 +68,7 @@ let
     socat
     ov
     guardAndGuide
+    inputs.herdr.packages.${system}.default
     (callPackage ../../../pkgs/site2skill/default.nix { })
     (callPackage ../../../pkgs/tree-sitter-cli/default.nix { })
   ];

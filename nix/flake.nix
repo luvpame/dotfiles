@@ -17,6 +17,10 @@
     };
     yazi.url = "github:sxyazi/yazi";
     guard-and-guide.url = "github:kawarimidoll/guard-and-guide";
+    herdr = {
+      url = "github:ogulcancelik/herdr/v0.7.1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

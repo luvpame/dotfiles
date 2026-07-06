@@ -14,3 +14,6 @@ build/
 .state/
 .cache/
 .claude/
+config/herdr/*.log
+config/herdr/*.sock
+config/herdr/session*.json

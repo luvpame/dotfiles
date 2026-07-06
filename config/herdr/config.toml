@@ -1,0 +1,44 @@
+onboarding = false
+[keys]
+prefix = "ctrl+j"
+
+new_tab = "prefix+c"
+cycle_pane_next = "prefix+tab"
+split_vertical = "prefix+|"
+split_horizontal = "prefix+minus"
+resize_mode = "prefix+r"
+
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+
+navigate_pane_left = "h"
+navigate_pane_down = "j"
+navigate_pane_up = "k"
+navigate_pane_right = "l"
+
+[[keys.command]]
+key = "prefix+g"
+type = "pane"
+command = "lazygit"
+
+[[keys.command]]
+key = "prefix+t"
+type = "pane"
+command = "fish"
+
+[theme]
+name = "catppuccin-latte"
+auto_switch = false
+
+[ui.toast]
+delivery = "terminal"
+
+[ui]
+show_agent_labels_on_pane_borders = true
+
+agent_panel_sort = "spaces"
+[experimental]
+pane_history = true
+switch_ascii_input_source_in_prefix = true

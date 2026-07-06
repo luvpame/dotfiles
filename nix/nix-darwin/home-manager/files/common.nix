@@ -20,6 +20,7 @@ in
     lazygit.source = oos "${configRoot}/lazygit";
     yazi.source = oos "${configRoot}/yazi";
     tmux.source = oos "${configRoot}/tmux";
+    herdr.source = oos "${configRoot}/herdr";
     wezterm.source = oos "${configRoot}/wezterm";
     zed.source = oos "${configRoot}/zed";
     cage.source = oos "${configRoot}/cage";
