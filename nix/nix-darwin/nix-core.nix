@@ -23,6 +23,10 @@
     ];
   };
 
+  # ponytail: disabled until nix-darwin stops passing the removed --toc-depth.
+  documentation.doc.enable = false;
+  system.tools.darwin-uninstaller.enable = false;
+
   # このホストで共有する Nix のコア設定。
   nix = {
     package = pkgs.nix;
