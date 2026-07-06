@@ -145,7 +145,6 @@ outer.bottom = [
 outer.top = [
   { monitor.secondary = 7 },
   { monitor.'^built-in retina display$' = 3 },
-  { monitor.'DeskPad*' = 3},
   34,
 ]
 outer.right = 5
