@@ -67,6 +67,18 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/nasuno.ayumu/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
@@ -74,29 +86,30 @@
     "command": "$HOME/.claude/statusline.py"
   },
   "enabledPlugins": {
-    "frontend-design@claude-plugins-official": true,
-    "feature-dev@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true,
-    "pr-review-toolkit@claude-plugins-official": true,
-    "figma@claude-plugins-official": true,
-    "sentry@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
-    "plugin-dev@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "figma@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
     "notion@claude-plugins-official": true,
-    "slack@claude-plugins-official": true,
+    "plugin-dev@claude-plugins-official": true,
+    "ponytail@ponytail": true,
+    "pr-review-toolkit@claude-plugins-official": true,
     "ruby-lsp@claude-plugins-official": true,
-    "ponytail@ponytail": true
+    "sentry@claude-plugins-official": true,
+    "slack@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true
   },
+  "outputStyle": "Proactive",
   "language": "日本語",
   "sandbox": {
     "enabled": false
   },
+  "tui": "fullscreen",
   "autoMemoryEnabled": false,
+  "verbose": false,
   "skipAutoPermissionPrompt": true,
   "useAutoModeDuringPlan": true,
-  "voiceEnabled": true,
-  "verbose": false,
-  "outputStyle": "Proactive"
+  "voiceEnabled": true
 }

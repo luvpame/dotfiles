@@ -2,11 +2,22 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash",
         "hooks": [
           {
-            "type": "command",
-            "command": "guard-and-guide"
+            "command": "guard-and-guide",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "bash '/Users/nasuno.ayumu/.codex/herdr-agent-state.sh' session",
+            "timeout": 10,
+            "type": "command"
           }
         ]
       }

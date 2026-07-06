@@ -1,4 +1,4 @@
-model_reasoning_effort = "medium"
+model_reasoning_effort = "xhigh"
 personality = "pragmatic"
 forced_login_method = "chatgpt"
 model = "gpt-5.5"
@@ -86,8 +86,8 @@ source_type = "local"
 source = "/Users/nasuno.ayumu/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.ponytail]
-last_updated = "2026-06-30T00:15:24Z"
-last_revision = "16f6cbf4b87792938e47b0f8c650b6d80fcbc98c"
+last_updated = "2026-07-02T01:44:54Z"
+last_revision = "40e50d9e03242aa5dd53ac771950f9127362b25f"
 source_type = "git"
 source = "https://github.com/DietrichGebert/ponytail.git"
 
@@ -133,7 +133,7 @@ trusted_hash = "sha256:834b651aa08dfd2df53a7236deeea5833d288e73624e6265cff78ea1d
 trusted_hash = "sha256:834b651aa08dfd2df53a7236deeea5833d288e73624e6265cff78ea1dd38d3fd"
 
 [hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:session_start:0:0"]
-trusted_hash = "sha256:5d1ae6f116fa0b65e1e69653956185b504f1a0fc00b7d6c3f26bce68f17eff2f"
+trusted_hash = "sha256:437ceba89f225c20406c887499e503818a09383964dce7da94d202954eefb46c"
 
 [hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:stop:0:0"]
 trusted_hash = "sha256:3988b809d1a46c97a9c5405712be87db63906a51f9467c7ca88ce36b60b649a5"
@@ -142,13 +142,13 @@ trusted_hash = "sha256:3988b809d1a46c97a9c5405712be87db63906a51f9467c7ca88ce36b6
 trusted_hash = "sha256:f80728ad206e6647577d90719509022f480a805fe1872bc844eefe51fa36fe13"
 
 [hooks.state."ponytail@ponytail:hooks/claude-codex-hooks.json:session_start:0:0"]
-trusted_hash = "sha256:35ad4fd900da217d98e6eb60198465bd10d55e21eacd72758621dc385145cc05"
+trusted_hash = "sha256:10e0ac0497512b279dc2b073d0d559fb9fb252bc18b9c943d2f0a6d58152b1f4"
 
 [hooks.state."ponytail@ponytail:hooks/claude-codex-hooks.json:user_prompt_submit:0:0"]
-trusted_hash = "sha256:22db2f951755c593f9deba5e69cd1be1c87e0c9b2f5538a13b5dd9911141793f"
+trusted_hash = "sha256:2a3c9015a1fe10f0809ffec8da3d67c326e27c38ebf720725099283b1e2085a8"
 
 [hooks.state."ponytail@ponytail:hooks/claude-codex-hooks.json:subagent_start:0:0"]
-trusted_hash = "sha256:28c43eada804ad00a4e651d6af6320c01e763b1df060af0ab74865a55bc1c9a9"
+trusted_hash = "sha256:4765354e31cc783c9cc7379f8beac7ac7ff68743c3cd7dad333d1f6a64e7a6f3"
 
 [desktop]
 appearanceTheme = "system"
