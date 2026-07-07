@@ -45,6 +45,7 @@ in
     ".claude/hooks".source = oos "${configRoot}/claude/hooks";
     ".claude/skills".source = oos "${configRoot}/agents/skills";
     ".claude/CLAUDE.md".source = oos "${configRoot}/claude/CLAUDE.md";
+    ".claude/RTK.md".source = oos "${configRoot}/claude/RTK.md";
     ".cursor/skills".source = oos "${configRoot}/agents/skills";
   };
 }
