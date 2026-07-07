@@ -30,3 +30,5 @@ config/fish/functions/*
 !config/fish/functions/ghq_cd_fzf.fish
 !config/fish/functions/tmux.fish
 !config/fish/functions/tre.fish
+
+config/tmux/plugins/
