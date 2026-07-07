@@ -40,5 +40,11 @@ in
     ".codex/hooks".source = oos "${configRoot}/codex/hooks";
     ".codex/hooks.json".source = oos "${configRoot}/codex/hooks.json";
     ".codex/AGENTS.md".source = oos "${configRoot}/codex/AGENTS.md";
+    ".claude/settings.json".source = oos "${configRoot}/claude/settings.json";
+    ".claude/statusline.py".source = oos "${configRoot}/claude/statusline.py";
+    ".claude/hooks".source = oos "${configRoot}/claude/hooks";
+    ".claude/skills".source = oos "${configRoot}/agents/skills";
+    ".claude/CLAUDE.md".source = oos "${configRoot}/claude/CLAUDE.md";
+    ".cursor/skills".source = oos "${configRoot}/agents/skills";
   };
 }
