@@ -14,8 +14,8 @@ vim.opt.termguicolors = true
 -- サインカラムを常に表示して表示の揺れを防ぐ
 vim.opt.signcolumn = "yes"
 
--- 長い行を折り返さない
-vim.opt.wrap = false
+-- 長い行を折り返す
+vim.opt.wrap = true
 
 -- カーソル上下に最低 10 行の余白を保つ
 vim.opt.scrolloff = 10
