@@ -1,1 +1,0 @@
-/Users/nasuno.ayumu/git-worktree-runner/completions/gtr.fish

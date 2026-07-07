@@ -17,3 +17,16 @@ build/
 config/herdr/*.log
 config/herdr/*.sock
 config/herdr/session*.json
+
+config/fish/completions/
+config/fish/conf.d/*
+!config/fish/conf.d/direnv.fish
+!config/fish/conf.d/git_keybindings.fish
+!config/fish/conf.d/load-dotenv.fish
+!config/fish/conf.d/nix.fish
+!config/fish/conf.d/yazi.fish
+config/fish/functions/*
+!config/fish/functions/fzf_git_branch.fish
+!config/fish/functions/ghq_cd_fzf.fish
+!config/fish/functions/tmux.fish
+!config/fish/functions/tre.fish
