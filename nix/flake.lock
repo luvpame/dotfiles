@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783373370,
-        "narHash": "sha256-sR3K6+HJIs0NDNTrVyK4S/jeQJs4KiDLXDYefxG7AkU=",
+        "lastModified": 1783542369,
+        "narHash": "sha256-53qE/pUVN95Ya3h0EcRGqa/t0hijQNzhKn7mvo7g/aQ=",
         "owner": "ryoppippi",
         "repo": "claude-code-overlay",
-        "rev": "c1a3e42fbaf572b1ab1c59a3771a7a2379b6ec9c",
+        "rev": "51bc104b2426a31e151081595a628fe88b9afa1e",
         "type": "github"
       },
       "original": {
@@ -66,11 +66,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783309609,
-        "narHash": "sha256-o7gZLFGlkmnhb8DK/AnBul0kG6rkUIkwbw5TS7UIDCM=",
+        "lastModified": 1783535560,
+        "narHash": "sha256-BvcVP2C4Pn9L9yYpUzNAOepouAFwLLDdPTQ3qnzyBdg=",
         "owner": "kawarimidoll",
         "repo": "guard-and-guide",
-        "rev": "a26a3febd76bf1d46846341041292f8a34720462",
+        "rev": "de244ee9492440b10dfbec274b0971b24c56233a",
         "type": "github"
       },
       "original": {
@@ -107,11 +107,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783358420,
-        "narHash": "sha256-UEyBpf+XmQe8laXfDzIlo11Er7E0rKrLS8jeMnMj0Ds=",
+        "lastModified": 1783550008,
+        "narHash": "sha256-qbbZUk9IG9dLNwCPwdPBs6I5clxwugRpP+1YU+GPK20=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "0d33882bd46c1f9ef62276700f5e5f2bd6ff6604",
+        "rev": "f4d01c1d87c7c2ec909549165d5a8338f1bd3315",
         "type": "github"
       },
       "original": {
@@ -127,11 +127,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781761792,
-        "narHash": "sha256-rCPytmKNjctLloB6UgK5CRrHSwV4b0ygxtJLPPp8R14=",
+        "lastModified": 1783395956,
+        "narHash": "sha256-AAbexQvDoK+6GFJdhY6kqjA+6ECKRkidgWxkn4gMwAA=",
         "owner": "LnL7",
         "repo": "nix-darwin",
-        "rev": "a1fa429e945becaf60468600daf649be4ba0350c",
+        "rev": "d5bd9cd77aea4c0a8f49e7fd85545671a208ed15",
         "type": "github"
       },
       "original": {

@@ -19,6 +19,10 @@
         mise = prev.mise.overrideAttrs (_: {
           doCheck = false;
         });
+        # Temporary workaround for statix snapshot tests failing on darwin.
+        statix = prev.statix.overrideAttrs (_: {
+          doCheck = false;
+        });
       })
     ];
   };
