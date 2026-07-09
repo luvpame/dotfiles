@@ -48,12 +48,23 @@ render_calendar() {
     def minutes_until($time):
       ((($time | iso_epoch) - ($now | iso_epoch)) / 60 | floor);
 
+    def duration_label:
+      . as $minutes
+      | ($minutes % 60) as $remainder
+      | if $minutes > 60 then
+        (($minutes / 60 | floor | tostring) + "時間"
+          + if $remainder == 0 then "" else (($remainder | tostring) + "分") end
+          + "後")
+      else
+        (($minutes | tostring) + "分後")
+      end;
+
     def start_time: .startLocal[11:16];
     def running: .startLocal <= $now and .endLocal > $now;
     def future: .startLocal >= $now;
     def today_event: .startLocal[0:10] == $now[0:10];
     def starts_in: minutes_until(.startLocal);
-    def upcoming_badge($icon): $icon + " " + (starts_in | tostring) + "分後";
+    def upcoming_badge($icon): $icon + " " + (starts_in | duration_label);
     def upcoming_text($icon):
       upcoming_badge($icon) + " " + start_time + " " + title;
 
@@ -102,9 +113,27 @@ if [[ "${1:-}" == "--self-test" ]]; then
       }
     ]
   }'
+  far_fixture='{
+    "events": [
+      {
+        "status": "confirmed",
+        "summary": "Far",
+        "start": { "dateTime": "2026-07-07T12:30:00+09:00" },
+        "end": { "dateTime": "2026-07-07T13:00:00+09:00" },
+        "startLocal": "2026-07-07T12:30:00+09:00",
+        "endLocal": "2026-07-07T13:00:00+09:00"
+      }
+    ]
+  }'
 
   output="$(render_calendar "$fixture" "2026-07-07T10:30:00+09:00")"
   [[ "$output" == "󰥔 Current 😎  󰝖 60分後" ]]
+
+  output="$(render_calendar "$fixture" "2026-07-07T10:10:00+09:00")"
+  [[ "$output" == "󰥔 Current 😎  󰝖 1時間20分後" ]]
+
+  output="$(render_calendar "$far_fixture" "2026-07-07T10:30:00+09:00")"
+  [[ "$output" == "󰃭 2時間後 12:30 Far" ]]
 
   output="$(render_calendar "$fixture" "2026-07-07T11:00:00+09:00")"
   [[ "$output" == "󰃭 30分後 11:30 Next" ]]
