@@ -6,7 +6,7 @@ Claude Code の計画とコード変更を Crit のブラウザ画面でレビ�
 
 Plan mode の終了時に Crit を開き、利用者が計画を承認するまで実装へ進まないレビュー経路を設ける。
 
-Crit CLI と Claude Code plugin は Nix と Home Manager だけで配布し、インストールコマンドを直接実行しない。
+Crit CLI は Nix と Home Manager で配布し、Claude Code は既存どおり通常の package と plugin 導入フローを使う。
 
 ## 背景
 
@@ -16,17 +16,19 @@ Crit CLI と Claude Code plugin は Nix と Home Manager だけで配布し、�
 
 Crit の公式 Claude Code plugin は `/crit` skill、`crit-cli` skill、`ExitPlanMode` の review hook をまとめて提供する。
 
-Claude Code の `enabledPlugins` は plugin の有効状態だけを管理し、外部 plugin 自体はインストールしない。
+Claude Code の外部 plugin は、Marketplace の信頼確認と plugin のインストール確認を利用者ごとに通す必要がある。
 
 ## 方針
 
 Crit の公式 flake を input に追加し、Crit CLI を仕事用 Home Manager package として導入する。
 
-Claude Code は `writeShellScriptBin` でラップし、公式 plugin directory を `--plugin-dir` へ常に渡す。
+Claude Code は `pkgs.claude-code` をそのまま Home Manager package に含め、wrapper を作らない。
 
-`--plugin-dir` は plugin を Marketplace cache へコピーせず、指定 directory から session ごとに読み込む Claude Code の公式機能である。
+`settings.json` の `extraKnownMarketplaces` に Crit の公式 repository を追加し、`enabledPlugins` で `crit@crit` を有効にする。
 
-この方式により、`brew install`、`claude plugin marketplace add`、`claude plugin install` を実行せずに plugin の skills と hook を有効にする。
+Home Manager の反映後、Claude Code の標準フローが Marketplace と plugin の信頼確認を表示する。
+
+`brew install`、`claude plugin marketplace add`、`claude plugin install` はこちらから実行しない。
 
 ## 変更範囲
 
@@ -44,33 +46,31 @@ Crit の revision と依存関係を固定する。
 
 Crit CLI を `inputs.crit.packages.${system}.default` から仕事用 package に追加する。
 
-既存の `claude-code` package は、同じバイナリへ `--plugin-dir ${inputs.crit}/integrations/claude-code` を付けて委譲する wrapper に置き換える。
-
-### `nix/nix-darwin/homebrew/work.nix`
-
-誤って追加した Homebrew formula `crit` を削除する。
+Claude Code は既存どおり `pkgs.claude-code` を追加する。
 
 ### `config/claude/settings.json`
 
 `mo` の `ExitPlanMode` 表示 hook と `SessionEnd` cleanup hook は削除した状態を維持する。
 
-Marketplace install を前提とする `crit@crit` の `enabledPlugins` entry は削除する。
+Crit の公式 Marketplace source と `crit@crit` の有効状態を宣言する。
 
 ## 動作
 
-Home Manager の反映後、`claude` wrapper は Nix store 内の Claude Code を Crit plugin directory 付きで起動する。
+Home Manager の反映後、PATH 上で Crit CLI と通常の Claude Code を利用できる。
 
-Plan mode で Claude Code が `ExitPlanMode` の許可を求めると、plugin の `PermissionRequest` hook が PATH 上の `crit plan-hook` を実行する。
+Claude Code は Crit Marketplace を検出し、未導入なら利用者へ信頼とインストールの確認を求める。
 
-Crit は計画をブラウザで開き、行単位のコメントを受け取る。
+承認後、Plan mode で Claude Code が `ExitPlanMode` の許可を求めると、plugin の `PermissionRequest` hook が PATH 上の `crit plan-hook` を実行する。
 
-未解決のコメントがあれば Claude Code は Plan mode を続け、コメントなしで承認されると Plan mode を終了する。
+Crit は計画をブラウザで開き、未解決のコメントがあれば Claude Code は Plan mode を続け、コメントなしで承認されると Plan mode を終了する。
 
 計画以外のファイル、コード差分、PR、実行中の画面は `/crit` から任意にレビューする。
 
 ## エラー処理
 
-Crit CLI、Claude Code、plugin directory は同じ Home Manager generation に含め、片方だけが有効になる状態を作らない。
+外部 plugin の信頼確認は迂回しないため、利用者が承認するまでは Crit plugin を利用できない。
+
+Crit CLI は先に Home Manager で利用可能になるため、plugin 承認後に hook の command が見つからない状態を避けられる。
 
 一時的に Plan mode のレビューを止める場合は、Claude Code の起動環境で `CRIT_PLAN_REVIEW=off` を設定する。
 
@@ -81,16 +81,17 @@ Crit CLI、Claude Code、plugin directory は同じ Home Manager generation に�
 - `nixfmt` で変更した Nix ファイルを整形する。
 - `jq empty config/claude/settings.json` で JSON の構文を確認する。
 - `nix flake check` で flake と darwin 構成を評価する。
-- Home Manager package list に Crit CLI と Claude wrapper が含まれることを評価する。
-- wrapper が公式 Crit plugin directory を `--plugin-dir` へ渡すことを確認する。
+- Home Manager package list に Crit CLI と通常の Claude Code が含まれることを評価する。
+- Crit Marketplace source と `crit@crit` の有効状態を検査する。
 - Crit plugin の manifest と `PermissionRequest: ExitPlanMode` hook を確認する。
-- Home Manager 反映後に Claude Code の Plan mode から Crit が開くことを手動確認する。
+- Home Manager 反映後に標準の信頼確認を通し、Claude Code の Plan mode から Crit が開くことを手動確認する。
 
 ## 非対象
 
 - Codex への Crit 導入
 - Homebrew による Crit 導入
-- Claude Marketplace への登録と plugin install
+- Claude Code wrapper の作成
+- Claude Marketplace と plugin の信頼確認の迂回
 - Crit plugin または skills のリポジトリ内への複製
 - `mo` のアンインストール
 - Crit の Share、認証、セルフホスト設定
