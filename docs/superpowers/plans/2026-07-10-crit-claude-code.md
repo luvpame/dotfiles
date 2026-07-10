@@ -94,7 +94,7 @@ Expected: 2文書だけを含む Conventional Commit が作成される。
 Run:
 
 ```sh
-rg -q 'crit = \{' nix/flake.nix
+rg -Fq 'crit = {' nix/flake.nix
 rg -q 'writeShellScriptBin "claude"' nix/nix-darwin/home-manager/packages/work.nix
 ! rg -q '"crit"' nix/nix-darwin/homebrew/work.nix
 jq -e '.enabledPlugins["crit@crit"] == null' config/claude/settings.json
@@ -202,7 +202,7 @@ Expected: wrapper 以外の抽象化や別ファイルを追加しない。
 Run:
 
 ```sh
-rg -q 'crit = \{' nix/flake.nix
+rg -Fq 'crit = {' nix/flake.nix
 rg -q 'writeShellScriptBin "claude"' nix/nix-darwin/home-manager/packages/work.nix
 ! rg -q '"crit"' nix/nix-darwin/homebrew/work.nix
 jq -e '.enabledPlugins["crit@crit"] == null' config/claude/settings.json
