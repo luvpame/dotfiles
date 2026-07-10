@@ -47,7 +47,7 @@ Claude Code には公式 Marketplace plugin をユーザースコープで導入
 Run:
 
 ```sh
-nix eval --json --expr '(import ./nix/nix-darwin/homebrew/work.nix).brews' | jq -e 'index("crit") != null'
+nix eval --impure --json --expr '(import ./nix/nix-darwin/homebrew/work.nix).brews' | jq -e 'index("crit") != null'
 jq -e '
   ([.hooks.PreToolUse[]? | select(.matcher == "ExitPlanMode")] | length == 0)
   and (.hooks.SessionEnd == null)
@@ -148,7 +148,7 @@ Expected: 追加の抽象化や別ファイルを作らず、この2ファイル
 Run:
 
 ```sh
-nix eval --json --expr '(import ./nix/nix-darwin/homebrew/work.nix).brews' | jq -e 'index("crit") != null'
+nix eval --impure --json --expr '(import ./nix/nix-darwin/homebrew/work.nix).brews' | jq -e 'index("crit") != null'
 jq -e '
   ([.hooks.PreToolUse[]? | select(.matcher == "ExitPlanMode")] | length == 0)
   and (.hooks.SessionEnd == null)
