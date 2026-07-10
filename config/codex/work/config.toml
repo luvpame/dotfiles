@@ -1,14 +1,14 @@
-model_reasoning_effort = "xhigh"
-personality = "pragmatic"
+model_reasoning_effort = "ultra"
+personality = "friendly"
 forced_login_method = "chatgpt"
-model = "gpt-5.5"
+model = "gpt-5.6-sol"
 web_search = "live"
 suppress_unstable_features_warning = true
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 
 notify = ["/Users/nasuno.ayumu/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended", "--previous-notify", "[\"$HOME\\/.codex\\/hooks\\/notify-terminal-notifier.sh\"]"]
-service_tier = "fast"
+service_tier = "default"
 
 [features]
 shell_snapshot = true
@@ -74,19 +74,22 @@ trust_level = "trusted"
 [projects."/Users/nasuno.ayumu/Documents/Codex/2026-06-05/files-mentioned-by-the-user-2026"]
 trust_level = "trusted"
 
+[projects."/Users/nasuno.ayumu/dev/github.com/smartcamp/kaitai-shinsho"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
-last_updated = "2026-06-24T09:40:52Z"
+last_updated = "2026-07-10T01:30:36Z"
 source_type = "local"
 source = "/Users/nasuno.ayumu/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-06-24T07:21:26Z"
+last_updated = "2026-07-10T02:19:36Z"
 source_type = "local"
 source = "/Users/nasuno.ayumu/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.ponytail]
-last_updated = "2026-07-07T04:28:31Z"
-last_revision = "1b2760d384c44e573a9d8c7a729fac616e5c3a76"
+last_updated = "2026-07-10T01:27:54Z"
+last_revision = "f12f210eb5a66270eed40b4b1545fc9a6c633ee6"
 source_type = "git"
 source = "https://github.com/DietrichGebert/ponytail.git"
 
@@ -96,20 +99,8 @@ enabled = true
 [plugins."codex-security@openai-curated"]
 enabled = true
 
-[plugins."documents@openai-primary-runtime"]
-enabled = false
-
-[plugins."spreadsheets@openai-primary-runtime"]
-enabled = false
-
-[plugins."presentations@openai-primary-runtime"]
-enabled = false
-
 [plugins."hugging-face@openai-curated"]
 enabled = false
-
-[plugins."browser@openai-bundled"]
-enabled = true
 
 [plugins."chrome@openai-bundled"]
 enabled = true
@@ -117,10 +108,28 @@ enabled = true
 [plugins."ponytail@ponytail"]
 enabled = true
 
+[plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[plugins."sites@openai-bundled"]
+enabled = true
+
+[plugins."visualize@openai-bundled"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
 [plugins."pdf@openai-primary-runtime"]
 enabled = true
 
-[plugins."template-creator@openai-primary-runtime"]
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
 enabled = true
 
 [hooks.state]
@@ -138,16 +147,16 @@ trusted_hash = "sha256:341f095eb06db5b52fa3c919f6e3ba2ada4c63883b73a18707a760623
 trusted_hash = "sha256:3988b809d1a46c97a9c5405712be87db63906a51f9467c7ca88ce36b60b649a5"
 
 [hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:user_prompt_submit:0:0"]
-trusted_hash = "sha256:f80728ad206e6647577d90719509022f480a805fe1872bc844eefe51fa36fe13"
+trusted_hash = "sha256:bdc746f856ae64e9f31d4775827bf8823a09a8272a17959d196b42f4c9ff06f8"
 
 [hooks.state."ponytail@ponytail:hooks/claude-codex-hooks.json:session_start:0:0"]
-trusted_hash = "sha256:10e0ac0497512b279dc2b073d0d559fb9fb252bc18b9c943d2f0a6d58152b1f4"
+trusted_hash = "sha256:5f81d38f47448a1581c08ec877e044d9e04dd6f814dce3f2671f7a8edadd719b"
 
 [hooks.state."ponytail@ponytail:hooks/claude-codex-hooks.json:user_prompt_submit:0:0"]
-trusted_hash = "sha256:2a3c9015a1fe10f0809ffec8da3d67c326e27c38ebf720725099283b1e2085a8"
+trusted_hash = "sha256:6a6f42bc3b58d6262db38bfd74d7f340fcca2b09cdb134aad365063f0bfefca4"
 
 [hooks.state."ponytail@ponytail:hooks/claude-codex-hooks.json:subagent_start:0:0"]
-trusted_hash = "sha256:4765354e31cc783c9cc7379f8beac7ac7ff68743c3cd7dad333d1f6a64e7a6f3"
+trusted_hash = "sha256:1423b56c1322f96c8f74c51c1e7ae9a047b904c1fa43ee9165d462fd7a6e70ef"
 
 [desktop]
 appearanceTheme = "system"
@@ -172,13 +181,15 @@ mac-menu-bar-enabled = false
 show-context-window-usage = true
 appearanceDiffMarkerStyle = "symbols"
 ambient-suggestions-enabled = false
-dock-icon-preference = "codex-light"
+dock-icon-preference = "codex-system"
+avatar-overlay-mascot-width-px = 80
+appshotDestination = "last-chat"
 
 [desktop.appearanceLightChromeTheme]
 accent = "#8839ef"
 contrast = 40
 ink = "#4c4f69"
-opaqueWindows = true
+opaqueWindows = false
 surface = "#eff1f5"
 
 [desktop.appearanceLightChromeTheme.fonts]
@@ -207,26 +218,33 @@ diffRemoved = "#f38ba8"
 skill = "#cba6f7"
 
 [desktop.open-in-target-preferences]
-global = "terminal"
+global = "zed"
 
 [desktop.open-in-target-preferences.perPath]
 "/Users/nasuno.ayumu/dev/local-extensions" = "zed"
 
 [mcp_servers.node_repl]
 args = []
-command = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node_repl"
+command = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node_repl"
 startup_timeout_sec = 120
 
 [mcp_servers.node_repl.env]
 NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
-NODE_REPL_NODE_MODULE_DIRS = "/Applications/Codex.app/Contents/Resources/cua_node/lib/node_modules"
-NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
+NODE_REPL_NODE_MODULE_DIRS = "/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
+NODE_REPL_NODE_PATH = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/nasuno.ayumu/.codex"
 CODEX_HOME = "/Users/nasuno.ayumu/.codex"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "5504c0782b5c86b7dd08314045b9843e973a230e1be8f7e2e0ba3716fc63c55e"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "6d25aa7656feac858f3a3bdaea5bcbab0dbfd426c9de8e6931ce90c399ee8e4f,c8b7e809d7cf9e20a57123b2530d476ccec9a01a6230a7b2b924fea7d94d7f4a"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
+NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = "Control desktop apps on macOS through Computer Use."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.616.81150"
-CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
+BROWSER_USE_CODEX_APP_VERSION = "26.707.31428"
+CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
+
+[mcp_servers.computer-use]
+command = "./Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient"
+args = ["mcp"]
+cwd = "."
+enabled = false
