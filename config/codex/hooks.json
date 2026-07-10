@@ -21,6 +21,17 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "bash \"$HOME/.codex/hooks/herdr-tab-rename-reminder.sh\"",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      }
     ]
   }
 }

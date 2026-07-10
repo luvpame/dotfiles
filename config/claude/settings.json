@@ -23,7 +23,7 @@
       "Bash(psql:*)",
       "Bash(mysql:*)"
     ],
-    "defaultMode": "plan"
+    "defaultMode": "auto"
   },
   "enableAllProjectMcpServers": true,
   "hooks": {
@@ -68,6 +68,17 @@
         ]
       }
     ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/herdr-tab-rename-reminder.sh\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "matcher": "*",
@@ -107,7 +118,7 @@
     "enabled": false
   },
   "tui": "fullscreen",
-  "autoMemoryEnabled": false,
+  "autoMemoryEnabled": true,
   "verbose": false,
   "skipAutoPermissionPrompt": true,
   "useAutoModeDuringPlan": true,
