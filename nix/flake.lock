@@ -20,6 +20,26 @@
         "type": "github"
       }
     },
+    "crit": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1783591984,
+        "narHash": "sha256-7iwyNdXNDu2Bnmo51bmXwKyeWdEAIE0/xxgx/Wa1hgI=",
+        "ref": "refs/heads/main",
+        "rev": "c098b4d790aa930675ebec99332d9dbe9526d016",
+        "revCount": 726,
+        "type": "git",
+        "url": "https://github.com/tomasz-tomczyk/crit.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://github.com/tomasz-tomczyk/crit.git"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -159,6 +179,7 @@
     "root": {
       "inputs": {
         "claude-code-overlay": "claude-code-overlay",
+        "crit": "crit",
         "guard-and-guide": "guard-and-guide",
         "herdr": "herdr",
         "home-manager": "home-manager",

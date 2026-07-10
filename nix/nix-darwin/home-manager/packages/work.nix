@@ -3,10 +3,16 @@
   pkgs,
   ...
 }:
-
-# 仕事用だけで入れたい Nix パッケージはここに追加する。
-with pkgs;
+let
+  system = pkgs.stdenv.hostPlatform.system;
+  claudeCodeWithCrit = pkgs.writeShellScriptBin "claude" ''
+    exec ${pkgs.claude-code}/bin/claude \
+      --plugin-dir ${inputs.crit}/integrations/claude-code \
+      "$@"
+  '';
+in
 [
-  awscli2
-  claude-code
+  pkgs.awscli2
+  inputs.crit.packages.${system}.default
+  claudeCodeWithCrit
 ]

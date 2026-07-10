@@ -1,6 +1,6 @@
 {
   # 仕事用だけで入れたい Homebrew CLI はここに追加する。
-  brews = [ "crit" ];
+  brews = [ ];
 
   # 仕事用だけで使う tap はここに追加する。
   taps = [ ];
