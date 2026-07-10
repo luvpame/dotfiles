@@ -194,7 +194,7 @@ nix eval --impure --json --expr '
 '
 ```
 
-Expected: `awscli2`、`crit-0.17.1`、`claude-code` を含み、名前が `claude` の wrapper を含まない。
+Expected: `awscli2`、`crit-0.17.1`、`claude-2.1.205` を含み、`writeShellScriptBin` 由来の wrapper を含まない。
 
 - [ ] **Step 8: flake 全体を検証する**
 
