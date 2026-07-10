@@ -38,32 +38,11 @@
         ]
       },
       {
-        "matcher": "ExitPlanMode",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "PLAN=$(ls -t ~/.claude/plans/*.md 2>/dev/null | head -1); [ -n \"$PLAN\" ] && /opt/homebrew/bin/mo \"$PLAN\" >/dev/null 2>&1 &",
-            "timeout": 15
-          }
-        ]
-      },
-      {
         "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
             "command": "$HOME/.claude/hooks/rtk-rewrite.sh"
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "mo --shutdown && echo 'Y' | mo --clear",
-            "async": true
           }
         ]
       }
@@ -99,6 +78,7 @@
   "enabledPlugins": {
     "code-review@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
+    "crit@crit": true,
     "feature-dev@claude-plugins-official": true,
     "figma@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
