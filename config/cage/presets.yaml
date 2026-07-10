@@ -28,6 +28,8 @@ presets:
       # Claude Code データ
       - path: "$HOME/.claude"
         eval-symlinks: true
+      - path: "$HOME/.crit"
+        eval-symlinks: true
       - "$HOME/.claude.json"
       - "$HOME/.claude.json.backup"
       - "$HOME/.claude.json.lock"
