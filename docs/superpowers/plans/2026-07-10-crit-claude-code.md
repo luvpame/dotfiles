@@ -2,18 +2,19 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Claude Code の計画とコード変更を Crit でレビューできるようにし、既存の `mo` plan hook を Crit の承認ループへ置き換える。
+**Goal:** Claude Code の計画とコード変更を Crit でレビューできるようにし、Crit CLI と plugin を Nix と Home Manager だけで配布する。
 
-**Architecture:** Crit CLI は仕事用 Homebrew profile で宣言する。
-Claude Code には公式 Marketplace plugin をユーザースコープで導入し、dotfiles では plugin の有効状態と既存 hook の削除だけを管理する。
+**Architecture:** Crit の公式 flake を input に追加し、仕事用 Home Manager package へ Crit CLI を含める。
+Claude Code は Nix の wrapper から `--plugin-dir` 付きで起動し、同じ flake input 内の公式 plugin を Marketplace install なしで読み込む。
 
-**Tech Stack:** nix-darwin、Homebrew、Claude Code plugin、Crit CLI、JSON
+**Tech Stack:** Nix flakes、nix-darwin、Home Manager、Claude Code plugin、Crit CLI、JSON
 
 ## Global Constraints
 
 - Crit を導入するエージェントは Claude Code だけとし、Codex の設定を変更しない。
-- Crit CLI は Claude Code と同じ仕事用 profile に限定する。
-- 公式 `crit@crit` plugin を使い、plugin や skills をリポジトリへ複製しない。
+- Crit CLI と Claude Code plugin は仕事用 Home Manager profile に限定する。
+- `brew install`、`claude plugin marketplace add`、`claude plugin install`、`just switch` を実行しない。
+- 公式 Crit plugin を Nix store から読み込み、plugin や skills をリポジトリへ複製しない。
 - `mo` の plan 表示 hook と cleanup hook は削除するが、`mo` 自体はアンインストールしない。
 - `~/.crit.config.json`、Share、認証、セルフホスト、`agent_cmd` は設定しない。
 - 未追跡の `nix/local.nix` は編集、stage、commit しない。
@@ -22,143 +23,209 @@ Claude Code には公式 Marketplace plugin をユーザースコープで導入
 
 ## File Structure
 
+- Modify: `nix/flake.nix`
+  - Crit の公式 flake input を宣言する。
+- Modify: `nix/flake.lock`
+  - Crit の revision と依存関係を固定する。
+- Modify: `nix/nix-darwin/home-manager/packages/work.nix`
+  - Crit CLI と Crit plugin 付き Claude Code wrapper を仕事用 package にする。
 - Modify: `nix/nix-darwin/homebrew/work.nix`
-  - 仕事用 profile に Crit CLI を宣言する。
+  - Homebrew formula `crit` を削除する。
 - Modify: `config/claude/settings.json`
-  - `mo` の plan 関連 hook を削除し、`crit@crit` plugin を有効にする。
-- User state: `~/.claude/plugins/`
-  - Claude Code が Marketplace checkout、plugin cache、インストール記録を管理する。
+  - Marketplace install を前提とする `crit@crit` entry を削除する。
 
-### Task 1: dotfiles に Crit の CLI と Claude Code plugin 設定を追加する
+### Task 1: 設計書と計画を Nix Home Manager 方式へ修正する
 
 **Files:**
 
-- Modify: `nix/nix-darwin/homebrew/work.nix:1-4`
-- Modify: `config/claude/settings.json:29-66`
-- Modify: `config/claude/settings.json:90-115`
+- Modify: `docs/superpowers/specs/2026-07-10-crit-claude-code-design.md`
+- Modify: `docs/superpowers/plans/2026-07-10-crit-claude-code.md`
 
 **Interfaces:**
 
-- Consumes: `homebrew/common.nix` が import する仕事用 profile attrset、Claude Code の `settings.json` schema
-- Produces: Homebrew formula 名 `crit`、有効 plugin key `crit@crit`、Crit と競合しない hook 集合
+- Consumes: ユーザー指定の「直接インストールを実行せず、Nix の Home Manager で入れる」制約
+- Produces: flake input、Home Manager package、`--plugin-dir` wrapper を正とする設計と手順
 
-- [ ] **Step 1: 変更前の設定検査が失敗することを確認する**
+- [ ] **Step 1: Homebrew と Marketplace install の実行手順を削除する**
+
+Expected: 文書が直接インストールを要求せず、Nix と Home Manager だけを実装方式として示す。
+
+- [ ] **Step 2: 文書を自己レビューする**
 
 Run:
 
 ```sh
-nix eval --impure --json --expr '(import ./nix/nix-darwin/homebrew/work.nix).brews' | jq -e 'index("crit") != null'
-jq -e '
-  ([.hooks.PreToolUse[]? | select(.matcher == "ExitPlanMode")] | length == 0)
-  and (.hooks.SessionEnd == null)
-  and (.enabledPlugins["crit@crit"] == true)
-' config/claude/settings.json
+rg -n 'TBD|TODO|FIXME|brew install crit|claude plugin (marketplace add|install)' \
+  docs/superpowers/specs/2026-07-10-crit-claude-code-design.md \
+  docs/superpowers/plans/2026-07-10-crit-claude-code.md
 ```
 
-Expected: どちらも exit code 1 で失敗する。
+Expected: `Global Constraints` の禁止事項以外に直接インストール手順がなく、プレースホルダーがない。
 
-- [ ] **Step 2: Crit の宣言と plugin 設定を最小差分で追加する**
+- [ ] **Step 3: 文書修正だけをコミットする**
 
-Apply this Nix change:
+Run:
+
+```sh
+git add docs/superpowers/specs/2026-07-10-crit-claude-code-design.md docs/superpowers/plans/2026-07-10-crit-claude-code.md
+git diff --staged --check
+git commit -m "docs(crit): Home Manager導入方式へ修正"
+```
+
+Expected: 2文書だけを含む Conventional Commit が作成される。
+
+### Task 2: Crit flake と Claude Code wrapper を Home Manager へ追加する
+
+**Files:**
+
+- Modify: `nix/flake.nix:4-24`
+- Modify: `nix/flake.lock`
+- Modify: `nix/nix-darwin/home-manager/packages/work.nix:1-14`
+- Modify: `nix/nix-darwin/homebrew/work.nix:1-4`
+- Modify: `config/claude/settings.json:75-90`
+
+**Interfaces:**
+
+- Consumes: `inputs.crit.packages.${system}.default`、`inputs.crit/integrations/claude-code`、`pkgs.claude-code`
+- Produces: PATH 上の `crit`、`--plugin-dir` を常に渡す PATH 上の `claude`
+
+- [ ] **Step 1: 変更前の宣言検査が失敗することを確認する**
+
+Run:
+
+```sh
+rg -q 'crit = \{' nix/flake.nix
+rg -q 'writeShellScriptBin "claude"' nix/nix-darwin/home-manager/packages/work.nix
+! rg -q '"crit"' nix/nix-darwin/homebrew/work.nix
+jq -e '.enabledPlugins["crit@crit"] == null' config/claude/settings.json
+```
+
+Expected: 四つとも exit code 1 で失敗する。
+
+- [ ] **Step 2: Crit flake input を追加する**
+
+Apply:
+
+```diff
+     claude-code-overlay = {
+       url = "github:ryoppippi/claude-code-overlay";
+       inputs.nixpkgs.follows = "nixpkgs";
+     };
++    crit = {
++      url = "github:tomasz-tomczyk/crit";
++      inputs.nixpkgs.follows = "nixpkgs";
++    };
+```
+
+- [ ] **Step 3: 仕事用 Home Manager package を置き換える**
+
+Replace `nix/nix-darwin/home-manager/packages/work.nix` with:
+
+```nix
+{
+  inputs,
+  pkgs,
+  ...
+}:
+let
+  system = pkgs.stdenv.hostPlatform.system;
+  claudeCodeWithCrit = pkgs.writeShellScriptBin "claude" ''
+    exec ${pkgs.claude-code}/bin/claude \
+      --plugin-dir ${inputs.crit}/integrations/claude-code \
+      "$@"
+  '';
+in
+[
+  pkgs.awscli2
+  inputs.crit.packages.${system}.default
+  claudeCodeWithCrit
+]
+```
+
+- [ ] **Step 4: Homebrew と Marketplace 前提の設定を削除する**
+
+Apply:
 
 ```diff
  {
    # 仕事用だけで入れたい Homebrew CLI はここに追加する。
--  brews = [ ];
-+  brews = [ "crit" ];
-```
-
-Apply these JSON changes:
-
-```diff
-       {
-         "matcher": ".*",
-         "hooks": [
-           {
-             "type": "command",
-             "command": "guard-and-guide"
-           }
-         ]
--      },
--      {
--        "matcher": "ExitPlanMode",
--        "hooks": [
--          {
--            "type": "command",
--            "command": "PLAN=$(ls -t ~/.claude/plans/*.md 2>/dev/null | head -1); [ -n \"$PLAN\" ] && /opt/homebrew/bin/mo \"$PLAN\" >/dev/null 2>&1 &",
--            "timeout": 15
--          }
--        ]
-       },
-       {
-         "matcher": "Bash",
-         "hooks": [
-           {
-             "type": "command",
-             "command": "$HOME/.claude/hooks/rtk-rewrite.sh"
-           }
-         ]
-       }
--    ],
--    "SessionEnd": [
--      {
--        "hooks": [
--          {
--            "type": "command",
--            "command": "mo --shutdown && echo 'Y' | mo --clear",
--            "async": true
--          }
--        ]
--      }
-     ],
+-  brews = [ "crit" ];
++  brews = [ ];
 ```
 
 ```diff
    "enabledPlugins": {
      "code-review@claude-plugins-official": true,
      "code-simplifier@claude-plugins-official": true,
-+    "crit@crit": true,
+-    "crit@crit": true,
      "feature-dev@claude-plugins-official": true,
 ```
 
-- [ ] **Step 3: 変更した設定を整形する**
+- [ ] **Step 5: Crit input を lock file へ追加する**
 
 Run:
 
 ```sh
-nixfmt nix/nix-darwin/homebrew/work.nix
+cd nix
+nix flake update crit
+```
+
+Expected: `flake.lock` に `crit` node が追加され、既存 input の revision は変わらない。
+
+- [ ] **Step 6: Nix と JSON を整形する**
+
+Run:
+
+```sh
+nixfmt nix/flake.nix nix/nix-darwin/home-manager/packages/work.nix nix/nix-darwin/homebrew/work.nix
 jq empty config/claude/settings.json
 ```
 
-Expected: どちらも出力なしで exit code 0 になる。
+Expected: すべて exit code 0 になる。
 
-- [ ] **Step 4: `code-simplifier` skill で変更差分を確認する**
+- [ ] **Step 7: `code-simplifier` skill で変更差分を確認する**
 
 Review only these files and preserve the approved behavior:
 
 ```text
+nix/flake.nix
+nix/flake.lock
+nix/nix-darwin/home-manager/packages/work.nix
 nix/nix-darwin/homebrew/work.nix
 config/claude/settings.json
 ```
 
-Expected: 追加の抽象化や別ファイルを作らず、この2ファイルの最小差分を維持する。
+Expected: wrapper 以外の抽象化や別ファイルを追加しない。
 
-- [ ] **Step 5: 設定検査が成功することを確認する**
+- [ ] **Step 8: 宣言検査が成功することを確認する**
 
 Run:
 
 ```sh
-nix eval --impure --json --expr '(import ./nix/nix-darwin/homebrew/work.nix).brews' | jq -e 'index("crit") != null'
-jq -e '
-  ([.hooks.PreToolUse[]? | select(.matcher == "ExitPlanMode")] | length == 0)
-  and (.hooks.SessionEnd == null)
-  and (.enabledPlugins["crit@crit"] == true)
-' config/claude/settings.json
+rg -q 'crit = \{' nix/flake.nix
+rg -q 'writeShellScriptBin "claude"' nix/nix-darwin/home-manager/packages/work.nix
+! rg -q '"crit"' nix/nix-darwin/homebrew/work.nix
+jq -e '.enabledPlugins["crit@crit"] == null' config/claude/settings.json
 ```
 
-Expected: どちらも `true` を出力し、exit code 0 になる。
+Expected: 四つとも exit code 0 になる。
 
-- [ ] **Step 6: Nix 構成を検証する**
+- [ ] **Step 9: Crit plugin の manifest と plan hook を検査する**
+
+Run:
+
+```sh
+crit_source=$(nix eval --impure --raw --expr '(builtins.getFlake (toString ./nix)).inputs.crit.outPath')
+jq -e '.name == "crit"' "$crit_source/integrations/claude-code/.claude-plugin/plugin.json"
+jq -e '
+  .hooks.PermissionRequest[0].matcher == "ExitPlanMode"
+  and .hooks.PermissionRequest[0].hooks[0].command == "crit plan-hook"
+' "$crit_source/integrations/claude-code/hooks/hooks.json"
+```
+
+Expected: 二つの `jq` が `true` を出力する。
+
+- [ ] **Step 10: flake 全体を検証する**
 
 Run:
 
@@ -168,94 +235,46 @@ just check
 
 Expected: `nix flake check` が exit code 0 で終了する。
 
-- [ ] **Step 7: 実装差分だけをコミットする**
+- [ ] **Step 11: 実装差分だけをコミットする**
 
 Run:
 
 ```sh
-git add nix/nix-darwin/homebrew/work.nix config/claude/settings.json
+git add nix/flake.nix nix/flake.lock \
+  nix/nix-darwin/home-manager/packages/work.nix \
+  nix/nix-darwin/homebrew/work.nix \
+  config/claude/settings.json
 git diff --staged --check
-git commit -m "feat(claude): Critによる計画レビューを導入"
+git commit -m "fix(claude): CritをHome Managerで導入"
 ```
 
-Expected: 2ファイルだけを含む Conventional Commit が作成される。
+Expected: 5ファイルだけを含む Conventional Commit が作成される。
 
-### Task 2: Crit CLI と Claude Code plugin をユーザー環境へ導入する
+### Task 3: Home Manager 反映後の確認手順を引き渡す
 
-**Files:**
-
-- Modify outside repository: `~/.claude/plugins/known_marketplaces.json`
-- Modify outside repository: `~/.claude/plugins/installed_plugins.json`
-- Create outside repository: `~/.claude/plugins/marketplaces/crit/`
-- Create outside repository: `~/.claude/plugins/cache/crit/crit/`
+**Files:** None
 
 **Interfaces:**
 
-- Consumes: Homebrew formula `crit`、Marketplace repository `tomasz-tomczyk/crit`、有効 plugin key `crit@crit`
-- Produces: `crit` executable、`/crit` skill、`crit-cli` skill、`PermissionRequest: ExitPlanMode` hook
+- Consumes: Home Manager で反映された `crit` と `claude` wrapper
+- Produces: Crit plan review が有効な Claude Code session
 
-- [ ] **Step 1: Crit CLI を現在のユーザー環境へ導入する**
+- [ ] **Step 1: 反映コマンドを案内する**
 
-Run:
-
-```sh
-brew install crit
-crit --version
-```
-
-Expected: Homebrew が Crit をインストールし、`crit --version` がバージョンを表示して exit code 0 になる。
-
-- [ ] **Step 2: 公式 Marketplace と plugin をユーザースコープで導入する**
-
-Run:
+Run by the user:
 
 ```sh
-claude plugin marketplace add tomasz-tomczyk/crit
-claude plugin install crit@crit --scope user
+just switch
 ```
 
-Expected: Marketplace `crit` と plugin `crit@crit` のインストール成功メッセージが表示される。
+Expected: Home Manager generation に Crit CLI と Claude Code wrapper が反映される。
 
-- [ ] **Step 3: plugin が有効であることを確認する**
+- [ ] **Step 2: Plan mode のレビュー確認を案内する**
 
-Run:
-
-```sh
-claude plugin list | rg -A4 'crit@crit'
-```
-
-Expected: `Scope: user` と `Status: ✔ enabled` が表示される。
-
-- [ ] **Step 4: インストールされた plan hook を検査する**
-
-Run:
-
-```sh
-install_path=$(jq -r '.plugins["crit@crit"][] | select(.scope == "user") | .installPath' ~/.claude/plugins/installed_plugins.json)
-jq -e '
-  .hooks.PermissionRequest[0].matcher == "ExitPlanMode"
-  and .hooks.PermissionRequest[0].hooks[0].command == "crit plan-hook"
-' "$install_path/hooks/hooks.json"
-```
-
-Expected: `true` を出力して exit code 0 になる。
-
-- [ ] **Step 5: plugin installer が追跡ファイルへ追加変更を残していないことを確認する**
-
-Run:
-
-```sh
-git status --short
-```
-
-Expected: 既存の未追跡 `nix/local.nix` だけが表示される。
-
-- [ ] **Step 6: Plan mode のレビューを手動確認する**
-
-Run:
+Run by the user after `just switch`:
 
 ```sh
 claude --permission-mode plan "README.md を変更せず、空行を1行追加するだけの計画を作り、ExitPlanMode を要求してください"
 ```
 
-Expected: Crit がブラウザで計画を開き、コメントがある間は Plan mode を継続し、コメントなしで承認すると Plan mode を終了する。
+Expected: Crit がブラウザで計画を開き、コメントなしで承認すると Plan mode を終了する。
