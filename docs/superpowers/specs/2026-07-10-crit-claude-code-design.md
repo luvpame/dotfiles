@@ -32,7 +32,9 @@ Claude Code は `writeShellScriptBin` でラップし、公式 plugin directory 
 
 ### `nix/flake.nix`
 
-`github:tomasz-tomczyk/crit` を input に追加し、`nixpkgs` はルート input に追従させる。
+`git+https://github.com/tomasz-tomczyk/crit.git` を input に追加し、`nixpkgs` はルート input に追従させる。
+
+`git+https` fetcher を使い、GitHub REST API の未認証 rate limit に依存しない。
 
 ### `nix/flake.lock`
 

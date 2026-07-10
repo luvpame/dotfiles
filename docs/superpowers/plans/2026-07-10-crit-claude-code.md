@@ -112,7 +112,7 @@ Apply:
        inputs.nixpkgs.follows = "nixpkgs";
      };
 +    crit = {
-+      url = "github:tomasz-tomczyk/crit";
++      url = "git+https://github.com/tomasz-tomczyk/crit.git";
 +      inputs.nixpkgs.follows = "nixpkgs";
 +    };
 ```
