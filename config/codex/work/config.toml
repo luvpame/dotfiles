@@ -1,7 +1,7 @@
-model_reasoning_effort = "ultra"
+model_reasoning_effort = "medium"
 personality = "friendly"
 forced_login_method = "chatgpt"
-model = "gpt-5.6-sol"
+model = "gpt-5.6-luna"
 web_search = "live"
 suppress_unstable_features_warning = true
 approval_policy = "on-request"
@@ -40,6 +40,7 @@ pet = "codex"
 
 [tui.model_availability_nux]
 "gpt-5.5" = 4
+"gpt-5.6-sol" = 2
 
 [projects."/Users/nasuno.ayumu/dev/github.com/luvpame/dotfiles"]
 trust_level = "trusted"
@@ -77,6 +78,9 @@ trust_level = "trusted"
 [projects."/Users/nasuno.ayumu/dev/github.com/smartcamp/kaitai-shinsho"]
 trust_level = "trusted"
 
+[projects."/Users/nasuno.ayumu/Documents/Codex/2026-07-10/neovim"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
 last_updated = "2026-07-10T01:30:36Z"
 source_type = "local"
@@ -88,8 +92,8 @@ source_type = "local"
 source = "/Users/nasuno.ayumu/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.ponytail]
-last_updated = "2026-07-10T01:27:54Z"
-last_revision = "f12f210eb5a66270eed40b4b1545fc9a6c633ee6"
+last_updated = "2026-07-10T09:06:38Z"
+last_revision = "14a0d79548d4de8fc2de95c1b94bb0de63a739d3"
 source_type = "git"
 source = "https://github.com/DietrichGebert/ponytail.git"
 
