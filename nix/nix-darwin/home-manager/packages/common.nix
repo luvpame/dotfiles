@@ -51,7 +51,6 @@ let
     just-lsp
     tmux
     ghq
-    terminal-notifier
     direnv
     devenv
     nix-direnv
@@ -70,6 +69,7 @@ let
     guardAndGuide
     gogcli
     inputs.herdr.packages.${system}.default
+    (callPackage ../../../pkgs/pique/default.nix { })
     (callPackage ../../../pkgs/site2skill/default.nix { })
     (callPackage ../../../pkgs/tree-sitter-cli/default.nix { })
   ];
