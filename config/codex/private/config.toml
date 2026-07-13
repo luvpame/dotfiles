@@ -4,7 +4,6 @@ personality = "friendly"
 forced_login_method = "chatgpt"
 model = "gpt-5.5"
 web_search = "live"
-notify = ["$HOME/.codex/hooks/notify-terminal-notifier.sh"]
 suppress_unstable_features_warning = true
 plan_mode_reasoning_effort = "high"
 approval_policy = "on-request"
