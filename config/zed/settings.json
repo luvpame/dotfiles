@@ -22,7 +22,8 @@
     },
     "cursor": {
       "default_config_options": {
-        "mode": "ask"
+        "model": "grok-4.5",
+        "mode": "agent"
       },
       "favorite_config_option_values": {
         "model": [
