@@ -1,0 +1,6 @@
+theme = "catppuccin-latte"
+mode = "stack"
+wrap_lines = true
+transparent_background = true
+watch = true
+menu_bar = false

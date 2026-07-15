@@ -21,6 +21,7 @@ in
     yazi.source = oos "${configRoot}/yazi";
     tmux.source = oos "${configRoot}/tmux";
     herdr.source = oos "${configRoot}/herdr";
+    hunk.source = oos "${configRoot}/hunk";
     wezterm.source = oos "${configRoot}/wezterm";
     zed.source = oos "${configRoot}/zed";
     cage.source = oos "${configRoot}/cage";
