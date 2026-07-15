@@ -256,3 +256,7 @@ command = "./Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.
 args = ["mcp"]
 cwd = "."
 enabled = false
+
+[[skills.config]]
+name = "superpowers:using-superpowers"
+enabled = false
