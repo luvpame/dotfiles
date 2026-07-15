@@ -1,16 +1,4 @@
 -- pr.nvim で Neovim から GitHub Pull Request レビューを行います。
-local function delta_command()
-  return {
-    "delta",
-    "--no-gitconfig",
-    "--paging=never",
-    "--syntax-theme",
-    "Catppuccin Latte",
-    "--light",
-    "--line-numbers",
-  }
-end
-
 local function write_temp_diff(lines)
   local diff_file = vim.fn.tempname()
   vim.fn.writefile(lines, diff_file)
@@ -104,15 +92,8 @@ local function patch_file_picker()
           get_command = function(entry)
             local diff_file = write_temp_diff(extract_file_diff(entry.value))
 
-            if vim.fn.executable("delta") == 1 then
-              return {
-                "sh",
-                "-c",
-                ("cat %s | %s"):format(
-                  vim.fn.shellescape(diff_file),
-                  table.concat(vim.tbl_map(vim.fn.shellescape, delta_command()), " ")
-                ),
-              }
+            if vim.fn.executable("hunk") == 1 then
+              return { "sh", "-c", ("hunk pager < %s"):format(vim.fn.shellescape(diff_file)) }
             end
 
             return { "cat", diff_file }

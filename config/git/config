@@ -25,16 +25,7 @@
   autoSetupRemote = true
 [core]
   editor = nvim
-  pager  = delta
-  diff   = delta
-[interactive]
-    diffFilter = delta --color-only
-[delta]
-    syntax-theme = Catppuccin Latte
-    light = true
-    navigate = true  # use n and N to move between diff section
-    side-by-side = false
-    line-numbers = true
+  pager  = hunk pager
 [merge]
     conflictStyle = zdiff3
 [include]

@@ -21,7 +21,6 @@ git:
   #
   #   # 例:
   #   # diff-so-fancy
-  #   # delta --dark --paging=never
   #   # ydiff -p cat -s --wrap --width={{columnWidth}}
   #   pager: ""
   #
@@ -37,7 +36,7 @@ git:
   # 参照: https://github.com/jesseduffield/lazygit/blob/master/docs/Custom_Pagers.md
   # 詳細は上記を参照。
   pagers:
-    - pager: delta --syntax-theme "Catppuccin Latte" --paging=never --side-by-side --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
+    - pager: hunk pager
 
   # true の場合、コミットメッセージ内の絵文字文字列を解釈（例: :rocket: -> 🚀）
   # （本来は 'git' ではなく 'gui' 配下にあるべき設定）

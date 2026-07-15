@@ -30,7 +30,7 @@ let
     "fisher"
     "mas" # Mac App Store CLI
     "im-select"
-    "git-delta"
+    "hunk"
     "ripgrep" # codex formula dependency; keep cleanup from trying to remove it
     "curl" # cage で homebrew 産の curl が必要
     "roots"
