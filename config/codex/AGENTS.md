@@ -1,11 +1,17 @@
-# Agent Guidelines
+## 遵守事項
 
-Always prefer simplicity over pathological correctness. YAGNI, KISS, DRY. No backward-compat shims or fallback paths unless they come free without adding cyclomatic complexity.
+コードを編集した後は、必ず `code-simplifier` スキルを適用してください。
 
-After editing the code, apply the `code-simplifier` skill.
+LLMの起動時には、常に `japanese-tech-writing` スキルを読み込んでください。
 
-At LLM startup, always read the `japanese-tech-writing` skill.
+タスクの開始時、Herdr環境内（`HERDR_ENV=1`）で実行している場合は、`herdr` スキルを使用して現在のタブ名を `{タスクのラベル}`（例：`スペース名`）に変更してください。なお、ワークスペース名の変更は行わないでください。Herdr環境外では何もしないでください。名前を変更する前には必ずHerdr IDを再確認し、古いタブIDを推測して使用しないでください。
 
-At task start, if running inside Herdr (`HERDR_ENV=1`), use the `herdr` skill to rename the current tab to `{task label}` (for example, `space名`). Do not rename workspaces. Do nothing outside Herdr. Re-read Herdr IDs before renaming; never guess stale tab IDs.
+応答は常に「日本語」で行ってください。
 
-Always responsed "日本語".
+Hunk スキルを読み込んで使用してください。スキルのパスを確認するには `hunk skill path` を実行します。
+
+## 思考および実装の原則
+- 作業を開始する前に、依頼の目的と自身の理解に間違いがないか自問し、行き詰まった場合は前提条件を再評価してください。
+- 目の前の修正だけでなく、コードベース全体への影響や一貫性を考慮してください。
+- 一時的なパッチを当てるのではなく根本原因に対処し、メンテナンスのしやすい実装を選択してください。
+- 過剰な正確さよりも、常にシンプルさを優先してください。YAGNI、KISS、DRYの原則を厳守してください。後方互換性のための調整コードやフォールバックパスは、循環的複雑度を上げずに実現できる場合を除き、一切不要です。
