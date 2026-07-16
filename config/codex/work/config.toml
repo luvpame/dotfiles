@@ -91,13 +91,13 @@ source_type = "local"
 source = "/Users/nasuno.ayumu/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-07-10T02:19:36Z"
+last_updated = "2026-07-16T04:20:10Z"
 source_type = "local"
 source = "/Users/nasuno.ayumu/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.ponytail]
-last_updated = "2026-07-10T09:06:38Z"
-last_revision = "14a0d79548d4de8fc2de95c1b94bb0de63a739d3"
+last_updated = "2026-07-16T04:20:32Z"
+last_revision = "16f29800fd2681bdf24f3eb4ccffe38be3baec6b"
 source_type = "git"
 source = "https://github.com/DietrichGebert/ponytail.git"
 
