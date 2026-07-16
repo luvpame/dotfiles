@@ -28,6 +28,8 @@ if status is-interactive
     if command -q mise
         mise activate fish | source
     end
+
+    herdr completion fish | source
 end
 
 # Added by OrbStack: command-line tools and integration
