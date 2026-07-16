@@ -66,7 +66,6 @@ let
     "1password-cli"
     "aerospace"
     "figma"
-    "musaicfm"
     "raycast"
     "stats"
     "scroll-reverser"
@@ -84,7 +83,6 @@ let
     "spotify"
     "azookey"
     "a-bar"
-    "beekeeper-studio"
     "keycastr"
     "cage"
     "chatgpt"
@@ -102,6 +100,7 @@ let
   commonMasApps = {
     "Klack" = 6446206067;
     "Grila" = 6444335028;
+    "RunCat Neo" = 6757801838;
   };
 in
 {

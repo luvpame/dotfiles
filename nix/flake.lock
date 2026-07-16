@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784060554,
-        "narHash": "sha256-/V7XH5UTG3tmm2nYv+JddNww0RUetYzxeHxJFLmGOsk=",
+        "lastModified": 1784143589,
+        "narHash": "sha256-rrSdYGgUR5HkZDUK2PLg4hN5HbLawLkOXd6iQFDni28=",
         "owner": "ryoppippi",
         "repo": "claude-code-overlay",
-        "rev": "9cf34061e52f8eb26b3fc915d16f30b3a37e17ca",
+        "rev": "e502452567ca1473deff97708e3148c9dd42a6c5",
         "type": "github"
       },
       "original": {
@@ -86,11 +86,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784084712,
-        "narHash": "sha256-QiLF7XE7Xy7eBTzmtgjo6pCKECnPtZfHlNd0kZdBy0U=",
+        "lastModified": 1784154865,
+        "narHash": "sha256-1dp1FEUK/ZDmOA23ttt+PTq8PpbU3UVERn+YtxU9o1E=",
         "owner": "kawarimidoll",
         "repo": "guard-and-guide",
-        "rev": "15a94d258f22bfea7926b7f4af0aae040298660a",
+        "rev": "2214ec02638006c8c1d9ce5b18131e9d32af2041",
         "type": "github"
       },
       "original": {
@@ -107,11 +107,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1784079774,
-        "narHash": "sha256-ZBLO/HbZYN5sFjA4cIW1/6CH6NxBIaYgEC+lURQgPBk=",
+        "lastModified": 1784151142,
+        "narHash": "sha256-//8LFjKBVvol3x5zAfErjjjg70Q5evO+kF9gnUu66sw=",
         "owner": "ogulcancelik",
         "repo": "herdr",
-        "rev": "a0678a38b9426b011f66e1b88ff7aaa9bf877104",
+        "rev": "a22454f27ce096585e19d1787dba43f56d1505cf",
         "type": "github"
       },
       "original": {
@@ -127,11 +127,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783963347,
-        "narHash": "sha256-r376E2XpakiXwModDHIxlvB6qLq4iFVEq730vxOO4JY=",
+        "lastModified": 1784129366,
+        "narHash": "sha256-N5JiyICSeQF14x+OQebNyPpYowOT9Rs1iKyeCylSzOA=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "a45a7c451455a51ae740ec3bce4024b312809c29",
+        "rev": "165228b0efefc3e635e5174020c40ea64271dc25",
         "type": "github"
       },
       "original": {
@@ -147,11 +147,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783395956,
-        "narHash": "sha256-AAbexQvDoK+6GFJdhY6kqjA+6ECKRkidgWxkn4gMwAA=",
+        "lastModified": 1784123936,
+        "narHash": "sha256-IOWwQMJhUxcojm0MRvuKs1fKLH727u4+hHeEOPhdUyA=",
         "owner": "LnL7",
         "repo": "nix-darwin",
-        "rev": "d5bd9cd77aea4c0a8f49e7fd85545671a208ed15",
+        "rev": "a4cf1d10853b0d2be19b9eca35d749e201d70b55",
         "type": "github"
       },
       "original": {
