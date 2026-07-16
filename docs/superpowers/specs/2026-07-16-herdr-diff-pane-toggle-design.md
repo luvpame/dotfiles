@@ -13,7 +13,7 @@
 ## 実装
 
 既存の `[[keys.command]]` にあるシェルコマンドだけを変更する。
-`herdr pane list` の JSON を `jq` で絞り込み、`HERDR_ACTIVE_TAB_ID` と一致する pane のうち、ラベルまたは端末タイトルが条件に合う ID を取得する。
+`herdr pane list` の JSON を `jq` で絞り込み、`HERDR_ACTIVE_PANE_ID` から特定した現在のタブにある pane のうち、ラベルまたは端末タイトルが条件に合う ID を取得する。
 
 対象 ID がある場合は `herdr pane close` を実行し、作成処理には進まない。
 対象 ID がない場合の作成処理は現状を維持する。
