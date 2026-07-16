@@ -21,7 +21,7 @@ navigate_pane_right = "l"
 [[keys.command]]
 key = "prefix+d"
 type = "shell"
-command = "pane_ids=$(herdr pane list | jq -r --arg pane_id \"$HERDR_ACTIVE_PANE_ID\" '.result.panes as $panes | ($panes[] | select(.pane_id == $pane_id).tab_id) as $tab_id | $panes[] | select(.tab_id == $tab_id and (.label == \"diff view\" or (.terminal_title // \"\" | contains(\"hunk diff\")))) | .pane_id'); if [ -n \"$pane_ids\" ]; then for pane_id in $pane_ids; do herdr pane close \"$pane_id\"; done; else pane_id=$(herdr pane split \"$HERDR_ACTIVE_PANE_ID\" --direction right --focus --ratio 0.66 | jq -r '.result.pane.pane_id') && herdr pane rename \"$pane_id\" \"diff view\" && herdr pane run \"$pane_id\" 'hunk diff'; fi"
+command = "pane_ids=$(herdr pane list | jq -r --arg pane_id \"$HERDR_ACTIVE_PANE_ID\" '.result.panes as $panes | ($panes[] | select(.pane_id == $pane_id).tab_id) as $tab_id | $panes[] | select(.tab_id == $tab_id and (.label == \"diff view\" or (.terminal_title // \"\" | contains(\"hunk diff\")))) | .pane_id'); if [ -n \"$pane_ids\" ]; then for pane_id in $pane_ids; do herdr pane close \"$pane_id\"; done; else pane_id=$(herdr pane split \"$HERDR_ACTIVE_PANE_ID\" --direction right --no-focus --ratio 0.66 | jq -r '.result.pane.pane_id') && herdr pane rename \"$pane_id\" \"diff view\" && herdr pane run \"$pane_id\" 'hunk diff'; fi"
 
 [[keys.command]]
 key = "prefix+g"
