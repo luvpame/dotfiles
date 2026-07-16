@@ -19,14 +19,23 @@ navigate_pane_up = "k"
 navigate_pane_right = "l"
 
 [[keys.command]]
+key = "prefix+d"
+type = "shell"
+command = "pane_id=$(herdr pane split \"$HERDR_ACTIVE_PANE_ID\" --direction right --focus --ratio 0.66 | jq -r '.result.pane.pane_id') && herdr pane rename \"$pane_id\" \"diff view\" && herdr pane run \"$pane_id\" 'hunk diff'"
+
+[[keys.command]]
 key = "prefix+g"
 type = "pane"
+description = "open lazygit"
 command = "lazygit"
 
 [[keys.command]]
 key = "prefix+t"
-type = "pane"
+type = "popup"
+description = "open floating terminal"
 command = "fish"
+width = "80%"
+height = "80%"
 
 [theme]
 name = "catppuccin-latte"
