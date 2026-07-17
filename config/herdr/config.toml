@@ -57,18 +57,18 @@ claude = [
   ["state_icon", "workspace", "tab"],
   ["agent"],
   [
-    { token = "$context", fg = "#89b4fa" },
-    { token = "$five_hour", fg = "#f9e2af" },
-    { token = "$seven_day", fg = "#a6e3a1" },
+    { token = "$context", fg = "#1e66f5" },
+    { token = "$five_hour", fg = "#fe640b" },
+    { token = "$seven_day", fg = "#40a02b" },
   ],
 ]
 codex = [
   ["state_icon", "workspace", "tab"],
   ["agent"],
   [
-    { token = "$context", fg = "#89b4fa" },
-    { token = "$five_hour", fg = "#f9e2af" },
-    { token = "$seven_day", fg = "#a6e3a1" },
+    { token = "$context", fg = "#1e66f5" },
+    { token = "$five_hour", fg = "#fe640b" },
+    { token = "$seven_day", fg = "#40a02b" },
   ],
 ]
 
