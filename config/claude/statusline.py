@@ -111,6 +111,30 @@ def git_info():
     return repo, branch
 
 
+def report_herdr_usage(tokens):
+    if os.environ.get("HERDR_ENV") != "1" or not os.environ.get("HERDR_PANE_ID"):
+        return
+    args = [
+        "herdr",
+        "pane",
+        "report-metadata",
+        os.environ["HERDR_PANE_ID"],
+        "--source",
+        "claude-statusline",
+    ]
+    for name, value in tokens.items():
+        args.extend(("--token", f"{name}={value}"))
+    try:
+        subprocess.run(
+            args,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+    except OSError:
+        pass
+
+
 model = data.get("model", {}).get("display_name", "Claude")
 
 lines = []
@@ -128,18 +152,21 @@ if repo:
 lines.append(" ".join(parts))
 
 metrics = [
-    ("ctx: ", ("context_window", "used_percentage")),
-    ("5h : ", ("rate_limits", "five_hour", "used_percentage")),
-    ("7d : ", ("rate_limits", "seven_day", "used_percentage")),
+    ("context", "ctx", ("context_window", "used_percentage")),
+    ("five_hour", "5h", ("rate_limits", "five_hour", "used_percentage")),
+    ("seven_day", "7d", ("rate_limits", "seven_day", "used_percentage")),
 ]
-for label, keys in metrics:
+tokens = {}
+for name, label, keys in metrics:
     val = data
     for k in keys:
         if not isinstance(val, dict):
             val = None
             break
         val = val.get(k, {})
+    tokens[name] = f"{label} {round(val)}%" if isinstance(val, (int, float)) else ""
     if isinstance(val, (int, float)):
-        lines.append(fmt(label, val))
+        lines.append(fmt(f"{label}: ", val))
 
+report_herdr_usage(tokens)
 print("\n".join(lines), end="")

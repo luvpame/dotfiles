@@ -51,6 +51,14 @@ sidebar_max_width = 72
 confirm_close = false
 hide_tab_bar_when_single_tab = true
 agent_panel_sort = "priority"
+
+[ui.sidebar.agents.rows_by_agent]
+claude = [
+  ["state_icon", "workspace", "tab"],
+  ["agent"],
+  ["$context", "$five_hour", "$seven_day"],
+]
+
 [experimental]
 pane_history = true
 switch_ascii_input_source_in_prefix = true
