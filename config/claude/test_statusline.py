@@ -54,8 +54,9 @@ class StatuslineTest(unittest.TestCase):
         self.assertEqual(
             report,
             "pane report-metadata w1:p1 --source claude-statusline "
-            "--token context=ctx 42% --token five_hour=5h 18% "
-            "--token seven_day=7d 31%",
+            "--token context=ctx: ⣿⣿⣿⣄     (42%) "
+            "--token five_hour=5h: ⣿⣤       (18%) "
+            "--token seven_day=7d: ⣿⣿⣤      (31%)",
         )
 
     def test_clears_missing_usage(self):

@@ -164,9 +164,11 @@ for name, label, keys in metrics:
             val = None
             break
         val = val.get(k, {})
-    tokens[name] = f"{label} {round(val)}%" if isinstance(val, (int, float)) else ""
     if isinstance(val, (int, float)):
+        tokens[name] = f"{label}: {braille_bar(val)} ({round(val)}%)"
         lines.append(fmt(f"{label}: ", val))
+    else:
+        tokens[name] = ""
 
 report_herdr_usage(tokens)
 print("\n".join(lines), end="")
