@@ -53,11 +53,10 @@ let
     "Warashi/tap" # cage
     "productdevbook/tap" # portkiller
   ];
-  trustedTaps = commonTaps ++ profileHomebrew.taps;
-  trustTapCommands = lib.concatMapStringsSep "\n  " (
-    tap:
-    "sudo -Hu ${lib.escapeShellArg local.userName} ${brewBin} trust --tap --quiet ${lib.escapeShellArg tap}"
-  ) trustedTaps;
+  trustedTaps = map (name: {
+    inherit name;
+    trusted = true;
+  }) (commonTaps ++ profileHomebrew.taps);
 
   commonCasks = [
     ### GUI Applications
@@ -75,7 +74,6 @@ let
     "zed"
     "deskpad"
     "logi-options+"
-    "notion"
     "ankerwork"
     "codex-app"
     "codex"
@@ -90,7 +88,6 @@ let
     "nani"
     "wallspace"
     "macshot"
-    "dockdoor"
 
     ### Fonts
     "font-hackgen-nerd"
@@ -114,7 +111,7 @@ in
       extraFlags = [ "--force-cleanup" ];
     };
     brews = commonBrews ++ profileHomebrew.brews;
-    taps = commonTaps ++ profileHomebrew.taps;
+    taps = trustedTaps;
     casks = commonCasks ++ profileHomebrew.casks;
     masApps = commonMasApps // profileHomebrew.masApps;
   };
@@ -122,8 +119,6 @@ in
   # `mo` と `mole` は同名バイナリを含むため、brew 管理の link を外して衝突を避ける。
   system.activationScripts.preActivation.text = ''
     if [ -x ${brewBin} ]; then
-      ${trustTapCommands}
-
       ${brewBin} unlink mo >/dev/null 2>&1 || true
       ${brewBin} unlink mole >/dev/null 2>&1 || true
     fi
