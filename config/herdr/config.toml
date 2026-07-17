@@ -56,7 +56,11 @@ agent_panel_sort = "priority"
 claude = [
   ["state_icon", "workspace", "tab"],
   ["agent"],
-  ["$context", "$five_hour", "$seven_day"],
+  [
+    { token = "$context", fg = "#89b4fa" },
+    { token = "$five_hour", fg = "#f9e2af" },
+    { token = "$seven_day", fg = "#a6e3a1" },
+  ],
 ]
 
 [experimental]
