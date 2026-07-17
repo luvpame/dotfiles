@@ -18,6 +18,22 @@
             "command": "bash \"$HOME/.codex/herdr-agent-state.sh\" session",
             "timeout": 10,
             "type": "command"
+          },
+          {
+            "command": "\"$HOME/.codex/hooks/herdr-usage.py\"",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.codex/hooks/herdr-usage.py\"",
+            "timeout": 5,
+            "type": "command"
           }
         ]
       }

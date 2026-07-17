@@ -62,6 +62,15 @@ claude = [
     { token = "$seven_day", fg = "#a6e3a1" },
   ],
 ]
+codex = [
+  ["state_icon", "workspace", "tab"],
+  ["agent"],
+  [
+    { token = "$context", fg = "#89b4fa" },
+    { token = "$five_hour", fg = "#f9e2af" },
+    { token = "$seven_day", fg = "#a6e3a1" },
+  ],
+]
 
 [experimental]
 pane_history = true
