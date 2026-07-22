@@ -58,8 +58,8 @@ claude = [
   ["agent"],
   [
     { token = "$context", fg = "#1e66f5" },
-    { token = "$five_hour", fg = "#fe640b" },
-    { token = "$seven_day", fg = "#40a02b" },
+    { token = "$model", fg = "#8839ef" },
+    { token = "$effort", fg = "#fe640b" },
   ],
 ]
 codex = [
@@ -67,8 +67,9 @@ codex = [
   ["agent"],
   [
     { token = "$context", fg = "#1e66f5" },
-    { token = "$five_hour", fg = "#fe640b" },
-    { token = "$seven_day", fg = "#40a02b" },
+    { token = "$model", fg = "#8839ef" },
+    { token = "$effort", fg = "#fe640b" },
+    { token = "$fast_mode", fg = "#df8e1d" },
   ],
 ]
 

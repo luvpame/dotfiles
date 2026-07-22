@@ -28,7 +28,7 @@ def format_usage(label, percent):
     return f"{label}: {braille_bar(percent)} ({round(percent)}%)"
 
 
-def latest_usage(transcript_path):
+def latest_metadata(transcript_path):
     # ponytail: rollout JSONL is Codex's only per-session usage source; replace
     # this parser when lifecycle hooks expose usage directly.
     # ponytail: scan 200 lines; read backwards if token_count moves away from turn end.
@@ -38,15 +38,22 @@ def latest_usage(transcript_path):
         text=True,
         check=False,
     )
+    usage = context = settings = None
     for line in reversed(result.stdout.splitlines()):
         try:
             event = json.loads(line)
         except json.JSONDecodeError:
             continue
         payload = event.get("payload", {})
-        if payload.get("type") == "token_count":
-            return payload
-    return None
+        if usage is None and payload.get("type") == "token_count":
+            usage = payload
+        elif context is None and event.get("type") == "turn_context":
+            context = payload
+        elif settings is None and payload.get("type") == "thread_settings_applied":
+            settings = payload.get("thread_settings", {})
+        if usage is not None and context is not None and settings is not None:
+            break
+    return usage, context or {}, settings or {}
 
 
 def main():
@@ -58,7 +65,7 @@ def main():
     transcript_path = hook.get("transcript_path")
     if os.environ.get("HERDR_ENV") != "1" or not pane_id or not transcript_path:
         return
-    usage = latest_usage(transcript_path)
+    usage, context_data, settings = latest_metadata(transcript_path)
     if not usage:
         return
 
@@ -66,16 +73,14 @@ def main():
     total = (info.get("last_token_usage") or {}).get("total_tokens")
     context_window = info.get("model_context_window")
     context = total / context_window * 100 if total is not None and context_window else None
-    limits = {
-        limit.get("window_minutes"): limit.get("used_percent")
-        for limit in (usage.get("rate_limits") or {}).values()
-        if isinstance(limit, dict)
-    }
+    model = context_data.get("model")
+    effort = context_data.get("effort")
     values = {
         "context": format_usage("ctx", context) if context is not None else "",
-        "five_hour": format_usage("5h", limits[300]) if limits.get(300) is not None else "",
-        "seven_day": format_usage("7d", limits[10080])
-        if limits.get(10080) is not None
+        "model": f"󰚩 {model}" if model else "",
+        "effort": f"󰓅 {effort}" if effort else "",
+        "fast_mode": "󱐋 fast"
+        if settings.get("service_tier") in {"fast", "priority"}
         else "",
     }
     args = [

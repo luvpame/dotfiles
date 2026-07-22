@@ -136,6 +136,7 @@ def report_herdr_usage(tokens):
 
 
 model = data.get("model", {}).get("display_name", "Claude")
+effort = data.get("effort", {}).get("level")
 
 lines = []
 
@@ -170,5 +171,11 @@ for name, label, keys in metrics:
     else:
         tokens[name] = ""
 
-report_herdr_usage(tokens)
+report_herdr_usage(
+    {
+        "context": tokens["context"],
+        "model": f"󰚩 {model}" if model else "",
+        "effort": f"󰓅 {effort}" if effort else "",
+    }
+)
 print("\n".join(lines), end="")

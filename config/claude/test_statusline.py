@@ -42,6 +42,8 @@ class StatuslineTest(unittest.TestCase):
     def test_reports_claude_usage_to_herdr(self):
         output, report = self.run_statusline(
             {
+                "model": {"display_name": "Opus 4.7"},
+                "effort": {"level": "xhigh"},
                 "context_window": {"used_percentage": 42},
                 "rate_limits": {
                     "five_hour": {"used_percentage": 18},
@@ -55,8 +57,7 @@ class StatuslineTest(unittest.TestCase):
             report,
             "pane report-metadata w1:p1 --source claude-statusline "
             "--token context=ctx: ⣿⣿⣿⣄     (42%) "
-            "--token five_hour=5h: ⣿⣤       (18%) "
-            "--token seven_day=7d: ⣿⣿⣤      (31%)",
+            "--token model=󰚩 Opus 4.7 --token effort=󰓅 xhigh",
         )
 
     def test_clears_missing_usage(self):
@@ -65,7 +66,7 @@ class StatuslineTest(unittest.TestCase):
         self.assertEqual(
             report,
             "pane report-metadata w1:p1 --source claude-statusline "
-            "--token context= --token five_hour= --token seven_day=",
+            "--token context= --token model=󰚩 Claude --token effort=",
         )
 
     def test_does_not_report_outside_herdr(self):
