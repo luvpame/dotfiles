@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784251869,
-        "narHash": "sha256-AaFoAQmlHVOS7HGOaaDd6rYer2oURd+Wrj65Hs8JpZo=",
+        "lastModified": 1784665457,
+        "narHash": "sha256-ST6ToH2MQR9Pdm5VoGw5MBJd7VcP56atkvnb5RaDxbw=",
         "owner": "ryoppippi",
         "repo": "claude-code-overlay",
-        "rev": "e169cb5b6e0937d585bce68751becd86e5817d9e",
+        "rev": "995fa854b109b9e82f01f9c4abd78b2b2dc201ae",
         "type": "github"
       },
       "original": {
@@ -27,11 +27,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783974944,
-        "narHash": "sha256-pYiJyUw3nj12UAtgwp19ZxLXOCHxV+Lt1JJdPX2v83I=",
+        "lastModified": 1784554603,
+        "narHash": "sha256-OgAyJ3fEEbV7VZWRtisviw4CE1z1KZsFyFdzdqSC5Do=",
         "ref": "refs/heads/main",
-        "rev": "ef5bdae4c3f95e8d177c7f7ef9a70f662bcb5f46",
-        "revCount": 732,
+        "rev": "162981c16ed2df6c458c2a551ce8ba591b101316",
+        "revCount": 748,
         "type": "git",
         "url": "https://github.com/tomasz-tomczyk/crit.git"
       },
@@ -65,11 +65,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783008725,
-        "narHash": "sha256-jGiy6+sxjNWXSjp25uoJuNfyH9zBK1PEDY0lVoL4ibQ=",
+        "lastModified": 1784288435,
+        "narHash": "sha256-ReRHaLgr/uVqdD8afFSn+myXIfpHeOhP0yYe0TJqAA8=",
         "owner": "cachix",
         "repo": "git-hooks.nix",
-        "rev": "bca82caa46d5ec0f5d422c61fb1e30bc51313cbe",
+        "rev": "43b3c1ab9d40fb1dbb008f451988a91e375825e9",
         "type": "github"
       },
       "original": {
@@ -86,11 +86,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784163969,
-        "narHash": "sha256-XrCSBZ4KWjLdS9bNZfsLgfeW/JrffClstRseDHGUoFI=",
+        "lastModified": 1784679027,
+        "narHash": "sha256-E6YHYy8b0NCUCv2IA65ZmaMU1DOVeKRkZ6LNDYNe48c=",
         "owner": "kawarimidoll",
         "repo": "guard-and-guide",
-        "rev": "5ce2e78edf6566d61ad2e8808bde9206cc568dd4",
+        "rev": "7b074fecd387d5a03d2f2fc0661b8dc390b3b489",
         "type": "github"
       },
       "original": {
@@ -107,11 +107,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1784247993,
-        "narHash": "sha256-MkJn9YvXpwNKwSgfAU15fuNXFrzYzyFEEX0m3woOe5E=",
+        "lastModified": 1784679133,
+        "narHash": "sha256-4ACGsJZT+mDMLiwQqpg8/v8Dvqeycerg3+kyhSgVqaQ=",
         "owner": "ogulcancelik",
         "repo": "herdr",
-        "rev": "8d2af4e046c2a95dfc54aafd6f88da12389d76e8",
+        "rev": "08640bb3ddc0a9c299e855d6a459d2f82970cf86",
         "type": "github"
       },
       "original": {
@@ -127,11 +127,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784129366,
-        "narHash": "sha256-N5JiyICSeQF14x+OQebNyPpYowOT9Rs1iKyeCylSzOA=",
+        "lastModified": 1784588016,
+        "narHash": "sha256-ouZe80aWEhMLVMkqICFDN+JUw+0FJtCr/bh+hHtRtMg=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "165228b0efefc3e635e5174020c40ea64271dc25",
+        "rev": "deeb6b7eb7e0c44ae1819c051ce175bd92a85100",
         "type": "github"
       },
       "original": {
@@ -147,11 +147,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784123936,
-        "narHash": "sha256-IOWwQMJhUxcojm0MRvuKs1fKLH727u4+hHeEOPhdUyA=",
+        "lastModified": 1784500460,
+        "narHash": "sha256-UvORnAxTRHax7RG74W8Z2t4GvIkX6AjJ5kk0QlwZomo=",
         "owner": "LnL7",
         "repo": "nix-darwin",
-        "rev": "a4cf1d10853b0d2be19b9eca35d749e201d70b55",
+        "rev": "57a3171f94705599a2499248ca5758d5eb47c0e0",
         "type": "github"
       },
       "original": {
@@ -162,11 +162,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1784120854,
-        "narHash": "sha256-KesHgItiZPgGX740axSiQLcIQ8D24MDqNpkKYWIek8k=",
+        "lastModified": 1784497964,
+        "narHash": "sha256-vlHUuqAcbcH2RKmHbPiuQzbv1pnzzavXnI62RD0bqCU=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "753cc8a3a87467296ddd1fa93f0cc3e81120ee46",
+        "rev": "241313f4e8e508cb9b13278c2b0fa25b9ca27163",
         "type": "github"
       },
       "original": {
