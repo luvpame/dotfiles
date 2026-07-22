@@ -12,7 +12,6 @@ if status is-interactive
     abbr -a v nvim
     abbr -a cdg cd-gitroot
     abbr -a cat bat
-    abbr -a wt 'git gtr'
     abbr -a co codex
     abbr -a lg lazygit
     abbr -a tm tmux

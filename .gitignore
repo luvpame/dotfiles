@@ -16,8 +16,10 @@ build/
 .claude/
 config/herdr/*.log
 config/herdr/*.sock
+config/herdr/release-notes.json
 config/herdr/session*.json
 
+# Fisher 管理ファイルを無視し、自作ファイルだけ追跡する
 config/fish/completions/
 config/fish/conf.d/*
 !config/fish/conf.d/direnv.fish
@@ -30,5 +32,6 @@ config/fish/functions/*
 !config/fish/functions/ghq_cd_fzf.fish
 !config/fish/functions/tmux.fish
 !config/fish/functions/tre.fish
+!config/fish/functions/wt.fish
 
 config/tmux/plugins/

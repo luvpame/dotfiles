@@ -24,6 +24,14 @@ if status is-interactive
         source ~/.config/fish/completions/gtr.fish
     end
 
+    set -l gtr_cache_root "$HOME/.cache"
+    if test -n "$XDG_CACHE_HOME"
+        set gtr_cache_root "$XDG_CACHE_HOME"
+    end
+    set -l gtr_init "$gtr_cache_root/gtr/init-gtr.fish"
+    test -f "$gtr_init"; or git gtr init fish >/dev/null 2>&1
+    source "$gtr_init" 2>/dev/null
+
     # Configurations for mise
     if command -q mise
         mise activate fish | source
