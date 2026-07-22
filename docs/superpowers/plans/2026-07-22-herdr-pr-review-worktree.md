@@ -4,7 +4,7 @@
 
 **Goal:** 現在のリポジトリで reviewer に指定された PR を選び、レビュー専用 worktree の新しい Herdr workspace 全域に Hunk の PR 差分を表示する。
 
-**Architecture:** レビュー専用 Fish 関数 `review-pr` が `gh`、`fzf`、`git gtr`、Herdr CLI を順に制御する。Herdr の `prefix+shift+g` は popup でこの関数を呼び、新しい workspace の root pane に Hunk を起動する。
+**Architecture:** レビュー専用 Fish 関数 `review-pr` が `gh`、`fzf`、`git gtr`、Herdr CLI を順に制御する。Herdr の `prefix+shift+g` は popup でこの関数を呼び、新しい workspace の root pane に Hunk を起動してから、その workspace にフォーカスする。
 
 **Tech Stack:** Fish、GitHub CLI、fzf、git-gtr、Herdr CLI、jq、Hunk、TOML
 
@@ -16,6 +16,7 @@
 - 同名の branch または worktree は自動削除や再利用をしない。
 - Herdr workspace と tab は改名しない。
 - Hunk は split pane を作らず、新しい workspace の root pane 全域で起動する。
+- 新しい workspace へのフォーカスは Hunk の起動に成功した後だけ実行する。
 - 新しい依存関係は追加しない。
 
 ---
@@ -278,4 +279,129 @@ Expected: すべて exit 0。
 ```bash
 git add config/herdr/config.toml
 git commit -m "feat(herdr): PRレビューpopupを追加"
+```
+
+### Task 3: Hunk workspace へのフォーカス
+
+**Files:**
+- Modify: `config/fish/functions/review-pr.fish`
+- Modify: `config/fish/test-review-pr.fish`
+
+**Interfaces:**
+- Consumes: `herdr workspace create` が返す `result.workspace.workspace_id` と `result.root_pane.pane_id`
+- Produces: Hunk 起動成功後の `herdr workspace focus <workspace_id>`
+
+- [ ] **Step 1: workspace focus を要求する失敗テストを書く**
+
+`mock_pane_run_status` を初期化し、`herdr` と `jq` の mock を次へ変更する。
+
+```fish
+set --global mock_pane_run_status 0
+
+function herdr
+    set --global --append herdr_calls (string join \t -- $argv)
+    if test "$argv[1] $argv[2]" = 'workspace create'
+        printf '%s\n' '{"result":{"workspace":{"workspace_id":"review-workspace"},"root_pane":{"pane_id":"root-pane"}}}'
+    else if test "$argv[1] $argv[2]" = 'pane run'
+        return $mock_pane_run_status
+    end
+end
+
+function jq
+    if string match --quiet '*.workspace.workspace_id' -- "$argv[-1]"
+        printf 'review-workspace\n'
+    else
+        printf 'root-pane\n'
+    end
+end
+```
+
+成功ケースの Herdr assertion の直後へ、起動と focus の順序確認を追加する。
+
+```fish
+set -l expected_run (string join \t -- pane run root-pane 'hunk diff origin/main...HEAD')
+set -l expected_focus (string join \t -- workspace focus review-workspace)
+if test "$herdr_calls[-2]" != "$expected_run"; or test "$herdr_calls[-1]" != "$expected_focus"
+    echo 'Hunk did not run before workspace focus.' >&2
+    exit 1
+end
+```
+
+続けて、Hunk 起動失敗時に focus しないことを確認する。
+
+```fish
+set --global mock_pane_run_status 1
+set --global --erase git_calls
+set --global --erase herdr_calls
+review-pr
+test $status -eq 1
+or begin
+    echo 'Hunk failure was not propagated.' >&2
+    exit 1
+end
+
+if contains -- (string join \t -- workspace focus review-workspace) $herdr_calls
+    echo 'workspace was focused after Hunk failure.' >&2
+    exit 1
+end
+
+set --global mock_pane_run_status 0
+```
+
+- [ ] **Step 2: テストが workspace focus 未実装で失敗することを確認する**
+
+Run:
+
+```bash
+fish config/fish/test-review-pr.fish
+```
+
+Expected: `Hunk did not run before workspace focus.` で FAIL。
+
+- [ ] **Step 3: Hunk 起動後に workspace を focus する**
+
+`workspace` JSON から workspace ID を取得し、Hunk 起動成功後に focus する。
+
+```fish
+set -l workspace_id (printf '%s\n' "$workspace" | jq --exit-status --raw-output '.result.workspace.workspace_id')
+or return
+
+set -l root_pane (printf '%s\n' "$workspace" | jq --exit-status --raw-output '.result.root_pane.pane_id')
+or return
+
+set -l diff_ref (string escape -- "origin/$base_branch...HEAD")
+herdr pane run "$root_pane" "hunk diff $diff_ref"
+or return
+
+herdr workspace focus "$workspace_id"
+```
+
+- [ ] **Step 4: Fish テストが通ることを確認する**
+
+Run:
+
+```bash
+fish config/fish/test-review-pr.fish
+```
+
+Expected: exit 0、標準エラーには「no review-requested pull requests.」だけが表示される。
+
+- [ ] **Step 5: `code-simplifier` と全体検証を実行する**
+
+Run:
+
+```bash
+fish config/fish/test-review-pr.fish
+HERDR_CONFIG_PATH="$PWD/config/herdr/config.toml" herdr config check
+git diff --check
+just check
+```
+
+Expected: すべて exit 0。
+
+- [ ] **Step 6: Task 3 をコミットする**
+
+```bash
+git add config/fish/functions/review-pr.fish config/fish/test-review-pr.fish
+git commit -m "fix(herdr): PRレビューworkspaceへfocusする"
 ```
