@@ -29,8 +29,7 @@ function review-pr --description 'Open a review-requested PR in a Herdr worktree
         --layout=reverse \
         --border \
         --prompt='Review PR> ')
-    set -l picker_status $status
-    test $picker_status -eq 0; or return 0
+    or return 0
 
     set -l fields (string split \t -- "$selection")
     if test (count $fields) -lt 2; or not string match --quiet --regex '^[1-9][0-9]*$' -- "$fields[1]"; or test -z "$fields[2]"
