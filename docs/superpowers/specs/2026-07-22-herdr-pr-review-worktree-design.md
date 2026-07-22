@@ -28,19 +28,21 @@ PR 番号、base branch、タイトルを JSON から TSV へ変換し、番号�
 ## Herdr workspace と Hunk
 
 `git gtr go` が返した worktree のパスを `herdr workspace create --cwd` に渡す。
-Herdr が返す JSON から新しい workspace の root pane ID を取得する。
+Herdr が返す JSON から新しい workspace ID と root pane ID を取得する。
 workspace や tab の名前は変更せず、Herdr の既定名を使う。
 root pane に `hunk diff origin/<base branch>...HEAD` を送信し、PR の差分を pane 全域に表示する。
+Hunk の起動に成功した後、`herdr workspace focus` で新しい workspace にフォーカスする。
 追加の split pane は作成しない。
 
 ## エラー処理
 
 `gh`、`git fetch`、`git gtr`、`herdr workspace create` のいずれかが失敗した場合は、その時点で後続処理を止める。
 popup は失敗内容を確認できる状態を保ち、利用者の入力後に閉じる。
-Hunk の起動に失敗した場合は、作成済みの workspace と worktree を削除しない。
+Hunk の起動に失敗した場合は新しい workspace にフォーカスせず、作成済みの workspace と worktree も削除しない。
 
 ## 確認
 
 Fish のテストでは外部コマンドを置き換え、選択した PR の番号と base branch が fetch、`git gtr`、Herdr workspace、Hunk の各引数へ渡ることを確認する。
+Hunk の起動後に新しい workspace ID を指定した focus が実行されることも確認する。
 対象 PR がない場合と `fzf` をキャンセルした場合に、変更を伴うコマンドが実行されないことも確認する。
 設定は `herdr config check` で検証し、リポジトリ全体は `just check` で確認する。
