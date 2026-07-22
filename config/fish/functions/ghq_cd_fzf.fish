@@ -1,9 +1,20 @@
-function ghq_cd_fzf --description 'Search ghq repositories with fzf and cd to the selected repository'
-    for cmd in ghq fzf roots
+function ghq_cd_fzf --description 'Search ghq repositories with fzf'
+    set -l commands ghq fzf roots
+    if test "$argv[1]" = --workspace
+        set --append commands herdr jq
+    end
+
+    for cmd in $commands
         if not type -q $cmd
             echo "ghq_cd_fzf: $cmd command is not installed." >&2
             return 127
         end
+    end
+
+    set -l pane_list
+    if test "$argv[1]" = --workspace
+        set pane_list (herdr pane list)
+        or return
     end
 
     set -l preview_cmd "
@@ -45,7 +56,14 @@ end
 "
 
     set -l selected_path (
-        ghq list --full-path | roots | _fzf_wrapper \
+        begin
+            ghq list --full-path | roots
+            if test "$argv[1]" = --workspace
+                # ponytail: Herdr exposes pane cwd only; persist workspace paths if the first pane stops being representative.
+                printf '%s\n' "$pane_list" | jq --raw-output \
+                    '.result.panes | unique_by(.workspace_id)[] | .cwd'
+            end
+        end | sort --unique | _fzf_wrapper \
             --ansi \
             --height 80% \
             --layout=reverse \
@@ -57,5 +75,18 @@ end
         return
     end
 
-    cd "$selected_path"
+    if test "$argv[1]" != --workspace
+        cd "$selected_path"
+        return
+    end
+
+    set -l workspace_id (printf '%s\n' "$pane_list" | jq --raw-output --arg cwd "$selected_path" \
+        'first(.result.panes[] | select(.cwd == $cwd) | .workspace_id) // empty')
+    or return
+
+    if test -n "$workspace_id"
+        herdr workspace focus "$workspace_id" >/dev/null
+    else
+        herdr workspace create --cwd "$selected_path" --focus >/dev/null
+    end
 end
