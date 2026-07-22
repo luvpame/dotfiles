@@ -23,6 +23,7 @@
 ### Task 1: レビュー専用 Fish 関数
 
 **Files:**
+- Modify: `.gitignore`
 - Create: `config/fish/functions/review-pr.fish`
 - Create: `config/fish/test-review-pr.fish`
 
@@ -40,7 +41,9 @@ set --global git_calls
 set --global herdr_calls
 
 function gh
-    printf '%s\n' $mock_prs
+    if set --query mock_prs[1]
+        printf '%s\n' $mock_prs
+    end
 end
 
 function fzf
@@ -93,24 +96,24 @@ source (path dirname (status filename))/functions/review-pr.fish
 review-pr
 or exit 1
 
-assert_contains (string join \t fetch origin '+refs/heads/main:refs/remotes/origin/main' 'refs/pull/42/head:refs/heads/review-pr-42') $git_calls
-assert_contains (string join \t gtr new review-pr-42 --no-fetch) $git_calls
-assert_contains (string join \t gtr go review-pr-42) $git_calls
-assert_contains (string join \t workspace create --cwd /repo/.worktrees/review-pr-42) $herdr_calls
-assert_contains (string join \t pane run root-pane 'hunk diff origin/main...HEAD') $herdr_calls
+assert_contains (string join \t -- fetch origin '+refs/heads/main:refs/remotes/origin/main' 'refs/pull/42/head:refs/heads/review-pr-42') $git_calls
+assert_contains (string join \t -- gtr new review-pr-42 --no-fetch) $git_calls
+assert_contains (string join \t -- gtr go review-pr-42) $git_calls
+assert_contains (string join \t -- workspace create --cwd /repo/.worktrees/review-pr-42) $herdr_calls
+assert_contains (string join \t -- pane run root-pane 'hunk diff origin/main...HEAD') $herdr_calls
 
-set --global mock_prs
-set --global git_calls
-set --global herdr_calls
+set --global --erase mock_prs
+set --global --erase git_calls
+set --global --erase herdr_calls
 review-pr
 or exit 1
 assert_no_fetch
 
 set --global mock_prs (string join \t 42 main 'Fix reviewer flow')
-set --global mock_selection
+set --global --erase mock_selection
 set --global mock_fzf_status 130
-set --global git_calls
-set --global herdr_calls
+set --global --erase git_calls
+set --global --erase herdr_calls
 review-pr
 or exit 1
 assert_no_fetch
@@ -160,8 +163,7 @@ function review-pr --description 'Open a review-requested PR in a Herdr worktree
         --layout=reverse \
         --border \
         --prompt='Review PR> ')
-    set -l picker_status $status
-    test $picker_status -eq 0; or return 0
+    or return 0
 
     set -l fields (string split \t -- "$selection")
     if test (count $fields) -lt 2; or not string match --quiet --regex '^[1-9][0-9]*$' -- "$fields[1]"; or test -z "$fields[2]"
@@ -208,7 +210,7 @@ Expected: exit 0、標準エラーには「no review-requested pull requests.」
 - [ ] **Step 5: Task 1 をコミットする**
 
 ```bash
-git add config/fish/functions/review-pr.fish config/fish/test-review-pr.fish
+git add .gitignore config/fish/functions/review-pr.fish config/fish/test-review-pr.fish
 git commit -m "feat(fish): PRレビューworktree関数を追加"
 ```
 
