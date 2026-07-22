@@ -55,9 +55,15 @@ function review-pr --description 'Open a review-requested PR in a Herdr worktree
     set -l workspace (herdr workspace create --cwd "$worktree")
     or return
 
+    set -l workspace_id (printf '%s\n' "$workspace" | jq --exit-status --raw-output '.result.workspace.workspace_id')
+    or return
+
     set -l root_pane (printf '%s\n' "$workspace" | jq --exit-status --raw-output '.result.root_pane.pane_id')
     or return
 
     set -l diff_ref (string escape -- "origin/$base_branch...HEAD")
     herdr pane run "$root_pane" "hunk diff $diff_ref"
+    or return
+
+    herdr workspace focus "$workspace_id"
 end
