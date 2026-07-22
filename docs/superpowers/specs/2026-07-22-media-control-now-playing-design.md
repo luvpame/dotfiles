@@ -6,7 +6,9 @@
 
 ## 方式
 
-`media-control get --micros` を一度実行し、macOS が現在選んでいる Now Playing セッションを JSON で取得する。
+`media-control get --no-artwork` を一度実行し、macOS が現在選んでいる Now Playing セッションを JSON で取得する。
+
+メニューバーでは使用しない artwork を除外し、定期実行時に数百 KB の Base64 データを処理しない。
 
 `bundleIdentifier` が `com.spotify.client` または `company.thebrowser.dia` で、`playing` が `true` の場合だけ、曲名とアーティストを表示する。
 
