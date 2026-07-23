@@ -1,5 +1,5 @@
 function review-pr --description 'Open a review-requested PR in a Herdr worktree'
-    for cmd in gh fzf jq git herdr hunk
+    for cmd in gh fzf jq git wt herdr hunk
         if not type --query $cmd
             echo "review-pr: $cmd command is not installed." >&2
             return 1
@@ -39,17 +39,14 @@ function review-pr --description 'Open a review-requested PR in a Herdr worktree
 
     set -l pr_number $fields[1]
     set -l base_branch $fields[2]
-    set -l branch "review-pr-$pr_number"
 
-    git fetch origin \
-        "+refs/heads/$base_branch:refs/remotes/origin/$base_branch" \
-        "refs/pull/$pr_number/head:refs/heads/$branch"
+    git fetch origin "+refs/heads/$base_branch:refs/remotes/origin/$base_branch"
     or return
 
-    git gtr new "$branch" --no-fetch
+    set -l switch_result (wt switch --no-cd --format=json "pr:$pr_number")
     or return
 
-    set -l worktree (git gtr go "$branch")
+    set -l worktree (printf '%s\n' "$switch_result" | jq --exit-status --raw-output '.path')
     or return
 
     set -l workspace (herdr workspace create --cwd "$worktree")

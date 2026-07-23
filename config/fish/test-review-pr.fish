@@ -3,6 +3,7 @@ set --global mock_selection $mock_prs
 set --global mock_fzf_status 0
 set --global mock_pane_run_status 0
 set --global git_calls
+set --global wt_calls
 set --global herdr_calls
 
 function gh
@@ -20,9 +21,12 @@ function git
     set --global --append git_calls (string join \t -- $argv)
     if test "$argv[1] $argv[2]" = 'rev-parse --show-toplevel'
         printf '/repo\n'
-    else if test "$argv[1] $argv[2]" = 'gtr go'
-        printf '/repo/.worktrees/review-pr-42\n'
     end
+end
+
+function wt
+    set --global --append wt_calls (string join \t -- $argv)
+    printf '%s\n' '{"action":"created","branch":"fix-reviewer-flow","path":"/repo.fix-reviewer-flow"}'
 end
 
 function herdr
@@ -35,7 +39,9 @@ function herdr
 end
 
 function jq
-    if string match --quiet '*.workspace.workspace_id' -- "$argv[-1]"
+    if test "$argv[-1]" = '.path'
+        printf '/repo.fix-reviewer-flow\n'
+    else if string match --quiet '*.workspace.workspace_id' -- "$argv[-1]"
         printf 'review-workspace\n'
     else
         printf 'root-pane\n'
@@ -67,10 +73,9 @@ source (path dirname (status filename))/functions/review-pr.fish
 review-pr
 or exit 1
 
-assert_contains (string join \t -- fetch origin '+refs/heads/main:refs/remotes/origin/main' 'refs/pull/42/head:refs/heads/review-pr-42') $git_calls
-assert_contains (string join \t -- gtr new review-pr-42 --no-fetch) $git_calls
-assert_contains (string join \t -- gtr go review-pr-42) $git_calls
-assert_contains (string join \t -- workspace create --cwd /repo/.worktrees/review-pr-42) $herdr_calls
+assert_contains (string join \t -- fetch origin '+refs/heads/main:refs/remotes/origin/main') $git_calls
+assert_contains (string join \t -- switch --no-cd --format=json pr:42) $wt_calls
+assert_contains (string join \t -- workspace create --cwd /repo.fix-reviewer-flow) $herdr_calls
 assert_contains (string join \t -- pane run root-pane 'hunk diff origin/main...HEAD') $herdr_calls
 
 set -l expected_run (string join \t -- pane run root-pane 'hunk diff origin/main...HEAD')
