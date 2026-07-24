@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784665457,
-        "narHash": "sha256-ST6ToH2MQR9Pdm5VoGw5MBJd7VcP56atkvnb5RaDxbw=",
+        "lastModified": 1784751698,
+        "narHash": "sha256-liH0Np0m6QNtD7A4KVTN/nq4zXCQJxaV433EW0P9A+Q=",
         "owner": "ryoppippi",
         "repo": "claude-code-overlay",
-        "rev": "995fa854b109b9e82f01f9c4abd78b2b2dc201ae",
+        "rev": "6d50977520ac0fe1355a028529e8af0a1463befa",
         "type": "github"
       },
       "original": {
@@ -27,11 +27,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784554603,
-        "narHash": "sha256-OgAyJ3fEEbV7VZWRtisviw4CE1z1KZsFyFdzdqSC5Do=",
+        "lastModified": 1784802366,
+        "narHash": "sha256-PQ86AlCnILX/dni6V3svqRvUaoR4sMUK9D94miMsLDA=",
         "ref": "refs/heads/main",
-        "rev": "162981c16ed2df6c458c2a551ce8ba591b101316",
-        "revCount": 748,
+        "rev": "818f561e3317ae441d492cb1cb655dcf7fc70244",
+        "revCount": 749,
         "type": "git",
         "url": "https://github.com/tomasz-tomczyk/crit.git"
       },
@@ -86,11 +86,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784679027,
-        "narHash": "sha256-E6YHYy8b0NCUCv2IA65ZmaMU1DOVeKRkZ6LNDYNe48c=",
+        "lastModified": 1784818438,
+        "narHash": "sha256-piPoehQhDWiJxmh5JsnsAIDkUjdD96cr6mm2m94ypek=",
         "owner": "kawarimidoll",
         "repo": "guard-and-guide",
-        "rev": "7b074fecd387d5a03d2f2fc0661b8dc390b3b489",
+        "rev": "86cb9273d6935a23740730230511f1f2feb876c9",
         "type": "github"
       },
       "original": {
@@ -107,11 +107,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1784679133,
-        "narHash": "sha256-4ACGsJZT+mDMLiwQqpg8/v8Dvqeycerg3+kyhSgVqaQ=",
+        "lastModified": 1784850658,
+        "narHash": "sha256-GrL6ldTfyPKkM6CH6kiavA4CBm7eN1cV7Wjwv+RYUew=",
         "owner": "ogulcancelik",
         "repo": "herdr",
-        "rev": "08640bb3ddc0a9c299e855d6a459d2f82970cf86",
+        "rev": "e608a75159fc5cca70485d83ffb8ee681c9da385",
         "type": "github"
       },
       "original": {
@@ -127,11 +127,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784588016,
-        "narHash": "sha256-ouZe80aWEhMLVMkqICFDN+JUw+0FJtCr/bh+hHtRtMg=",
+        "lastModified": 1784789275,
+        "narHash": "sha256-cgRTWuG+u1tBPhm01JrId2k0Bni09phVJ1Q0BZlRd7M=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "deeb6b7eb7e0c44ae1819c051ce175bd92a85100",
+        "rev": "3b0e6bbd65869af1beadf5963a99befc179d209f",
         "type": "github"
       },
       "original": {
