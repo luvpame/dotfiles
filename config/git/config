@@ -27,6 +27,9 @@
   editor = nvim
   pager  = hunk pager
 [merge]
-    conflictStyle = zdiff3
+    conflictStyle = diff3
+[merge "mergiraf"]
+    name = mergiraf
+    driver = mergiraf merge --git %O %A %B -s %S -x %X -y %Y -p %P -l %L
 [include]
   path = ~/.config/git/config.local

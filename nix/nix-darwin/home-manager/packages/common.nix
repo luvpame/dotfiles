@@ -36,6 +36,7 @@ let
     zoxide
     gh
     git
+    mergiraf
     just
     nh
     mise
