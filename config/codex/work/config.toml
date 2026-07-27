@@ -7,7 +7,7 @@ suppress_unstable_features_warning = true
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 
-service_tier = "fast"
+service_tier = "default"
 
 notify = ["/Users/nasuno.ayumu/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
 approvals_reviewer = "auto_review"
@@ -89,21 +89,18 @@ trust_level = "trusted"
 [projects."/Users/nasuno.ayumu/Documents/Codex/2026-07-22/https-zenn-dev-headwaters-articles-72c39ad735038d"]
 trust_level = "trusted"
 
+[projects."/Users/nasuno.ayumu/Documents/Codex/2026-07-24/realtime-voice-chat"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
-last_updated = "2026-07-22T09:38:21Z"
+last_updated = "2026-07-27T01:38:51Z"
 source_type = "local"
 source = "/Users/nasuno.ayumu/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-07-16T08:19:57Z"
+last_updated = "2026-07-24T07:19:51Z"
 source_type = "local"
 source = "/Users/nasuno.ayumu/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
-
-[marketplaces.ponytail]
-last_updated = "2026-07-16T04:20:32Z"
-last_revision = "16f29800fd2681bdf24f3eb4ccffe38be3baec6b"
-source_type = "git"
-source = "https://github.com/DietrichGebert/ponytail.git"
 
 [plugins."superpowers@openai-curated"]
 enabled = true
@@ -114,12 +111,6 @@ enabled = true
 [plugins."hugging-face@openai-curated"]
 enabled = false
 
-[plugins."chrome@openai-bundled"]
-enabled = false
-
-[plugins."ponytail@ponytail"]
-enabled = true
-
 [plugins."template-creator@openai-primary-runtime"]
 enabled = true
 
@@ -129,22 +120,10 @@ enabled = true
 [plugins."visualize@openai-bundled"]
 enabled = true
 
-[plugins."documents@openai-primary-runtime"]
-enabled = false
-
-[plugins."pdf@openai-primary-runtime"]
-enabled = false
-
-[plugins."spreadsheets@openai-primary-runtime"]
-enabled = false
-
-[plugins."presentations@openai-primary-runtime"]
-enabled = false
-
 [plugins."browser@openai-bundled"]
 enabled = true
 
-[plugins."computer-use@openai-bundled"]
+[plugins."chrome@openai-bundled"]
 enabled = true
 
 [hooks.state]
@@ -202,9 +181,10 @@ ambient-suggestions-enabled = false
 dock-icon-preference = "codex-system"
 avatar-overlay-mascot-width-px = 80
 appshotDestination = "last-chat"
-show-ultra-in-model-picker-slider = true
+show-ultra-in-model-picker-slider = false
 enabled-reasoning-efforts = ["low", "medium", "high", "xhigh", "ultra", "max"]
 git-pull-request-merge-method = "squash"
+realtimeVoiceScreenContextEnabled = true
 
 [desktop.appearanceLightChromeTheme]
 accent = "#8839ef"
@@ -255,13 +235,13 @@ NODE_REPL_NODE_MODULE_DIRS = "/Applications/ChatGPT.app/Contents/Resources/cua_n
 NODE_REPL_NODE_PATH = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/nasuno.ayumu/.codex"
 CODEX_HOME = "/Users/nasuno.ayumu/.codex"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "6d25aa7656feac858f3a3bdaea5bcbab0dbfd426c9de8e6931ce90c399ee8e4f,d0b55a8f9e8e7e9c88421416ea4ce9542c302abf43aa7fc871be4553ea70dd26"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "6d25aa7656feac858f3a3bdaea5bcbab0dbfd426c9de8e6931ce90c399ee8e4f,e13fd947e846d3d306e9249dd3c73d14931b6494803dbafb16cef85e6add9506"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = "Control desktop apps on macOS through Computer Use."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.715.72359"
+BROWSER_USE_CODEX_APP_VERSION = "26.721.41059"
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
 
 [mcp_servers.computer-use]
@@ -276,5 +256,5 @@ enabled = false
 
 [shell_environment_policy.set]
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "6d25aa7656feac858f3a3bdaea5bcbab0dbfd426c9de8e6931ce90c399ee8e4f,d0b55a8f9e8e7e9c88421416ea4ce9542c302abf43aa7fc871be4553ea70dd26"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "6d25aa7656feac858f3a3bdaea5bcbab0dbfd426c9de8e6931ce90c399ee8e4f,e13fd947e846d3d306e9249dd3c73d14931b6494803dbafb16cef85e6add9506"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/nasuno.ayumu/.codex"
