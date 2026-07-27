@@ -1,8 +1,9 @@
 # Configurations for git
 set -gx GIT_CONFIG_GLOBAL ~/.config/git/config
 
-# Configurations for lazygit
+# Configurations for Git TUIs
 set -gx XDG_CONFIG_HOME ~/.config
+set -gx ZIGGITY_CONFIG ~/.config/ziggity/config.ini
 
 # Set Editor
 set -gx EDITOR nvim

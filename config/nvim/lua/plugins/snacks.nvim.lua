@@ -3,7 +3,7 @@
 -- 大きなファイル対策と、ファイル指定起動時の初期表示高速化。
 -- 起動画面、ファイル選択、入力欄、通知など普段使いの表示を Snacks に寄せる。
 -- インデント、スコープ、スクロール、ステータス列、参照ジャンプで編集画面を補助する。
--- スクラッチバッファ、ターミナル、LazyGit、GitHub 連携、ブラウザ表示、集中モードはキーマップから呼び出す。
+-- スクラッチバッファ、ターミナル、Ziggity、GitHub 連携、ブラウザ表示、集中モードはキーマップから呼び出す。
 -- 現在行の Git blame は Snacks の小さなターミナルウィンドウで確認する。
 -- コマンドラインそのもののリッチ表示は Snacks ではなく noice.nvim 側に任せる。
 vim.env.GIT_OPTIONAL_LOCKS = vim.env.GIT_OPTIONAL_LOCKS or "0"
@@ -250,9 +250,11 @@ return {
     {
       "<leader>gg",
       function()
-        Snacks.lazygit()
+        Snacks.terminal("ziggity", {
+          cwd = Snacks.git.get_root() or vim.fn.getcwd(),
+        })
       end,
-      desc = "Lazygitを開く",
+      desc = "Ziggityを開く",
     },
     {
       "<leader>gi",

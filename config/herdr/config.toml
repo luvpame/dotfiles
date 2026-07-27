@@ -26,8 +26,8 @@ command = "pane_ids=$(herdr pane list | jq -r --arg pane_id \"$HERDR_ACTIVE_PANE
 [[keys.command]]
 key = "prefix+g"
 type = "pane"
-description = "open lazygit"
-command = "lazygit"
+description = "open ziggity"
+command = "ziggity"
 
 [[keys.command]]
 key = "prefix+o"

@@ -18,6 +18,7 @@ in
     mise.source = oos "${configRoot}/mise";
     nvim.source = oos "${configRoot}/nvim";
     lazygit.source = oos "${configRoot}/lazygit";
+    ziggity.source = oos "${configRoot}/ziggity";
     yazi.source = oos "${configRoot}/yazi";
     tmux.source = oos "${configRoot}/tmux";
     herdr.source = oos "${configRoot}/herdr";

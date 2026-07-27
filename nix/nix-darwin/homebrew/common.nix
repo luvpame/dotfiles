@@ -31,6 +31,7 @@ let
     "mas" # Mac App Store CLI
     "im-select"
     "hunk"
+    "ziggity"
     "worktrunk"
     "media-control" # macOS Now Playing metadata
     "ripgrep" # codex formula dependency; keep cleanup from trying to remove it
@@ -54,6 +55,7 @@ let
     "Jean-Tinland/a-bar" # menubar
     "Warashi/tap" # cage
     "productdevbook/tap" # portkiller
+    "simoarpe/ziggity" # ziggity
   ];
   trustedTaps = map (name: {
     inherit name;
