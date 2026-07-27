@@ -41,6 +41,19 @@
 - `flake.lock` を唯一の正とし、手動編集は避ける。依存更新時にはロックファイルもコミット。
 - 新しい cask やパッケージを追加する場合は `nix/nix-darwin/homebrew/` と `nix/nix-darwin/home-manager/packages/` 配下を優先して宣言的に管理し、switch コマンドを再実行してシステムに反映。
 
-## エージェントスキル
+## Agent skills
+
 - 再利用可能なスキルは `config/agents/skills/` に保存。
 - タスクで特定のスキルが明示された場合は、そのスキルのワークフローを使用し、変更範囲は要求された領域に限定。
+
+### Issue tracker
+
+Issues are tracked as local Markdown files under `.scratch/<feature-slug>/`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Use the default triage labels: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, and `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Use the single-context layout with `CONTEXT.md` and `docs/adr/` at the repository root. See `docs/agents/domain.md`.
