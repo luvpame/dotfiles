@@ -48,7 +48,7 @@
 
 ### Issue tracker
 
-Issues are tracked as local Markdown files under `.scratch/<feature-slug>/`. See `docs/agents/issue-tracker.md`.
+Issues and PRDs are tracked as GitHub issues in `luvpame/dotfiles`. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
