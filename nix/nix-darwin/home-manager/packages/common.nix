@@ -64,7 +64,8 @@ let
     imagemagick
     resvg
     poppler
-    rtk
+    # rtk 0.43.0 fails to compile its test target with warnings = "deny".
+    (rtk.overrideAttrs { doCheck = false; })
     socat
     ov
     guardAndGuide
