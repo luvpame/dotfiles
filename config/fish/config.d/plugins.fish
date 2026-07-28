@@ -22,6 +22,7 @@ if status is-interactive
     # Configurations for Worktrunk
     if command -q wt
         command wt config shell init fish | source
+        configure_worktrunk
     end
 
     # Configurations for mise
