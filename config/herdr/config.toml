@@ -38,14 +38,6 @@ width = "80%"
 height = "80%"
 
 [[keys.command]]
-key = "prefix+shift+g"
-type = "popup"
-description = "review requested PR"
-command = "fish -c 'review-pr; set review_status $status; if test $review_status -ne 0; read -P \"Press Enter to close\"; end; exit $review_status'"
-width = "80%"
-height = "80%"
-
-[[keys.command]]
 key = "prefix+t"
 type = "popup"
 description = "open floating terminal"
