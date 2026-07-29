@@ -72,6 +72,10 @@ if.app-id = "com.anthropic.claudefordesktop"
 run = "move-node-to-workspace 4" # Claudeをワークスペース4に移動
 
 [[on-window-detected]]
+if.app-id = "com.openai.codex"
+run = "move-node-to-workspace 5" # Codexをワークスペース5に移動
+
+[[on-window-detected]]
 if.app-id = "com.spotify.client"
 run = "move-node-to-workspace 8" # Spotifyをワークスペース8に移動
 
