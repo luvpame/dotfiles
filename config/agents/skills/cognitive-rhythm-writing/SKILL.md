@@ -10,7 +10,7 @@ description: 説明的な文章に緩急を設計するための規範。緩急�
 
 ## 併用する規範
 
-作業前に `../japanese-tech-writing/SKILL.md` を読む。
+作業前に `../japanese-tech-writing/SKILL.md` と `../japanese-end-focus/SKILL.md` を読む。
 
 ## 基本原理
 
