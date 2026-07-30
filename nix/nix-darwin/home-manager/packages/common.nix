@@ -71,6 +71,7 @@ let
     guardAndGuide
     gogcli
     inputs.herdr.packages.${system}.default
+    inputs.hunk.packages.${system}.default
     (callPackage ../../../pkgs/pique/default.nix { })
     (callPackage ../../../pkgs/site2skill/default.nix { })
     (callPackage ../../../pkgs/tree-sitter-cli/default.nix { })

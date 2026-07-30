@@ -30,7 +30,6 @@ let
     "fisher"
     "mas" # Mac App Store CLI
     "im-select"
-    "hunk"
     "ziggity"
     "worktrunk"
     "media-control" # macOS Now Playing metadata
