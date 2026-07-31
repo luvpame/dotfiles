@@ -4,6 +4,7 @@ import json
 import os
 import subprocess
 import sys
+from datetime import datetime
 
 try:
     data = json.load(sys.stdin)
@@ -94,6 +95,23 @@ def fmt(label, pct):
     return f"{LABEL_COLOR}{label}{R} {color}{braille_bar(pct)} ({p}%){R}"
 
 
+def format_reset_time(timestamp):
+    if not isinstance(timestamp, (int, float)):
+        return ""
+    try:
+        return datetime.fromtimestamp(timestamp).strftime("%H:%M")
+    except (OSError, OverflowError, ValueError):
+        return ""
+
+
+def nested_value(value, keys):
+    for key in keys:
+        if not isinstance(value, dict):
+            return None
+        value = value.get(key)
+    return value
+
+
 def git_run(*args):
     result = subprocess.run(args, capture_output=True, text=True, env=GIT_ENV)
     return result.stdout.strip() if result.returncode == 0 else ""
@@ -158,16 +176,17 @@ metrics = [
     ("seven_day", "7d", ("rate_limits", "seven_day", "used_percentage")),
 ]
 tokens = {}
+five_hour_reset_time = format_reset_time(
+    nested_value(data, ("rate_limits", "five_hour", "resets_at"))
+)
 for name, label, keys in metrics:
-    val = data
-    for k in keys:
-        if not isinstance(val, dict):
-            val = None
-            break
-        val = val.get(k, {})
+    val = nested_value(data, keys)
     if isinstance(val, (int, float)):
         tokens[name] = f"{label}: {braille_bar(val)} ({round(val)}%)"
-        lines.append(fmt(f"{label}: ", val))
+        line = fmt(f"{label}: ", val)
+        if name == "five_hour" and five_hour_reset_time:
+            line += f" {LABEL_COLOR}↻ {five_hour_reset_time}{R}"
+        lines.append(line)
     else:
         tokens[name] = ""
 

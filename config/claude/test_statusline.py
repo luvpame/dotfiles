@@ -22,6 +22,7 @@ class StatuslineTest(unittest.TestCase):
                 **os.environ,
                 "PATH": f"{directory}{os.pathsep}{os.environ['PATH']}",
                 "HERDR_LOG": str(log),
+                "TZ": "Asia/Tokyo",
             }
             if in_herdr:
                 env.update(HERDR_ENV="1", HERDR_PANE_ID="w1:p1")
@@ -68,6 +69,20 @@ class StatuslineTest(unittest.TestCase):
             "pane report-metadata w1:p1 --source claude-statusline "
             "--token context= --token model=󰚩 Claude --token effort=",
         )
+
+    def test_displays_five_hour_reset_time(self):
+        output, _ = self.run_statusline(
+            {
+                "rate_limits": {
+                    "five_hour": {
+                        "used_percentage": 18,
+                        "resets_at": 1738425600,
+                    }
+                }
+            }
+        )
+
+        self.assertIn("↻ 01:00", output)
 
     def test_does_not_report_outside_herdr(self):
         _, report = self.run_statusline({}, in_herdr=False)
