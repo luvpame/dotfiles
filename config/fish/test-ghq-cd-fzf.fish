@@ -11,12 +11,6 @@ end
 function fzf
 end
 
-function roots
-    while read -l line
-        printf '%s\n' "$line"
-    end
-end
-
 function _fzf_wrapper
     set --global --erase fzf_candidates
     while read -l candidate

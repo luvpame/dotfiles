@@ -1,5 +1,5 @@
 function ghq_cd_fzf --description 'Search ghq repositories with fzf'
-    set -l commands ghq fzf roots
+    set -l commands ghq fzf
     if test "$argv[1]" = --workspace
         set --append commands herdr jq
     end
@@ -57,7 +57,7 @@ end
 
     set -l selected_path (
         begin
-            ghq list --full-path | roots
+            ghq list --full-path
             if test "$argv[1]" = --workspace
                 # ponytail: Herdr exposes pane cwd only; persist workspace paths if the first pane stops being representative.
                 printf '%s\n' "$pane_list" | jq --raw-output \
@@ -67,7 +67,7 @@ end
             --ansi \
             --height 80% \
             --layout=reverse \
-            --prompt='ghq roots> ' \
+            --prompt='ghq> ' \
             --preview-window='right:60%:wrap' \
             --preview "$preview_cmd"
     )
