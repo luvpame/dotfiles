@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import subprocess
 import tempfile
 import unittest
@@ -7,6 +8,7 @@ from pathlib import Path
 
 
 STATUSLINE = Path(__file__).with_name("statusline.py")
+ANSI_ESCAPE = re.compile(r"\033\[[0-9;]*m")
 
 
 class StatuslineTest(unittest.TestCase):
@@ -83,6 +85,22 @@ class StatuslineTest(unittest.TestCase):
         )
 
         self.assertIn("↻ 01:00", output)
+
+    def test_aligns_usage_columns(self):
+        output, _ = self.run_statusline(
+            {
+                "context_window": {"used_percentage": 9},
+                "rate_limits": {
+                    "five_hour": {"used_percentage": 42},
+                    "seven_day": {"used_percentage": 100},
+                },
+            }
+        )
+        lines = ANSI_ESCAPE.sub("", output).splitlines()
+
+        self.assertIn("ctx: ⣶        (  9%)", lines)
+        self.assertIn("5h:  ⣿⣿⣿⣄     ( 42%)", lines)
+        self.assertIn("7d:  ⣿⣿⣿⣿⣿⣿⣿⣿ (100%)", lines)
 
     def test_does_not_report_outside_herdr(self):
         _, report = self.run_statusline({}, in_herdr=False)

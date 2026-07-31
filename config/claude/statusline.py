@@ -49,27 +49,38 @@ if IS_DARK_MODE:
     HEADER_BRANCH_COLOR = rgb(80, 200, 120)
     HEADER_REPO_COLOR = rgb(80, 200, 200)
     HEADER_SEPARATOR_COLOR = DIM
+    PROGRESS_GRADIENT = (
+        (0, (80, 200, 120)),
+        (40, (160, 200, 80)),
+        (60, (220, 190, 60)),
+        (75, (255, 155, 55)),
+        (88, (255, 100, 55)),
+        (100, (255, 60, 80)),
+    )
 else:
     HEADER_MODEL_COLOR = rgb(112, 76, 182)
     HEADER_BRANCH_COLOR = rgb(46, 125, 50)
     HEADER_REPO_COLOR = rgb(2, 132, 199)
     HEADER_SEPARATOR_COLOR = LIGHT_LABEL
+    PROGRESS_GRADIENT = (
+        (0, (46, 125, 50)),
+        (40, (100, 130, 35)),
+        (60, (160, 125, 25)),
+        (75, (198, 105, 25)),
+        (88, (205, 68, 35)),
+        (100, (198, 40, 40)),
+    )
 
 
 def gradient(pct):
-    if IS_DARK_MODE:
-        if pct < 50:
-            r = int(pct * 5.1)
-            return rgb(r, 200, 80)
-        g = int(200 - (pct - 50) * 4)
-        return rgb(255, max(g, 0), 60)
-
     pct = min(max(pct, 0), 100)
-    if pct < 70:
-        color = blend((46, 125, 50), (198, 124, 28), pct / 70)
-    else:
-        color = blend((198, 124, 28), (198, 40, 40), (pct - 70) / 30)
-    return rgb(*color)
+    for (start_pct, start), (end_pct, end) in zip(
+        PROGRESS_GRADIENT, PROGRESS_GRADIENT[1:]
+    ):
+        if pct <= end_pct:
+            ratio = (pct - start_pct) / (end_pct - start_pct)
+            return rgb(*blend(start, end, ratio))
+    return rgb(*PROGRESS_GRADIENT[-1][1])
 
 
 def braille_bar(pct, width=8):
@@ -92,7 +103,10 @@ def braille_bar(pct, width=8):
 def fmt(label, pct):
     p = round(pct)
     color = gradient(pct)
-    return f"{LABEL_COLOR}{label}{R} {color}{braille_bar(pct)} ({p}%){R}"
+    return (
+        f"{LABEL_COLOR}{label + ':':<4}{R} "
+        f"{color}{braille_bar(pct)} ({p:3d}%){R}"
+    )
 
 
 def format_reset_time(timestamp):
@@ -183,7 +197,7 @@ for name, label, keys in metrics:
     val = nested_value(data, keys)
     if isinstance(val, (int, float)):
         tokens[name] = f"{label}: {braille_bar(val)} ({round(val)}%)"
-        line = fmt(f"{label}: ", val)
+        line = fmt(label, val)
         if name == "five_hour" and five_hour_reset_time:
             line += f" {LABEL_COLOR}↻ {five_hour_reset_time}{R}"
         lines.append(line)
