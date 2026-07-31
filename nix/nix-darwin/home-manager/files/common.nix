@@ -40,6 +40,7 @@ in
   home.file = {
     ".zshenv".source = oos "${configRoot}/zsh/.zshenv";
     ".agents".source = oos "${configRoot}/agents";
+    ".codex/agents".source = oos "${configRoot}/codex/agents";
     ".codex/hooks".source = oos "${configRoot}/codex/hooks";
     ".codex/hooks.json".source = oos "${configRoot}/codex/hooks.json";
     ".codex/AGENTS.md".source = oos "${configRoot}/codex/AGENTS.md";
