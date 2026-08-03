@@ -30,6 +30,22 @@ description = "open ziggity"
 command = "ziggity"
 
 [[keys.command]]
+key = "prefix+p"
+type = "popup"
+description = "open git worktree"
+command = "fish -c 'source ~/.config/herdr/worktree-fzf.fish; herdr_worktree_fzf'"
+width = "80%"
+height = "80%"
+
+[[keys.command]]
+key = "prefix+shift+p"
+type = "popup"
+description = "choose repo and open git worktree"
+command = "fish -c 'source ~/.config/herdr/worktree-fzf.fish; herdr_worktree_fzf --repo'"
+width = "80%"
+height = "80%"
+
+[[keys.command]]
 key = "prefix+t"
 type = "popup"
 description = "open floating terminal"
