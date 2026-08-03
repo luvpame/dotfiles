@@ -109,11 +109,12 @@ def fmt(label, pct):
     )
 
 
-def format_reset_time(timestamp):
+def format_reset_time(timestamp, include_date=False):
     if not isinstance(timestamp, (int, float)):
         return ""
     try:
-        return datetime.fromtimestamp(timestamp).strftime("%H:%M")
+        time_format = "%m/%d %H:%M" if include_date else "%H:%M"
+        return datetime.fromtimestamp(timestamp).strftime(time_format)
     except (OSError, OverflowError, ValueError):
         return ""
 
@@ -190,16 +191,22 @@ metrics = [
     ("seven_day", "7d", ("rate_limits", "seven_day", "used_percentage")),
 ]
 tokens = {}
-five_hour_reset_time = format_reset_time(
-    nested_value(data, ("rate_limits", "five_hour", "resets_at"))
-)
+reset_times = {
+    "five_hour": format_reset_time(
+        nested_value(data, ("rate_limits", "five_hour", "resets_at"))
+    ),
+    "seven_day": format_reset_time(
+        nested_value(data, ("rate_limits", "seven_day", "resets_at")),
+        include_date=True,
+    ),
+}
 for name, label, keys in metrics:
     val = nested_value(data, keys)
     if isinstance(val, (int, float)):
         tokens[name] = f"{label}: {braille_bar(val)} ({round(val)}%)"
         line = fmt(label, val)
-        if name == "five_hour" and five_hour_reset_time:
-            line += f" {LABEL_COLOR}↻ {five_hour_reset_time}{R}"
+        if reset_time := reset_times.get(name):
+            line += f" {LABEL_COLOR}↻ {reset_time}{R}"
         lines.append(line)
     else:
         tokens[name] = ""

@@ -86,6 +86,20 @@ class StatuslineTest(unittest.TestCase):
 
         self.assertIn("↻ 01:00", output)
 
+    def test_displays_seven_day_reset_date_and_time(self):
+        output, _ = self.run_statusline(
+            {
+                "rate_limits": {
+                    "seven_day": {
+                        "used_percentage": 31,
+                        "resets_at": 1738425600,
+                    }
+                }
+            }
+        )
+
+        self.assertIn("↻ 02/02 01:00", output)
+
     def test_aligns_usage_columns(self):
         output, _ = self.run_statusline(
             {
