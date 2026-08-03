@@ -1,7 +1,7 @@
 set --global herdr_calls
 set --global wt_calls
 set --global fzf_candidates
-set --global fzf_selection 'New Worktree'
+set --global fzf_selection ' New Worktree'
 set --global repo_candidates
 set --global repo_selection /private/tmp/repo
 set --global worktree_path /private/tmp/repo-worktrees/feature
@@ -84,11 +84,17 @@ set --global --export HERDR_ACTIVE_WORKSPACE_ID main-workspace
 printf 'feature\n' | herdr_worktree_fzf
 or exit 1
 
-test "$fzf_candidates[1]" = 'New Worktree'
+test "$fzf_candidates[1]" = ' New Worktree'
 or begin
-    echo 'New Worktree was not the first candidate.' >&2
+    echo ' New Worktree was not the first candidate.' >&2
     exit 1
 end
+test "$fzf_candidates[2]" = (string join \t -- '󰉋 Original Root' /private/tmp/repo)
+or begin
+    echo '󰉋 Original Root was not the second candidate.' >&2
+    exit 1
+end
+assert_not_contains (string join \t -- main /private/tmp/repo) $fzf_candidates
 assert_contains (string join \t -- existing /private/tmp/repo-worktrees/existing) $fzf_candidates
 assert_contains (string join \t -- -C /private/tmp/repo switch --no-cd --create feature --format=json) $wt_calls
 test "$wt_herdr_env" = 1
@@ -118,11 +124,24 @@ assert_not_contains (string join \t -- pane run agent-pane cc) $herdr_calls
 assert_not_contains (string join \t -- tab create --workspace worktree-workspace --cwd "$worktree_path" --label nvim --no-focus) $herdr_calls
 
 set --global --erase herdr_calls
+set --global fzf_selection (string join \t -- '󰉋 Original Root' /private/tmp/repo)
+
+herdr_worktree_fzf
+or exit 1
+
+assert_contains (string join \t -- worktree open --workspace main-workspace --path /private/tmp/repo --focus --json) $herdr_calls
+
+set --global --erase herdr_calls
 set --global repo_selection /private/tmp/repo
 
 herdr_worktree_fzf --repo
 or exit 1
 
 assert_contains "$repo_selection" $repo_candidates
+test "$fzf_candidates[2]" = (string join \t -- '󰉋 Original Root' /private/tmp/repo)
+or begin
+    echo '󰉋 Original Root was not offered in repo mode.' >&2
+    exit 1
+end
 assert_contains (string join \t -- worktree list --cwd "$repo_selection" --json) $herdr_calls
-assert_contains (string join \t -- worktree open --cwd "$repo_selection" --path "$worktree_path" --focus --json) $herdr_calls
+assert_contains (string join \t -- worktree open --cwd "$repo_selection" --path /private/tmp/repo --focus --json) $herdr_calls

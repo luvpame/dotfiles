@@ -1,4 +1,6 @@
 function herdr_worktree_fzf --description 'Open a Git worktree in Herdr'
+    set -l new_worktree_label ' New Worktree'
+    set -l original_root_label '󰉋 Original Root'
     set -l commands herdr jq fzf wt
     if test "$argv[1]" = --repo
         set --append commands ghq
@@ -36,11 +38,13 @@ function herdr_worktree_fzf --description 'Open a Git worktree in Herdr'
 
     set -l selection (
         begin
-            printf 'New Worktree\n'
+            printf '%s\n' "$new_worktree_label"
+            printf '%s\t%s\n' "$original_root_label" "$repo_root"
             printf '%s\n' "$worktree_list" | jq --raw-output '
                 .result.source.source_checkout_path as $source
+                | .result.source.repo_root as $root
                 | .result.worktrees[]
-                | select(.path != $source)
+                | select(.path != $source and .path != $root)
                 | [.branch, .path]
                 | @tsv
             '
@@ -55,7 +59,7 @@ function herdr_worktree_fzf --description 'Open a Git worktree in Herdr'
 
     set -l workspace_id
     set -l worktree_path
-    if test "$selection" = 'New Worktree'
+    if test "$selection" = "$new_worktree_label"
         read --local --prompt-str='Worktree name: ' worktree_name
         set worktree_name (string trim -- "$worktree_name")
         if test -z "$worktree_name"
