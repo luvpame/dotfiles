@@ -30,14 +30,6 @@ description = "open ziggity"
 command = "ziggity"
 
 [[keys.command]]
-key = "prefix+o"
-type = "popup"
-description = "open ghq workspace"
-command = "fish -c 'ghq_cd_fzf --workspace; set workspace_status $status; if test $workspace_status -ne 0; read -P \"Press Enter to close\"; end; exit $workspace_status'"
-width = "80%"
-height = "80%"
-
-[[keys.command]]
 key = "prefix+t"
 type = "popup"
 description = "open floating terminal"
