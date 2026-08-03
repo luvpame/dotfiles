@@ -71,21 +71,34 @@ agent_panel_sort = "priority"
 [ui.sidebar.agents.rows_by_agent]
 claude = [
   ["state_icon", "workspace", "tab"],
-  ["agent"],
   [
+    "agent",
     { token = "$context", fg = "#1e66f5" },
-    { token = "$model", fg = "#8839ef" },
-    { token = "$effort", fg = "#fe640b" },
+  ],
+  [
+    { token = "$git_branch", fg = "#1e66f5" },
+    { token = "$git_additions", fg = "#40a02b" },
+    { token = "$git_deletions", fg = "#d20f39" },
+    { token = "$pr_open", fg = "#40a02b" },
+    { token = "$pr_draft", fg = "#9ca0b0" },
+    { token = "$pr_merged", fg = "#8839ef" },
+    { token = "$pr_closed", fg = "#d20f39" },
   ],
 ]
 codex = [
   ["state_icon", "workspace", "tab"],
-  ["agent"],
   [
+    "agent",
     { token = "$context", fg = "#1e66f5" },
-    { token = "$model", fg = "#8839ef" },
-    { token = "$effort", fg = "#fe640b" },
-    { token = "$fast_mode", fg = "#df8e1d" },
+  ],
+  [
+    { token = "$git_branch", fg = "#1e66f5" },
+    { token = "$git_additions", fg = "#40a02b" },
+    { token = "$git_deletions", fg = "#d20f39" },
+    { token = "$pr_open", fg = "#40a02b" },
+    { token = "$pr_draft", fg = "#9ca0b0" },
+    { token = "$pr_merged", fg = "#8839ef" },
+    { token = "$pr_closed", fg = "#d20f39" },
   ],
 ]
 

@@ -25,6 +25,7 @@ class StatuslineTest(unittest.TestCase):
                 "PATH": f"{directory}{os.pathsep}{os.environ['PATH']}",
                 "HERDR_LOG": str(log),
                 "TZ": "Asia/Tokyo",
+                "XDG_CONFIG_HOME": str(directory),
             }
             if in_herdr:
                 env.update(HERDR_ENV="1", HERDR_PANE_ID="w1:p1")
@@ -59,8 +60,7 @@ class StatuslineTest(unittest.TestCase):
         self.assertEqual(
             report,
             "pane report-metadata w1:p1 --source claude-statusline "
-            "--token context=ctx: ⣿⣿⣿⣄     (42%) "
-            "--token model=󰚩 Opus 4.7 --token effort=󰓅 xhigh",
+            "--token context=42% --clear-token model --clear-token effort",
         )
 
     def test_clears_missing_usage(self):
@@ -69,7 +69,7 @@ class StatuslineTest(unittest.TestCase):
         self.assertEqual(
             report,
             "pane report-metadata w1:p1 --source claude-statusline "
-            "--token context= --token model=󰚩 Claude --token effort=",
+            "--clear-token context --clear-token model --clear-token effort",
         )
 
     def test_displays_five_hour_reset_time(self):

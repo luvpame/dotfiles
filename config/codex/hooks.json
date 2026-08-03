@@ -23,6 +23,11 @@
             "command": "\"$HOME/.codex/hooks/herdr-usage.py\"",
             "timeout": 5,
             "type": "command"
+          },
+          {
+            "command": "\"$HOME/.config/herdr/agent-git-metadata.py\"",
+            "timeout": 5,
+            "type": "command"
           }
         ]
       }
@@ -32,6 +37,11 @@
         "hooks": [
           {
             "command": "\"$HOME/.codex/hooks/herdr-usage.py\"",
+            "timeout": 5,
+            "type": "command"
+          },
+          {
+            "command": "\"$HOME/.config/herdr/agent-git-metadata.py\"",
             "timeout": 5,
             "type": "command"
           }

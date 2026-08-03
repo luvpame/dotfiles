@@ -10,33 +10,10 @@ SCRIPT = Path(__file__).with_name("herdr-usage.py")
 
 
 class HerdrUsageTest(unittest.TestCase):
-    def run_hook(self, service_tier):
+    def run_hook(self, events):
         with tempfile.TemporaryDirectory() as directory:
             directory = Path(directory)
             transcript = directory / "rollout.jsonl"
-            events = [
-                {
-                    "type": "turn_context",
-                    "payload": {"model": "gpt-5.6-sol", "effort": "low"},
-                },
-                {
-                    "type": "event_msg",
-                    "payload": {
-                        "type": "thread_settings_applied",
-                        "thread_settings": {"service_tier": service_tier},
-                    },
-                },
-                {
-                    "type": "event_msg",
-                    "payload": {
-                        "type": "token_count",
-                        "info": {
-                            "last_token_usage": {"total_tokens": 188031},
-                            "model_context_window": 258400,
-                        },
-                    },
-                },
-            ]
             transcript.write_text("\n".join(map(json.dumps, events)) + "\n")
             log = directory / "herdr.log"
             herdr = directory / "herdr"
@@ -60,22 +37,33 @@ class HerdrUsageTest(unittest.TestCase):
 
             return log.read_text().strip()
 
-    def test_reports_agent_metadata_with_fast_mode(self):
+    def test_reports_context_percentage_only(self):
+        events = [
+            {
+                "type": "event_msg",
+                "payload": {
+                    "type": "token_count",
+                    "info": {
+                        "last_token_usage": {"total_tokens": 188031},
+                        "model_context_window": 258400,
+                    },
+                },
+            }
+        ]
+
         self.assertEqual(
-            self.run_hook("priority"),
+            self.run_hook(events),
             "pane report-metadata w1:p1 --source codex-usage "
-            "--token context=ctx: ⣿⣿⣿⣿⣿⣶   (73%) "
-            "--token model=󰚩 gpt-5.6-sol --token effort=󰓅 low "
-            "--token fast_mode=󱐋 fast",
+            "--token context=73% --clear-token model "
+            "--clear-token effort --clear-token fast_mode",
         )
 
-    def test_omits_disabled_fast_mode(self):
+    def test_clears_unavailable_and_retired_metadata(self):
         self.assertEqual(
-            self.run_hook("default"),
+            self.run_hook([]),
             "pane report-metadata w1:p1 --source codex-usage "
-            "--token context=ctx: ⣿⣿⣿⣿⣿⣶   (73%) "
-            "--token model=󰚩 gpt-5.6-sol --token effort=󰓅 low "
-            "--token fast_mode=",
+            "--clear-token context --clear-token model "
+            "--clear-token effort --clear-token fast_mode",
         )
 
 

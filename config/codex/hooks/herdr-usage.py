@@ -5,30 +5,8 @@ import os
 import subprocess
 import sys
 
-BRAILLE = " ⣀⣄⣤⣦⣶⣷⣿"
 
-
-def braille_bar(percent, width=8):
-    percent = min(max(percent, 0), 100)
-    level = percent / 100
-    bar = ""
-    for index in range(width):
-        start = index / width
-        end = (index + 1) / width
-        if level >= end:
-            bar += BRAILLE[7]
-        elif level <= start:
-            bar += BRAILLE[0]
-        else:
-            bar += BRAILLE[min(int((level - start) / (end - start) * 7), 7)]
-    return bar
-
-
-def format_usage(label, percent):
-    return f"{label}: {braille_bar(percent)} ({round(percent)}%)"
-
-
-def latest_metadata(transcript_path):
+def latest_usage(transcript_path):
     # ponytail: rollout JSONL is Codex's only per-session usage source; replace
     # this parser when lifecycle hooks expose usage directly.
     # ponytail: scan 200 lines; read backwards if token_count moves away from turn end.
@@ -38,22 +16,15 @@ def latest_metadata(transcript_path):
         text=True,
         check=False,
     )
-    usage = context = settings = None
     for line in reversed(result.stdout.splitlines()):
         try:
             event = json.loads(line)
         except json.JSONDecodeError:
             continue
         payload = event.get("payload", {})
-        if usage is None and payload.get("type") == "token_count":
-            usage = payload
-        elif context is None and event.get("type") == "turn_context":
-            context = payload
-        elif settings is None and payload.get("type") == "thread_settings_applied":
-            settings = payload.get("thread_settings", {})
-        if usage is not None and context is not None and settings is not None:
-            break
-    return usage, context or {}, settings or {}
+        if payload.get("type") == "token_count":
+            return payload
+    return None
 
 
 def main():
@@ -63,26 +34,14 @@ def main():
         return
     pane_id = os.environ.get("HERDR_PANE_ID")
     transcript_path = hook.get("transcript_path")
-    if os.environ.get("HERDR_ENV") != "1" or not pane_id or not transcript_path:
-        return
-    usage, context_data, settings = latest_metadata(transcript_path)
-    if not usage:
+    if os.environ.get("HERDR_ENV") != "1" or not pane_id:
         return
 
-    info = usage.get("info") or {}
+    usage = latest_usage(transcript_path) if transcript_path else None
+    info = (usage.get("info") or {}) if usage else {}
     total = (info.get("last_token_usage") or {}).get("total_tokens")
     context_window = info.get("model_context_window")
     context = total / context_window * 100 if total is not None and context_window else None
-    model = context_data.get("model")
-    effort = context_data.get("effort")
-    values = {
-        "context": format_usage("ctx", context) if context is not None else "",
-        "model": f"󰚩 {model}" if model else "",
-        "effort": f"󰓅 {effort}" if effort else "",
-        "fast_mode": "󱐋 fast"
-        if settings.get("service_tier") in {"fast", "priority"}
-        else "",
-    }
     args = [
         "herdr",
         "pane",
@@ -91,8 +50,12 @@ def main():
         "--source",
         "codex-usage",
     ]
-    for name, value in values.items():
-        args.extend(("--token", f"{name}={value}"))
+    if context is None:
+        args.extend(("--clear-token", "context"))
+    else:
+        args.extend(("--token", f"context={round(context)}%"))
+    for name in ("model", "effort", "fast_mode"):
+        args.extend(("--clear-token", name))
     subprocess.run(
         args,
         stdout=subprocess.DEVNULL,
