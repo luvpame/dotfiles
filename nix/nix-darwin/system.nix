@@ -54,8 +54,8 @@
         tilesize = 32;
         # ホットコーナー(左下)にMission Controlを設定する
         wvous-bl-corner = 2;
-        # ホットコーナー(左上)にスクリーンセーバーを設定する
-        wvous-tl-corner = 5;
+        # ホットコーナー(左上)に画面ロックを設定する
+        wvous-tl-corner = 13;
         # ホットコーナー(右上)にMission Controlを設定する
         wvous-tr-corner = 2;
       };
