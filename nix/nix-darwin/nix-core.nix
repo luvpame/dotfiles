@@ -15,9 +15,10 @@
         direnv = prev.direnv.overrideAttrs (_: {
           doCheck = false;
         });
-        # Temporary workaround for mise 2026.6.11 metadata test failing on darwin.
-        mise = prev.mise.overrideAttrs (_: {
+        # Temporary workaround for mise checks and the missing zlib-ng build dependency on darwin.
+        mise = prev.mise.overrideAttrs (oldAttrs: {
           doCheck = false;
+          nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [ prev.cmake ];
         });
         # Temporary workaround for statix snapshot tests failing on darwin.
         statix = prev.statix.overrideAttrs (_: {
