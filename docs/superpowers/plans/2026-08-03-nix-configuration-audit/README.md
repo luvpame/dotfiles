@@ -28,7 +28,6 @@
 | T05 | [GitとLuarocksの供給元を一本化する](05-cli-source-of-truth.md) | `PKG-08` | T01 |
 | T06 | [設定ファイルの所有境界を整理する](06-file-ownership-boundaries.md) | `FILE-01`, `FILE-04`, `FILE-05`, `FILE-06` | なし |
 | T07 | [Caskの更新責任とgreedy policyを揃える](07-cask-update-policy.md) | `BREW-13` | T01 |
-| T08 | [`ignoreArd`の効力を実機で確認する](08-validate-ignore-ard.md) | `SYS-05` | なし |
 | T09 | [Nixの既定重複と一時設定を整理する](09-clean-nix-defaults.md) | `CORE-04`, `CORE-06`, `CORE-11`, `TEMP-01`, `TEMP-02`, `TEMP-04` | T03, T04 |
 | T10 | [Flakeの検査とrevision metadataを整備する](10-flake-checks-metadata.md) | `FLAKE-04`, `FLAKE-05`, `FLAKE-06` | T01, T09 |
 | T11 | [statixとRTKのstale test overrideを外す](11-remove-stale-test-overrides.md) | `TEMP-03`（statix）, `PKG-02` | T01 |
@@ -52,7 +51,7 @@
 
 ## 推奨する実行のまとまり
 
-最初のまとまりでは、依存先のないT03、T06、T08に着手できる。
+最初のまとまりでは、依存先のないT03、T06に着手できる。
 T06の後にT23とT24を実施し、runtime stateをrepoから分離してからT01へ進む。
 T01が終わるとT02、T04、T05、T07、T11からT13、T21、T25へ進める。
 

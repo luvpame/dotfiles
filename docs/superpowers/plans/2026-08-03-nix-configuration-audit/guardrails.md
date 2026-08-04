@@ -45,8 +45,7 @@
   Claudeはflake packageの直接参照と専用cacheを維持し、global overlayだけを不要なら縮小する。
 - `SYS-01`は[T21](21-align-dock-aerospace.md)で扱う。
   `orientation = "right"`は変更せず、矛盾したコメントだけを直す。
-- `SYS-05`は[T08](08-validate-ignore-ard.md)で扱う。
-  現在の設定が機能すると確認できた場合だけ維持し、機能しない場合は修正せず停止する。
+- `SYS-05`の`ignoreArd`は現在の設定を維持し、別の画面録画方式へ効かせる変更は行わない。
 
 ## 全タスクに適用する保護条件
 
