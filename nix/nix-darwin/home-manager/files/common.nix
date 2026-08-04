@@ -11,9 +11,11 @@ let
 in
 {
   xdg.enable = true;
+
+  # Repository内で直接編集する設定は、activationなしで反映する。
+  # Applicationが同じdirectoryへ生成するstateは、Gitのignore対象として分離する。
   xdg.configFile = {
     fish.source = oos "${configRoot}/fish";
-    zsh.source = oos "${configRoot}/zsh";
     git.source = oos "${configRoot}/git";
     mise.source = oos "${configRoot}/mise";
     nvim.source = oos "${configRoot}/nvim";
@@ -21,6 +23,8 @@ in
     ziggity.source = oos "${configRoot}/ziggity";
     yazi.source = oos "${configRoot}/yazi";
     tmux.source = oos "${configRoot}/tmux";
+
+    # Runtime stateを含む親directory linkはT23とT24でfile単位へ分割する。
     herdr.source = oos "${configRoot}/herdr";
     "worktrunk/config.toml".source = oos "${configRoot}/worktrunk/config.toml";
     hunk.source = oos "${configRoot}/hunk";
@@ -37,6 +41,7 @@ in
     };
   };
 
+  # Agent設定もRepository内で直接編集し、各Agentへ即時反映する。
   home.file = {
     ".zshenv".source = oos "${configRoot}/zsh/.zshenv";
     ".agents".source = oos "${configRoot}/agents";
@@ -46,6 +51,8 @@ in
     ".codex/AGENTS.md".source = oos "${configRoot}/codex/AGENTS.md";
     ".claude/settings.json" = {
       source = oos "${configRoot}/claude/settings.json";
+
+      # Claudeはlocal stateを書き戻さないため、Repositoryを唯一の正とする。
       force = true;
     };
     ".claude/statusline.py".source = oos "${configRoot}/claude/statusline.py";

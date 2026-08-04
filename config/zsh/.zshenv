@@ -25,7 +25,3 @@ fi
 
 typeset -U path PATH
 export PATH
-
-if [[ -o interactive ]] && command -v tirith >/dev/null 2>&1; then
-  eval "$(tirith init --shell zsh)"
-fi

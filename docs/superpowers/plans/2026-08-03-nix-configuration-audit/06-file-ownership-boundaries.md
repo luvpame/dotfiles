@@ -1,6 +1,6 @@
 # T06 Home Managerのfile所有境界を整理する
 
-- Status: 未着手
+- Status: 実装済み（未適用）
 - Audit IDs: `FILE-01`, `FILE-04`, `FILE-05`, `FILE-06`
 - 原典: [Nix構成棚卸し](../../../research/nix-configuration-audit-2026-07-31.md)
 - 依存先: なし
@@ -34,21 +34,43 @@ local-only keyやapplicationによるfile置換が確認された場合は、man
 - `config/claude/settings.json`（書き込み主体の確認対象。原則として内容変更はしない）
 - `docs/adr/`（file ownershipを独立した決定として残す場合のみ）
 
+## 作業記録
+
+2026-08-04時点のtargetを、次の三種類に分類した。
+
+| 分類 | Target | 書き込み主体と方針 |
+| --- | --- | --- |
+| live編集 | `fish`、`git`、`mise`、`nvim`、`lazygit`、`ziggity`、`yazi`、`tmux`、`worktrunk/config.toml`、`wezterm`、`zed`、`cage`、`guard-and-guide`、`efm-langserver` | 人がRepository内のtracked fileを編集する。Applicationが同じdirectoryへ生成するstateはGitでignoreし、out-of-store linkを維持する。 |
+| live編集 | `.zshenv`、`.agents`、`.codex/agents`、`.codex/hooks`、`.codex/hooks.json`、`.codex/AGENTS.md`、`.claude/settings.json`、`.claude/statusline.py`、`.claude/hooks`、`.claude/skills`、`.claude/CLAUDE.md`、`.claude/RTK.md`、`.cursor/skills` | 人がRepository内で編集し、Agentへactivationなしで反映するためout-of-store linkを維持する。 |
+| store-backed | `direnv/direnvrc` | Home ManagerがNix store内の`nix-direnv`を参照する内容を生成する。 |
+| runtime stateを含む | `herdr`、`hunk` | Applicationが親directoryへstateを書き戻す。T23とT24でfile単位へ分割するまで親directory linkを維持する。 |
+
+実効`ZDOTDIR`は未設定で、Zshは`~/.zshenv`から起動していた。
+`~/.config/zsh`は同じRepository directoryを指す重複linkだったため、Home Managerの宣言から削除した。
+
+Tirithの実行fileとtracked設定は存在せず、空のlocal directory、条件付きinit、Repository guideの記述だけが残っていたため削除した。
+
+Claudeが別paneで稼働している間も、`~/.claude/settings.json`はRepositoryを指すsymlinkのままで、tracked fileのhashとGit差分は変わらなかった。
+local-only keyやfile置換は確認されなかったため、`force = true`を維持する。
+
+`nixfmt --check`、Zsh login shell、`just check`、`just build`、`git diff --check`は成功した。
+`just switch`は実行していない。
+
 ## 未チェックの実施手順
 
-- [ ] `xdg.configFile`と`home.file`の各targetを、live編集、静的設定、runtime stateの三分類で一覧にする。
-- [ ] applicationが書き戻すtargetと、人だけが編集するtargetを確認する。
-- [ ] 分類結果を`common.nix`の近接commentまたはADRへ記録する。
-- [ ] 実効`ZDOTDIR`とZsh startup fileの読込経路を確認する。
-- [ ] `ZDOTDIR`が未設定なら`xdg.configFile.zsh`を削除し、`home.file.".zshenv"`を維持する。
-- [ ] repo内と実効PATHでTirithを再導入していないことを確認する。
-- [ ] `config/zsh/.zshenv`の`tirith init` blockと`AGENTS.md`の存在しないdirectory記述を削除する。
-- [ ] Claude起動前後でsettings targetのtype、symlink先、Git差分を確認する。
-- [ ] repoを唯一の正と確認できれば`force = true`を維持し、その理由を設定の直前へ記す。
-- [ ] local-only dataがあれば削除や上書きをせず、file分割の設計が決まるまで停止する。
-- [ ] HerdrとHunkのdirectory linkには触れない。
-- [ ] 変更したコードへ`code-simplifier`スキルを適用する。
-- [ ] 変更したNixファイルを`nixfmt`で整形する。
+- [x] `xdg.configFile`と`home.file`の各targetを、live編集、静的設定、runtime stateの三分類で一覧にする。
+- [x] applicationが書き戻すtargetと、人だけが編集するtargetを確認する。
+- [x] 分類結果を`common.nix`の近接commentへ記録する。
+- [x] 実効`ZDOTDIR`とZsh startup fileの読込経路を確認する。
+- [x] `ZDOTDIR`が未設定のため`xdg.configFile.zsh`を削除し、`home.file.".zshenv"`を維持する。
+- [x] repo内と実効PATHでTirithを再導入していないことを確認する。
+- [x] `config/zsh/.zshenv`の`tirith init` blockと`AGENTS.md`の存在しないdirectory記述を削除する。
+- [x] Claude起動中にsettings targetのtype、symlink先、Git差分を二度確認する。
+- [x] repoを唯一の正と確認し、`force = true`を維持する理由を設定の直前へ記す。
+- [x] local-only dataがsettings fileへ書き込まれていないことを確認する。
+- [x] HerdrとHunkのdirectory linkには触れない。
+- [x] 変更したコードへ`code-simplifier`スキルを適用する。
+- [x] 変更したNixファイルを`nixfmt`で整形する。
 
 ## 検証コマンドと期待結果
 
