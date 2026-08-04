@@ -27,7 +27,7 @@ alias c := check
 
 [working-directory("nix")]
 clean:
-    nh clean all --keep-since 4d --keep 3
+    nh clean all --keep-since 30d --keep 3
 
 [working-directory("nix")]
 update-and-switch: update switch

@@ -1,6 +1,6 @@
 # T03 Nix storeの保持とGC方針を統一する
 
-- Status: 未着手
+- Status: 実装済み（未適用）
 - Audit IDs: `CORE-05`, `CORE-07`
 - 原典: [Nix構成棚卸し](../../../research/nix-configuration-audit-2026-07-31.md)
 - 依存先: なし
@@ -35,21 +35,36 @@ disk-pressure GCは、作業前にvolume容量、store使用量、空き容量�
 - `justfile`
 - この計画ファイル（測定値と最終選択を記録する場合）
 
+## 作業記録
+
+2026-08-04時点で、`/nix` volumeは926 GiB中38 GiBを使用し、445 GiBが空いていた。
+`/nix/store`の使用量は38 GiBだった。
+
+system profileには9世代が残っており、最古は2026-07-30、最新は2026-08-04だった。
+現在残っている世代より長い30日を保持期間として採用する。
+
+disk-pressure GCの閾値には、空き容量に対して十分小さく、通常のbuildで頻繁に跨がない10 GiBと20 GiBを採用する。
+Nix設定には、それぞれ10737418240 bytesと21474836480 bytesを指定する。
+
+棚卸しでは`CORE-05`と`CORE-07`の両方を実施すると回答済みで、repository内に30日より古いrollbackやoffline buildを必要とする運用記録はなかった。
+`nixfmt --check`、`just check`、`just build`、`just --dry-run clean`は成功した。
+実際のGCと`just switch`は実行していない。
+
 ## 未チェックの実施手順
 
-- [ ] `git status --short`で作業開始時の差分を記録する。
-- [ ] `df -h /nix/store`と`du -sh /nix/store`でvolumeの空き容量とstore使用量を測る。
-- [ ] `nix-env --list-generations --profile /nix/var/nix/profiles/system`でsystem generationの数と最古日を確認する。
-- [ ] 30日より古いgenerationへrollbackした実績またはoffline rebuild要件がないか、利用者の運用記録で確認する。
-- [ ] 測定値から`min-free`と`max-free`を選び、選定値、単位、選定理由をこの計画の作業記録へ追記する。
-- [ ] `nix.gc.automatic = true`と30日の削除optionを追加する。
-- [ ] 選定した`min-free`と`max-free`を`nix.settings`へbyte単位の整数として追加する。
-- [ ] `keep-outputs = true`を削除する。
-- [ ] `just clean`の`--keep-since`を30日に揃え、直近3世代を保つ指定を維持する。
-- [ ] `nix.optimise.automatic`には触れず、buildごとの`auto-optimise-store`を追加しない。
-- [ ] GCを手動実行する前に`nix store gc`の候補を確認し、利用者の許可なしにgenerationやstore pathを削除しない。
-- [ ] 変更したコードへ`code-simplifier`スキルを適用する。
-- [ ] 変更したNixファイルを`nixfmt`で整形する。
+- [x] `git status --short`で作業開始時の差分を記録する。
+- [x] `df -h /nix/store`と`du -sh /nix/store`でvolumeの空き容量とstore使用量を測る。
+- [x] system profileのsymlinkからsystem generationの数と最古日を確認する。
+- [x] 30日より古いgenerationへrollbackした実績またはoffline rebuild要件がないか、利用者の運用記録で確認する。
+- [x] 測定値から`min-free`と`max-free`を選び、選定値、単位、選定理由をこの計画の作業記録へ追記する。
+- [x] `nix.gc.automatic = true`と30日の削除optionを追加する。
+- [x] 選定した`min-free`と`max-free`を`nix.settings`へbyte単位の整数として追加する。
+- [x] `keep-outputs = true`を削除する。
+- [x] `just clean`の`--keep-since`を30日に揃え、直近3世代を保つ指定を維持する。
+- [x] `nix.optimise.automatic`には触れず、buildごとの`auto-optimise-store`を追加しない。
+- [x] 実際のGCを実行せず、generationやstore pathを削除しない。
+- [x] 変更したコードへ`code-simplifier`スキルを適用する。
+- [x] 変更したNixファイルを`nixfmt`で整形する。
 
 ## 検証コマンドと期待結果
 

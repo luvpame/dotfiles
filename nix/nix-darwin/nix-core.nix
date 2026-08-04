@@ -26,12 +26,17 @@
   # このホストで共有する Nix のコア設定。
   nix = {
     package = pkgs.nix;
+    gc = {
+      automatic = true;
+      options = "--delete-older-than 30d";
+    };
     optimise.automatic = true;
     settings = {
       experimental-features = "nix-command flakes";
       max-jobs = 8;
-      keep-outputs = true;
       keep-derivations = true;
+      min-free = 10737418240;
+      max-free = 21474836480;
       trusted-users = [
         "root"
         local.userName
