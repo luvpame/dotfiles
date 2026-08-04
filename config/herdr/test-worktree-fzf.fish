@@ -7,11 +7,20 @@ set --global repo_selection /private/tmp/repo
 set --global worktree_path /private/tmp/repo-worktrees/feature
 set --global workspace_initialized false
 set --global source_checkout_path /private/tmp/repo-worktrees/current
+set --global git_branch_refs
 
 function wt
     set --global --append wt_calls (string join \t -- $argv)
     set --global wt_herdr_env "$HERDR_ENV"
+    if test (count $git_branch_refs) -gt 0; and contains -- --create $argv
+        echo 'branch already exists on remote' >&2
+        return 1
+    end
     printf '{"action":"created","branch":"feature","path":"%s"}\n' "$worktree_path"
+end
+
+function git
+    printf '%s\n' $git_branch_refs
 end
 
 function ghq
@@ -25,7 +34,7 @@ function herdr
         case 'worktree list'
             set -l created_worktree
             if test (count $wt_calls) -gt 0
-                set created_worktree ',{"branch":"feature","path":"/private/tmp/repo-worktrees/feature","open_workspace_id":"worktree-workspace"}'
+                set created_worktree (printf ',{"branch":"feature","path":"%s","open_workspace_id":"worktree-workspace"}' "$worktree_path")
             end
             printf '{"result":{"source":{"repo_root":"/private/tmp/repo","source_checkout_path":"%s"},"worktrees":[{"branch":"main","path":"/private/tmp/repo"},{"branch":"current","path":"%s"},{"branch":"existing","path":"/private/tmp/repo-worktrees/existing"}%s]}}\n' \
                 "$source_checkout_path" "$source_checkout_path" "$created_worktree"
@@ -145,3 +154,18 @@ or begin
 end
 assert_contains (string join \t -- worktree list --cwd "$repo_selection" --json) $herdr_calls
 assert_contains (string join \t -- worktree open --cwd "$repo_selection" --path /private/tmp/repo --focus --json) $herdr_calls
+
+set --global --erase herdr_calls
+set --global --erase wt_calls
+set --global fzf_selection ' New Worktree'
+set --global worktree_path /private/tmp/repo-worktrees/remote-feature
+set --global git_branch_refs origin/remote-feature
+
+printf 'remote-feature\n' | herdr_worktree_fzf
+or begin
+    echo 'Failed to open an existing remote branch.' >&2
+    exit 1
+end
+
+assert_contains (string join \t -- -C /private/tmp/repo switch --no-cd remote-feature --format=json) $wt_calls
+assert_not_contains (string join \t -- -C /private/tmp/repo switch --no-cd --create remote-feature --format=json) $wt_calls
