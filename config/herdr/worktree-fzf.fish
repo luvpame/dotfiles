@@ -67,14 +67,15 @@ function herdr_worktree_fzf --description 'Open a Git worktree in Herdr'
         end
 
         set --local --export HERDR_ENV 1
+        git -C "$repo_root" fetch --all
+        or return
         set -l branch_refs (git -C "$repo_root" for-each-ref \
             --format='%(refname:short)' \
             refs/heads \
             refs/remotes)
         or return
         set -l create_option
-        if not contains -- "$worktree_name" $branch_refs; and \
-                not string match --quiet "*/$worktree_name" $branch_refs
+        if not contains -- "$worktree_name" $branch_refs; and not string match --quiet "*/$worktree_name" $branch_refs
             set create_option --create
         end
         set -l worktree_result (wt -C "$repo_root" switch \

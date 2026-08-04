@@ -1,5 +1,6 @@
 set --global herdr_calls
 set --global wt_calls
+set --global git_calls
 set --global fzf_candidates
 set --global fzf_selection ' New Worktree'
 set --global repo_candidates
@@ -20,6 +21,10 @@ function wt
 end
 
 function git
+    set --global --append git_calls (string join \t -- $argv)
+    if contains -- fetch $argv
+        return
+    end
     printf '%s\n' $git_branch_refs
 end
 
@@ -106,6 +111,7 @@ end
 assert_not_contains (string join \t -- main /private/tmp/repo) $fzf_candidates
 assert_contains (string join \t -- existing /private/tmp/repo-worktrees/existing) $fzf_candidates
 assert_contains (string join \t -- -C /private/tmp/repo switch --no-cd --create feature --format=json) $wt_calls
+assert_contains (string join \t -- -C /private/tmp/repo fetch --all) $git_calls
 test "$wt_herdr_env" = 1
 or begin
     echo 'HERDR_ENV was not exported to Worktrunk hooks.' >&2
@@ -157,6 +163,7 @@ assert_contains (string join \t -- worktree open --cwd "$repo_selection" --path 
 
 set --global --erase herdr_calls
 set --global --erase wt_calls
+set --global --erase git_calls
 set --global fzf_selection ' New Worktree'
 set --global worktree_path /private/tmp/repo-worktrees/remote-feature
 set --global git_branch_refs origin/remote-feature
@@ -169,3 +176,8 @@ end
 
 assert_contains (string join \t -- -C /private/tmp/repo switch --no-cd remote-feature --format=json) $wt_calls
 assert_not_contains (string join \t -- -C /private/tmp/repo switch --no-cd --create remote-feature --format=json) $wt_calls
+test "$git_calls[1]" = (string join \t -- -C /private/tmp/repo fetch --all)
+or begin
+    echo 'Remote refs were inspected before fetching.' >&2
+    exit 1
+end
