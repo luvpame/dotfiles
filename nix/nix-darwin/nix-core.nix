@@ -10,16 +10,7 @@
     config.allowUnfree = true;
     overlays = [
       inputs.claude-code-overlay.overlays.default
-      (final: prev: {
-        # Temporary workaround for direnv checkPhase hanging during switch.
-        direnv = prev.direnv.overrideAttrs (_: {
-          doCheck = false;
-        });
-        # Temporary workaround for mise checks and the missing zlib-ng build dependency on darwin.
-        mise = prev.mise.overrideAttrs (oldAttrs: {
-          doCheck = false;
-          nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [ prev.cmake ];
-        });
+      (_: prev: {
         # Temporary workaround for statix snapshot tests failing on darwin.
         statix = prev.statix.overrideAttrs (_: {
           doCheck = false;
