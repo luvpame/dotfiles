@@ -167,6 +167,12 @@ trusted_hash = "sha256:1423b56c1322f96c8f74c51c1e7ae9a047b904c1fa43ee9165d462fd7
 [hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:session_start:0:1"]
 trusted_hash = "sha256:b0d480f84b028d26ee9a2384f70653cac0565870b0543aa317e4c67d5d75e3d5"
 
+[hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:session_start:0:2"]
+trusted_hash = "sha256:815c0202454ffc1a1fc6e9677d843f14e59484edc550c0e78c90fe27f19943e8"
+
+[hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:stop:0:1"]
+trusted_hash = "sha256:f8c47543b7394f34c7e18cf45d28d9412e45d338453c1eb12db1a1b29ca7eead"
+
 [desktop]
 appearanceTheme = "system"
 appearanceLightCodeThemeId = "catppuccin"
