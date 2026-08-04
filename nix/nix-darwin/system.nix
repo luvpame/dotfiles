@@ -1,5 +1,10 @@
 { local, ... }:
 {
+  networking.applicationFirewall = {
+    blockAllIncoming = false;
+    enable = true;
+  };
+
   system = {
     stateVersion = 6;
     primaryUser = local.userName;

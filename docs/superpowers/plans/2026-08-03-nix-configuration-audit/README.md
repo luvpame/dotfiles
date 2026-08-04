@@ -39,7 +39,6 @@
 | T16 | [Nixのtrustとunfree許可を縮小する](16-restrict-nix-trust-unfree.md) | `CORE-02`, `CORE-03`, `PKG-07` | T15 |
 | T17 | [relaxed sandboxを導入する](17-enable-relaxed-sandbox.md) | `CORE-01` | T11, T12, T13, T15, T16, T18 |
 | T18 | [`im-select`を固定してitem単位でtrustする](18-pin-im-select-and-trust-items.md) | `BREW-04`, `BREW-05` | T14 |
-| T19 | [Application Firewallを有効にする](19-enable-application-firewall.md) | `SYS-03` | なし |
 | T21 | [DockとAeroSpaceのdisplay設定を整合させる](21-align-dock-aerospace.md) | `SYS-01`, `SYS-15` | T01 |
 | T22 | [Home Manager Appsを`copyApps`へ移す](22-migrate-home-manager-copy-apps.md) | `HM-02` | T02 |
 | T23 | [Herdrのruntime stateをrepoから分離する](23-separate-herdr-runtime-state.md) | `FILE-02` | T06 |
@@ -53,7 +52,7 @@
 
 ## 推奨する実行のまとまり
 
-最初のまとまりでは、依存先のないT03、T06、T08、T19に着手できる。
+最初のまとまりでは、依存先のないT03、T06、T08に着手できる。
 T06の後にT23とT24を実施し、runtime stateをrepoから分離してからT01へ進む。
 T01が終わるとT02、T04、T05、T07、T11からT13、T21、T25へ進める。
 
