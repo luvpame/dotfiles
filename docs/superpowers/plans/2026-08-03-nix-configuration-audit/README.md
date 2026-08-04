@@ -21,32 +21,32 @@
 
 | ID | 実装計画 | 監査ID | 依存 |
 | --- | --- | --- | --- |
-| T01 | [マルチホスト定義をtracked registryへ移す](01-multi-host-registry.md) | `FLAKE-03`, `FLAKE-07`, `SYS-14` | なし |
+| T01 | [ホストから仕事用と私用の構成を一意に選ぶ](01-multi-host-registry.md) | `FLAKE-03`, `FLAKE-07`, `SYS-07`, `SYS-14`, `BREW-03` | T06, T23, T24 |
 | T02 | [Home Managerの互換性方針を確定する](02-home-manager-baseline.md) | `HM-01`, `HM-03`, `HM-04` | T01 |
 | T03 | [Nix storeの保持とGCを統一する](03-nix-store-lifecycle.md) | `CORE-05`, `CORE-07` | なし |
 | T04 | [`max-jobs`を実測して設定する](04-max-jobs-benchmark.md) | `CORE-08` | T01 |
 | T05 | [GitとLuarocksの供給元を一本化する](05-cli-source-of-truth.md) | `PKG-08` | T01 |
 | T06 | [設定ファイルの所有境界を整理する](06-file-ownership-boundaries.md) | `FILE-01`, `FILE-04`, `FILE-05`, `FILE-06` | なし |
-| T07 | [Caskの更新責任とgreedy policyを揃える](07-cask-update-policy.md) | `BREW-13` | なし |
+| T07 | [Caskの更新責任とgreedy policyを揃える](07-cask-update-policy.md) | `BREW-13` | T01 |
 | T08 | [`ignoreArd`の効力を実機で確認する](08-validate-ignore-ard.md) | `SYS-05` | なし |
 | T09 | [Nixの既定重複と一時設定を整理する](09-clean-nix-defaults.md) | `CORE-04`, `CORE-06`, `CORE-11`, `TEMP-01`, `TEMP-02`, `TEMP-04` | T03, T04 |
 | T10 | [Flakeの検査とrevision metadataを整備する](10-flake-checks-metadata.md) | `FLAKE-04`, `FLAKE-05`, `FLAKE-06` | T01, T09 |
-| T11 | [statixとRTKのstale test overrideを外す](11-remove-stale-test-overrides.md) | `TEMP-03`（statix）, `PKG-02` | なし |
-| T12 | [Tree-sitter CLIをnixpkgs版へ置き換える](12-use-nixpkgs-tree-sitter.md) | `PKG-01` | なし |
-| T13 | [未使用のsite2skillとPiqueを削除する](13-remove-unused-custom-packages.md) | `PKG-03`, `PKG-05` | なし |
-| T14 | [Homebrew formulaとprefixを整理する](14-clean-homebrew-formulas.md) | `BREW-02`, `BREW-06`, `BREW-07`, `BREW-08`, `BREW-12` | T05 |
+| T11 | [statixとRTKのstale test overrideを外す](11-remove-stale-test-overrides.md) | `TEMP-03`（statix）, `PKG-02` | T01 |
+| T12 | [Tree-sitter CLIをnixpkgs版へ置き換える](12-use-nixpkgs-tree-sitter.md) | `PKG-01` | T01 |
+| T13 | [未使用のsite2skillとPiqueを削除する](13-remove-unused-custom-packages.md) | `PKG-03`, `PKG-05` | T01 |
+| T14 | [Homebrew formulaとprefixを整理する](14-clean-homebrew-formulas.md) | `BREW-02`, `BREW-06`, `BREW-07`, `BREW-08`, `BREW-12` | T01, T05 |
 | T15 | [nixpkgsとnix-darwin inputを更新する](15-update-nixpkgs-nix-darwin.md) | `FLAKE-01`, `FLAKE-02` | T10, T11, T12, T13 |
 | T16 | [Nixのtrustとunfree許可を縮小する](16-restrict-nix-trust-unfree.md) | `CORE-02`, `CORE-03`, `PKG-07` | T15 |
 | T17 | [relaxed sandboxを導入する](17-enable-relaxed-sandbox.md) | `CORE-01` | T11, T12, T13, T15, T16, T18 |
 | T18 | [`im-select`を固定してitem単位でtrustする](18-pin-im-select-and-trust-items.md) | `BREW-04`, `BREW-05` | T14 |
 | T19 | [Application Firewallを有効にする](19-enable-application-firewall.md) | `SYS-03` | なし |
 | T20 | [画面ロック直後の再認証を必須にする](20-require-password-after-lock.md) | `SYS-04` | なし |
-| T21 | [DockとAeroSpaceのdisplay設定を整合させる](21-align-dock-aerospace.md) | `SYS-01`, `SYS-15` | なし |
+| T21 | [DockとAeroSpaceのdisplay設定を整合させる](21-align-dock-aerospace.md) | `SYS-01`, `SYS-15` | T01 |
 | T22 | [Home Manager Appsを`copyApps`へ移す](22-migrate-home-manager-copy-apps.md) | `HM-02` | T02 |
 | T23 | [Herdrのruntime stateをrepoから分離する](23-separate-herdr-runtime-state.md) | `FILE-02` | T06 |
 | T24 | [Hunkのruntime stateをrepoから分離する](24-separate-hunk-runtime-state.md) | `FILE-03` | T06, T23 |
 | T25 | [Fish login shellをnix-darwinへ移管する](25-manage-fish-login-shell.md) | `SHELL-01` | T01 |
-| T26 | [direnvとnix-direnvをmoduleへ移管する](26-enable-direnv-module.md) | `SHELL-02`, `TEMP-03`（direnv） | T11 |
+| T26 | [direnvとnix-direnvをmoduleへ移管する](26-enable-direnv-module.md) | `SHELL-02`, `TEMP-03`（direnv） | T01, T11 |
 | T27 | [FisherからHome Manager Fish moduleへ移す](27-migrate-fisher-to-home-manager.md) | `SHELL-04`, `SHELL-06` | T02, T25, T26 |
 | T28 | [廃止済みCodex appを安全に撤去する](28-remove-codex-app-safely.md) | `BREW-01` | T14 |
 | T29 | [HackGenとMonaspaceをNix管理へ移す](29-manage-fonts-with-nix.md) | `BREW-09` | T14, T21 |
@@ -54,8 +54,9 @@
 
 ## 推奨する実行のまとまり
 
-最初のまとまりでは、依存先のないT01、T03、T06、T07、T08、T11からT13、T19からT21までに着手できる。
-T01が終わるとT02、T04、T05、T25へ進める。
+最初のまとまりでは、依存先のないT03、T06、T08、T19、T20に着手できる。
+T06の後にT23とT24を実施し、runtime stateをrepoから分離してからT01へ進む。
+T01が終わるとT02、T04、T05、T07、T11からT13、T21、T25へ進める。
 
 T03とT04の結果を反映してT09を終えた後、T10からT16までを進める。
 packageとFlakeの基線が安定してから、T17のsandboxを導入する。
@@ -63,7 +64,8 @@ packageとFlakeの基線が安定してから、T17のsandboxを導入する。
 T18からT21までは、securityまたはmacOSの動作を変えるため、それぞれを独立して適用する。
 一つの変更で問題が出ても、ほかの設定を戻さずに切り分けられる。
 
-T22からT29までは、アプリ、shell、runtime stateを移行する。
+T23とT24はT01の前にruntime stateを分離する。
+T22とT25からT29までは、アプリとshellを移行する。
 データ退避やlogoutが必要になるため、通常のNix整理と同じ適用単位にはしない。
 
 T30は、選択して実施したタスクだけを対象にする。

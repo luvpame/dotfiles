@@ -3,7 +3,7 @@
 - **Status**: 未着手
 - **Audit IDs**: `SHELL-01`
 - **原典**: [Nix構成棚卸し](../../../research/nix-configuration-audit-2026-07-31.md)
-- **依存先**: T01（マルチホスト定義）
+- **依存先**: T01（ホストから仕事用と私用の構成を一意に選ぶ）
 
 ## Goal
 
@@ -25,7 +25,7 @@ FisherからHome Manager Fish moduleへの移行はT27で行う。
 
 - Modify: `nix/nix-darwin/system.nix`
 - Modify: T01で確定したuser module（`nix/nix-darwin/users.nix`を維持した場合は同ファイル）
-- Modify: `nix/nix-darwin/home-manager/packages/common.nix`
+- Modify: `nix/inventory/software.nix`
 - Delete: `script/set-fish-default.sh`
 
 ## 実施手順
@@ -58,7 +58,7 @@ grep -n '/fish$' /etc/shells
 ```bash
 nixfmt --check \
   nix/nix-darwin/system.nix \
-  nix/nix-darwin/home-manager/packages/common.nix
+  nix/inventory/software.nix
 # T01で確定したuser moduleもnixfmt --checkの対象へ加える。
 just check
 just build

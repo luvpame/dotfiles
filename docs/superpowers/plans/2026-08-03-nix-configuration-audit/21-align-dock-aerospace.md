@@ -3,7 +3,7 @@
 - **Status**: 未着手
 - **Audit IDs**: `SYS-01`, `SYS-15`
 - **原典**: [Nix構成棚卸し](../../../research/nix-configuration-audit-2026-07-31.md)
-- **依存先**: なし
+- **依存先**: T01（ホストから仕事用と私用の構成を一意に選ぶ）
 
 ## Goal
 
@@ -54,13 +54,13 @@ just build
 期待結果は、両方が終了コード0で完了することである。
 
 ```bash
-config_name="$(nix eval --file nix/local.nix darwinConfigName --raw)"
-nix eval --raw "path:./nix#darwinConfigurations.${config_name}.config.system.defaults.dock.orientation"
-nix eval --json "path:./nix#darwinConfigurations.${config_name}.config.system.defaults.spaces.spans-displays"
+config_name="$(scutil --get LocalHostName)"
+nix eval --raw "./nix#darwinConfigurations.${config_name}.config.system.defaults.dock.orientation"
+nix eval --json "./nix#darwinConfigurations.${config_name}.config.system.defaults.spaces.spans-displays"
 ```
 
 期待結果は、一つ目が`right`、二つ目が`true`を返すことである。
-`nix/local.nix`の値そのものはログや文書へ転記しない。
+`config_name`は現在の`LocalHostName`と一致する。
 
 適用を明示された後だけ、次を実行する。
 

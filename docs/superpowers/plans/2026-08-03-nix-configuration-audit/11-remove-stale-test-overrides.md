@@ -3,7 +3,7 @@
 - Status: 未着手
 - Audit IDs: TEMP-03（statixのみ）、PKG-02
 - 原典: [Nix構成棚卸し](../../../research/nix-configuration-audit-2026-07-31.md)
-- 依存先: なし。TEMP-03のdirenv部分はT26へ委譲する。
+- 依存先: T01。TEMP-03のdirenv部分はT26へ委譲する。
 
 ## Goal
 
@@ -19,7 +19,7 @@ Home Managerのpackage listではRTKのoverrideAttrsを外し、pkgs.rtkをそ�
 ## 対象ファイル
 
 - 変更: nix/nix-darwin/nix-core.nix
-- 変更: nix/nix-darwin/home-manager/packages/common.nix
+- 変更: nix/inventory/software.nix
 
 ## 未チェックの実施手順
 
@@ -34,7 +34,7 @@ Home Managerのpackage listではRTKのoverrideAttrsを外し、pkgs.rtkをそ�
 ## 検証コマンドと期待結果
 
 ~~~console
-nixfmt --check nix/nix-darwin/nix-core.nix nix/nix-darwin/home-manager/packages/common.nix
+nixfmt --check nix/inventory/software.nix nix/nix-darwin/nix-core.nix
 just check
 just build
 ~~~

@@ -3,7 +3,7 @@
 - Status: 未着手
 - Audit IDs: PKG-03、PKG-05
 - 原典: [Nix構成棚卸し](../../../research/nix-configuration-audit-2026-07-31.md)
-- 依存先: なし
+- 依存先: T01
 
 ## Goal
 
@@ -17,7 +17,7 @@ package定義も削除する。
 
 ## 対象ファイル
 
-- 変更: nix/nix-darwin/home-manager/packages/common.nix
+- 変更: nix/inventory/software.nix
 - 削除: nix/pkgs/site2skill/default.nix
 - 削除: nix/pkgs/pique/default.nix
 - 変更: nix/AGENTS.md
@@ -25,7 +25,7 @@ package定義も削除する。
 ## 未チェックの実施手順
 
 - [ ] 作業開始時にactiveなNix構成から両packageへの参照を再検索する。
-- [ ] commonPackagesからsite2skillとPiqueのcallPackageを削除する。
+- [ ] software inventoryのcommon `nixPackages`からsite2skillとPiqueのcallPackageを削除する。
 - [ ] 両方のpackage定義を削除する。
 - [ ] nix/AGENTS.mdのcustom package説明と例を、削除後の実態へ更新する。
 - [ ] 過去のPique設計書や調査記録を削除していないことを確認する。
@@ -37,7 +37,7 @@ package定義も削除する。
 
 ~~~console
 rg -n "site2skill|pkgs/pique|callPackage .*pique" nix
-nixfmt --check nix/nix-darwin/home-manager/packages/common.nix
+nixfmt --check nix/inventory/software.nix
 just check
 just build
 ~~~
@@ -55,7 +55,7 @@ just build
 
 ## ロールバック
 
-削除した2つのpackage定義とcommonPackagesの参照を、このタスクの開始時点の内容で戻す。
+削除した2つのpackage定義とsoftware inventoryの参照を、このタスクの開始時点の内容で戻す。
 Pique.appが必要になった場合は前のdarwin generationへ戻してから再導入を判断する。
 
 ## 実行上の規約

@@ -3,7 +3,7 @@
 - **Status**: 未着手
 - **Audit IDs**: `BREW-01`
 - **原典**: [Nix構成棚卸し](../../../research/nix-configuration-audit-2026-07-31.md)
-- **依存先**: T14（Homebrew formulaとprefixの整理）
+- **依存先**: T01（ホストからroleを選ぶ構成）、T14（Homebrew formulaとprefixの整理）
 
 ## Goal
 
@@ -12,8 +12,8 @@
 
 ## Architecture
 
-現在の`homebrew.onActivation.cleanup = "zap"`は全体方針として維持する。
-そのため、宣言だけを削除して`just switch`すると、旧appの関連データまで消す可能性がある。
+T01の完了後は`homebrew.onActivation.cleanup = "uninstall"`になっている。
+宣言だけを削除して`just switch`してもzapは実行されないが、退避前に旧appを自動撤去させない。
 
 最初にChatGPT appで必要なstateを確認し、旧Codex appの関連データをrepo外へ退避する。
 次に、ユーザーの明示的な承認を受けて`brew uninstall --cask codex-app`を一度だけ実行する。
@@ -24,12 +24,12 @@ terminal用の`codex` caskと新しい`chatgpt` caskは維持する。
 
 ## 対象ファイル
 
-- Modify: `nix/nix-darwin/homebrew/common.nix`
+- Modify: `nix/inventory/software.nix`
 - External state backup: 旧Codex appに関連する`~/Library`配下のdata
 
 ## 実施手順
 
-- [ ] T14が完了し、`cleanup = "zap"`を維持する方針を再確認する。
+- [ ] T01とT14が完了し、`cleanup = "uninstall"`で`zap`を使わない方針を再確認する。
 - [ ] `brew info --json=v2 --cask codex-app`で旧caskのartifactsとzap対象を記録する。
 - [ ] `brew list --cask codex-app`、`brew list --cask chatgpt`、`brew list --cask codex`で三者を区別する。
 - [ ] ChatGPT desktop appへloginし、必要な履歴、project、設定へアクセスできることを手動確認する。
@@ -39,8 +39,8 @@ terminal用の`codex` caskと新しい`chatgpt` caskは維持する。
 - [ ] ユーザーからapp削除の明示的な承認を得る。
 - [ ] `brew uninstall --cask codex-app`を`--zap`なしで一度だけ実行する。
 - [ ] 通常uninstall後も関連dataと退避copyが残り、ChatGPT appが正常起動することを確認する。
-- [ ] `nix/nix-darwin/homebrew/common.nix`から`"codex-app"`だけを削除し、`"codex"`と`"chatgpt"`を維持する。
-- [ ] コード変更に`code-simplifier`を適用し、`zap` policyやほかのcaskを変えていないことを確認する。
+- [ ] `nix/inventory/software.nix`から`"codex-app"`だけを削除し、`"codex"`と`"chatgpt"`を維持する。
+- [ ] コード変更に`code-simplifier`を適用し、cleanup policyやほかのcaskを変えていないことを確認する。
 - [ ] Nixの静的検証とbuildを完了する。
 - [ ] ユーザーが適用を明示した場合だけ`just switch`を実行する。
 - [ ] 退避directoryは移行完了後もこのタスクでは削除しない。
@@ -74,7 +74,7 @@ command -v codex
 期待結果は、一つ目だけが非0で終了し、ChatGPT app、terminal用Codex、`codex` commandは残ることである。
 
 ```bash
-nixfmt --check nix/nix-darwin/homebrew/common.nix
+nixfmt --check nix/inventory/software.nix
 just check
 just build
 ```
@@ -82,11 +82,12 @@ just build
 期待結果は、すべて終了コード0で完了することである。
 
 ```bash
-rg -n '"codex-app"|"codex"|"chatgpt"|cleanup = "zap"' nix/nix-darwin/homebrew/common.nix
+rg -n '"codex-app"|"codex"|"chatgpt"' nix/inventory/software.nix
+rg -n 'cleanup = "uninstall"' nix/nix-darwin/homebrew/common.nix
 git diff --check
 ```
 
-期待結果は、`codex-app`だけがなく、`codex`、`chatgpt`、現在のcleanup policyが残り、空白エラーがないことである。
+期待結果は、`codex-app`だけがなく、`codex`、`chatgpt`、`cleanup = "uninstall"`が残り、空白エラーがないことである。
 
 ## 完了条件
 

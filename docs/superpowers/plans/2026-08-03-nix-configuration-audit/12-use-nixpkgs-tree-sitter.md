@@ -3,7 +3,7 @@
 - Status: 未着手
 - Audit IDs: PKG-01
 - 原典: [Nix構成棚卸し](../../../research/nix-configuration-audit-2026-07-31.md)
-- 依存先: なし。T15より先に完了させる。
+- 依存先: T01。T15より先に完了させる。
 
 ## Goal
 
@@ -17,14 +17,14 @@ nix/AGENTS.mdのcustom package例も現状に合わせる。
 
 ## 対象ファイル
 
-- 変更: nix/nix-darwin/home-manager/packages/common.nix
+- 変更: nix/inventory/software.nix
 - 削除: nix/pkgs/tree-sitter-cli/default.nix
 - 変更: nix/AGENTS.md
 
 ## 未チェックの実施手順
 
 - [ ] 固定nixpkgsのpkgs.tree-sitterがCLIとmainProgramを持つことを評価結果で再確認する。
-- [ ] commonPackagesの独自callPackageをtree-sitterへ置き換える。
+- [ ] software inventoryのcommon `nixPackages`にある独自callPackageをtree-sitterへ置き換える。
 - [ ] nix/pkgs/tree-sitter-cli/default.nixを削除する。
 - [ ] nix/AGENTS.mdからtree-sitter-cliをcustom package例として扱う記述を外す。
 - [ ] 変更したNixファイルへnixfmtを実行する。
@@ -34,7 +34,7 @@ nix/AGENTS.mdのcustom package例も現状に合わせる。
 ## 検証コマンドと期待結果
 
 ~~~console
-nixfmt --check nix/nix-darwin/home-manager/packages/common.nix
+nixfmt --check nix/inventory/software.nix
 just check
 just build
 ~~~

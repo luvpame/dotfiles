@@ -76,7 +76,7 @@ just build
 期待結果は、両方が終了コード0で完了し、対象darwin configurationのbuild結果を得られることである。
 
 ```bash
-nix flake show path:./nix
+nix flake show ./nix
 ```
 
 期待結果は、対象darwin configuration、formatter、実施したchecksが評価できることである。

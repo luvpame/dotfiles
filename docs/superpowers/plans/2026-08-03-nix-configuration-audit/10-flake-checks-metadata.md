@@ -3,7 +3,7 @@
 - Status: 未着手
 - Audit IDs: `FLAKE-04`, `FLAKE-05`, `FLAKE-06`
 - 原典: [Nix構成棚卸し](../../../research/nix-configuration-audit-2026-07-31.md)
-- 依存先: `T01 マルチホスト構成を tracked host registry へ移行する`, `T09 Nixの既定重複と一時無効化を整理する`
+- 依存先: `T01 ホストから仕事用と私用の構成を一意に選ぶ`, `T09 Nixの既定重複と一時無効化を整理する`
 
 ## Goal
 
@@ -17,18 +17,18 @@ buildしたdarwin systemへGit revisionを記録し、`nix fmt`と`nix flake che
 revisionの由来がflake自身だと分かるよう、`flake.nix`のmodule listに小さなinline moduleとして置き、既存の`system.nix`にある未コミットHot Corner差分へ触れない。
 
 formatterは各対応platformへ`nixfmt-tree`を公開する。
-checksには全tracked hostのdarwin system closure、format check、`deadnix`、`statix`を含める。
+T01で追加した全tracked hostのdarwin system closure checkを維持し、format check、`deadnix`、`statix`を加える。
 lint checkはrepository sourceを読み取り専用で検査し、formatやfileを書き換えないderivationにする。
 
 T01のregistryからhostとplatformを得て、host名や`aarch64-darwin`を複数箇所へ重複記述しない。
-checks追加後に使われる`self`と`nixpkgs`は残し、実際に未使用の`pkgs`、overlayの第一引数、Homebrewの`lib`、private packageの`inputs`だけを削る。
+checks追加後に使われる`self`と`nixpkgs`は残し、実際に未使用のmodule引数とbindingだけを削る。
 
 ## 対象ファイル
 
 - `nix/flake.nix`
 - `nix/nix-darwin/nix-core.nix`
 - `nix/nix-darwin/homebrew/common.nix`
-- `nix/nix-darwin/home-manager/packages/private.nix`
+- `nix/inventory/software.nix`
 - `nix/flake.lock`（input更新が必要な場合だけcommandで更新し、手動編集しない）
 - `nix/nix-darwin/system.nix`（既存差分の保全確認だけ。編集しない）
 
@@ -38,7 +38,7 @@ checks追加後に使われる`self`と`nixpkgs`は残し、実際に未使用�
 - [ ] T01のregistryから対応platformと全darwin configurationを列挙できるhelperを再利用する。
 - [ ] `system.configurationRevision = self.rev or self.dirtyRev or null`をinline moduleで全構成へ渡す。
 - [ ] 各対応platformの`formatter`へ`nixfmt-tree`を公開する。
-- [ ] 全tracked hostのsystem closureを`checks`へ公開する。
+- [ ] T01で公開した全tracked hostのsystem closure checkを維持する。
 - [ ] repositoryを変更しないformat check、`deadnix` check、`statix` checkを追加する。
 - [ ] check名がhost間で衝突せず、失敗時に対象が分かる名前へする。
 - [ ] `deadnix`と`statix`を実行し、behaviorを変えない未使用bindingだけを削除する。
@@ -51,8 +51,8 @@ checks追加後に使われる`self`と`nixpkgs`は残し、実際に未使用�
 
 ```sh
 cd nix
-nix flake show path:.
-nix fmt path:.
+nix flake show .
+nix fmt .
 ```
 
 期待結果: `formatter`とhostごとの`checks`が表示され、`nix fmt`が成功する。
@@ -67,7 +67,7 @@ statix check .
 期待結果: 今回対象にした未使用bindingと静的lint errorが残っていない。
 
 ```sh
-nixfmt nix/flake.nix nix/nix-darwin/nix-core.nix nix/nix-darwin/homebrew/common.nix nix/nix-darwin/home-manager/packages/private.nix
+nixfmt nix/flake.nix nix/inventory/software.nix nix/nix-darwin/nix-core.nix nix/nix-darwin/homebrew/common.nix
 just check
 just build
 git diff --check

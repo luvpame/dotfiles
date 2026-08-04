@@ -14,14 +14,14 @@ Claudeは回答どおりclaude-code-overlayのflake packageを直接使い、専
 
 nix.settings.trusted-usersの明示設定を削除し、Nixの既定でrootだけをtrusted userにする。
 nixpkgs.config.allowUnfreeはallowUnfreePackagesへ置き換え、現在のroot nixpkgsで必要な7zzだけを許可する。
-Claudeはglobal overlay経由のpkgs.claude-codeではなく、claude-code-overlay inputのdefault packageをwork profileから直接参照する。
+Claudeはglobal overlay経由のpkgs.claude-codeではなく、claude-code-overlay inputのdefault packageをsoftware inventoryのwork scopeから直接参照する。
 claude-code-overlay input、extra-substituters、extra-trusted-public-keysは削除しない。
 PKG-07は現状維持の注記に分けず、このタスクで供給方法まで確定する。
 
 ## 対象ファイル
 
 - 変更: nix/nix-darwin/nix-core.nix
-- 変更: nix/nix-darwin/home-manager/packages/work.nix
+- 変更: nix/inventory/software.nix
 - 確認のみ: nix/flake.nix
 
 ## 未チェックの実施手順
@@ -30,7 +30,7 @@ PKG-07は現状維持の注記に分けず、このタスクで供給方法ま�
 - [ ] Claudeのdirect flake packageがaarch64-darwinで評価できることを確認する。
 - [ ] allowUnfreeをallowUnfreePackagesの7zz allowlistへ置き換える。
 - [ ] claude-code-overlayのglobal overlay登録を削除する。
-- [ ] work profileのClaude packageをflake inputへの直接参照へ変更する。
+- [ ] work scopeのClaude packageをflake inputへの直接参照へ変更する。
 - [ ] trusted-usersの明示設定を削除し、通常ユーザー名をdaemonのtrusted userへ残さない。
 - [ ] Claude用substituterと公開鍵が変更されていないことを確認する。
 - [ ] 変更したNixファイルへnixfmtを実行する。
@@ -41,7 +41,7 @@ PKG-07は現状維持の注記に分けず、このタスクで供給方法ま�
 
 ~~~console
 nix eval --raw --impure --expr 'let f = builtins.getFlake (toString ./nix); pkgs = f.inputs.nixpkgs.legacyPackages.aarch64-darwin; in pkgs.lib.getName pkgs._7zz-rar'
-nixfmt --check nix/nix-darwin/nix-core.nix nix/nix-darwin/home-manager/packages/work.nix
+nixfmt --check nix/inventory/software.nix nix/nix-darwin/nix-core.nix
 just check
 just build
 ~~~

@@ -13,7 +13,6 @@
 - `SHELL-03`: TPMからHome Manager tmux moduleへ移行しない。
 - `BREW-10`: `mo`と`mole`の構成は変更しない。
 - `SYS-02`: `IsAnalog = false`を追加しない。
-- `SYS-07`: host identityをNixから宣言しない。
 
 ## 現在の方針を維持する項目
 
@@ -22,14 +21,16 @@
 - `CORE-12`: `accept-flake-config = false`などの安全側の既定を維持する。
 - `FLAKE-08`: inputの`follows`とlock集約を維持する。
 - `FLAKE-09`: CritのGit URLとHunkのcommit pinを、解除条件が成立するまで維持する。
-- `PKG-10`: active packageとprofileの組み立てを維持する。
+- `PKG-10`: commonと選択roleのpackageを組み立てる方針を維持する。
+  宣言場所はT01でsoftware inventoryへ集約する。
 - `HM-05`: global package setとbackup policyを維持する。
 - `SHELL-05`: Yaziの現在の管理方法を維持する。
-- `BREW-03`: `autoUpdate`、`upgrade`、`zap`のactivation policyを維持する。
+- `BREW-03`: `autoUpdate`と`upgrade`を維持する。
+  cleanup policyはT01で`check`を経て`uninstall`へ移行し、通常運用では`zap`を使わない。
 - `BREW-11`: WorktrunkはHomebrew版を維持する。
 - `BREW-14`: active dependencyを維持する。
 - `BREW-15`: GUIとhardware packageを削除せず、現在の構成を維持する。
-- `BREW-16`: profile schemaのplaceholderを維持する。
+- `BREW-16`: workとprivateの空の項目もsoftware inventoryの共通schemaとして維持する。
 - `SYS-06`: PAM Touch IDを維持し、Watch専用moduleは追加しない。
 - `SYS-08`: AeroSpaceとmacOS native tilingの現在の方針を維持する。
 - `SYS-09`: desktopとDockの現在の宣言を維持する。
@@ -54,5 +55,5 @@
 - HerdrとHunkのruntime stateは削除せず、移行前に退避する。
 - `codex-app`の撤去では`zap`を使用しない。
 - Fish移行では、親directory linkとHome Manager管理の子ファイルを混在させない。
-- `programs.mas.cleanup`を有効にしない。
+- `programs.mas.cleanup`は、T01でMac App Storeの全アプリを台帳へ移し、MDMなど別の管理主体がないと確認したホストだけで有効にする。
 - コミットはユーザーから明示的に依頼された場合だけ作成する。

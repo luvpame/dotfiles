@@ -3,13 +3,13 @@
 - Status: 未着手
 - Audit IDs: `BREW-13`
 - 原典: [Nix構成棚卸し](../../../research/nix-configuration-audit-2026-07-31.md)
-- 依存先: なし
+- 依存先: `T01 ホストから仕事用と私用の構成を一意に選ぶ`
 
 ## Goal
 
 自己更新するCaskをapplicationとHomebrewのどちらが更新するか決め、二重更新を避ける。
 
-現在の`autoUpdate = true`、`upgrade = true`、`cleanup = "zap"`は維持する。
+T01で確定した`autoUpdate = true`、`upgrade = true`、`cleanup = "uninstall"`は維持する。
 `greedy`は全体へ一律適用せず、Homebrewに更新を任せると決めたCaskだけへ設定する。
 
 ## Architecture
@@ -23,21 +23,20 @@ globalな`homebrew.greedyCasks`は使わない。
 
 ## 対象ファイル
 
+- `nix/inventory/software.nix`
 - `nix/nix-darwin/homebrew/common.nix`
-- `nix/nix-darwin/homebrew/private.nix`
-- `nix/nix-darwin/homebrew/work.nix`
 - この計画ファイル（Caskごとの判断を記録する）
 
 ## 未チェックの実施手順
 
-- [ ] common、private、workのCask名をtracked fileだけから抽出する。
+- [ ] `software.nix`のcommon、private、workからCask名を抽出する。
 - [ ] 各Caskの`auto_updates`、version、更新方法を`brew info --cask --json=v2`で確認する。
 - [ ] 自己更新するCaskごとに、application updaterかHomebrewのどちらへ任せるか利用者の現行運用と照合する。
 - [ ] license prompt、大容量download、再起動、権限付与が必要なapplicationを識別する。
 - [ ] Homebrew管理を選んだitemだけ`greedy = true`の属性setへ変える。
 - [ ] app updater管理を選んだitemはstringのまま維持する。
 - [ ] globalな`homebrew.greedyCasks`を追加しない。
-- [ ] activationの`autoUpdate`、`upgrade`、`cleanup`を変更しない。
+- [ ] T01で設定したactivationの`autoUpdate`、`upgrade`、`cleanup`を変更しない。
 - [ ] `brew upgrade --cask --greedy`を手動実行せず、変更対象のpreviewだけ確認する。
 - [ ] 変更したコードへ`code-simplifier`スキルを適用する。
 - [ ] 変更したNixファイルを`nixfmt`で整形する。
@@ -52,7 +51,7 @@ brew outdated --cask --greedy
 期待結果: 各Caskの自己更新flagを確認でき、greedy対象候補を更新せずにpreviewできる。
 
 ```sh
-nixfmt nix/nix-darwin/homebrew/common.nix nix/nix-darwin/homebrew/private.nix nix/nix-darwin/homebrew/work.nix
+nixfmt nix/inventory/software.nix nix/nix-darwin/homebrew/common.nix
 just check
 just build
 git diff --check

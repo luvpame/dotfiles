@@ -25,7 +25,7 @@ Lua 5.1はmiseが管理しているため、Luarocksも同じruntimeに属する
 
 ## 対象ファイル
 
-- `nix/nix-darwin/home-manager/packages/common.nix`
+- `nix/inventory/software.nix`
 - `config/zsh/.zshenv`
 - `config/fish/config.d/path.fish`
 - `config/mise/config.toml`（必要な場合のみ）
@@ -35,7 +35,7 @@ Lua 5.1はmiseが管理しているため、Luarocksも同じruntimeに属する
 - [ ] FishとZshのlogin shellで`git`、`luarocks`、`lua`の全候補pathとversionを採取する。
 - [ ] `git-lfs`、credential helper、署名、GitHub CLI連携など、現在使うGit helperを確認する。
 - [ ] miseのLuaとLuarocksが同じLua 5.1 treeを参照することを確認する。
-- [ ] 互換性を確認できたら`pkgs.git`を維持し、`pkgs.luarocks`を`commonPackages`から削除する。
+- [ ] 互換性を確認できたら`pkgs.git`を維持し、`pkgs.luarocks`をsoftware inventoryのcommon `nixPackages`から削除する。
 - [ ] ZshでHomebrew Gitが先なら、Home Manager user profileがHomebrewより前になるようPATH組立順を直す。
 - [ ] Fishは実測で順序が誤っている場合だけ変更する。
 - [ ] mise shimsの位置はNode、Python、Luaのversion選択を壊さない範囲で維持する。
@@ -62,7 +62,7 @@ luarocks --lua-version=5.1 path
 期待結果: repository操作、credential helperの解決、Lua 5.1向けrock treeの表示が成功する。
 
 ```sh
-nixfmt nix/nix-darwin/home-manager/packages/common.nix
+nixfmt nix/inventory/software.nix
 just check
 just build
 git diff --check
@@ -80,7 +80,7 @@ git diff --check
 
 ## ロールバック
 
-`pkgs.luarocks`を`commonPackages`へ戻し、FishまたはZshのPATH変更を直前の順序へ戻す。
+`pkgs.luarocks`をsoftware inventoryのcommon `nixPackages`へ戻し、FishまたはZshのPATH変更を直前の順序へ戻す。
 Gitは削除しないため、Nix版Gitの復元作業は不要である。
 
 ## 作業規約

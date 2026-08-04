@@ -3,7 +3,7 @@
 - **Status**: 未着手
 - **Audit IDs**: `SHELL-02`, `TEMP-03`（direnv）
 - **原典**: [Nix構成棚卸し](../../../research/nix-configuration-audit-2026-07-31.md)
-- **依存先**: T11（statixとRTKのstale test override撤去）
+- **依存先**: T01（ホストからroleを選ぶ構成）、T11（statixとRTKのstale test override撤去）
 
 ## Goal
 
@@ -23,7 +23,7 @@ Home Managerが生成している`direnv/direnvrc`と、手書きのFish hookも
 
 - Modify: `nix/nix-darwin/system.nix`
 - Modify: `nix/nix-darwin/nix-core.nix`
-- Modify: `nix/nix-darwin/home-manager/packages/common.nix`
+- Modify: `nix/inventory/software.nix`
 - Modify: `nix/nix-darwin/home-manager/files/common.nix`
 - Delete: `config/fish/conf.d/direnv.fish`
 
@@ -48,7 +48,7 @@ Home Managerが生成している`direnv/direnvrc`と、手書きのFish hookも
 nixfmt --check \
   nix/nix-darwin/system.nix \
   nix/nix-darwin/nix-core.nix \
-  nix/nix-darwin/home-manager/packages/common.nix \
+  nix/inventory/software.nix \
   nix/nix-darwin/home-manager/files/common.nix
 just check
 just build

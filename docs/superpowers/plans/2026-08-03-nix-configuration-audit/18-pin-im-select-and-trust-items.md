@@ -16,32 +16,30 @@ im-selectはimmutableなreleaseまたはcommit URLとhashを使う小さなcusto
 Home Managerのcommon packageへ追加し、IME menu bar scriptはNix user profileをHomebrewより先に探索する。
 Nix版の動作確認が終わるまでHomebrew版を残し、確認後にbrewとdaipeihust/tapを削除する。
 
-残る第三者itemは完全修飾名へ変え、各itemへtrusted = trueを設定する。
+残る第三者itemはsoftware inventoryで完全修飾名へ変え、各itemへtrusted = trueを設定する。
 対象はaerospace、mo、a-bar、cage、portkiller、ziggityである。
-profile全体のtapsをまとめてtrustedにする仕組みは削除する。
+Homebrew adapterがscope全体のtapをまとめてtrustedにする仕組みは削除する。
 
 ## 対象ファイル
 
 - 作成: nix/pkgs/im-select/default.nix
-- 変更: nix/nix-darwin/home-manager/packages/common.nix
+- 変更: nix/inventory/software.nix
 - 変更: menubar-script/ime/read-state.sh
 - 変更: nix/nix-darwin/homebrew/common.nix
-- 変更: nix/nix-darwin/homebrew/private.nix
-- 変更: nix/nix-darwin/homebrew/work.nix
 - 条件付き変更: nix/AGENTS.md
 
 ## 未チェックの実施手順
 
 - [ ] upstreamのreleaseまたはcommitからimmutableな取得元を選び、内容を確認してhashを計算する。
 - [ ] versionとhashを明示したim-select packageを作成する。
-- [ ] Home ManagerのcommonPackagesへim-selectを追加する。
+- [ ] software inventoryのcommon `nixPackages`へim-selectを追加する。
 - [ ] IME scriptのPATHへNix user profileとsystem profileをHomebrewより前に追加する。
 - [ ] nixfmt、just check、just buildを実行し、許可された場合だけ一度switchする。
 - [ ] commandとIME scriptの動作を確認する。失敗した場合はここで停止し、Homebrew版を削除しない。
 - [ ] Nix版の確認後にHomebrew版im-selectを削除する。
 - [ ] 第三者formulaとcaskを完全修飾名へ変え、itemごとのtrusted = trueへ移す。
-- [ ] commonTaps、trustedTaps、profileHomebrew.taps、homebrew.tapsを削除する。
-- [ ] privateとworkの空taps欄を削除し、将来の第三者itemも完全修飾名で宣言する説明へ直す。
+- [ ] Homebrew adapterからtap集合をまとめてtrustedへ変換する処理を削除する。
+- [ ] software inventoryの`taps`は三scopeで空にし、将来の第三者itemも完全修飾名で宣言する説明へ直す。
 - [ ] もう一度nixfmt、just check、just buildを実行し、許可された場合だけswitchする。
 - [ ] コード変更後にcode-simplifierスキルを適用する。
 - [ ] Hunkで二段階の移行順とitem単位trustを確認する。
@@ -49,7 +47,7 @@ profile全体のtapsをまとめてtrustedにする仕組みは削除する。
 ## 検証コマンドと期待結果
 
 ~~~console
-nixfmt --check nix/pkgs/im-select/default.nix nix/nix-darwin/home-manager/packages/common.nix nix/nix-darwin/homebrew/common.nix nix/nix-darwin/homebrew/private.nix nix/nix-darwin/homebrew/work.nix
+nixfmt --check nix/pkgs/im-select/default.nix nix/inventory/software.nix nix/nix-darwin/homebrew/common.nix
 just check
 just build
 ~~~
