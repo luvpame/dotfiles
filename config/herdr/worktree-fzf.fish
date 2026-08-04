@@ -1,7 +1,7 @@
 function herdr_worktree_fzf --description 'Open a Git worktree in Herdr'
     set -l new_worktree_label ' New Worktree'
     set -l original_root_label '󰉋 Original Root'
-    set -l commands herdr jq fzf wt git
+    set -l commands herdr jq fzf wt git direnv
     if test "$argv[1]" = --repo
         set --append commands ghq
     end
@@ -78,7 +78,7 @@ function herdr_worktree_fzf --description 'Open a Git worktree in Herdr'
         if not contains -- "$worktree_name" $branch_refs; and not string match --quiet "*/$worktree_name" $branch_refs
             set create_option --create
         end
-        set -l worktree_result (wt -C "$repo_root" switch \
+        set -l worktree_result (direnv exec "$repo_root" wt -C "$repo_root" switch \
             --no-cd \
             $create_option "$worktree_name" \
             --format=json)
