@@ -1,6 +1,6 @@
 # Nix 構成棚卸し実装計画
 
-2026-07-31 に実施した[Nix 構成棚卸し](../../../research/nix-configuration-audit-2026-07-31.md)の回答を、独立して検証して切り戻せる30個の実装計画へ分割した。
+2026-07-31 に実施した[Nix 構成棚卸し](../../../research/nix-configuration-audit-2026-07-31.md)の回答を、独立して検証して切り戻せる実装計画へ分割した。
 各ファイルは未着手であり、明示的に選ばれたタスクだけを実行する。
 
 タスク番号は参照用の固定IDである。
@@ -40,7 +40,6 @@
 | T17 | [relaxed sandboxを導入する](17-enable-relaxed-sandbox.md) | `CORE-01` | T11, T12, T13, T15, T16, T18 |
 | T18 | [`im-select`を固定してitem単位でtrustする](18-pin-im-select-and-trust-items.md) | `BREW-04`, `BREW-05` | T14 |
 | T19 | [Application Firewallを有効にする](19-enable-application-firewall.md) | `SYS-03` | なし |
-| T20 | [画面ロック直後の再認証を必須にする](20-require-password-after-lock.md) | `SYS-04` | なし |
 | T21 | [DockとAeroSpaceのdisplay設定を整合させる](21-align-dock-aerospace.md) | `SYS-01`, `SYS-15` | T01 |
 | T22 | [Home Manager Appsを`copyApps`へ移す](22-migrate-home-manager-copy-apps.md) | `HM-02` | T02 |
 | T23 | [Herdrのruntime stateをrepoから分離する](23-separate-herdr-runtime-state.md) | `FILE-02` | T06 |
@@ -54,7 +53,7 @@
 
 ## 推奨する実行のまとまり
 
-最初のまとまりでは、依存先のないT03、T06、T08、T19、T20に着手できる。
+最初のまとまりでは、依存先のないT03、T06、T08、T19に着手できる。
 T06の後にT23とT24を実施し、runtime stateをrepoから分離してからT01へ進む。
 T01が終わるとT02、T04、T05、T07、T11からT13、T21、T25へ進める。
 

@@ -99,6 +99,11 @@
         # 秒は表示しない
         ShowSeconds = false;
       };
+      screensaver = {
+        # 復帰時に即座に認証を要求する
+        askForPassword = true;
+        askForPasswordDelay = 0;
+      };
       spaces = {
         # ディスプレイごとに異なるスペースを使用する
         spans-displays = false;

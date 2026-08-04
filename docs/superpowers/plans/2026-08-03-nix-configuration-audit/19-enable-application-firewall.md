@@ -3,7 +3,7 @@
 - Status: 未着手
 - Audit IDs: SYS-03
 - 原典: [Nix構成棚卸し](../../../research/nix-configuration-audit-2026-07-31.md)
-- 依存先: なし。T20を実施する場合も別のswitchで適用して検証する。
+- 依存先: なし
 
 ## Goal
 
