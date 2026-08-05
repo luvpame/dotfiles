@@ -87,7 +87,7 @@ let
     "portkiller"
     "nani"
     "wallspace"
-    "macshot"
+    "snapzy"
 
     ### Fonts
     "font-hackgen-nerd"
