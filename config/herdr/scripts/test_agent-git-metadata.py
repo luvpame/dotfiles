@@ -27,34 +27,15 @@ class AgentGitMetadataTest(unittest.TestCase):
         (self.repo / "tracked.txt").write_text("one\ntwo\n")
         self.git("add", "tracked.txt")
         self.git("commit", "-m", "initial")
-        self.main_commit = self.git("rev-parse", "HEAD").stdout.strip()
         self.git("checkout", "-b", "feature/sidebar")
-        (self.repo / "tracked.txt").write_text("one\ntwo\nthree\n")
-        self.git("add", "tracked.txt")
-        self.git("commit", "-m", "feature")
-        (self.repo / "tracked.txt").write_text("one\nthree\nfour\n")
-        self.git("add", "tracked.txt")
-        (self.repo / "tracked.txt").write_text("one\nthree\nfour\nfive\n")
-        (self.repo / "untracked.txt").write_text("new\nlines\n")
-        (self.repo / "binary.dat").write_bytes(b"\0binary\n")
-
-        self.git("update-ref", "refs/remotes/origin/main", self.main_commit)
-        self.git(
-            "symbolic-ref",
-            "refs/remotes/origin/HEAD",
-            "refs/remotes/origin/main",
-        )
         self.write_fake_commands()
 
     def tearDown(self):
         self.temporary_directory.cleanup()
 
     def git(self, *args):
-        return self.git_at(self.repo, *args)
-
-    def git_at(self, directory, *args):
         return subprocess.run(
-            ["git", "-C", directory, *args],
+            ["git", "-C", self.repo, *args],
             capture_output=True,
             text=True,
             check=True,
@@ -113,7 +94,7 @@ class AgentGitMetadataTest(unittest.TestCase):
         subprocess.run([REPORTER], env=env, check=True)
         return self.herdr_log.read_text().strip()
 
-    def test_reports_branch_full_checkout_diff_and_open_pull_request(self):
+    def test_reports_branch_and_open_pull_request(self):
         report = self.run_reporter(
             [
                 {
@@ -134,19 +115,19 @@ class AgentGitMetadataTest(unittest.TestCase):
             report.splitlines()[0],
             "pane report-metadata w1:p1 --source agent-git "
             "--token git_branch=\ue0a0 feature/sidebar "
-            "--token git_additions=+5 --token git_deletions=-1 "
             "--token pr_open=\uf407 #42 --token pr_draft= "
-            "--token pr_merged= --token pr_closed=",
+            "--token pr_merged= --token pr_closed= "
+            "--clear-token git_additions --clear-token git_deletions",
         )
         self.assertEqual(
             report.splitlines()[1],
             "workspace report-metadata w1 --source workspace-git "
             "--token agent_summary=1 agent "
             "--token git_branch=\ue0a0 feature/sidebar "
-            "--token git_additions=+5 --token git_deletions=-1 "
             "--token pr_open=\uf407 #42 --token pr_draft= "
             "--token pr_merged= --token pr_closed= "
-            "--token ci_status=✓ CI --token review_status=✓ approved",
+            "--token ci_status=✓ CI --token review_status=✓ approved "
+            "--clear-token git_additions --clear-token git_deletions",
         )
 
     def test_hides_repeated_branch_and_counts_workspace_agents(self):
@@ -181,41 +162,18 @@ class AgentGitMetadataTest(unittest.TestCase):
         self.assertIn("--token ci_status=× CI", workspace_report)
         self.assertIn("--token review_status=× changes", workspace_report)
 
-    def test_uses_remote_default_branch_when_no_pull_request_exists(self):
-        report = self.run_reporter([])
-
-        self.assertIn("--token git_additions=+5", report)
-        self.assertIn("--token git_deletions=-1", report)
-        self.assertIn("--token pr_open=", report)
-
-    def test_ignores_changes_added_to_base_after_branching(self):
-        base_worktree = self.directory / "base"
-        self.git("worktree", "add", base_worktree, "main")
-        (base_worktree / "base-only.txt").write_text("base change\n")
-        self.git_at(base_worktree, "add", "base-only.txt")
-        self.git_at(base_worktree, "commit", "-m", "advance base")
-        advanced_base = self.git_at(base_worktree, "rev-parse", "HEAD").stdout.strip()
-        self.git("update-ref", "refs/remotes/origin/main", advanced_base)
-
-        report = self.run_reporter([])
-
-        self.assertIn("--token git_additions=+5", report)
-        self.assertIn("--token git_deletions=-1", report)
-
-    def test_hides_diff_and_pull_request_when_github_query_fails(self):
+    def test_hides_pull_request_when_github_query_fails(self):
         report = self.run_reporter([], gh_exit=1)
 
         self.assertIn("--token git_branch=\ue0a0 feature/sidebar", report)
-        self.assertIn("--token git_additions= --token git_deletions=", report)
         self.assertIn("--token pr_open= --token pr_draft=", report)
 
-    def test_hides_all_git_metadata_for_detached_head(self):
+    def test_hides_git_branch_and_pull_request_for_detached_head(self):
         self.git("checkout", "--detach")
 
         report = self.run_reporter([])
 
         self.assertIn("--token git_branch=", report)
-        self.assertIn("--token git_additions= --token git_deletions=", report)
         self.assertFalse(self.gh_log.exists())
 
     def test_prefers_latest_open_pull_request_and_maps_draft_icon(self):

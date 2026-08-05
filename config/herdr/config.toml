@@ -105,21 +105,13 @@ codex = [
 
 [ui.sidebar.spaces]
 rows = [
+  ["state_icon", "workspace"],
+  ["branch", "git_status"],
   [
-    "state_icon",
-    { token = "workspace", bold = true },
-    { token = "$agent_summary", dim = true },
-  ],
-  [
-    { token = "$git_branch", fg = "#1e66f5" },
     { token = "$git_additions", fg = "#40a02b" },
     { token = "$git_deletions", fg = "#d20f39" },
-    { token = "$pr_open", fg = "#40a02b" },
-    { token = "$pr_draft", fg = "#9ca0b0" },
-    { token = "$pr_merged", fg = "#8839ef" },
-    { token = "$pr_closed", fg = "#d20f39" },
+    { token = "$review_requests", fg = "#8839ef" },
   ],
-  ["$ci_status", "$review_status"],
 ]
 
 [experimental]

@@ -12,13 +12,12 @@ from pathlib import Path
 CACHE_TTL_SECONDS = 60
 METADATA_TOKENS = (
     "git_branch",
-    "git_additions",
-    "git_deletions",
     "pr_open",
     "pr_draft",
     "pr_merged",
     "pr_closed",
 )
+MOVED_TOKENS = ("git_additions", "git_deletions")
 PR_ICONS = {
     "open": "",
     "draft": "",
@@ -220,77 +219,6 @@ def review_status(pull_request):
     return REVIEW_STATUSES.get(pull_request.get("reviewDecision"), "")
 
 
-def remote_base(root, pull_request):
-    if pull_request is not None:
-        candidate = f"refs/remotes/origin/{pull_request['baseRefName']}"
-        exists = stdout("git", "show-ref", "--verify", candidate, cwd=root)
-        return candidate if exists else None
-
-    candidate = stdout(
-        "git",
-        "symbolic-ref",
-        "--quiet",
-        "refs/remotes/origin/HEAD",
-        cwd=root,
-    )
-    if not candidate:
-        return None
-    return candidate if stdout("git", "show-ref", "--verify", candidate, cwd=root) else None
-
-
-def numstat(output):
-    additions = 0
-    deletions = 0
-    for line in output.splitlines():
-        fields = line.split("\t", 2)
-        if len(fields) < 2 or not all(field.isdigit() for field in fields[:2]):
-            continue
-        additions += int(fields[0])
-        deletions += int(fields[1])
-    return additions, deletions
-
-
-def untracked_additions(root):
-    result = run(
-        "git", "ls-files", "--others", "--exclude-standard", "-z", cwd=root
-    )
-    if result is None or result.returncode != 0:
-        return None
-
-    additions = 0
-    for relative_path in result.stdout.split("\0"):
-        if not relative_path:
-            continue
-        result = run(
-            "git",
-            "diff",
-            "--no-index",
-            "--numstat",
-            os.devnull,
-            str(root / relative_path),
-            cwd=root,
-        )
-        if result is None or result.returncode not in {0, 1}:
-            return None
-        file_additions, _ = numstat(result.stdout)
-        additions += file_additions
-    return additions
-
-
-def changed_lines(root, base):
-    comparison_base = stdout("git", "merge-base", base, "HEAD", cwd=root)
-    if comparison_base is None:
-        return None
-    output = stdout("git", "diff", "--numstat", comparison_base, "--", cwd=root)
-    if output is None:
-        return None
-    untracked = untracked_additions(root)
-    if untracked is None:
-        return None
-    additions, deletions = numstat(output)
-    return additions + untracked, deletions
-
-
 def metadata(root, branch):
     tokens = {name: "" for name in METADATA_TOKENS}
     tokens["git_branch"] = f" {branch}"
@@ -300,14 +228,6 @@ def metadata(root, branch):
         return tokens, None
 
     pull_request = select_pull_request(found)
-    base = remote_base(root, pull_request)
-    if base is not None:
-        lines = changed_lines(root, base)
-        if lines is not None:
-            additions, deletions = lines
-            tokens["git_additions"] = f"+{additions}"
-            tokens["git_deletions"] = f"-{deletions}"
-
     if pull_request is not None:
         state = pull_request_state(pull_request)
         tokens[f"pr_{state}"] = f"{PR_ICONS[state]} #{pull_request['number']}"
@@ -358,7 +278,7 @@ def workspace_metadata(workspace_id, tokens, pull_request):
     return workspace_tokens
 
 
-def report_metadata(target, target_id, source, tokens):
+def report_metadata(target, target_id, source, tokens, clear_tokens=()):
     args = [
         "herdr",
         target,
@@ -369,6 +289,8 @@ def report_metadata(target, target_id, source, tokens):
     ]
     for name, value in tokens.items():
         args.extend(("--token", f"{name}={value}"))
+    for name in clear_tokens:
+        args.extend(("--clear-token", name))
     run(*args)
 
 
@@ -384,13 +306,16 @@ def main():
     current_checkout = checkout(cwd) if cwd else None
     if current_checkout is not None:
         tokens, pull_request = metadata(*current_checkout)
-    report_metadata("pane", pane_id, "agent-git", tokens)
+    report_metadata(
+        "pane", pane_id, "agent-git", tokens, clear_tokens=MOVED_TOKENS
+    )
     if workspace_id:
         report_metadata(
             "workspace",
             workspace_id,
             "workspace-git",
             workspace_metadata(workspace_id, tokens, pull_request),
+            clear_tokens=MOVED_TOKENS,
         )
 
 

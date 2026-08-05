@@ -21,6 +21,7 @@
         imports = [
           ./packages/common.nix
           ./files/common.nix
+          ./services/herdr.nix
           (./files + "/${local.profile}.nix")
         ];
 
