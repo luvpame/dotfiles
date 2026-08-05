@@ -1,13 +1,13 @@
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "medium"
 personality = "friendly"
 forced_login_method = "chatgpt"
-model = "gpt-5.6-sol"
+model = "gpt-5.6-terra"
 web_search = "live"
 suppress_unstable_features_warning = true
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 
-service_tier = "priority"
+service_tier = "default"
 
 notify = ["/Users/nasuno.ayumu/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
 approvals_reviewer = "auto_review"
