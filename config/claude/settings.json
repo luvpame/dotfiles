@@ -2,7 +2,7 @@
   "permissions": {
     "defaultMode": "auto"
   },
-  "model": "fable",
+  "model": "sonnet",
   "enableAllProjectMcpServers": true,
   "skillOverrides": {
     "code-review": "off",
