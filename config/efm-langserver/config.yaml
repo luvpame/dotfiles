@@ -41,8 +41,8 @@ tools:
     format-command: stylua --search-parent-directories --stdin-filepath ${INPUT} -
     format-stdin: true
 
-  typescript-prettier: &typescript-prettier
-    format-command: prettier --stdin-filepath ${INPUT}
+  typescript-oxfmt: &typescript-oxfmt
+    format-command: oxfmt --stdin-filepath=${INPUT}
     format-stdin: true
 
   css-stylelint: &css-stylelint
@@ -87,13 +87,13 @@ languages:
     - <<: *lua-stylua
 
   javascript:
-    - <<: *typescript-prettier
+    - <<: *typescript-oxfmt
   javascriptreact:
-    - <<: *typescript-prettier
+    - <<: *typescript-oxfmt
   typescript:
-    - <<: *typescript-prettier
+    - <<: *typescript-oxfmt
   typescriptreact:
-    - <<: *typescript-prettier
+    - <<: *typescript-oxfmt
 
   css:
     - <<: *css-stylelint

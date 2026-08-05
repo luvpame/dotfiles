@@ -18,6 +18,7 @@ let
 
   commonPackages = with pkgs; [
     efm-langserver
+    oxfmt
     nixfmt
     nixd
     statix
