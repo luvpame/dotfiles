@@ -178,7 +178,7 @@ def report_herdr_git_metadata():
         return
     configured_home = os.environ.get("XDG_CONFIG_HOME")
     config_home = Path(configured_home) if configured_home else Path.home() / ".config"
-    reporter = config_home / "herdr" / "agent-git-metadata.py"
+    reporter = config_home / "herdr" / "scripts" / "agent-git-metadata.py"
     if not reporter.is_file():
         return
     try:

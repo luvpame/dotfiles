@@ -25,7 +25,7 @@
             "type": "command"
           },
           {
-            "command": "\"$HOME/.config/herdr/agent-git-metadata.py\"",
+            "command": "\"$HOME/.config/herdr/scripts/agent-git-metadata.py\"",
             "timeout": 5,
             "type": "command"
           }
@@ -41,7 +41,7 @@
             "type": "command"
           },
           {
-            "command": "\"$HOME/.config/herdr/agent-git-metadata.py\"",
+            "command": "\"$HOME/.config/herdr/scripts/agent-git-metadata.py\"",
             "timeout": 5,
             "type": "command"
           }
