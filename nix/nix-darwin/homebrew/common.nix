@@ -34,7 +34,6 @@ let
     "worktrunk"
     "media-control" # macOS Now Playing metadata
     "ripgrep" # codex formula dependency; keep cleanup from trying to remove it
-    "curl" # cage で homebrew 産の curl が必要
     "roots"
     # `mo` と `mole` は同名バイナリを含むため、必要な link だけ activation で戻す。
     {
@@ -52,7 +51,6 @@ let
     "daipeihust/tap" # im-select
     "k1LoW/tap" # mo (browser markdown viewer)
     "Jean-Tinland/a-bar" # menubar
-    "Warashi/tap" # cage
     "productdevbook/tap" # portkiller
     "simoarpe/ziggity" # ziggity
   ];
@@ -85,7 +83,6 @@ let
     "azookey"
     "a-bar"
     "keycastr"
-    "cage"
     "chatgpt"
     "portkiller"
     "nani"

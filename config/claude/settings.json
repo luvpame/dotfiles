@@ -105,7 +105,9 @@
   "outputStyle": "Proactive",
   "language": "日本語",
   "sandbox": {
-    "enabled": false
+    "enabled": true,
+    "failIfUnavailable": true,
+    "allowUnsandboxedCommands": false
   },
   "tui": "fullscreen",
   "autoMemoryEnabled": true,

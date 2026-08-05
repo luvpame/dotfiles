@@ -30,7 +30,7 @@ in
     hunk.source = oos "${configRoot}/hunk";
     wezterm.source = oos "${configRoot}/wezterm";
     zed.source = oos "${configRoot}/zed";
-    cage.source = oos "${configRoot}/cage";
+    # Cage設定はarchive/cage/presets.yamlへ退避し、配布対象から外した。
     guard-and-guide.source = oos "${configRoot}/guard-and-guide";
     efm-langserver.source = oos "${configRoot}/efm-langserver";
 

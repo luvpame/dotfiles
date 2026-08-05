@@ -1,8 +1,9 @@
 # リポジトリガイドライン
 
 ## プロジェクト構成とモジュール構成
+- `archive/`: 使用を終了した設定を現行設定から分離して保存する。退避手順は `archive/README.md` に従う。
 - `nix/`: Flake のエントリポイント（`flake.nix` / `flake.lock` / `local.nix.example`）と、macOS の system+Homebrew+Home Manager 状態を管理する `nix-darwin/`、カスタム package 定義の `pkgs/` を持つ。`local.nix` は `local.nix.example` から作成する非追跡のローカル設定。
-- `config/`: 各種ツール設定を集約するディレクトリ。`config/fish/` にシェル設定、`config/git/` に Git 設定、`config/agents/skills/` に再利用可能なエージェントスキルを保存する。加えて `config/aerospace/`、`config/cage/`、`config/efm-langserver/`、`config/gh/`、`config/guard-and-guide/`、`config/herdr/`、`config/hunk/`、`config/lazygit/`、`config/mise/`、`config/nvim/`、`config/raycast/`、`config/tmux/`、`config/wezterm/`、`config/worktrunk/`、`config/yazi/`、`config/zed/`、`config/ziggity/`、`config/zsh/` などのツール別設定を配置する。`config/claude/` には `CLAUDE.md`・`RTK.md`・`SOUL.md`・`settings.json`・`statusline.py`・`hooks/`、`config/codex/` には `AGENTS.md`・`SOUL.md`・`hooks.json`・`hooks/` と用途別の `private/` / `work/` 設定がある。
+- `config/`: 各種ツール設定を集約するディレクトリ。`config/fish/` にシェル設定、`config/git/` に Git 設定、`config/agents/skills/` に再利用可能なエージェントスキルを保存する。加えて `config/aerospace/`、`config/efm-langserver/`、`config/gh/`、`config/guard-and-guide/`、`config/herdr/`、`config/hunk/`、`config/lazygit/`、`config/mise/`、`config/nvim/`、`config/raycast/`、`config/tmux/`、`config/wezterm/`、`config/worktrunk/`、`config/yazi/`、`config/zed/`、`config/ziggity/`、`config/zsh/` などのツール別設定を配置する。`config/claude/` には `CLAUDE.md`・`RTK.md`・`SOUL.md`・`settings.json`・`statusline.py`・`hooks/`、`config/codex/` には `AGENTS.md`・`SOUL.md`・`hooks.json`・`hooks/` と用途別の `private/` / `work/` 設定がある。
 - `script/`: ユーティリティ Bash スクリプトを配置するディレクトリ。現状は `set-fish-default.sh` がある。
 - `menubar-script/`: `calendar/`、`ime/`、`media/` のメニューバー連携用スクリプト群。
 - `docs/`: ADR を `docs/adr/` に、Superpowers の計画書や仕様メモを `docs/superpowers/` 配下に保存する。
@@ -40,6 +41,7 @@
 - 秘密情報はコミットしない。Git の identity は `~/.config/git/config.local`（テンプレート: `config/git/config.local.example`）に保持し、その他の認証情報は 1Password CLI（`op signin`）を使用。
 - `flake.lock` を唯一の正とし、手動編集は避ける。依存更新時にはロックファイルもコミット。
 - 新しい cask やパッケージを追加する場合は `nix/nix-darwin/homebrew/` と `nix/nix-darwin/home-manager/packages/` 配下を優先して宣言的に管理し、switch コマンドを再実行してシステムに反映。
+- 使用を終了した設定を退避する場合は、Home Manager の配置宣言を確認してから `archive/` へ移し、元の宣言位置に退避先を示す一行コメントを残す。詳細は `archive/README.md` を参照。
 
 ## Agent skills
 
