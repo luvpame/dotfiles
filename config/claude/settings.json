@@ -1,5 +1,4 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
       "Read"
@@ -7,7 +6,6 @@
     "deny": [
       "Bash(sudo:*)",
       "Bash(rm:*)",
-      "Bash(rm -rf:*)",
       "Bash(git push:*)",
       "Bash(git reset:*)",
       "Bash(git rebase:*)",
@@ -33,7 +31,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "guard-and-guide"
+            "command": "guard-and-guide",
+            "statusMessage": "guard-and-guide 判定中"
           }
         ]
       },
@@ -42,7 +41,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$HOME/.claude/hooks/rtk-rewrite.sh"
+            "command": "$HOME/.claude/hooks/rtk-rewrite.sh",
+            "statusMessage": "rtk 書き換え中"
           }
         ]
       }
@@ -53,6 +53,7 @@
           {
             "type": "command",
             "command": "bash \"$HOME/.claude/hooks/herdr-tab-rename-reminder.sh\"",
+            "statusMessage": "herdr タブ名を確認中",
             "timeout": 5
           }
         ]
@@ -65,6 +66,7 @@
           {
             "type": "command",
             "command": "bash \"$HOME/.claude/hooks/herdr-agent-state.sh\" session",
+            "statusMessage": "herdr にセッションを通知中",
             "timeout": 10
           }
         ]
@@ -74,6 +76,18 @@
   "statusLine": {
     "type": "command",
     "command": "$HOME/.claude/statusline.py"
+  },
+  "skillOverrides": {
+    "code-review": "off",
+    "code-simplifier": "off",
+    "codebase-design": "off",
+    "diagnosing-bugs": "off",
+    "domain-modeling": "off",
+    "grilling": "off",
+    "prototype": "off",
+    "research": "off",
+    "resolving-merge-conflicts": "off",
+    "tdd": "off"
   },
   "enabledPlugins": {
     "code-review@claude-plugins-official": true,
@@ -107,13 +121,19 @@
   "sandbox": {
     "enabled": true,
     "failIfUnavailable": true,
-    "allowUnsandboxedCommands": false
+    "allowUnsandboxedCommands": false,
+    "network": {
+      "allowUnixSockets": [
+        "~/.config/herdr/herdr.sock",
+        "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+      ]
+    }
   },
   "tui": "fullscreen",
   "autoMemoryEnabled": true,
   "verbose": false,
   "skipAutoPermissionPrompt": true,
   "useAutoModeDuringPlan": true,
-  "voiceEnabled": true,
+  "voiceEnabled": false,
   "model": "opus"
 }
