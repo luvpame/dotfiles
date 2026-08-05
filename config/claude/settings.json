@@ -1,29 +1,21 @@
 {
   "permissions": {
-    "allow": [
-      "Read"
-    ],
-    "deny": [
-      "Bash(sudo:*)",
-      "Bash(rm:*)",
-      "Bash(git push:*)",
-      "Bash(git reset:*)",
-      "Bash(git rebase:*)",
-      "Read(.env.*)",
-      "Read(id_rsa)",
-      "Read(id_ed25519)",
-      "Read(**/*token*)",
-      "Edit(.env*)",
-      "Edit(**/secrets/**)",
-      "Bash(nc:*)",
-      "Bash(pnpm uninstall:*)",
-      "Bash(pnpm remove:*)",
-      "Bash(psql:*)",
-      "Bash(mysql:*)"
-    ],
     "defaultMode": "auto"
   },
+  "model": "fable",
   "enableAllProjectMcpServers": true,
+  "skillOverrides": {
+    "code-review": "off",
+    "code-simplifier": "off",
+    "codebase-design": "off",
+    "diagnosing-bugs": "off",
+    "domain-modeling": "off",
+    "grilling": "off",
+    "prototype": "off",
+    "research": "off",
+    "resolving-merge-conflicts": "off",
+    "tdd": "off"
+  },
   "hooks": {
     "PreToolUse": [
       {
@@ -53,8 +45,8 @@
           {
             "type": "command",
             "command": "bash \"$HOME/.claude/hooks/herdr-tab-rename-reminder.sh\"",
-            "statusMessage": "herdr タブ名を確認中",
-            "timeout": 5
+            "timeout": 5,
+            "statusMessage": "herdr タブ名を確認中"
           }
         ]
       }
@@ -66,8 +58,8 @@
           {
             "type": "command",
             "command": "bash \"$HOME/.claude/hooks/herdr-agent-state.sh\" session",
-            "statusMessage": "herdr にセッションを通知中",
-            "timeout": 10
+            "timeout": 10,
+            "statusMessage": "herdr にセッションを通知中"
           }
         ]
       }
@@ -76,18 +68,6 @@
   "statusLine": {
     "type": "command",
     "command": "$HOME/.claude/statusline.py"
-  },
-  "skillOverrides": {
-    "code-review": "off",
-    "code-simplifier": "off",
-    "codebase-design": "off",
-    "diagnosing-bugs": "off",
-    "domain-modeling": "off",
-    "grilling": "off",
-    "prototype": "off",
-    "research": "off",
-    "resolving-merge-conflicts": "off",
-    "tdd": "off"
   },
   "enabledPlugins": {
     "code-review@claude-plugins-official": true,
@@ -134,6 +114,5 @@
   "verbose": false,
   "skipAutoPermissionPrompt": true,
   "useAutoModeDuringPlan": true,
-  "voiceEnabled": false,
-  "model": "opus"
+  "voiceEnabled": false
 }
