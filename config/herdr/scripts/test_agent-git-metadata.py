@@ -66,8 +66,12 @@ class AgentGitMetadataTest(unittest.TestCase):
             "#!/bin/sh\n"
             "if [ \"$1 $2\" = \"pane get\" ]; then\n"
             "  printf '{\"result\":{\"pane\":{\"foreground_cwd\":\"%s\"}}}\\n' \"$TEST_REPO\"\n"
+            "elif [ \"$1 $2\" = \"workspace get\" ]; then\n"
+            "  printf '{\"result\":{\"workspace\":{\"label\":\"%s\"}}}\\n' \"$WORKSPACE_LABEL\"\n"
+            "elif [ \"$1 $2\" = \"agent list\" ]; then\n"
+            "  printf '%s\\n' \"$HERDR_AGENTS\"\n"
             "else\n"
-            "  printf '%s\\n' \"$*\" > \"$HERDR_LOG\"\n"
+            "  printf '%s\\n' \"$*\" >> \"$HERDR_LOG\"\n"
             "fi\n"
         )
         herdr.chmod(0o755)
@@ -81,17 +85,29 @@ class AgentGitMetadataTest(unittest.TestCase):
         )
         gh.chmod(0o755)
 
-    def run_reporter(self, pull_requests, *, gh_exit=0):
+    def run_reporter(
+        self,
+        pull_requests,
+        *,
+        agents=None,
+        gh_exit=0,
+        workspace_label="workspace",
+    ):
+        if agents is None:
+            agents = [{"workspace_id": "w1"}]
         env = {
             **os.environ,
             "PATH": f"{self.bin}{os.pathsep}{os.environ['PATH']}",
             "HERDR_ENV": "1",
             "HERDR_PANE_ID": "w1:p1",
+            "HERDR_WORKSPACE_ID": "w1",
+            "HERDR_AGENTS": json.dumps({"result": {"agents": agents}}),
             "HERDR_LOG": str(self.herdr_log),
             "GH_LOG": str(self.gh_log),
             "GH_RESPONSE": json.dumps(pull_requests),
             "GH_EXIT": str(gh_exit),
             "TEST_REPO": str(self.repo),
+            "WORKSPACE_LABEL": workspace_label,
             "XDG_CACHE_HOME": str(self.cache),
         }
         subprocess.run([REPORTER], env=env, check=True)
@@ -106,18 +122,64 @@ class AgentGitMetadataTest(unittest.TestCase):
                     "isDraft": False,
                     "baseRefName": "main",
                     "updatedAt": "2026-08-03T10:00:00Z",
+                    "reviewDecision": "APPROVED",
+                    "statusCheckRollup": [
+                        {"status": "COMPLETED", "conclusion": "SUCCESS"}
+                    ],
                 }
             ]
         )
 
         self.assertEqual(
-            report,
+            report.splitlines()[0],
             "pane report-metadata w1:p1 --source agent-git "
             "--token git_branch=\ue0a0 feature/sidebar "
             "--token git_additions=+5 --token git_deletions=-1 "
             "--token pr_open=\uf407 #42 --token pr_draft= "
             "--token pr_merged= --token pr_closed=",
         )
+        self.assertEqual(
+            report.splitlines()[1],
+            "workspace report-metadata w1 --source workspace-git "
+            "--token agent_summary=1 agent "
+            "--token git_branch=\ue0a0 feature/sidebar "
+            "--token git_additions=+5 --token git_deletions=-1 "
+            "--token pr_open=\uf407 #42 --token pr_draft= "
+            "--token pr_merged= --token pr_closed= "
+            "--token ci_status=✓ CI --token review_status=✓ approved",
+        )
+
+    def test_hides_repeated_branch_and_counts_workspace_agents(self):
+        report = self.run_reporter(
+            [],
+            agents=[{"workspace_id": "w1"}, {"workspace_id": "w1"}],
+            workspace_label="feature/sidebar",
+        )
+
+        workspace_report = report.splitlines()[1]
+        self.assertIn("--token agent_summary=2 agents", workspace_report)
+        self.assertIn("--token git_branch= ", workspace_report)
+
+    def test_reports_failed_ci_and_requested_changes(self):
+        report = self.run_reporter(
+            [
+                {
+                    "number": 42,
+                    "state": "OPEN",
+                    "isDraft": False,
+                    "baseRefName": "main",
+                    "updatedAt": "2026-08-03T10:00:00Z",
+                    "reviewDecision": "CHANGES_REQUESTED",
+                    "statusCheckRollup": [
+                        {"status": "COMPLETED", "conclusion": "FAILURE"}
+                    ],
+                }
+            ]
+        )
+
+        workspace_report = report.splitlines()[1]
+        self.assertIn("--token ci_status=× CI", workspace_report)
+        self.assertIn("--token review_status=× changes", workspace_report)
 
     def test_uses_remote_default_branch_when_no_pull_request_exists(self):
         report = self.run_reporter([])

@@ -66,6 +66,7 @@ sidebar_width = 72
 sidebar_max_width = 72
 confirm_close = false
 hide_tab_bar_when_single_tab = true
+tab_bar_position = "bottom"
 agent_panel_sort = "priority"
 
 [ui.sidebar.agents.rows_by_agent]
@@ -100,6 +101,25 @@ codex = [
     { token = "$pr_merged", fg = "#8839ef" },
     { token = "$pr_closed", fg = "#d20f39" },
   ],
+]
+
+[ui.sidebar.spaces]
+rows = [
+  [
+    "state_icon",
+    { token = "workspace", bold = true },
+    { token = "$agent_summary", dim = true },
+  ],
+  [
+    { token = "$git_branch", fg = "#1e66f5" },
+    { token = "$git_additions", fg = "#40a02b" },
+    { token = "$git_deletions", fg = "#d20f39" },
+    { token = "$pr_open", fg = "#40a02b" },
+    { token = "$pr_draft", fg = "#9ca0b0" },
+    { token = "$pr_merged", fg = "#8839ef" },
+    { token = "$pr_closed", fg = "#d20f39" },
+  ],
+  ["$ci_status", "$review_status"],
 ]
 
 [experimental]

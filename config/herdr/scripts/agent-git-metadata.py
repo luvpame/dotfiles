@@ -25,6 +25,20 @@ PR_ICONS = {
     "merged": "",
     "closed": "",
 }
+CI_FAILURE_STATES = {
+    "ACTION_REQUIRED",
+    "CANCELLED",
+    "ERROR",
+    "FAILURE",
+    "STALE",
+    "TIMED_OUT",
+}
+CI_SUCCESS_STATES = {"NEUTRAL", "SKIPPED", "SUCCESS"}
+REVIEW_STATUSES = {
+    "APPROVED": "✓ approved",
+    "CHANGES_REQUESTED": "× changes",
+    "REVIEW_REQUIRED": "○ review",
+}
 
 
 def run(*args, cwd=None, timeout=None):
@@ -133,7 +147,7 @@ def pull_requests(root, branch):
         "--limit",
         "100",
         "--json",
-        "number,state,isDraft,baseRefName,updatedAt",
+        "number,state,isDraft,baseRefName,updatedAt,reviewDecision,statusCheckRollup",
         cwd=root,
         timeout=3,
     )
@@ -174,6 +188,36 @@ def pull_request_state(pull_request):
     if state == "OPEN":
         return "draft" if pull_request.get("isDraft") else "open"
     return state.lower()
+
+
+def ci_status(pull_request):
+    if pull_request is None or pull_request.get("state") != "OPEN":
+        return ""
+    checks = pull_request.get("statusCheckRollup")
+    if not isinstance(checks, list) or not checks:
+        return ""
+
+    states = []
+    for check in checks:
+        if not isinstance(check, dict):
+            continue
+        state = check.get("conclusion") or check.get("state") or check.get("status")
+        if isinstance(state, str):
+            states.append(state.upper())
+    if not states:
+        return ""
+
+    if any(state in CI_FAILURE_STATES for state in states):
+        return "× CI"
+    if any(state not in CI_SUCCESS_STATES for state in states):
+        return "… CI"
+    return "✓ CI"
+
+
+def review_status(pull_request):
+    if pull_request is None or pull_request.get("state") != "OPEN":
+        return ""
+    return REVIEW_STATUSES.get(pull_request.get("reviewDecision"), "")
 
 
 def remote_base(root, pull_request):
@@ -253,7 +297,7 @@ def metadata(root, branch):
 
     found = pull_requests(root, branch)
     if found is None:
-        return tokens
+        return tokens, None
 
     pull_request = select_pull_request(found)
     base = remote_base(root, pull_request)
@@ -267,17 +311,61 @@ def metadata(root, branch):
     if pull_request is not None:
         state = pull_request_state(pull_request)
         tokens[f"pr_{state}"] = f"{PR_ICONS[state]} #{pull_request['number']}"
-    return tokens
+    return tokens, pull_request
 
 
-def report_metadata(pane_id, tokens):
+def workspace_label(workspace_id):
+    result = stdout("herdr", "workspace", "get", workspace_id)
+    if result is None:
+        return None
+    try:
+        return json.loads(result)["result"]["workspace"]["label"]
+    except (json.JSONDecodeError, KeyError, TypeError):
+        return None
+
+
+def agent_summary(workspace_id):
+    result = stdout("herdr", "agent", "list")
+    if result is None:
+        return ""
+    try:
+        agents = json.loads(result)["result"]["agents"]
+    except (json.JSONDecodeError, KeyError, TypeError):
+        return ""
+    if not isinstance(agents, list):
+        return ""
+    count = sum(
+        1
+        for agent in agents
+        if isinstance(agent, dict) and agent.get("workspace_id") == workspace_id
+    )
+    if count == 0:
+        return ""
+    return f"{count} agent" if count == 1 else f"{count} agents"
+
+
+def workspace_metadata(workspace_id, tokens, pull_request):
+    workspace_tokens = {
+        "agent_summary": agent_summary(workspace_id),
+        **tokens,
+        "ci_status": ci_status(pull_request),
+        "review_status": review_status(pull_request),
+    }
+
+    branch = workspace_tokens["git_branch"].removeprefix(" ")
+    if branch and branch == workspace_label(workspace_id):
+        workspace_tokens["git_branch"] = ""
+    return workspace_tokens
+
+
+def report_metadata(target, target_id, source, tokens):
     args = [
         "herdr",
-        "pane",
+        target,
         "report-metadata",
-        pane_id,
+        target_id,
         "--source",
-        "agent-git",
+        source,
     ]
     for name, value in tokens.items():
         args.extend(("--token", f"{name}={value}"))
@@ -286,15 +374,24 @@ def report_metadata(pane_id, tokens):
 
 def main():
     pane_id = os.environ.get("HERDR_PANE_ID")
+    workspace_id = os.environ.get("HERDR_WORKSPACE_ID")
     if os.environ.get("HERDR_ENV") != "1" or not pane_id:
         return
 
     tokens = {name: "" for name in METADATA_TOKENS}
+    pull_request = None
     cwd = pane_cwd(pane_id)
     current_checkout = checkout(cwd) if cwd else None
     if current_checkout is not None:
-        tokens = metadata(*current_checkout)
-    report_metadata(pane_id, tokens)
+        tokens, pull_request = metadata(*current_checkout)
+    report_metadata("pane", pane_id, "agent-git", tokens)
+    if workspace_id:
+        report_metadata(
+            "workspace",
+            workspace_id,
+            "workspace-git",
+            workspace_metadata(workspace_id, tokens, pull_request),
+        )
 
 
 if __name__ == "__main__":
