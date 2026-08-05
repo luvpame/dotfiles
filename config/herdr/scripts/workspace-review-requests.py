@@ -96,6 +96,11 @@ def review_request_count(root):
     return count if count >= 0 else None
 
 
+def is_linked_worktree(workspace):
+    worktree = workspace.get("worktree")
+    return isinstance(worktree, dict) and worktree.get("is_linked_worktree") is True
+
+
 def report_review_requests(workspace_id, count):
     run(
         "herdr",
@@ -106,6 +111,19 @@ def report_review_requests(workspace_id, count):
         "review-requests",
         "--token",
         f"review_requests={REVIEW_REQUEST_ICON} Reviews {count}",
+    )
+
+
+def clear_review_requests(workspace_id):
+    run(
+        "herdr",
+        "workspace",
+        "report-metadata",
+        workspace_id,
+        "--source",
+        "review-requests",
+        "--clear-token",
+        "review_requests",
     )
 
 
@@ -120,6 +138,9 @@ def main():
             continue
         workspace_id = workspace.get("workspace_id")
         if not isinstance(workspace_id, str):
+            continue
+        if is_linked_worktree(workspace):
+            clear_review_requests(workspace_id)
             continue
         root = workspace_repository_root(workspace)
         if root is None:

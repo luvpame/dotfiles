@@ -59,7 +59,17 @@ class WorkspaceReviewRequestsTest(unittest.TestCase):
                     {"workspace_id": "w1"},
                     {
                         "workspace_id": "w2",
-                        "worktree": {"repo_root": str(self.repo)},
+                        "worktree": {
+                            "repo_root": str(self.repo),
+                            "is_linked_worktree": False,
+                        },
+                    },
+                    {
+                        "workspace_id": "w3",
+                        "worktree": {
+                            "checkout_path": str(self.repo),
+                            "is_linked_worktree": True,
+                        },
                     },
                 ]
             }
@@ -86,7 +96,7 @@ class WorkspaceReviewRequestsTest(unittest.TestCase):
         }
         subprocess.run([UPDATER], env=env, check=True)
 
-    def test_updates_every_workspace_without_agent_environment(self):
+    def test_updates_regular_workspaces_and_clears_linked_worktree(self):
         self.run_updater()
 
         self.assertEqual(
@@ -96,6 +106,8 @@ class WorkspaceReviewRequestsTest(unittest.TestCase):
                 "--token review_requests=\uf4af Reviews 4",
                 "workspace report-metadata w2 --source review-requests "
                 "--token review_requests=\uf4af Reviews 4",
+                "workspace report-metadata w3 --source review-requests "
+                "--clear-token review_requests",
             ],
         )
         self.assertEqual(
@@ -106,10 +118,16 @@ class WorkspaceReviewRequestsTest(unittest.TestCase):
             ],
         )
 
-    def test_keeps_previous_value_when_github_query_fails(self):
+    def test_keeps_regular_values_and_clears_linked_worktree_when_query_fails(self):
         self.run_updater(gh_exit=1)
 
-        self.assertFalse(self.herdr_log.exists())
+        self.assertEqual(
+            self.herdr_log.read_text().splitlines(),
+            [
+                "workspace report-metadata w3 --source review-requests "
+                "--clear-token review_requests"
+            ],
+        )
 
 
 if __name__ == "__main__":
