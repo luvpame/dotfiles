@@ -109,7 +109,9 @@ command -v tree-sitter
 
 ```bash
 test -d "$HOME/.config/herdr" && test ! -L "$HOME/.config/herdr"
-test -L "$HOME/.config/herdr/config.toml"
+for file in agent-git-metadata.py config.toml worktree-fzf.fish; do
+  test -L "$HOME/.config/herdr/$file"
+done
 test -d "$HOME/.config/hunk" && test ! -L "$HOME/.config/hunk"
 test -L "$HOME/.config/hunk/config.toml"
 test -f "$HOME/.config/hunk/state.json"

@@ -25,9 +25,10 @@ in
     ziggity.source = oos "${configRoot}/ziggity";
     yazi.source = oos "${configRoot}/yazi";
     tmux.source = oos "${configRoot}/tmux";
+    "herdr/scripts".source = oos "${configRoot}/herdr/scripts";
+    "herdr/config.toml".source = oos "${configRoot}/herdr/config.toml";
 
-    # Runtime stateを含む親directory linkはT23とT24でfile単位へ分割する。
-    herdr.source = oos "${configRoot}/herdr";
+    # Runtime stateを含むHunkの親directory linkはT24でfile単位へ分割する。
     "worktrunk/config.toml".source = oos "${configRoot}/worktrunk/config.toml";
     hunk.source = oos "${configRoot}/hunk";
     wezterm.source = oos "${configRoot}/wezterm";
