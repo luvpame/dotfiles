@@ -19,8 +19,11 @@ GitHub の PR、レビュー、コメント、issue には書き込まない。`
 - herdr CLI の構文と安全規則は herdr スキルが正。未読なら Skill ツールで先に読む。
 - Monitor と TaskStop はホストのエージェント実行環境が提供する永続タスク API を使う。この二つを利用できない環境では開始せず、その制約を報告して終了する。CLI の JSON フィールド名は実行時の `herdr` 出力を正とする。
 - gh と wt はサンドボックス内では動かない（keychain のトークンに触れず TLS も通らない。`sandbox.network.allowedDomains` 許可でも不十分）。このスキルはサンドボックス無効のセッションで動かす前提。前提確認の `gh pr list` が TLS エラーになったら、`api.github.com` と `github.com` のネットワーク許可に加えてサンドボックス無効のセッションが必要だと報告して止まる。
-- `wt switch` は post-start フック（[[worktree-devenv-setup]]）が worktree 専用の herdr workspace を自動生成する。実行した pane では cd されず、`--no-cd` でもフックは走る。レビュー環境の workspace はこのフック任せで、スキル側では作らない。
-- `claude` を引数なしで起動すると FleetView（セッション一覧UI）が開き、`agent prompt` がタスク作成ボックスに吸われてストールする。herdr から起動するときは初期プロンプトを argv で渡して直接セッションを開く（例: `-- "準備完了とだけ返して"`）。スラッシュコマンドは argv だとテキスト扱いされるので、起動後に idle を待ってから `agent prompt` で送る。
+- `wt switch` の post-start フック（[[worktree-devenv-setup]]、実体は dotfiles の `config/worktrunk/config.toml`）は `herdr worktree open --cwd <primary> --path <worktree> --focus` を実行し、worktree 専用の herdr workspace を生成する。実行した pane では cd されず、`--no-cd` でもフックは走る。
+- ただし **worktree が既に存在すると `wt switch` はこのフックを走らせない**（`✓ Created worktree` ではなく `○ Switched to worktree` で終わる）。workspace はできない。したがって workspace をフック任せにせず、worktree パスで照合して無ければ自分で `herdr worktree open` を叩く（「レビュー起動」step 3）。**`herdr workspace create` で代用しない**。それで作った workspace は JSON に `worktree` キーごと付かず、`worktree.checkout_path` を頼る残骸回収が worktree パスを引き戻せなくなる。
+- フックが生成するタブ構成は一定でない。dotfiles 側でフックが編集されうるため、root pane 1枚のときも `agent review` / `editor` / `diff` 相当が最初から生えているときもある。タブを足す前に必ず `herdr tab list --workspace <id>` で既存構成を確認する。しないと重複タブができる。
+- state ファイルを消すときは `unlink <ファイル>` を使う。`rm` は guard-and-guide のフックが禁止している。リネーム退避のような回避策は取らない（ゴミが残り、次セッションの残骸回収を汚す）。ディレクトリごと消す必要が出たら削除コマンドをユーザーへ提示して実行してもらう。
+- `claude` を引数なしで起動すると FleetView（セッション一覧UI）が開き、`agent prompt` がタスク作成ボックスに吸われてストールする。herdr から起動するときは初期プロンプトを argv で渡して直接セッションを開く（例: `-- "準備完了とだけ返して"`）。スラッシュコマンドは argv だとテキスト扱いされるので、起動後に idle を待ってから `agent prompt` で送り、Enter を追い打ちする（「レビュー起動」step 8）。
 
 ## 初回セットアップ
 
@@ -29,11 +32,11 @@ GitHub の PR、レビュー、コメント、issue には書き込まない。`
    - `test "${HERDR_ENV:-}" = 1`
    - `git rev-parse --show-toplevel`（リポジトリ内で動いている）
    - `wt --version`
-   - `gh pr list --limit 1` が成功（TLS エラーなら上記 allowedHosts を案内する）
+   - `gh pr list --limit 1` が成功（TLS エラーなら上記 `sandbox.network.allowedDomains` とサンドボックス無効を案内する）
    - `gh api user --jq .login` の出力を `<me>` として固定する（片付けの判断が自分のレビュー状態を引くのに使う）
 2. 専用 workspace へ移る: `herdr pane current --current` で現在の workspace ID を得て、`herdr workspace list` からそのラベルを照合する。ラベルが `pr-review` なら現在の pane ID を `<orchestrator pane>` とする。そうでなければ、`herdr pane move "$HERDR_PANE_ID" --new-workspace --label "pr-review" --tab-label "orchestrator" --no-focus` で自分ごと引っ越す（プロセスは生きたまま移動する）。以後は move の JSON にある `result.move_result.pane.pane_id` を `<orchestrator pane>` として使う。
 3. 自セッションの scratchpad ディレクトリ（システムプロンプト記載）に `<scratchpad>/pr-review-orchestrator/<orchestrator pane>` を state ディレクトリとして作り、パスを以後の `<state>` として固定する。`launched.txt`（起動済みまたは失敗済みのPR番号、1行1件）と `seen.txt`（ウォッチャー通知済みPR番号、1行1件）を touch する。作成後に `<state>` をユーザーへ一度報告する。
-4. 前セッションの残骸を回収する。`<state>` はセッションごとの scratchpad 配下にあり前回のものは引き継がれないので、環境そのものを走査する: `herdr workspace list` でラベルが `pr#<番号>` の workspace を全部挙げ、それぞれ `gh pr view <番号> --json state,title` を引く。`worktree.checkout_path` を `<state>/worktree-pr<番号>` に書き戻してから、1件ずつ「片付けの判断」の分岐に載せる。残った分は一覧にしてユーザーへ報告する。該当 workspace が無ければ何もしない。
+4. 前セッションの残骸を回収する。`<state>` はセッションごとの scratchpad 配下にあり前回のものは引き継がれないので、環境そのものを走査する: `herdr workspace list` でラベルが `pr#<番号>` の workspace を全部挙げ、それぞれ `gh pr view <番号> --json state,title` を引く。`worktree.checkout_path` を `<state>/worktree-pr<番号>` に書き戻してから、1件ずつ「片付けの判断」の分岐に載せる。`worktree` キーを持たない workspace（過去に `herdr workspace create` で作られた残骸）は checkout_path を引けないので、`gh pr view <番号> --json headRefName` でブランチを求め、「レビュー起動」step 2 と同じ `git worktree list --porcelain` からパスを引く。残った分は一覧にしてユーザーへ報告する。該当 workspace が無ければ何もしない。
 5. ウォッチャーを起動する（次節）。初回ポーリングは即時に走るので、既存のレビュー依頼PRも起動直後の NEW_PR 通知として届く。
 
 完了基準: 前提5点がすべて成功し、自分が `pr-review` workspace におり、state ディレクトリのパスが確定し、既存の `pr#<番号>` workspace を全件仕分け済みで、ウォッチャーが走っていること。
@@ -80,35 +83,78 @@ done
 
 ## レビュー起動（PR 1件ごと）
 
-`herdr workspace list` にラベル `pr#<番号>` が既にある場合（クラッシュ・中断後の再開）: step 1〜3 をスキップする。その workspace の `worktree.checkout_path` を `<worktreeパス>` とする。`herdr tab list --workspace <id>` でラベルが `agent review` の tab ID を一つだけ特定し、`herdr pane list --workspace <id>` からその tab ID の pane を一つだけ得る。この pane を root pane として step 4 を続ける。該当 tab または pane が 0 件か複数件なら、再開対象を推測せず、ユーザーへ報告して停止する。
+worktree が新規か既存か、クラッシュ後の再開かで分岐しない。worktree パスで workspace を照合する step 3 が3ケースすべてを吸収する。
 
-1. worktree 作成: `wt switch` 前に `herdr workspace list` の workspace ID 一覧を保存し、自身の Bash で `wt switch pr:<番号> --no-cd` を実行する（PR 1件 = workspace 1つ。post-start フックが worktree 専用 workspace を生成し、同一 repo の workspace として repo の workspace 配下にグルーピングされる）。非0終了なら失敗。
-2. 生成された workspace を整える: もう一度 `herdr workspace list` を取得し、保存済み一覧にない ID かつラベルが sweep.json の `headRefName` と一致する workspace を一つだけ特定する。0 件または複数件なら推測せず失敗として扱う。この JSON の `worktree.checkout_path` を `<worktreeパス>` とし、workspace ID を `<id>` とする。`herdr tab list --workspace <id>` で root tab `<id>:t1` を確認し、`herdr pane list --workspace <id>` からこの tab の pane を一つだけ得て `<root pane>` とする。0 件または複数件なら失敗として扱う。
-   - `herdr workspace rename <id> "pr#<番号>"`
-   - root tab を `herdr tab rename <id>:t1 "agent review"`
-3. 補助タブを2枚作る（いずれも `--cwd <worktreeパス>` `--no-focus`。pane_id は create の JSON から読む）。`tab create` は shell の初期化完了を待たないため、各 pane で次の readiness gate を通してから目的のコマンドを送る。direnv の処理中に最初の入力が失われても、shell が sentinel を出力するまで最大3回再送する。sentinel は入力行との誤一致を避けるため、文字列をそのまま command に含めず8進エスケープで出力する:
+1. worktree を用意する: 自身の Bash で `wt switch pr:<番号> --no-cd` を実行する。非0終了なら失敗。worktree が新規でも既存でも、ここまでで worktree 自体は必ず用意される（新規のときだけ post-start フックが workspace も作る）。**出力を控えておく**。`✓ Created worktree` か `○ Switched to worktree` かが、失敗時に worktree を消してよいかの唯一の判断材料になる。
+2. worktree パスを確定する。`<headRefName>` は sweep.json のもの:
    ```bash
-   ready=0
-   for attempt in 1 2 3; do
-     herdr pane run <pane_id> "printf '\137\137PR\137REVIEW\137SHELL\137READY\137\137\n'"
-     if herdr pane wait-output <pane_id> --match "__PR_REVIEW_SHELL_READY__" --timeout 60000; then
-       ready=1
-       break
-     fi
-   done
-   test "$ready" = 1
+   git worktree list --porcelain \
+     | awk -v b="refs/heads/<headRefName>" '/^worktree /{p=$2} $0=="branch "b{print p}'
    ```
-   3回とも sentinel を確認できなければ、この step の失敗として扱う。
-   - **editor**: `herdr tab create --workspace <id> --label "editor" ...` → `herdr pane run <pane_id> "nvim ."`
-   - **diff**: `herdr tab create --workspace <id> --label "diff" ...` → `herdr pane run <pane_id> "hunk diff origin/<baseRefName>...HEAD"`（ベースが `main` なら `origin/main...HEAD`、それ以外ならそのベースブランチと `HEAD` の差分を Hunk で表示）
-4. Claude Code 起動（agent review タブの root pane で）: `herdr agent start pr<番号> --kind claude --pane <root pane> -- --model opus "準備完了とだけ返して"` → `herdr agent wait pr<番号> --timeout 60000` で idle を待つ。
-5. レビュー指示（`--wait` は付けない。レビューは長い）:
-   ```
-   herdr agent prompt pr<番号> "/code-review:code-review 敵対的検証をして。レビューは読み取り専用で行い、指摘はこのセッションに返答すること。GitHub の PR、レビュー、コメント、issue を含む外部サービスへは一切書き込まないこと。"
-   ```
-6. `<worktreeパス>` を `<state>/worktree-pr<番号>` に書く（片付けが参照する。sweep.json はスイープごとに上書きされ、マージ済みPRは消えるので当てにしない）。`launched.txt` に番号を追記し、Monitor の persistent task として `herdr agent wait pr<番号> --timeout 3600000` を実行して監視をアームする。返却された task ID を `<state>/monitor-pr<番号>-task-id` に記録する。
+   0 件または複数件なら推測せず失敗として扱う。得た値を `<worktreeパス>` とする。`wt list --format json` は使わない（出力スキーマが 1 から 2 へ移行中でキー名が変わる）。
+3. workspace を確定する。`herdr workspace list` から `worktree.checkout_path` が `<worktreeパス>` と一致する workspace を探す:
+   - **1 件**: その `workspace_id` を `<id>` とする。post-start フックが作った直後も、クラッシュ・中断からの再開もここに乗る。
+   - **0 件**: フックが走らなかった場合（既存 worktree）。次で作り、返る JSON の `result.workspace.workspace_id` を `<id>` とする:
+     ```
+     herdr worktree open --cwd <リポジトリroot> --path <worktreeパス> --label "pr#<番号>" --no-focus
+     ```
+   - **複数件**: 推測せず失敗として扱う。
+4. `herdr workspace rename <id> "pr#<番号>"` でラベルを揃える（フック生成分はブランチ名ラベルになっている。既に一致していれば実質 no-op）。
+5. root tab と root pane を得る: `herdr tab list --workspace <id>` で root tab を確認し、`herdr pane list --workspace <id>` からその tab の pane を一つだけ得て `<root pane>` とする。0 件または複数件なら失敗として扱う。root tab のラベルが `agent review` でなければ `herdr tab rename <root tab> "agent review"`。
+6. 補助タブ（`editor` と `diff`）を用意する。ラベルはこの2つで固定し、`diff (PR)` のような別名を付けない。まず `herdr tab list --workspace <id>` と `herdr pane list --workspace <id>` を引き、ラベルごとに次で分岐する:
+   - **同名タブが無い**: `herdr tab create --workspace <id> --label "<ラベル>" --cwd <worktreeパス> --no-focus` で作る。pane_id は create の JSON から読む。
+   - **同名タブがある**: **作らない。そのタブの pane を `herdr pane list --workspace <id>` から引いて再利用する。** フックが作るタブは shell が置かれているだけで目的のコマンドは走っていないので、既存タブを避けて新規に作ると `diff` と `diff (PR)` のようなタブの二重化を起こす。
 
-step 1〜5 のどれかが失敗したら: 原因を確認し（agent 系は `pane read`）、この起動試行で新規に生成した workspace を閉じ、`wt switch` が作った worktree も `wt remove --foreground --reap <worktreeパス>` で消す。再開した既存 workspace と worktree は残す。`launched.txt` に番号を**追記した上で**ユーザーに報告する。追記するのは自動再試行の無限ループを防ぐため。再試行はユーザーの指示で launched.txt から番号を消して行う。
+   pane_id が決まったら、ラベルごとのコマンドを**起動を確認するまで最大3回送る**。`tab create` は shell の初期化完了を待たず、direnv / devenv の評価中に送った入力は失われるため、送りっぱなしにすると nvim も hunk も起動しない空のタブが残る。判定は `herdr pane process-info` の foreground プロセスで行い、次の3値に潰す（`shell` = 入力を受け付けられる、`nvim` / `hunk` = 目的のコマンドが走っている、それ以外 = direnv 等が前面にいて入力は失われる）:
+   ```bash
+   pane=<pane_id>; cmd=<コマンド>; want=<プロセス名>   # editor は nvim、diff は hunk
+   fg() {
+     herdr pane process-info --pane "$pane" | jq -r '.result.process_info as $i
+       | (($i.foreground_processes // [])[0] // {}) as $p
+       | if $p.pid == null or $p.pid == $i.shell_pid then "shell" else $p.argv0 end'
+   }
+   for attempt in 1 2 3; do
+     [ "$(fg)" = "$want" ] && break          # 再開ケース。走っている nvim に文字を打ち込まない
+     for i in $(seq 1 30); do                # shell が前面に戻るまで待つ
+       [ "$(fg)" = "shell" ] && break
+       sleep 2
+     done
+     herdr pane run "$pane" "$cmd"
+     for i in $(seq 1 15); do
+       sleep 2
+       [ "$(fg)" = "$want" ] && break
+     done
+   done
+   test "$(fg)" = "$want"
+   ```
+   - **editor**: `cmd="nvim ."`、`want=nvim`
+   - **diff**: `cmd="hunk diff origin/<baseRefName>...HEAD"`、`want=hunk`（ベースが `main` なら `origin/main...HEAD`、それ以外ならそのベースブランチと `HEAD` の差分を Hunk で表示）
+
+   3回とも起動しなければ `herdr pane read <pane_id>` で原因を確認してユーザーへ報告する。補助タブはレビューの前提ではないので、この step の失敗としては扱わず次へ進む。
+7. Claude Code 起動（agent review タブの root pane で）。direnv / devenv の評価中はシェルに到達しておらず `{"error":{"code":"agent_pane_busy"}}` で落ちるので、リトライで吸収する:
+   ```bash
+   for i in $(seq 1 10); do
+     out=$(herdr agent start pr<番号> --kind claude --pane <root pane> -- --model opus "準備完了とだけ返して" 2>&1)
+     echo "$out" | grep -q '"error"' || break
+     sleep 5
+   done
+   ```
+   10 回とも error なら失敗として扱う。続けて `herdr agent wait pr<番号> --timeout 60000` で初回ターンの idle を待つ。**この wait の戻り値を必ず確認する。** timeout（まだ working）のまま次へ進むと step 8 の prompt がキューに積まれ、前ターン終了後に自動送信されてレビューが二重に走る（20分・数百kトークンの丸損）。timeout なら prompt を送らず wait をやり直す。
+8. レビュー指示（`--wait` は付けない。レビューは長い）。スラッシュコマンドは Claude Code の補完ポップアップに Enter を食われてテキストが入力欄に残るため、`send-keys enter` で追い打ちする:
+   ```bash
+   herdr agent prompt pr<番号> "/code-review:code-review 敵対的検証をして。レビューは読み取り専用で行い、指摘はこのセッションに返答すること。GitHub の PR、レビュー、コメント、issue を含む外部サービスへは一切書き込まないこと。"
+   sleep 2
+   herdr agent send-keys pr<番号> enter
+   ```
+   送信できたかは `herdr agent get pr<番号>` が working になったかで確認する。ならなければ `herdr agent read pr<番号> --source visible` で入力欄の残留を見る（working 中の agent に `--source recent-unwrapped` を使うと `agent_not_idle` で拒否される）。キューに積んでしまった場合は `herdr agent send-keys pr<番号> up`（キューを入力欄へ戻す）→ `herdr agent send-keys pr<番号> ctrl+u`（クリア）で解除する。
+9. `<worktreeパス>` を `<state>/worktree-pr<番号>` に書く（片付けが参照する。sweep.json はスイープごとに上書きされ、マージ済みPRは消えるので当てにしない）。`launched.txt` に番号を追記し、Monitor の persistent task として `herdr agent wait pr<番号> --timeout 3600000` を実行して監視をアームする。返却された task ID を `<state>/monitor-pr<番号>-task-id` に記録する。
+
+step 1〜8 のどれかが失敗したら: 原因を確認し（agent 系は `pane read`）、**この起動試行で自分が新規に作ったものだけ**を片付ける。
+
+- workspace: step 3 の 0 件分岐で `herdr worktree open` した場合のみ閉じる。step 3 で既存が 1 件ヒットしていたなら残す。
+- worktree: step 1 の `wt switch` 出力が `✓ Created worktree` だった場合のみ `wt remove --foreground --reap <worktreeパス>` で消す。`○ Switched to worktree` なら**既存の worktree なので消さない**（他の作業の未コミット変更を巻き込む）。
+
+`launched.txt` に番号を**追記した上で**ユーザーに報告する。追記するのは自動再試行の無限ループを防ぐため。再試行はユーザーの指示で launched.txt から番号を消して行う。
 
 完了基準: `herdr agent list` に pr<番号> が working で載っているか、失敗として launched.txt 追記 + 報告済みであること。
 
@@ -117,7 +163,7 @@ step 1〜5 のどれかが失敗したら: 原因を確認し（agent 系は `pa
 `herdr agent get pr<番号>` で状態を確認して分岐する:
 
 - **idle / done**: `herdr agent read pr<番号> --source recent-unwrapped --lines 150` で結果を読み、重大指摘の有無を1〜2文でユーザーへ報告する。workspace と worktree はそのまま残す。ユーザーは指摘の裏を取るために worktree を開くので、ここで消してはいけない。
-- **blocked**: read で何を聞かれているかを確認し、ユーザーへ通知して指示を待つ。他PRの監視とスイープは継続する。
+- **blocked**: `herdr agent read pr<番号> --source visible` で何を聞かれているかを確認し、ユーザーへ通知して指示を待つ。他PRの監視とスイープは継続する。進行中の agent に `--source recent-unwrapped` を使うと `agent_not_idle` で拒否されるので、idle / done 以外は必ず `visible` を使う。Claude Code は代替スクリーンで動くため、`--lines` を増やしてもスクロールアウトした行は取れない。
 - **timeout（エラー）**: 同じ wait をアームし直す。
 
 ## 片付けの判断
@@ -139,7 +185,7 @@ gh pr view <番号> --json state,title,latestReviews \
 
 approve 済みかどうかは `mine` の**最新**の状態で見る。approve の後に changes-requested を出していれば approve は覆っており、残すのが正しい。
 
-`GONE_PR` 起点のときは、どちらの分岐でも `launched.txt` と `seen.txt` から番号を消す。5分ごとの再通知を止めるためで、消しても poll.txt に載っていない以上スイープは再起動しない。再びレビュー依頼が来たら新規PRとして扱われ、既存 workspace があれば「レビュー起動」の再開パスに乗る。
+`GONE_PR` 起点のときは、どちらの分岐でも `launched.txt` と `seen.txt` から番号を消す。5分ごとの再通知を止めるためで、消しても poll.txt に載っていない以上スイープは再起動しない。再びレビュー依頼が来たら新規PRとして扱われるが、「レビュー起動」step 3 が worktree パスで既存 workspace を拾うので、残っていればそれを再利用する。
 
 自動で片付けてよい根拠は `gh pr view` が返す state と `<me>` の approve、そしてユーザーの明示的な指示だけである。次はいずれも根拠にならない:
 
@@ -154,10 +200,10 @@ approve 済みかどうかは `mine` の**最新**の状態で見る。approve �
 
 ## 片付けの実行
 
-1. `<state>/monitor-pr<番号>-task-id` の task ID を TaskStop に渡し、そのファイルを消す。
+1. `<state>/monitor-pr<番号>-task-id` の task ID を TaskStop に渡し、`unlink <state>/monitor-pr<番号>-task-id` でそのファイルを消す。
 2. `herdr workspace list` からラベル `pr#<番号>` の workspace ID を得て `herdr workspace close <id>` する。agent review / editor / diff の全 pane が閉じ、worktree を掴んでいる claude・nvim・hunk が落ちる。該当 workspace が無ければこの手順を飛ばす。
 3. `<state>/worktree-pr<番号>` からパスを読み、`wt remove --foreground --reap <worktreeパス>` を実行する。`--foreground` は削除完了までブロックさせて結果を確かめるため、`--reap` は worktree 内に残ったプロセス（LSP・ウォッチャー等）を先に落とすために付ける。マージ済みならブランチも一緒に消える。
-4. `test ! -d <worktreeパス>` で worktree が実際に消えたことを確かめ、消えていれば `<state>/worktree-pr<番号>` を消す。残っていれば `wt remove` の出力とともにユーザーへ報告し、worktree はそのまま残す。`-f` / `-D` は使わない。未コミットの変更が理由で消せないのは、レビューが読み取り専用のはずなのに書き込みが起きた合図なので、握り潰さずユーザーの判断に渡す。
+4. `test ! -d <worktreeパス>` で worktree が実際に消えたことを確かめ、消えていれば `unlink <state>/worktree-pr<番号>` でそのファイルを消す。残っていれば `wt remove` の出力とともにユーザーへ報告し、worktree はそのまま残す。`-f` / `-D` は使わない。未コミットの変更が理由で消せないのは、レビューが読み取り専用のはずなのに書き込みが起きた合図なので、握り潰さずユーザーの判断に渡す。
 5. `launched.txt` と `seen.txt` にまだ番号が残っていれば消す。
 
 完了基準: worktree が消えているか、消せなかった事実をユーザーへ報告済みであること。
