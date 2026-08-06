@@ -1,6 +1,6 @@
 ---
 name: pr-review-orchestrator
-description: レビュー依頼が来ているPRを検知し、Herdrタブ + worktrunk worktree + Claude Codeで敵対的コードレビューを並列実行・監視するオーケストレーターになる
+description: レビュー依頼が来ているPRを検知し、Herdrタブ + worktrunk worktree + Claude Codeで敵対的コードレビューを並列実行・監視し、PRがマージ・クローズされた worktree を自動で片付けるオーケストレーターになる
 disable-model-invocation: true
 ---
 
@@ -25,34 +25,44 @@ GitHub の PR、レビュー、コメント、issue には書き込まない。`
 ## 初回セットアップ
 
 1. 前提確認。欠けたら原因を報告して終了する:
+   - 自セッションのモデルが opus であること（システムプロンプトの記載で判断する）。オーケストレーターは自分のモデルを変えられないので、opus 以外なら `claude --model opus` での起動し直しを案内して終了する
    - `test "${HERDR_ENV:-}" = 1`
    - `git rev-parse --show-toplevel`（リポジトリ内で動いている）
    - `wt --version`
    - `gh pr list --limit 1` が成功（TLS エラーなら上記 allowedHosts を案内する）
 2. 専用 workspace へ移る: `herdr pane current --current` で現在の workspace ID を得て、`herdr workspace list` からそのラベルを照合する。ラベルが `pr-review` なら現在の pane ID を `<orchestrator pane>` とする。そうでなければ、`herdr pane move "$HERDR_PANE_ID" --new-workspace --label "pr-review" --tab-label "orchestrator" --no-focus` で自分ごと引っ越す（プロセスは生きたまま移動する）。以後は move の JSON にある `result.move_result.pane.pane_id` を `<orchestrator pane>` として使う。
 3. 自セッションの scratchpad ディレクトリ（システムプロンプト記載）に `<scratchpad>/pr-review-orchestrator/<orchestrator pane>` を state ディレクトリとして作り、パスを以後の `<state>` として固定する。`launched.txt`（起動済みまたは失敗済みのPR番号、1行1件）と `seen.txt`（ウォッチャー通知済みPR番号、1行1件）を touch する。作成後に `<state>` をユーザーへ一度報告する。
-4. ウォッチャーを起動する（次節）。初回ポーリングは即時に走るので、既存のレビュー依頼PRも起動直後の NEW_PR 通知として届く。
+4. 前セッションの残骸を回収する。`<state>` はセッションごとの scratchpad 配下にあり前回のものは引き継がれないので、環境そのものを走査する: `herdr workspace list` でラベルが `pr#<番号>` の workspace を全部挙げ、それぞれ `gh pr view <番号> --json state,title` を引く。`worktree.checkout_path` を `<state>/worktree-pr<番号>` に書き戻してから、「片付けの判断」の分岐に載せる。MERGED / CLOSED は片付け、OPEN は残して一覧をユーザーへ報告する。該当 workspace が無ければ何もしない。
+5. ウォッチャーを起動する（次節）。初回ポーリングは即時に走るので、既存のレビュー依頼PRも起動直後の NEW_PR 通知として届く。
 
-完了基準: 前提4点がすべて成功し、自分が `pr-review` workspace におり、state ディレクトリのパスが確定し、ウォッチャーが走っていること。
+完了基準: 前提5点がすべて成功し、自分が `pr-review` workspace におり、state ディレクトリのパスが確定し、既存の `pr#<番号>` workspace を全件仕分け済みで、ウォッチャーが走っていること。
 
 ## ウォッチャー（スイープのトリガー）
 
-Monitor ツールで一度だけ起動する（`persistent: true`、description は「レビュー依頼PRの検知」等）。返却された task ID を `<state>/watcher-task-id` に記録する。新規PR 1件につき `NEW_PR <番号>` を1行出力し、その通知が届いたらスイープを実行する:
+Monitor ツールで一度だけ起動する（`persistent: true`、description は「レビュー依頼PRの検知」等）。返却された task ID を `<state>/watcher-task-id` に記録する。2種類の通知を1行1件で出力する。`NEW_PR <番号>` が届いたらスイープを、`GONE_PR <番号>` が届いたら「片付けの判断」を実行する:
 
 ```bash
-touch <state>/seen.txt
+touch <state>/seen.txt <state>/launched.txt
 while :; do
-  gh pr list --search "review-requested:@me" --state open --json number --jq '.[].number' 2>/dev/null | sort -n > <state>/poll.txt || true
-  new=$(grep -vxFf <state>/seen.txt <state>/poll.txt)
-  if [ -n "$new" ]; then
-    echo "$new" | sed 's/^/NEW_PR /'
-    echo "$new" >> <state>/seen.txt
+  if open=$(gh pr list --search "review-requested:@me" --state open --json number --jq '.[].number' 2>/dev/null); then
+    printf '%s\n' "$open" | sed '/^$/d' | sort -n > <state>/poll.txt
+    new=$(grep -vxFf <state>/seen.txt <state>/poll.txt)
+    if [ -n "$new" ]; then
+      echo "$new" | sed 's/^/NEW_PR /'
+      echo "$new" >> <state>/seen.txt
+    fi
+    gone=$(grep -vxFf <state>/poll.txt <state>/launched.txt)
+    [ -n "$gone" ] && echo "$gone" | sed 's/^/GONE_PR /'
   fi
   sleep 300
 done
 ```
 
-`seen.txt` はウォッチャーの通知重複防止専用で、起動するかどうかの判断には使わない（それはスイープが launched.txt と既存タブで行う）。再アームは不要で、停止時には `watcher-task-id` の task ID を TaskStop に渡す。
+`poll.txt` の更新は `gh` の成功時だけに限る。失敗した回の空リストを真に受けると、起動中の全PRを `GONE_PR` 扱いして worktree を消してしまう。
+
+`GONE_PR` は launched.txt に載っているのにレビュー依頼一覧から消えたPRを指す。マージ・クローズ・レビュー依頼の取り下げが混ざっているので、これ単独では削除の根拠にならない。「片付けの判断」が理由を確定させ、launched.txt から番号を消すので通知は止まる。
+
+`seen.txt` はウォッチャーの `NEW_PR` 重複防止専用で、起動するかどうかの判断には使わない（それはスイープが launched.txt と既存タブで行う）。再アームは不要で、停止時には `watcher-task-id` の task ID を TaskStop に渡す。
 
 ## スイープ
 
@@ -60,7 +70,7 @@ done
 
 1. 検知を実行し、結果を保存する:
    ```
-   gh pr list --search "review-requested:@me" --state open --json number,title,headRefName,baseRefName,url > <state>/sweep.json
+   gh pr list --search "review-requested:@me" --state open --json number,title,headRefName,headRefOid,baseRefName,baseRefOid,url > <state>/sweep.json
    ```
 2. 新規PR = sweep.json の番号 − `launched.txt` − 稼働中の `pr<番号>` エージェント（`herdr agent list`）。
 3. 新規PRを番号の昇順で「レビュー起動」する。
@@ -69,7 +79,7 @@ done
 
 ## レビュー起動（PR 1件ごと）
 
-`herdr workspace list` にラベル `pr#<番号>` が既にある場合（クラッシュ・中断後の再開）: step 1〜3 をスキップする。`herdr tab list --workspace <id>` でラベルが `agent review` の tab ID を一つだけ特定し、`herdr pane list --workspace <id>` からその tab ID の pane を一つだけ得る。この pane を root pane として step 4 を続ける。該当 tab または pane が 0 件か複数件なら、再開対象を推測せず、ユーザーへ報告して停止する。
+`herdr workspace list` にラベル `pr#<番号>` が既にある場合（クラッシュ・中断後の再開）: step 1〜3 をスキップする。その workspace の `worktree.checkout_path` を `<worktreeパス>` とする。`herdr tab list --workspace <id>` でラベルが `agent review` の tab ID を一つだけ特定し、`herdr pane list --workspace <id>` からその tab ID の pane を一つだけ得る。この pane を root pane として step 4 を続ける。該当 tab または pane が 0 件か複数件なら、再開対象を推測せず、ユーザーへ報告して停止する。
 
 1. worktree 作成: `wt switch` 前に `herdr workspace list` の workspace ID 一覧を保存し、自身の Bash で `wt switch pr:<番号> --no-cd` を実行する（PR 1件 = workspace 1つ。post-start フックが worktree 専用 workspace を生成し、同一 repo の workspace として repo の workspace 配下にグルーピングされる）。非0終了なら失敗。
 2. 生成された workspace を整える: もう一度 `herdr workspace list` を取得し、保存済み一覧にない ID かつラベルが sweep.json の `headRefName` と一致する workspace を一つだけ特定する。0 件または複数件なら推測せず失敗として扱う。この JSON の `worktree.checkout_path` を `<worktreeパス>` とし、workspace ID を `<id>` とする。`herdr tab list --workspace <id>` で root tab `<id>:t1` を確認し、`herdr pane list --workspace <id>` からこの tab の pane を一つだけ得て `<root pane>` とする。0 件または複数件なら失敗として扱う。
@@ -77,15 +87,15 @@ done
    - root tab を `herdr tab rename <id>:t1 "agent review"`
 3. 補助タブを2枚作る（いずれも `--cwd <worktreeパス>` `--no-focus`。pane_id は create の JSON から読む）:
    - **editor**: `herdr tab create --workspace <id> --label "editor" ...` → `herdr pane run <pane_id> "nvim ."`
-   - **diff**: `herdr tab create --workspace <id> --label "diff" ...` → `herdr pane run <pane_id> "hunk diff <baseRefName>...HEAD"`（PR のベースブランチとの差分を Hunk で表示）
+   - **diff**: `herdr tab create --workspace <id> --label "diff" ...` → `herdr pane run <pane_id> "hunk diff <baseRefOid>...<headRefOid>"`（PR のベースとヘッドを commit OID で固定し、その差分だけを Hunk で表示）
 4. Claude Code 起動（agent review タブの root pane で）: `herdr agent start pr<番号> --kind claude --pane <root pane> -- --model opus "準備完了とだけ返して"` → `herdr agent wait pr<番号> --timeout 60000` で idle を待つ。
 5. レビュー指示（`--wait` は付けない。レビューは長い）:
    ```
    herdr agent prompt pr<番号> "/code-review:code-review 敵対的検証をして。レビューは読み取り専用で行い、指摘はこのセッションに返答すること。GitHub の PR、レビュー、コメント、issue を含む外部サービスへは一切書き込まないこと。"
    ```
-6. `launched.txt` に番号を追記し、Monitor の persistent task として `herdr agent wait pr<番号> --timeout 3600000` を実行して監視をアームする。返却された task ID を `<state>/monitor-pr<番号>-task-id` に記録する。
+6. `<worktreeパス>` を `<state>/worktree-pr<番号>` に書く（片付けが参照する。sweep.json はスイープごとに上書きされ、マージ済みPRは消えるので当てにしない）。`launched.txt` に番号を追記し、Monitor の persistent task として `herdr agent wait pr<番号> --timeout 3600000` を実行して監視をアームする。返却された task ID を `<state>/monitor-pr<番号>-task-id` に記録する。
 
-step 1〜5 のどれかが失敗したら: 原因を確認し（agent 系は `pane read`）、この起動試行で新規に生成した workspace だけを閉じる。再開した既存 workspace は閉じない。`launched.txt` に番号を**追記した上で**ユーザーに報告する。追記するのは自動再試行の無限ループを防ぐため。再試行はユーザーの指示で launched.txt から番号を消して行う。
+step 1〜5 のどれかが失敗したら: 原因を確認し（agent 系は `pane read`）、この起動試行で新規に生成した workspace を閉じ、`wt switch` が作った worktree も `wt remove --foreground --reap <worktreeパス>` で消す。再開した既存 workspace と worktree は残す。`launched.txt` に番号を**追記した上で**ユーザーに報告する。追記するのは自動再試行の無限ループを防ぐため。再試行はユーザーの指示で launched.txt から番号を消して行う。
 
 完了基準: `herdr agent list` に pr<番号> が working で載っているか、失敗として launched.txt 追記 + 報告済みであること。
 
@@ -93,12 +103,42 @@ step 1〜5 のどれかが失敗したら: 原因を確認し（agent 系は `pa
 
 `herdr agent get pr<番号>` で状態を確認して分岐する:
 
-- **idle / done**: `herdr agent read pr<番号> --source recent-unwrapped --lines 150` で結果を読み、重大指摘の有無を1〜2文でユーザーへ報告する。workspace は閉じない。
+- **idle / done**: `herdr agent read pr<番号> --source recent-unwrapped --lines 150` で結果を読み、重大指摘の有無を1〜2文でユーザーへ報告する。workspace と worktree はそのまま残す。ユーザーは指摘の裏を取るために worktree を開くので、ここで消してはいけない。
 - **blocked**: read で何を聞かれているかを確認し、ユーザーへ通知して指示を待つ。他PRの監視とスイープは継続する。
 - **timeout（エラー）**: 同じ wait をアームし直す。
 
-## 停止と後片付け
+## 片付けの判断
 
-ユーザーが停止を指示したら: `watcher-task-id` と各 `monitor-pr<番号>-task-id` に記録した task ID を TaskStop に渡して止め、レビューの一覧（PR番号・workspace ID・状態）を報告して終わる。レビュー用の workspace・worktree・エージェントは残す。片付けはユーザーが明示したときだけ行う: `herdr workspace close <workspace_id>` と `wt remove <headRefName>`（headRefName は sweep.json にある）。
+worktree はユーザーが指摘を読み、自分の目でコードを確かめるための場所である。**自動で消してよいのは、PR が MERGED か CLOSED になったときだけ**。それ以外は消さずに報告し、ユーザーの指示を待つ。
+
+入口は2つ。ウォッチャーの `GONE_PR <番号>` 通知と、初回セットアップの残骸回収である。どちらも `gh pr view <番号> --json state,title` で PR の実態を確定させてから分岐する:
+
+- **state が MERGED / CLOSED**: PR 自体が閉じたので誰もレビューしない。エージェントが動いていても止めて「片付けの実行」へ進む。
+- **state が OPEN**（レビュー依頼だけが外れた）: 誰か（あるいはエージェント自身）がレビューを提出したか、依頼が取り下げられた状態。ユーザーが指摘を読み終えたとは限らない。「レビュー依頼が外れたが PR は open。worktree を残している」と報告し、指示を待つ。
+
+`GONE_PR` 起点のときは、どちらの分岐でも `launched.txt` と `seen.txt` から番号を消す。5分ごとの再通知を止めるためで、消しても poll.txt に載っていない以上スイープは再起動しない。再びレビュー依頼が来たら新規PRとして扱われ、既存 workspace があれば「レビュー起動」の再開パスに乗る。
+
+自動で片付けてよい根拠は `gh pr view` の state と、ユーザーの明示的な指示の2つだけである。次はいずれも根拠にならない:
+
+- レビューエージェントが idle / done になったこと
+- 指摘をユーザーへ報告し終えたこと
+- PR にレビューやコメントが投稿されたこと（このスキルはそもそも GitHub へ書き込まない。投稿の存在は誰かが読んだ証拠にはならない）
+- `review-requested:@me` の一覧から消えたこと（`GONE_PR` は調査の合図であって、削除の許可ではない）
+
+ユーザーが明示的に片付けを指示したときも「片付けの実行」を走らせる。
+
+## 片付けの実行
+
+1. `<state>/monitor-pr<番号>-task-id` の task ID を TaskStop に渡し、そのファイルを消す。
+2. `herdr workspace list` からラベル `pr#<番号>` の workspace ID を得て `herdr workspace close <id>` する。agent review / editor / diff の全 pane が閉じ、worktree を掴んでいる claude・nvim・hunk が落ちる。該当 workspace が無ければこの手順を飛ばす。
+3. `<state>/worktree-pr<番号>` からパスを読み、`wt remove --foreground --reap <worktreeパス>` を実行する。`--foreground` は削除完了までブロックさせて結果を確かめるため、`--reap` は worktree 内に残ったプロセス（LSP・ウォッチャー等）を先に落とすために付ける。マージ済みならブランチも一緒に消える。
+4. `test ! -d <worktreeパス>` で worktree が実際に消えたことを確かめ、消えていれば `<state>/worktree-pr<番号>` を消す。残っていれば `wt remove` の出力とともにユーザーへ報告し、worktree はそのまま残す。`-f` / `-D` は使わない。未コミットの変更が理由で消せないのは、レビューが読み取り専用のはずなのに書き込みが起きた合図なので、握り潰さずユーザーの判断に渡す。
+5. `launched.txt` と `seen.txt` にまだ番号が残っていれば消す。
+
+完了基準: worktree が消えているか、消せなかった事実をユーザーへ報告済みであること。
+
+## 停止
+
+ユーザーが停止を指示したら: `watcher-task-id` と残っている各 `monitor-pr<番号>-task-id` に記録した task ID を TaskStop に渡して止め、レビューの一覧（PR番号・workspace ID・worktree パス・状態）を報告して終わる。workspace・worktree・エージェントはすべて残す。停止は片付けの根拠にならない。残りも消したいとユーザーが言ったら、各PRについて「片付けの実行」を走らせる。
 
 レビュー済みPRへの再レビュー依頼はスコープ外。`launched.txt` に載った番号は sweep の起動候補から除外される。`seen.txt` は watcher の `NEW_PR` 再通知だけを抑止する。再レビューするにはユーザーが `launched.txt` から番号を消す。`NEW_PR` 通知も再度必要なら `seen.txt` からも消す。検知は個人宛の `review-requested:@me` のみで、チーム宛のレビュー依頼は対象外。
