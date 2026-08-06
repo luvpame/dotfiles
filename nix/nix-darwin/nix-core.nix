@@ -41,10 +41,14 @@
         "root"
         local.userName
       ];
-      # claude-code-overlay 用のバイナリキャッシュ。
-      extra-substituters = [ "https://ryoppippi.cachix.org" ];
-      # claude-code-overlay のバイナリキャッシュ用公開鍵。
+      # 開発CLI用のバイナリキャッシュ。
+      extra-substituters = [
+        "https://cclens.cachix.org"
+        "https://ryoppippi.cachix.org"
+      ];
+      # バイナリキャッシュの公開鍵。
       extra-trusted-public-keys = [
+        "cclens.cachix.org-1:0QUNU6PuVyf+yXOvg3n1rd3FksBoB3s3/Jty50iKRNQ="
         "ryoppippi.cachix.org-1:b2LbtWNvJeL/qb1B6TYOMK+apaCps4SCbzlPRfSQIms="
       ];
     };

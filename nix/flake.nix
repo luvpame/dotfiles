@@ -15,6 +15,7 @@
       url = "github:ryoppippi/claude-code-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    cclens.url = "github:lambdalisue/cclens";
     crit = {
       url = "git+https://github.com/tomasz-tomczyk/crit.git";
       inputs.nixpkgs.follows = "nixpkgs";
