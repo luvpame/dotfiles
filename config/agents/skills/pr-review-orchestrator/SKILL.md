@@ -71,7 +71,7 @@ done
 
 1. 検知を実行し、結果を保存する:
    ```
-   gh pr list --search "review-requested:@me" --state open --json number,title,headRefName,headRefOid,baseRefName,baseRefOid,url > <state>/sweep.json
+   gh pr list --search "review-requested:@me" --state open --json number,title,headRefName,baseRefName,url > <state>/sweep.json
    ```
 2. 新規PR = sweep.json の番号 − `launched.txt` − 稼働中の `pr<番号>` エージェント（`herdr agent list`）。
 3. 新規PRを番号の昇順で「レビュー起動」する。
@@ -86,9 +86,21 @@ done
 2. 生成された workspace を整える: もう一度 `herdr workspace list` を取得し、保存済み一覧にない ID かつラベルが sweep.json の `headRefName` と一致する workspace を一つだけ特定する。0 件または複数件なら推測せず失敗として扱う。この JSON の `worktree.checkout_path` を `<worktreeパス>` とし、workspace ID を `<id>` とする。`herdr tab list --workspace <id>` で root tab `<id>:t1` を確認し、`herdr pane list --workspace <id>` からこの tab の pane を一つだけ得て `<root pane>` とする。0 件または複数件なら失敗として扱う。
    - `herdr workspace rename <id> "pr#<番号>"`
    - root tab を `herdr tab rename <id>:t1 "agent review"`
-3. 補助タブを2枚作る（いずれも `--cwd <worktreeパス>` `--no-focus`。pane_id は create の JSON から読む）:
+3. 補助タブを2枚作る（いずれも `--cwd <worktreeパス>` `--no-focus`。pane_id は create の JSON から読む）。`tab create` は shell の初期化完了を待たないため、各 pane で次の readiness gate を通してから目的のコマンドを送る。direnv の処理中に最初の入力が失われても、shell が sentinel を出力するまで最大3回再送する。sentinel は入力行との誤一致を避けるため、文字列をそのまま command に含めず8進エスケープで出力する:
+   ```bash
+   ready=0
+   for attempt in 1 2 3; do
+     herdr pane run <pane_id> "printf '\137\137PR\137REVIEW\137SHELL\137READY\137\137\n'"
+     if herdr pane wait-output <pane_id> --match "__PR_REVIEW_SHELL_READY__" --timeout 60000; then
+       ready=1
+       break
+     fi
+   done
+   test "$ready" = 1
+   ```
+   3回とも sentinel を確認できなければ、この step の失敗として扱う。
    - **editor**: `herdr tab create --workspace <id> --label "editor" ...` → `herdr pane run <pane_id> "nvim ."`
-   - **diff**: `herdr tab create --workspace <id> --label "diff" ...` → `herdr pane run <pane_id> "hunk diff <baseRefOid>...<headRefOid>"`（PR のベースとヘッドを commit OID で固定し、その差分だけを Hunk で表示）
+   - **diff**: `herdr tab create --workspace <id> --label "diff" ...` → `herdr pane run <pane_id> "hunk diff origin/<baseRefName>...HEAD"`（ベースが `main` なら `origin/main...HEAD`、それ以外ならそのベースブランチと `HEAD` の差分を Hunk で表示）
 4. Claude Code 起動（agent review タブの root pane で）: `herdr agent start pr<番号> --kind claude --pane <root pane> -- --model opus "準備完了とだけ返して"` → `herdr agent wait pr<番号> --timeout 60000` で idle を待つ。
 5. レビュー指示（`--wait` は付けない。レビューは長い）:
    ```
