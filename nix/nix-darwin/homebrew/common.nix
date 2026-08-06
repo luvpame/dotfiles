@@ -73,6 +73,7 @@ let
     "logitech-g-hub"
     "hhkb"
     "zed"
+    "visual-studio-code"
     "deskpad"
     "logi-options+"
     "ankerwork"
