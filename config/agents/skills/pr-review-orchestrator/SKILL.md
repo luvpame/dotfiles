@@ -1,6 +1,6 @@
 ---
 name: pr-review-orchestrator
-description: レビュー依頼が来ているPRを検知し、Herdrタブ + worktrunk worktree + Claude Codeで敵対的コードレビューを並列実行・監視し、PRがマージ・クローズされた worktree を自動で片付けるオーケストレーターになる
+description: レビュー依頼が来ているPRを検知し、Herdrタブ + worktrunk worktree + Claude Codeで敵対的コードレビューを並列実行・監視し、PRがマージ・クローズまたは自分がapprove済みになった worktree を自動で片付けるオーケストレーターになる
 disable-model-invocation: true
 ---
 
@@ -30,9 +30,10 @@ GitHub の PR、レビュー、コメント、issue には書き込まない。`
    - `git rev-parse --show-toplevel`（リポジトリ内で動いている）
    - `wt --version`
    - `gh pr list --limit 1` が成功（TLS エラーなら上記 allowedHosts を案内する）
+   - `gh api user --jq .login` の出力を `<me>` として固定する（片付けの判断が自分のレビュー状態を引くのに使う）
 2. 専用 workspace へ移る: `herdr pane current --current` で現在の workspace ID を得て、`herdr workspace list` からそのラベルを照合する。ラベルが `pr-review` なら現在の pane ID を `<orchestrator pane>` とする。そうでなければ、`herdr pane move "$HERDR_PANE_ID" --new-workspace --label "pr-review" --tab-label "orchestrator" --no-focus` で自分ごと引っ越す（プロセスは生きたまま移動する）。以後は move の JSON にある `result.move_result.pane.pane_id` を `<orchestrator pane>` として使う。
 3. 自セッションの scratchpad ディレクトリ（システムプロンプト記載）に `<scratchpad>/pr-review-orchestrator/<orchestrator pane>` を state ディレクトリとして作り、パスを以後の `<state>` として固定する。`launched.txt`（起動済みまたは失敗済みのPR番号、1行1件）と `seen.txt`（ウォッチャー通知済みPR番号、1行1件）を touch する。作成後に `<state>` をユーザーへ一度報告する。
-4. 前セッションの残骸を回収する。`<state>` はセッションごとの scratchpad 配下にあり前回のものは引き継がれないので、環境そのものを走査する: `herdr workspace list` でラベルが `pr#<番号>` の workspace を全部挙げ、それぞれ `gh pr view <番号> --json state,title` を引く。`worktree.checkout_path` を `<state>/worktree-pr<番号>` に書き戻してから、「片付けの判断」の分岐に載せる。MERGED / CLOSED は片付け、OPEN は残して一覧をユーザーへ報告する。該当 workspace が無ければ何もしない。
+4. 前セッションの残骸を回収する。`<state>` はセッションごとの scratchpad 配下にあり前回のものは引き継がれないので、環境そのものを走査する: `herdr workspace list` でラベルが `pr#<番号>` の workspace を全部挙げ、それぞれ `gh pr view <番号> --json state,title` を引く。`worktree.checkout_path` を `<state>/worktree-pr<番号>` に書き戻してから、1件ずつ「片付けの判断」の分岐に載せる。残った分は一覧にしてユーザーへ報告する。該当 workspace が無ければ何もしない。
 5. ウォッチャーを起動する（次節）。初回ポーリングは即時に走るので、既存のレビュー依頼PRも起動直後の NEW_PR 通知として届く。
 
 完了基準: 前提5点がすべて成功し、自分が `pr-review` workspace におり、state ディレクトリのパスが確定し、既存の `pr#<番号>` workspace を全件仕分け済みで、ウォッチャーが走っていること。
@@ -109,23 +110,35 @@ step 1〜5 のどれかが失敗したら: 原因を確認し（agent 系は `pa
 
 ## 片付けの判断
 
-worktree はユーザーが指摘を読み、自分の目でコードを確かめるための場所である。**自動で消してよいのは、PR が MERGED か CLOSED になったときだけ**。それ以外は消さずに報告し、ユーザーの指示を待つ。
+worktree はユーザーが指摘を読み、自分の目でコードを確かめるための場所である。**自動で消してよいのは、PR が閉じたか、`<me>` が approve を出したときだけ**。それ以外は消さずに報告し、ユーザーの指示を待つ。
 
-入口は2つ。ウォッチャーの `GONE_PR <番号>` 通知と、初回セットアップの残骸回収である。どちらも `gh pr view <番号> --json state,title` で PR の実態を確定させてから分岐する:
+入口は2つ。ウォッチャーの `GONE_PR <番号>` 通知と、初回セットアップの残骸回収である。どちらも次で PR の実態を確定させてから分岐する:
+
+```
+gh pr view <番号> --json state,title,latestReviews \
+  --jq '{state, title, mine: [.latestReviews[] | select(.author.login == "<me>") | .state]}'
+```
+
+`latestReviews` は著者ごとの最新レビューを返すので、`mine` は `["APPROVED"]` / `["COMMENTED"]` / `["CHANGES_REQUESTED"]` / `[]` のいずれかになる。
 
 - **state が MERGED / CLOSED**: PR 自体が閉じたので誰もレビューしない。エージェントが動いていても止めて「片付けの実行」へ進む。
-- **state が OPEN**（レビュー依頼だけが外れた）: 誰か（あるいはエージェント自身）がレビューを提出したか、依頼が取り下げられた状態。ユーザーが指摘を読み終えたとは限らない。「レビュー依頼が外れたが PR は open。worktree を残している」と報告し、指示を待つ。
+- **state が OPEN かつ `mine` が `["APPROVED"]`**: ユーザーが目を通して承認を出した。worktree の役目は終わりなので「片付けの実行」へ進む。
+- **state が OPEN でそれ以外**（`COMMENTED` / `CHANGES_REQUESTED` / `[]`）: コメントを付けてレビュー依頼が外れただけで、ユーザーはまだこのPRを見続ける。「レビュー依頼が外れたが PR は open で `<me>` は未 approve。worktree を残している」と `mine` の中身を添えて報告し、指示を待つ。
+
+approve 済みかどうかは `mine` の**最新**の状態で見る。approve の後に changes-requested を出していれば approve は覆っており、残すのが正しい。
 
 `GONE_PR` 起点のときは、どちらの分岐でも `launched.txt` と `seen.txt` から番号を消す。5分ごとの再通知を止めるためで、消しても poll.txt に載っていない以上スイープは再起動しない。再びレビュー依頼が来たら新規PRとして扱われ、既存 workspace があれば「レビュー起動」の再開パスに乗る。
 
-自動で片付けてよい根拠は `gh pr view` の state と、ユーザーの明示的な指示の2つだけである。次はいずれも根拠にならない:
+自動で片付けてよい根拠は `gh pr view` が返す state と `<me>` の approve、そしてユーザーの明示的な指示だけである。次はいずれも根拠にならない:
 
 - レビューエージェントが idle / done になったこと
 - 指摘をユーザーへ報告し終えたこと
-- PR にレビューやコメントが投稿されたこと（このスキルはそもそも GitHub へ書き込まない。投稿の存在は誰かが読んだ証拠にはならない）
+- PR にコメントやレビューが投稿されたこと（`<me>` の APPROVED 以外は、ユーザーが見終えた証拠にならない。このスキルはそもそも GitHub へ書き込まないので、投稿の主体はエージェント以外の誰かである）
 - `review-requested:@me` の一覧から消えたこと（`GONE_PR` は調査の合図であって、削除の許可ではない）
 
 ユーザーが明示的に片付けを指示したときも「片付けの実行」を走らせる。
+
+完了基準: 対象PR全件について `gh pr view` を引き終え、片付けたものと残したものをユーザーへ報告済みであること。
 
 ## 片付けの実行
 
