@@ -70,6 +70,7 @@
     "command": "$HOME/.claude/statusline.py"
   },
   "enabledPlugins": {
+    "cclens@cclens": true,
     "code-review@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
     "crit@crit": true,
@@ -89,6 +90,12 @@
     "mattpocock-skills@mattpocock": true
   },
   "extraKnownMarketplaces": {
+    "cclens": {
+      "source": {
+        "source": "github",
+        "repo": "lambdalisue/cclens"
+      }
+    },
     "crit": {
       "source": {
         "source": "github",

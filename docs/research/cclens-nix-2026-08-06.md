@@ -66,9 +66,9 @@ schema が変わった古い DB は拒否され、削除すれば再生成でき
 既存の `just us` は `nix flake update` と `nh darwin switch` を連続実行するため、input の revision 更新と実環境への反映を一つの経路にまとめられる。
 
 CLI は `${inputs.cclens.packages.${system}.default}` から取得する。
-plugin は同じ input の `plugins/cclens` を Claude Code の `--plugin-dir` へ渡す。
-ローカル CLI の help では `--plugin-dir` を repeatable なセッション限定 plugin 読込として定義しているため、Nix 管理する `claude` wrapper が毎回この引数を付ければ常時利用できる。
-CLI と plugin が同じ Nix store 上の source を参照し、Claude marketplace の checkout と版が分かれない。
+plugin は公式 README が案内する Claude Code marketplace として導入する。
+`extraKnownMarketplaces` に GitHub repository を宣言し、`enabledPlugins` で `cclens@cclens` を有効にする。
+この方式では Claude Code の plugin 一覧と設定から導入状態を確認できる。
 
 input URL を `github:lambdalisue/cclens` にすると `flake.lock` が通常時の revision を固定し、`nix flake update` が upstream の default branch を更新する。
 これは最新の release tag だけを追う仕組みではなく、default branch の commit を追う仕組みである。
@@ -77,6 +77,10 @@ upstream は最新 release tag を Flake update だけで選ぶ alias を公開�
 upstream Cachix を使うには、この dotfiles の Nix daemon 設定へ substituter と公開鍵を明示する。
 cclens input の `nixConfig` は top-level flake の設定として自動適用されないためである。
 また、cclens の `nixpkgs` をこの dotfiles の input へ `follows` させると upstream の cache derivation と一致しない可能性があるため、upstream lock graph を維持する。
+
+CLI の Flake input と plugin marketplace は別々に更新される。
+CLI は既存の `just us` で更新し、plugin は通常の Claude Code 起動時に行われる plugin sync で更新する。
+Home Manager が `settings.json` を読み取り専用で配置するため、`claude plugin install/update` に設定を書き戻させる運用は採用しない。
 
 公式 release archive を固定 hash derivation にする案は、依存 node と cache trust を増やさない点では小さい。
 しかし version、URL、hash の更新が必要で、`nix flake update` だけでは新 release に追従しないため、確定した更新要件には合わない。
