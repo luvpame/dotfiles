@@ -56,16 +56,16 @@ done
 
 ## スイープ
 
-トリガーは2つ: ウォッチャーの NEW_PR 通知、または監視が「枠空き + 持ち越しあり」を検知したとき。
+トリガーはウォッチャーの NEW_PR 通知である。
 
 1. 検知を実行し、結果を保存する:
    ```
-   gh pr list --search "review-requested:@me" --state open --json number,title,headRefName,url > <state>/sweep.json
+   gh pr list --search "review-requested:@me" --state open --json number,title,headRefName,baseRefName,url > <state>/sweep.json
    ```
 2. 新規PR = sweep.json の番号 − `launched.txt` − 稼働中の `pr<番号>` エージェント（`herdr agent list`）。
-3. 新規PRを番号の昇順で「レビュー起動」する。同時レビューは3件まで（数え方: `herdr agent list` で working 状態の `pr<番号>` エージェント数）。超過分は起動せず launched.txt にも書かず、持ち越しとして記録する。
+3. 新規PRを番号の昇順で「レビュー起動」する。
 
-完了基準: 新規PR全件が「タブ起動済み」か「上限による持ち越し」のどちらかに分類されていること。
+完了基準: 新規PR全件のレビュー起動を試行済みであること。
 
 ## レビュー起動（PR 1件ごと）
 
@@ -77,7 +77,7 @@ done
    - root tab を `herdr tab rename <id>:t1 "agent review"`
 3. 補助タブを2枚作る（いずれも `--cwd <worktreeパス>` `--no-focus`。pane_id は create の JSON から読む）:
    - **editor**: `herdr tab create --workspace <id> --label "editor" ...` → `herdr pane run <pane_id> "nvim ."`
-   - **diff**: `herdr tab create --workspace <id> --label "diff" ...` → `herdr pane run <pane_id> "gh pr diff <番号>"`（pager で hunk 表示）
+   - **diff**: `herdr tab create --workspace <id> --label "diff" ...` → `herdr pane run <pane_id> "hunk diff <baseRefName>...HEAD"`（PR のベースブランチとの差分を Hunk で表示）
 4. Claude Code 起動（agent review タブの root pane で）: `herdr agent start pr<番号> --kind claude --pane <root pane> -- --model opus "準備完了とだけ返して"` → `herdr agent wait pr<番号> --timeout 60000` で idle を待つ。
 5. レビュー指示（`--wait` は付けない。レビューは長い）:
    ```
@@ -93,7 +93,7 @@ step 1〜5 のどれかが失敗したら: 原因を確認し（agent 系は `pa
 
 `herdr agent get pr<番号>` で状態を確認して分岐する:
 
-- **idle / done**: `herdr agent read pr<番号> --source recent-unwrapped --lines 150` で結果を読み、重大指摘の有無を1〜2文でユーザーへ報告する。workspace は閉じない。持ち越しPRがあれば枠が空いたので即スイープする。
+- **idle / done**: `herdr agent read pr<番号> --source recent-unwrapped --lines 150` で結果を読み、重大指摘の有無を1〜2文でユーザーへ報告する。workspace は閉じない。
 - **blocked**: read で何を聞かれているかを確認し、ユーザーへ通知して指示を待つ。他PRの監視とスイープは継続する。
 - **timeout（エラー）**: 同じ wait をアームし直す。
 
@@ -101,4 +101,4 @@ step 1〜5 のどれかが失敗したら: 原因を確認し（agent 系は `pa
 
 ユーザーが停止を指示したら: `watcher-task-id` と各 `monitor-pr<番号>-task-id` に記録した task ID を TaskStop に渡して止め、レビューの一覧（PR番号・workspace ID・状態）を報告して終わる。レビュー用の workspace・worktree・エージェントは残す。片付けはユーザーが明示したときだけ行う: `herdr workspace close <workspace_id>` と `wt remove <headRefName>`（headRefName は sweep.json にある）。
 
-レビュー済みPRへの再レビュー依頼はスコープ外。`launched.txt` に載った番号は sweep の起動候補から除外される。`seen.txt` は watcher の `NEW_PR` 再通知だけを抑止し、持ち越しPRを後続 sweep から除外しない。再レビューするにはユーザーが `launched.txt` から番号を消す。`NEW_PR` 通知も再度必要なら `seen.txt` からも消す。検知は個人宛の `review-requested:@me` のみで、チーム宛のレビュー依頼は対象外。
+レビュー済みPRへの再レビュー依頼はスコープ外。`launched.txt` に載った番号は sweep の起動候補から除外される。`seen.txt` は watcher の `NEW_PR` 再通知だけを抑止する。再レビューするにはユーザーが `launched.txt` から番号を消す。`NEW_PR` 通知も再度必要なら `seen.txt` からも消す。検知は個人宛の `review-requested:@me` のみで、チーム宛のレビュー依頼は対象外。
