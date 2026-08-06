@@ -8,6 +8,12 @@ disable-model-invocation: true
 
 このスキルを読んだエージェントがオーケストレーターになる。ウォッチャー（Monitor）が新規のレビュー依頼PRを通知するたびにスイープ→レビュー起動→監視を行い、停止指示があるまで続ける。オーケストレーターは専用 workspace（ラベル `pr-review`）で動く。PR workspace は herdr の仕様上 repo のメイン workspace（shogun）配下にネストされる（[[herdr-workspace-nesting-by-repo]]）。
 
+## レビュー結果の扱い
+
+レビューは読み取り専用で行う。レビューエージェントは結果をオーケストレーターへ返し、オーケストレーターはユーザーへ報告する。
+
+GitHub の PR、レビュー、コメント、issue には書き込まない。`gh pr comment`、`gh pr review`、`gh api` による更新、ブラウザからの投稿を含む外部サービスへの書き込みは実行しない。
+
 ## 環境の制約（先に読む）
 
 - herdr CLI の構文と安全規則は herdr スキルが正。未読なら Skill ツールで先に読む。
@@ -72,10 +78,10 @@ done
 3. 補助タブを2枚作る（いずれも `--cwd <worktreeパス>` `--no-focus`。pane_id は create の JSON から読む）:
    - **editor**: `herdr tab create --workspace <id> --label "editor" ...` → `herdr pane run <pane_id> "nvim ."`
    - **diff**: `herdr tab create --workspace <id> --label "diff" ...` → `herdr pane run <pane_id> "gh pr diff <番号>"`（pager で hunk 表示）
-4. Claude Code 起動（agent review タブの root pane で）: `herdr agent start pr<番号> --kind claude --pane <root pane> -- "準備完了とだけ返して"` → `herdr agent wait pr<番号> --timeout 60000` で idle を待つ。
+4. Claude Code 起動（agent review タブの root pane で）: `herdr agent start pr<番号> --kind claude --pane <root pane> -- --model opus "準備完了とだけ返して"` → `herdr agent wait pr<番号> --timeout 60000` で idle を待つ。
 5. レビュー指示（`--wait` は付けない。レビューは長い）:
    ```
-   herdr agent prompt pr<番号> "/code-review:code-review 敵対的検証をして"
+   herdr agent prompt pr<番号> "/code-review:code-review 敵対的検証をして。レビューは読み取り専用で行い、指摘はこのセッションに返答すること。GitHub の PR、レビュー、コメント、issue を含む外部サービスへは一切書き込まないこと。"
    ```
 6. `launched.txt` に番号を追記し、Monitor の persistent task として `herdr agent wait pr<番号> --timeout 3600000` を実行して監視をアームする。返却された task ID を `<state>/monitor-pr<番号>-task-id` に記録する。
 
