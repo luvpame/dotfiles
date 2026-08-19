@@ -2,7 +2,7 @@
   "permissions": {
     "defaultMode": "auto"
   },
-  "model": "opus",
+  "model": "sonnet",
   "enableAllProjectMcpServers": true,
   "skillOverrides": {
     "code-review": "off",
@@ -60,6 +60,16 @@
             "command": "bash \"$HOME/.claude/hooks/herdr-agent-state.sh\" session",
             "timeout": 10,
             "statusMessage": "herdr にセッションを通知中"
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/nasuno.ayumu/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
           }
         ]
       }
@@ -123,6 +133,7 @@
   "tui": "fullscreen",
   "autoMemoryEnabled": true,
   "verbose": false,
+  "autoContinueAtUsageLimit": true,
   "skipAutoPermissionPrompt": true,
   "useAutoModeDuringPlan": true,
   "voiceEnabled": false
