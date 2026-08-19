@@ -70,7 +70,6 @@ let
     socat
     ov
     guardAndGuide
-    gogcli
     inputs.herdr.packages.${system}.default
     inputs.hunk.packages.${system}.default
     (callPackage ../../../pkgs/pique/default.nix { })
