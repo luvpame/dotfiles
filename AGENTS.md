@@ -15,7 +15,7 @@
 - `just switch` — `nix/local.nix` の `darwinConfigName` を使って system/Homebrew/Home Manager 設定を適用。
 - `just update` — `nix/` で flake 入力を更新。
 - `just update-and-switch` — flake 更新と darwin 反映を連続で実行。
-- `just clean` — `nh clean all --keep-since 4d --keep 3` で古い Nix 世代を整理。
+- `just clean` — `nh clean all --keep-since 30d --keep 3` で古い Nix 世代を整理。
 - `reload`（Fish 略語）— ログインシェルを再起動して新しい設定を読み込む。`fish_plugins` を変更した場合は `fisher update` を続けて実行。
 
 ## コーディングスタイルと命名規則
@@ -27,7 +27,7 @@
 ## テストガイドライン
 - 自動テストは最小限のため、コミット/PR 前に `cd nix && nix flake check` を実行。
 - 新規スクリプトでは可能な限り dry-run フラグを追加し、macOS（Apple Silicon）で手動テスト。
-- Nix の入力やサービスを変更した後は darwin の switch コマンドを再実行し、サービスをスポットチェック（例: `launchctl list | grep jankyborders`）。
+- Nix の入力やサービスを変更した後は darwin の switch コマンドを再実行し、サービスをスポットチェック（例: `launchctl list | grep herdr`）。
 
 ## コミット & PR ガイドライン
 - コミットメッセージは Conventional Commits（スコープ付き。例: `chore(nix): ...`、`docs(cursor): ...`、`chore(fish): ...`）。命令形を使用。
