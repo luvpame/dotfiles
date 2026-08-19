@@ -108,6 +108,7 @@ rows = [
   ["state_icon", "workspace"],
   ["branch", "git_status"],
   [
+    { token = "$dev_server", fg = "#fe640b" },
     { token = "$git_additions", fg = "#40a02b" },
     { token = "$git_deletions", fg = "#d20f39" },
     { token = "$review_requests", fg = "#8839ef" },

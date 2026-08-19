@@ -28,6 +28,7 @@ let
 in
 {
   launchd.agents = {
+    herdr-dev-server = mkUpdater "workspace-dev-server.py" 15;
     herdr-git-change-lines = mkUpdater "git-change-lines.py" 60;
     herdr-review-requests = mkUpdater "workspace-review-requests.py" 300;
   };
