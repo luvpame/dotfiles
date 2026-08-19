@@ -1,5 +1,5 @@
 schema_version = 1
-snapzy_min_version = "1.31.0-beta.10"
+snapzy_min_version = "1.31.0-beta.12"
 
 [general]
 language = "ja"
@@ -154,6 +154,7 @@ bring_forward_after_drag = false
 quick_properties_sync = true
 combine_save_as_edit = true
 crop_snap_to_edges = true
+highlighter_text_snapping = true
 
 [shortcuts]
 enabled = true
