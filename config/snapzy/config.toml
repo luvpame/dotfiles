@@ -1,5 +1,5 @@
 schema_version = 1
-snapzy_min_version = "1.31.0-beta.12"
+snapzy_min_version = "1.32.0-beta.1"
 
 [general]
 language = "ja"
@@ -39,6 +39,8 @@ show_cursor = false
 freeze_area = true
 show_selection_area_overlay = true
 reverse_magnifier_zoom_direction = false
+show_magnifier_by_default = false
+show_magnifier_color_panel = true
 
 [capture.scrolling]
 show_hints = true
@@ -169,6 +171,11 @@ enabled = true
 key = "2"
 modifiers = ["command", "shift"]
 
+[shortcuts.global.repeat_area]
+enabled = true
+key = "4"
+modifiers = ["command", "shift", "control"]
+
 [shortcuts.global.area_annotate]
 enabled = false
 key = "7"
@@ -262,6 +269,44 @@ modifiers = []
 [shortcuts.quick_access.edit_latest_capture]
 enabled = false
 key = "↩"
+modifiers = ["command"]
+
+[shortcuts.quick_access.card_actions]
+enabled = true
+
+[shortcuts.quick_access.card_actions.copy]
+enabled = true
+key = "C"
+modifiers = ["command"]
+
+[shortcuts.quick_access.card_actions.save_or_open]
+enabled = true
+key = "S"
+modifiers = ["command"]
+
+[shortcuts.quick_access.card_actions.dismiss]
+enabled = true
+key = "W"
+modifiers = ["command"]
+
+[shortcuts.quick_access.card_actions.delete]
+enabled = true
+key = "⌫"
+modifiers = ["command"]
+
+[shortcuts.quick_access.card_actions.edit]
+enabled = true
+key = "E"
+modifiers = ["command"]
+
+[shortcuts.quick_access.card_actions.upload_to_cloud]
+enabled = true
+key = "U"
+modifiers = ["command"]
+
+[shortcuts.quick_access.card_actions.pin_to_screen]
+enabled = true
+key = "P"
 modifiers = ["command"]
 
 [shortcuts.annotate_tools]
