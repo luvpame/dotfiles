@@ -113,9 +113,7 @@ function herdr_worktree_fzf --description 'Open a Git worktree in Herdr'
             --focus \
             --json)
         or return
-        if printf '%s\n' "$response" | jq --exit-status '.result.already_open == true' >/dev/null
-            return
-        end
+
         set -l workspace_fields (
             printf '%s\n' "$response" \
                 | jq --raw-output '[
@@ -126,6 +124,12 @@ function herdr_worktree_fzf --description 'Open a Git worktree in Herdr'
         )
         set workspace_id "$workspace_fields[1]"
         set worktree_path "$workspace_fields[2]"
+
+        if printf '%s\n' "$response" | jq --exit-status '.result.already_open == true' >/dev/null
+            herdr workspace focus "$workspace_id" >/dev/null
+            or return
+            return
+        end
     end
 
     set -l tab_list (herdr tab list --workspace "$workspace_id")

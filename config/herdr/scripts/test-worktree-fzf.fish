@@ -140,6 +140,7 @@ herdr_worktree_fzf
 or exit 1
 
 assert_contains (string join \t -- worktree open --workspace main-workspace --path "$worktree_path" --focus --json) $herdr_calls
+assert_contains (string join \t -- workspace focus worktree-workspace) $herdr_calls
 assert_not_contains (string join \t -- tab list --workspace worktree-workspace) $herdr_calls
 assert_not_contains (string join \t -- tab rename agent-tab agent) $herdr_calls
 assert_not_contains (string join \t -- pane run agent-pane cc) $herdr_calls

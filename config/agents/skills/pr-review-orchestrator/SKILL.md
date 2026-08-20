@@ -23,7 +23,7 @@ GitHub の PR、レビュー、コメント、issue には書き込まない。`
 - ただし **worktree が既に存在すると `wt switch` はこのフックを走らせない**（`✓ Created worktree` ではなく `○ Switched to worktree` で終わる）。workspace はできない。したがって workspace をフック任せにせず、worktree パスで照合して無ければ自分で `herdr worktree open` を叩く（「レビュー起動」step 3）。**`herdr workspace create` で代用しない**。それで作った workspace は JSON に `worktree` キーごと付かず、`worktree.checkout_path` を頼る残骸回収が worktree パスを引き戻せなくなる。
 - フックが生成するタブ構成は一定でない。dotfiles 側でフックが編集されうるため、root pane 1枚のときも `agent review` / `editor` / `diff` 相当が最初から生えているときもある。タブを足す前に必ず `herdr tab list --workspace <id>` で既存構成を確認する。しないと重複タブができる。
 - state ファイルを消すときは `unlink <ファイル>` を使う。`rm` は guard-and-guide のフックが禁止している。リネーム退避のような回避策は取らない（ゴミが残り、次セッションの残骸回収を汚す）。ディレクトリごと消す必要が出たら削除コマンドをユーザーへ提示して実行してもらう。
-- `claude` を引数なしで起動すると FleetView（セッション一覧UI）が開き、`agent prompt` がタスク作成ボックスに吸われてストールする。herdr から起動するときは初期プロンプトを argv で渡して直接セッションを開く（例: `-- "準備完了とだけ返して"`）。スラッシュコマンドは argv だとテキスト扱いされるので、起動後に idle を待ってから `agent prompt` で送り、Enter を追い打ちする（「レビュー起動」step 8）。
+- `claude` を引数なしで起動すると FleetView（セッション一覧UI）が開き、`agent prompt` がタスク作成ボックスに吸われてストールする。herdr から起動するときは初期プロンプトを argv で渡して直接セッションを開く（例: `-- "準備完了とだけ返して"`）。スラッシュコマンドは argv だとテキスト扱いされるので、起動後に idle または done を待ってから `agent prompt` で送り、Enter を追い打ちする（「レビュー起動」step 8）。
 
 ## 初回セットアップ
 
@@ -81,6 +81,30 @@ done
 
 完了基準: 新規PR全件のレビュー起動を試行済みであること。
 
+## blocked への回答
+
+起動時と監視時の blocked には、この共有手順を使う。
+v0.8.2 の通常 prompt は blocked 中に `agent_blocked` を返して入力を送らないため、この手順では使わない。
+
+1. `herdr agent read <target> --source visible` で承認または質問の画面を読む。
+2. 画面をユーザーへ提示し、明示的な回答を待つ。
+   画面だけから承認を推測せず、回答が曖昧なときは送信しない。
+3. ユーザーが指定した入力だけを送る。
+   - 選択 UI には `herdr agent send-keys <target> up`、`down`、`enter` などを使う。
+   - 自由文には `herdr agent get <target>` の JSON から解決済みの pane ID を取得する。
+     ```bash
+     agent_json=$(herdr agent get <target>)
+     pane_id=$(printf '%s\n' "$agent_json" | jq -r '.result.agent.pane_id // empty')
+     test -n "$pane_id"
+     ```
+     回答は shell の代入や連結に埋め込まず、execution tool の単一 argv として渡す。
+     ```text
+     ["herdr", "pane", "send-text", "<pane_id>", "<ユーザーが明示した回答>"]
+     ["herdr", "pane", "send-keys", "<pane_id>", "enter"]
+     ```
+4. 入力後に `herdr agent get <target>` で対象 pane と状態を確認し、入力が受理されたことを確かめる。
+   状態が blocked のまま、または受理を確認できなければ再送せず、ユーザーへ再度確認する。
+
 ## レビュー起動（PR 1件ごと）
 
 worktree が新規か既存か、クラッシュ後の再開かで分岐しない。worktree パスで workspace を照合する step 3 が3ケースすべてを吸収する。
@@ -131,15 +155,52 @@ worktree が新規か既存か、クラッシュ後の再開かで分岐しな�
    - **diff**: `cmd="hunk diff origin/<baseRefName>...HEAD"`、`want=hunk`（ベースが `main` なら `origin/main...HEAD`、それ以外ならそのベースブランチと `HEAD` の差分を Hunk で表示）
 
    3回とも起動しなければ `herdr pane read <pane_id>` で原因を確認してユーザーへ報告する。補助タブはレビューの前提ではないので、この step の失敗としては扱わず次へ進む。
-7. Claude Code 起動（agent review タブの root pane で）。direnv / devenv の評価中はシェルに到達しておらず `{"error":{"code":"agent_pane_busy"}}` で落ちるので、リトライで吸収する:
+7. Claude Code 起動（agent review タブの root pane で）。direnv / devenv の評価中はシェルに到達しておらず `{"error":{"code":"agent_pane_busy"}}` で落ちるため、このエラーだけを最大10回まで再試行する。
    ```bash
+   started=0
+   start_error=
    for i in $(seq 1 10); do
-     out=$(herdr agent start pr<番号> --kind claude --pane <root pane> -- --model opus "準備完了とだけ返して" 2>&1)
-     echo "$out" | grep -q '"error"' || break
+     out=$(herdr agent start pr<番号> --kind claude --pane <root pane> -- --model opus "準備完了とだけ返して" 2>&1) || true
+     if ! printf '%s\n' "$out" | jq -e . >/dev/null 2>&1; then
+       start_error=invalid_output
+       printf '%s\n' "$out"
+       break
+     fi
+     code=$(printf '%s\n' "$out" | jq -r '.error.code // empty')
+     if [ -z "$code" ]; then
+       started=1
+       break
+     fi
+     start_error="$code"
+     [ "$code" = agent_pane_busy ] || break
      sleep 5
    done
    ```
-   10 回とも error なら失敗として扱う。続けて `herdr agent wait pr<番号> --timeout 60000` で初回ターンの idle を待つ。**この wait の戻り値を必ず確認する。** timeout（まだ working）のまま次へ進むと step 8 の prompt がキューに積まれ、前ターン終了後に自動送信されてレビューが二重に走る（20分・数百kトークンの丸損）。timeout なら prompt を送らず wait をやり直す。**初回の wait を含めて最大 5 回**まで（やり直しは 4 回）。それでも idle にならなければ `herdr agent read pr<番号> --source visible` で状況を確認し、失敗として扱う。
+   `started=1` なら、下記の初回 argv prompt の待機へ進む。
+   `start_error` が `agent_pane_busy` のままなら、10回の再試行を使い切ったため失敗として扱う。
+   `agent_pane_busy` 以外のエラーも再試行せず、原因を確認して失敗として扱う。
+
+   `start_error=agent_not_ready` は起動中に blocked を検出した結果であり、agent 名は保持される。
+   ここで同名の `agent start` を再実行しない。
+   `blocked への回答` の共有手順を実行する。
+   ユーザーの回答を送った後、`herdr agent wait pr<番号> --until idle --until done --timeout 300000` を実行する。
+   idle または done になったら、この step 7 の初回 argv prompt 待機へ進む。
+   待機中に再び blocked になったら、共有手順へ戻る。
+
+   起動成功または `agent_not_ready` 解消後は、初回 argv prompt が終わって idle または done になるまで `herdr agent wait pr<番号> --until idle --until done --timeout 60000` を最大5回実行する。
+   ```bash
+   ready=0
+   for i in $(seq 1 5); do
+     if herdr agent wait pr<番号> --until idle --until done --timeout 60000; then
+       ready=1
+       break
+     fi
+   done
+   test "$ready" = 1
+   ```
+   **この wait の戻り値を必ず確認する。**
+   timeout（まだ working）のまま次へ進むと step 8 の prompt がキューに積まれ、前ターン終了後に自動送信されてレビューが二重に走る（20分・数百kトークンの丸損）。
+   idle または done にならなければ prompt を送らず `herdr agent read pr<番号> --source visible` で状況を確認し、失敗として扱う。
 8. レビュー指示（`--wait` は付けない。レビューは長い）。スラッシュコマンドは Claude Code の補完ポップアップに Enter を食われてテキストが入力欄に残るため、`send-keys enter` で追い打ちする:
    ```bash
    herdr agent prompt pr<番号> "/code-review:code-review 敵対的検証をして。レビューは読み取り専用で行い、指摘はこのセッションに返答すること。GitHub の PR、レビュー、コメント、issue を含む外部サービスへは一切書き込まないこと。"
@@ -157,7 +218,7 @@ step 1〜8 のどれかが失敗したら（各 step の「失敗として扱う
 
 `launched.txt` に番号を**追記した上で**ユーザーに報告する。追記するのは自動再試行の無限ループを防ぐため。再試行はユーザーの指示で launched.txt から番号を消して行う。
 
-完了基準: step 8 で確認した `herdr agent get pr<番号>` が working になっているか、失敗として launched.txt 追記 + 報告済みであること。
+完了基準: `agent start` の成功、または `agent_not_ready` 後に同名 agent が idle または done になったことと初回 argv prompt の idle または done を確認し、step 8 で `herdr agent get pr<番号>` が working になっていること。いずれかの確認に失敗した場合は、`launched.txt` への追記と原因の報告まで終える。
 
 ## 監視（agent wait が戻ったとき）
 
@@ -166,7 +227,12 @@ wait が戻った時点で `<state>/monitor-pr<番号>-task-id` の task ID は�
 `herdr agent get pr<番号>` で状態を確認して分岐する:
 
 - **idle / done**: `herdr agent read pr<番号> --source recent-unwrapped --lines 150` で結果を読み、重大指摘の有無を1〜2文でユーザーへ報告する。workspace と worktree はそのまま残す。ユーザーは指摘の裏を取るために worktree を開くので、ここで消してはいけない。レビューはここで完結するので**再アームしない**。task-id ファイルは失効したまま残るが、停止や片付けの TaskStop に渡しても無害。
-- **blocked**: `herdr agent read pr<番号> --source visible` で何を聞かれているかを確認し、ユーザーへ通知して指示を待つ。他PRの監視とスイープは継続する。進行中の agent に `--source recent-unwrapped` を使うと `agent_not_idle` で拒否されるので、idle / done 以外は必ず `visible` を使う。Claude Code は代替スクリーンで動くため、`--lines` を増やしてもスクロールアウトした行は取れない。ユーザーの回答を `herdr agent prompt` で送ったら、**`herdr agent wait pr<番号> --timeout 3600000` を Monitor で再アームしてファイルを上書きする**。しないとレビューの続きが誰にも観測されない。
+- **blocked**: `blocked への回答` の共有手順を実行する。
+  他PRの監視とスイープは継続する。
+  回答を送ったことを確認できた場合だけ **`herdr agent wait pr<番号> --timeout 3600000` を Monitor で再アームして、返った新しい task ID でファイルを上書きする**。
+  ユーザーの回答がない間は blocked のまま待ち、監視を再アームしない。
+  進行中の agent に `--source recent-unwrapped` を使うと `agent_not_idle` で拒否されるので、idle / done 以外は必ず `visible` を使う。
+  Claude Code は代替スクリーンで動くため、`--lines` を増やしてもスクロールアウトした行は取れない。
 - **timeout（エラー）**: 同じ wait をアームし直し、返った task ID でファイルを上書きする。
 
 ## 片付けの判断
