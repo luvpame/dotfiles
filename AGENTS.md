@@ -38,7 +38,7 @@
 - `nix/nix-darwin/users.nix` の `dotfiles.user.name` にユーザー名を一か所だけ定義し、ホームディレクトリと各モジュールのユーザー情報をそこから導出する。nix-darwin 統合 Home Manager の `home.username` と `home.homeDirectory` は自動導出に任せる。リポジトリは `$HOME/.dotfiles` の安定したシンボリックリンクから参照する。これらは認証情報ではない。
 - 秘密情報はコミットしない。Git の identity は `~/.config/git/config.local`（テンプレート: `config/git/config.local.example`）に保持し、その他の認証情報は 1Password CLI（`op signin`）を使用。
 - `flake.lock` を唯一の正とし、手動編集は避ける。依存更新時にはロックファイルもコミット。
-- 新しい cask やパッケージを追加する場合は `nix/nix-darwin/homebrew.nix` と `nix/nix-darwin/home-manager/packages.nix` へ宣言的に追加し、switch コマンドを再実行してシステムに反映。
+- 新しい Homebrew cask は `nix/nix-darwin/homebrew.nix`、Nix パッケージは `nix/nix-darwin/home-manager/packages.nix` へ宣言的に追加し、switch コマンドを再実行してシステムに反映。
 - 使用を終了した設定を退避する場合は、Home Manager の配置宣言を確認してから `archive/` へ移し、元の宣言位置に退避先を示す一行コメントを残す。詳細は `archive/README.md` を参照。
 
 ## Agent skills
