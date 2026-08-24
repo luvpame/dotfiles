@@ -3,7 +3,7 @@ return {
   "folke/which-key.nvim",
   event = "VeryLazy",
   opts = {
-    preset = "modern",
+    preset = "helix",
     delay = function(ctx)
       return ctx.plugin and 0 or 200
     end,
@@ -43,11 +43,11 @@ return {
       title = true,
       title_pos = "center",
       wo = {
-        winblend = 10,
+        winblend = 0,
       },
     },
     layout = {
-      width = { min = 20 },
+      width = { min = 30 },
       spacing = 3,
     },
     icons = {
