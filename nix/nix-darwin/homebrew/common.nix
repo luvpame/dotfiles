@@ -53,6 +53,7 @@ let
     "Jean-Tinland/a-bar" # menubar
     "productdevbook/tap" # portkiller
     "simoarpe/ziggity" # ziggity
+    "fayazara/tap" # screendrop
   ];
   trustedTaps = map (name: {
     inherit name;
@@ -89,6 +90,7 @@ let
     "nani"
     "wallspace"
     "snapzy"
+    "screendrop"
 
     ### Fonts
     "font-hackgen-nerd"
