@@ -83,6 +83,12 @@ return {
           },
           { icon = " ", key = "s", desc = "Restore Session", section = "session" },
           { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy ~= nil },
+          {
+            icon = " ",
+            key = "p",
+            desc = "Review Requested PRs",
+            action = ":Octo search is:pr review-requested:@me is:open",
+          },
           { icon = " ", key = "q", desc = "Quit", action = ":qa" },
         },
       },
