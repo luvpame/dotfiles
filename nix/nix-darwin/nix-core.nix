@@ -52,11 +52,13 @@ in
       extra-substituters = [
         "https://cclens.cachix.org"
         "https://ryoppippi.cachix.org"
+        "https://luvpame.cachix.org"
       ];
       # バイナリキャッシュの公開鍵。
       extra-trusted-public-keys = [
         "cclens.cachix.org-1:0QUNU6PuVyf+yXOvg3n1rd3FksBoB3s3/Jty50iKRNQ="
         "ryoppippi.cachix.org-1:b2LbtWNvJeL/qb1B6TYOMK+apaCps4SCbzlPRfSQIms="
+        "luvpame.cachix.org-1:2LWxP7zffWxE3HweuI51NQrKJFpTsbelIkkP/YYMcNk="
       ];
     };
   };

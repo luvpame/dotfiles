@@ -83,6 +83,23 @@ just switch
 just clean
 ```
 
+### GitHub Actions で Cachix を使う
+
+GitHub Actions は `aarch64-darwin` 用の `darwinConfigurations.default.system` を `macos-15` で事前ビルドし、公開キャッシュ `luvpame` へ保存する。
+
+リポジトリの Settings > Secrets and variables > Actions で、次の secret を設定する。
+
+- Repository secret `CACHIX_AUTH_TOKEN`：Cachix へ push できる認証トークン
+
+`nix/flake.nix` と nix-darwin の Nix 設定に `luvpame.cachix.org` を宣言しているため、`just switch` などのローカルビルドでも同じキャッシュを利用できる。
+
+main への push は現在の `flake.lock` をビルドして Cachix へ push する。
+Schedule は毎日 0 時（JST）に `nix flake update` を実行し、`flake.lock` が変わった場合だけビルドと Cachix への push を行い、成功後に `flake.lock` を main へ反映する。
+Actions の手動実行では、`force_build` を有効にすると `flake.lock` が変わっていなくても現在の構成を再度ビルドできる。
+
+キャッシュを利用して適用する場合は、CI が更新した `flake.lock` を pull してから `just switch` を実行する。
+`just us` はローカルで入力更新と switch を続けて実行するため、事前ビルドした入力と一致しないことがある。
+
 `just switch`（`just s`）は、実行した checkout の物理パスへ `$HOME/.dotfiles` を更新してから適用する。
 そのため、clone 先を ghq の規約に合わせる必要はなく、Git worktree からも switch できる。
 

@@ -1,0 +1,200 @@
+name: Nix prebuild
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "nix/**"
+      - ".github/workflows/nix-prebuild.yml"
+  schedule:
+    - cron: "0 15 * * *"
+  workflow_dispatch:
+    inputs:
+      update_inputs:
+        description: Update flake inputs before building
+        required: false
+        type: boolean
+        default: true
+      force_build:
+        description: Build the current lock even when it is unchanged
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nix-prebuild-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  FLAKE_DIR: nix
+  CACHIX_CACHE_NAME: luvpame
+
+jobs:
+  build:
+    name: Build current flake
+    if: ${{ github.event_name == 'push' }}
+    runs-on: macos-15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check Cachix credentials
+        env:
+          AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
+        run: |
+          if [[ -z "$AUTH_TOKEN" ]]; then
+            echo "::error::Set the CACHIX_AUTH_TOKEN repository secret before running the build."
+            exit 1
+          fi
+
+      - name: Configure Cachix
+        uses: cachix/cachix-action@v17
+        with:
+          name: ${{ env.CACHIX_CACHE_NAME }}
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - name: Check flake
+        working-directory: ${{ env.FLAKE_DIR }}
+        run: nix flake check --no-build
+
+      - name: Build darwin configuration
+        working-directory: ${{ env.FLAKE_DIR }}
+        run: nix build --no-link --print-out-paths .#darwinConfigurations.default.system
+
+  update:
+    name: Update, build, and cache
+    if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') }}
+    runs-on: macos-15
+    permissions:
+      contents: read
+    outputs:
+      base_sha: ${{ steps.base.outputs.sha }}
+      lock_changed: ${{ steps.lock.outputs.changed }}
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Record base revision
+        id: base
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update flake inputs
+        if: ${{ github.event_name == 'schedule' || inputs.update_inputs }}
+        working-directory: ${{ env.FLAKE_DIR }}
+        run: nix flake update
+
+      - name: Check lock file changes
+        id: lock
+        run: |
+          if git diff --quiet -- nix/flake.lock; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Decide whether to build
+        id: build
+        env:
+          FORCE_BUILD: ${{ inputs.force_build }}
+          LOCK_CHANGED: ${{ steps.lock.outputs.changed }}
+        run: |
+          if [[ "$LOCK_CHANGED" == "true" || "$FORCE_BUILD" == "true" ]]; then
+            echo "should_build=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_build=false" >> "$GITHUB_OUTPUT"
+            echo "flake.lock is unchanged; skipping the scheduled build."
+          fi
+
+      - name: Check Cachix configuration
+        if: ${{ steps.build.outputs.should_build == 'true' }}
+        env:
+          AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
+        run: |
+          if [[ -z "$AUTH_TOKEN" ]]; then
+            echo "::error::Set the CACHIX_AUTH_TOKEN repository secret before running the update."
+            exit 1
+          fi
+
+      - name: Configure Cachix
+        if: ${{ steps.build.outputs.should_build == 'true' }}
+        uses: cachix/cachix-action@v17
+        with:
+          name: ${{ env.CACHIX_CACHE_NAME }}
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - name: Check flake
+        if: ${{ steps.build.outputs.should_build == 'true' }}
+        working-directory: ${{ env.FLAKE_DIR }}
+        run: nix flake check --no-build
+
+      - name: Build darwin configuration
+        if: ${{ steps.build.outputs.should_build == 'true' }}
+        working-directory: ${{ env.FLAKE_DIR }}
+        run: nix build --no-link --print-out-paths .#darwinConfigurations.default.system
+
+      - name: Upload updated lock file
+        if: ${{ steps.lock.outputs.changed == 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: flake-lock-${{ github.run_id }}
+          path: nix/flake.lock
+          if-no-files-found: error
+
+  commit-lock:
+    name: Commit updated flake lock
+    needs: update
+    if: ${{ needs.update.outputs.lock_changed == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Ensure main did not move during the build
+        env:
+          EXPECTED_SHA: ${{ needs.update.outputs.base_sha }}
+        run: |
+          actual_sha="$(git rev-parse HEAD)"
+          if [[ "$actual_sha" != "$EXPECTED_SHA" ]]; then
+            echo "::error::main changed while the flake was building; rerun the workflow to avoid overwriting newer changes."
+            exit 1
+          fi
+
+      - name: Download updated lock file
+        uses: actions/download-artifact@v8
+        with:
+          name: flake-lock-${{ github.run_id }}
+          path: flake-lock
+
+      - name: Apply updated lock file
+        run: cp flake-lock/flake.lock nix/flake.lock
+
+      - name: Commit and push lock file
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git diff --check
+          git add nix/flake.lock
+          git commit -m "chore(nix): update flake lock"
+          git push origin HEAD:main

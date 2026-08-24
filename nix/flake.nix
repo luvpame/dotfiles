@@ -31,6 +31,15 @@
     };
   };
 
+  nixConfig = {
+    extra-substituters = [
+      "https://luvpame.cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "luvpame.cachix.org-1:2LWxP7zffWxE3HweuI51NQrKJFpTsbelIkkP/YYMcNk="
+    ];
+  };
+
   outputs =
     inputs@{
       nix-darwin,
