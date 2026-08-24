@@ -71,7 +71,7 @@ agent_panel_sort = "spaces"
 status_indicators = "symbols"
 window_title = ""
 tab_bar_right = [
-  { type = "command", command = "GIT_OPTIONAL_LOCKS=0 git branch --show-current 2>/dev/null", interval_seconds = 5, timeout_seconds = 2 },
+  { type = "zoom" },
   { type = "datetime", format = "%H:%M" },
 ]
 tab_bar_right_separator = " | "
