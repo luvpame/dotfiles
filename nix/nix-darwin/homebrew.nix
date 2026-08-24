@@ -1,5 +1,6 @@
-{ userName, ... }:
+{ config, ... }:
 let
+  primaryUser = config.dotfiles.user.name;
   homebrewPrefix = "/opt/homebrew";
   brewBin = "${homebrewPrefix}/bin/brew";
   moBin = "${homebrewPrefix}/opt/mo/bin/mo";
@@ -18,7 +19,7 @@ let
     builtins.attrValues (
       builtins.mapAttrs (path: target: ''
         if [ -e ${target} ]; then
-          sudo -u ${userName} ln -sfn ${target} ${path}
+          sudo -u ${primaryUser} ln -sfn ${target} ${path}
         fi
       '') managedSymlinks
     )
@@ -88,7 +89,6 @@ let
     "portkiller"
     "nani"
     "wallspace"
-    "snapzy"
     "screendrop"
     "firefox"
     "obsidian"

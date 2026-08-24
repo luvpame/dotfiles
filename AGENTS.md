@@ -3,7 +3,7 @@
 ## プロジェクト構成とモジュール構成
 - `archive/`: 使用を終了した設定を現行設定から分離して保存する。退避手順は `archive/README.md` に従う。
 - `nix/`: Flake のエントリポイント（`flake.nix` / `flake.lock`）と、macOS の system、Homebrew、Home Manager 状態を管理する `nix-darwin/`、カスタム package 定義の `pkgs/` を持つ。
-- `config/`: 各種ツール設定を集約するディレクトリ。`config/fish/` にシェル設定、`config/git/` に Git 設定、`config/agents/skills/` に再利用可能なエージェントスキルを保存する。加えて `config/aerospace/`、`config/efm-langserver/`、`config/gh/`、`config/guard-and-guide/`、`config/herdr/`、`config/hunk/`、`config/lazygit/`、`config/mise/`、`config/nvim/`、`config/raycast/`、`config/snapzy/`、`config/tmux/`、`config/wezterm/`、`config/worktrunk/`、`config/yazi/`、`config/zed/`、`config/ziggity/`、`config/zsh/` などのツール別設定を配置する。`config/claude/` には `CLAUDE.md`・`RTK.md`・`SOUL.md`・`settings.json`・`statusline.py`・`hooks/`、`config/codex/` には `AGENTS.md`・`SOUL.md`・`hooks.json`・`hooks/`・`config.toml` を配置する。
+- `config/`: 各種ツール設定を集約するディレクトリ。`config/fish/` にシェル設定、`config/git/` に Git 設定、`config/agents/skills/` に再利用可能なエージェントスキルを保存する。加えて `config/aerospace/`、`config/efm-langserver/`、`config/gh/`、`config/guard-and-guide/`、`config/herdr/`、`config/hunk/`、`config/lazygit/`、`config/mise/`、`config/nvim/`、`config/raycast/`、`config/tmux/`、`config/wezterm/`、`config/worktrunk/`、`config/yazi/`、`config/zed/`、`config/ziggity/`、`config/zsh/` などのツール別設定を配置する。`config/claude/` には `CLAUDE.md`・`RTK.md`・`SOUL.md`・`settings.json`・`statusline.py`・`hooks/`、`config/codex/` には `AGENTS.md`・`SOUL.md`・`hooks.json`・`hooks/`・`config.toml` を配置する。
 - `script/`: ユーティリティ Bash スクリプトを配置するディレクトリ。現状は `set-fish-default.sh` がある。
 - `menubar-script/`: `herdr/`、`ime/`、`media/`、`vpn/` のメニューバー連携用スクリプト群。
 - `docs/`: ADR を `docs/adr/` に、Superpowers の計画書や仕様メモを `docs/superpowers/` 配下に保存する。
@@ -12,7 +12,7 @@
 ## ビルド・テスト・開発コマンド
 - `just check` — `nix/` で `nix flake check` を実行し、flake と darwin 設定を検証。
 - `just build` — `nix/` で `nh darwin build` を実行し、darwin 設定をビルド。
-- `just switch` — canonical checkout から `default` 構成の system、Homebrew、Home Manager 設定を適用。
+- `just switch` — 実行した checkout を `$HOME/.dotfiles` に更新してから、`default` 構成の system、Homebrew、Home Manager 設定を適用。Git worktree も使用できる。
 - `just update` — `nix/` で flake 入力を更新。
 - `just update-and-switch` — flake 更新と darwin 反映を連続で実行。
 - `just clean` — `nh clean all --keep-since 30d --keep 3` で古い Nix 世代を整理。
@@ -35,7 +35,7 @@
 - PR には以下を含める: 簡単な概要、影響範囲（Nix/Fish/アプリ設定）、実行したコマンド（`cd nix && nix flake check`、apply switch）、UI 変更がある場合はスクリーンショット。
 
 ## セキュリティ & 設定の注意点
-- `nix/flake.nix` には単一ユーザーのユーザー名、ホームディレクトリ、canonical checkout の絶対パスを追跡済みの設定として定義する。これらは認証情報ではない。
+- `nix/nix-darwin/users.nix` の `dotfiles.user.name` にユーザー名を一か所だけ定義し、ホームディレクトリと各モジュールのユーザー情報をそこから導出する。nix-darwin 統合 Home Manager の `home.username` と `home.homeDirectory` は自動導出に任せる。リポジトリは `$HOME/.dotfiles` の安定したシンボリックリンクから参照する。これらは認証情報ではない。
 - 秘密情報はコミットしない。Git の identity は `~/.config/git/config.local`（テンプレート: `config/git/config.local.example`）に保持し、その他の認証情報は 1Password CLI（`op signin`）を使用。
 - `flake.lock` を唯一の正とし、手動編集は避ける。依存更新時にはロックファイルもコミット。
 - 新しい cask やパッケージを追加する場合は `nix/nix-darwin/homebrew.nix` と `nix/nix-darwin/home-manager/packages.nix` へ宣言的に追加し、switch コマンドを再実行してシステムに反映。

@@ -40,7 +40,7 @@
 
 ## Security & Configuration Tips
 - 秘密情報はコミットしない。
-- `flake.nix` の `userName`、`homeDirectory`、`repoRoot` は単一ユーザーと canonical checkout を示す追跡済み設定であり、認証情報ではない。
+- `nix-darwin/users.nix` の `dotfiles.user.name` を単一のユーザー識別情報として定義する。`users.users.<name>.home` と統合 Home Manager の `home.username`、`home.homeDirectory` はそこから自動導出する。この値は認証情報ではない。
 - Git のユーザー情報は作業ツリー内の非追跡ファイル `config/git/config.local` に保持する。
 - `flake.lock` を唯一の正とし、手動編集ではなく Nix ワークフローで更新する。
-- `just switch` は canonical checkout から実行する。
+- `just switch` は実行した checkout を `$HOME/.dotfiles` に更新してから適用する。clone 先は固定せず、Git worktree からの実行も許可する。

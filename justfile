@@ -1,4 +1,3 @@
-canonical_repo_root := "/Users/nasuno.ayumu/dev/github.com/luvpame/dotfiles"
 darwin_config_name := "default"
 
 _:
@@ -16,7 +15,18 @@ build:
 
 [working-directory("nix")]
 switch:
-    test "$(cd .. && pwd -P)" = "{{canonical_repo_root}}" || (echo "just switch は canonical checkout から実行してください。" >&2; exit 1)
+    #!/bin/bash
+    set -euo pipefail
+
+    repo_root="$(cd .. && pwd -P)"
+    dotfiles_link="$HOME/.dotfiles"
+
+    if [[ -e "$dotfiles_link" && ! -L "$dotfiles_link" ]]; then
+        echo "$dotfiles_link が既存のシンボリックリンクではないため、上書きせずに停止しました。" >&2
+        exit 1
+    fi
+
+    ln -shf "$repo_root" "$dotfiles_link"
     nh darwin switch path:. -H {{darwin_config_name}}
 
 alias s := switch

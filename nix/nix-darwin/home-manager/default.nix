@@ -1,23 +1,21 @@
 {
+  config,
   inputs,
-  userName,
-  homeDirectory,
-  repoRoot,
   ...
 }:
+let
+  primaryUser = config.dotfiles.user.name;
+in
 {
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
     backupFileExtension = "backup";
     extraSpecialArgs = {
-      inherit
-        inputs
-        repoRoot
-        ;
+      inherit inputs;
     };
 
-    users.${userName} = {
+    users.${primaryUser} = {
       imports = [
         ./packages.nix
         ./files.nix
@@ -25,8 +23,6 @@
       ];
 
       home.stateVersion = "24.11";
-      home.username = userName;
-      home.homeDirectory = homeDirectory;
 
       home.activation.linkApplications = inputs.home-manager.lib.hm.dag.entryAfter [ "linkGeneration" ] ''
         apps="$HOME/Applications"

@@ -1,9 +1,12 @@
 {
+  config,
   inputs,
   pkgs,
-  userName,
   ...
 }:
+let
+  primaryUser = config.dotfiles.user.name;
+in
 {
   # nixpkgs の共通設定。
   nixpkgs = {
@@ -43,7 +46,7 @@
       max-free = 21474836480;
       trusted-users = [
         "root"
-        userName
+        primaryUser
       ];
       # 開発CLI用のバイナリキャッシュ。
       extra-substituters = [

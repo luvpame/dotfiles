@@ -24,14 +24,30 @@ Nix のインストール後は、`nix` コマンドを使えるようにシェ�
 
 ### 初回適用
 
+clone 先は任意に決められる。
+以下では `~/src/dotfiles` を例にする。
+
 ```bash
-git clone https://github.com/luvpame/dotfiles.git /Users/nasuno.ayumu/dev/github.com/luvpame/dotfiles
-cd /Users/nasuno.ayumu/dev/github.com/luvpame/dotfiles
+git clone https://github.com/luvpame/dotfiles.git ~/src/dotfiles
+cd ~/src/dotfiles
 ```
 
-Nix 構成は、単一ユーザーと canonical checkout の場所に固定している。
-ユーザー名、ホームディレクトリ、リポジトリのパスは `nix/flake.nix` に定義する。
-そのため、別の場所へ clone した場合は `just check` と `just build` だけ実行でき、`just switch` は停止する。
+Nix は `$HOME/.dotfiles` を現在使う checkout の入口として参照する。
+初回 switch の前に、clone した場所からこのシンボリックリンクを作成する。
+`$HOME/.dotfiles` にシンボリックリンクではないファイルやディレクトリがある場合は、上書きせずに停止する。
+
+```bash
+if [ -e "$HOME/.dotfiles" ] && [ ! -L "$HOME/.dotfiles" ]; then
+  echo "$HOME/.dotfiles が既存のシンボリックリンクではないため、上書きせずに停止しました。" >&2
+  exit 1
+fi
+ln -shf "$(pwd -P)" "$HOME/.dotfiles"
+```
+
+ユーザー名を変更する場合は、`nix/nix-darwin/users.nix` の `dotfiles.user.name` だけを変更する。
+
+設定ファイルは checkout から out-of-store symlink で配置するため、設定の編集は switch を待たずに反映される。
+Nix パッケージ、Homebrew、macOS defaults、配置するファイルの追加や削除を変更した場合は switch を実行する。
 
 Git のユーザー情報は `config/git/config.local` に設定する。
 ひな形は `config/git/config.local.example` を参照する。
@@ -60,12 +76,15 @@ sudo -H nix --extra-experimental-features "nix-command flakes" \
 初回 switch 後は Home Manager 経由で `just` が使える。
 
 ```bash
-cd /Users/nasuno.ayumu/dev/github.com/luvpame/dotfiles
+cd ~/src/dotfiles
 just check
 just build
 just switch
 just clean
 ```
+
+`just switch`（`just s`）は、実行した checkout の物理パスへ `$HOME/.dotfiles` を更新してから適用する。
+そのため、clone 先を ghq の規約に合わせる必要はなく、Git worktree からも switch できる。
 
 ### 適用後の作業
 

@@ -2,11 +2,10 @@
   config,
   lib,
   pkgs,
-  repoRoot,
   ...
 }:
 let
-  configRoot = "${repoRoot}/config";
+  configRoot = "${config.home.homeDirectory}/.dotfiles/config";
   oos = config.lib.file.mkOutOfStoreSymlink;
   claudeMcpConfig = "${configRoot}/claude/mcp.json";
 in
@@ -22,8 +21,6 @@ in
     mise.source = oos "${configRoot}/mise";
     nvim.source = oos "${configRoot}/nvim";
     lazygit.source = oos "${configRoot}/lazygit";
-    # Snapzyがconfig.tomlを置換してもlinkを保てるよう、directory単位で配置する。
-    snapzy.source = oos "${configRoot}/snapzy";
     ziggity.source = oos "${configRoot}/ziggity";
     yazi.source = oos "${configRoot}/yazi";
     tmux.source = oos "${configRoot}/tmux";

@@ -1,7 +1,16 @@
-{ userName, homeDirectory, ... }:
+{ config, lib, ... }:
+let
+  primaryUser = config.dotfiles.user.name;
+in
 {
-  users.users.${userName} = {
-    name = userName;
-    home = homeDirectory;
+  options.dotfiles.user.name = lib.mkOption {
+    type = lib.types.nonEmptyStr;
+    description = "The primary macOS user name.";
+  };
+
+  config = {
+    dotfiles.user.name = "nasuno.ayumu";
+    system.primaryUser = primaryUser;
+    users.users.${primaryUser}.home = "/Users/${primaryUser}";
   };
 }

@@ -1,5 +1,5 @@
 {
-  description = "My Dotfiles.";
+  description = "Luvpame's Dotfiles.";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -37,21 +37,11 @@
       home-manager,
       ...
     }:
-    let
-      userName = "nasuno.ayumu";
-      homeDirectory = "/Users/${userName}";
-      repoRoot = "${homeDirectory}/dev/github.com/luvpame/dotfiles";
-    in
     {
       darwinConfigurations.default = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         specialArgs = {
-          inherit
-            userName
-            homeDirectory
-            repoRoot
-            inputs
-            ;
+          inherit inputs;
         };
         modules = [
           home-manager.darwinModules.home-manager
