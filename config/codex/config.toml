@@ -103,6 +103,9 @@ trust_level = "trusted"
 [projects."/Users/nasuno.ayumu/dev/github.com/luvpame/textarea-vim"]
 trust_level = "trusted"
 
+[projects."/Users/nasuno.ayumu/Documents/Codex/2026-08-24/https-mail-google-com-mail-u"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
 source_type = "local"
 source = "/Users/nasuno.ayumu/.codex/.tmp/bundled-marketplaces/openai-bundled"
@@ -228,8 +231,13 @@ opaqueWindows = false
 surface = "#eff1f5"
 
 [desktop.appearanceLightChromeTheme.fonts]
-code = "HackGen Console NF"
+code = '"HackGen Console NF"'
 ui = '"Gen Interface JP"'
+
+[desktop.appearanceLightChromeTheme.fonts.codeFace]
+family = "HackGen Console NF"
+fullName = "HackGen Console NF Bold"
+postscriptName = "HackGenConsoleNF-Bold"
 
 [desktop.appearanceLightChromeTheme.semanticColors]
 diffAdded = "#40a02b"
