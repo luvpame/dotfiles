@@ -1,4 +1,4 @@
-{ local, ... }:
+{ userName, ... }:
 {
   networking.applicationFirewall = {
     blockAllIncoming = false;
@@ -7,7 +7,7 @@
 
   system = {
     stateVersion = 6;
-    primaryUser = local.userName;
+    primaryUser = userName;
 
     keyboard = {
       enableKeyMapping = true;

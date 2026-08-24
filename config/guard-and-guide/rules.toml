@@ -18,12 +18,6 @@ matcher = "Bash"
 regex = '\bgit\s+add\s+(-A|--all|\.($|[ ;|&]))'
 message = "すべてのファイルを一括で git-add しないでください。追加するファイルを個別に指定してください。"
 
-# ローカル設定ファイルのコミットを防止する
-[[rules]]
-matcher = "Bash"
-regex = '\bgit\s+(add|commit)\b[^\n]*\bnix/local\.nix\b'
-message = "nix/local.nixはローカル設定ファイルのためコミットしないでください。誤って追跡されている場合は git rm --cached nix/local.nix をユーザーに提案してください。"
-
 # アクセス禁止するファイル
 # 'File'は'Read|Write|Edit'のエイリアス
 [[rules]]

@@ -1,4 +1,4 @@
-{ lib, local, ... }:
+{ userName, ... }:
 let
   homebrewPrefix = "/opt/homebrew";
   brewBin = "${homebrewPrefix}/bin/brew";
@@ -18,14 +18,13 @@ let
     builtins.attrValues (
       builtins.mapAttrs (path: target: ''
         if [ -e ${target} ]; then
-          sudo -u ${local.userName} ln -sfn ${target} ${path}
+          sudo -u ${userName} ln -sfn ${target} ${path}
         fi
       '') managedSymlinks
     )
   );
-  profileHomebrew = import (./. + "/${local.profile}.nix");
 
-  commonBrews = [
+  brewPackages = [
     ### CLI Applications not available in nixpkgs
     "fisher"
     "mas" # Mac App Store CLI
@@ -46,7 +45,7 @@ let
     }
   ];
 
-  commonTaps = [
+  tapNames = [
     "nikitabobko/tap" # aerospace
     "daipeihust/tap" # im-select
     "k1LoW/tap" # mo (browser markdown viewer)
@@ -58,9 +57,9 @@ let
   trustedTaps = map (name: {
     inherit name;
     trusted = true;
-  }) (commonTaps ++ profileHomebrew.taps);
+  }) tapNames;
 
-  commonCasks = [
+  caskNames = [
     ### GUI Applications
     "wezterm"
     "1password"
@@ -91,13 +90,22 @@ let
     "wallspace"
     "snapzy"
     "screendrop"
+    "firefox"
+    "obsidian"
+    "orbstack"
+    "google-drive"
+    "claude"
+    "drawio"
+    "tablepro"
+    "cursor"
+    "sequel-ace"
 
     ### Fonts
     "font-hackgen-nerd"
     "font-monaspace"
   ];
 
-  commonMasApps = {
+  masApplications = {
     "Klack" = 6446206067;
     "Grila" = 6444335028;
     "RunCat Neo" = 6757801838;
@@ -113,10 +121,10 @@ in
       cleanup = "zap";
       extraFlags = [ "--force-cleanup" ];
     };
-    brews = commonBrews ++ profileHomebrew.brews;
+    brews = brewPackages;
     taps = trustedTaps;
-    casks = commonCasks ++ profileHomebrew.casks;
-    masApps = commonMasApps // profileHomebrew.masApps;
+    casks = caskNames;
+    masApps = masApplications;
   };
 
   # `mo` と `mole` は同名バイナリを含むため、brew 管理の link を外して衝突を避ける。

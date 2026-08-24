@@ -1,4 +1,5 @@
-darwin_config_name := "$(nix eval --file local.nix darwinConfigName --raw)"
+canonical_repo_root := "/Users/nasuno.ayumu/dev/github.com/luvpame/dotfiles"
+darwin_config_name := "default"
 
 _:
     just --list
@@ -15,6 +16,7 @@ build:
 
 [working-directory("nix")]
 switch:
+    test "$(cd .. && pwd -P)" = "{{canonical_repo_root}}" || (echo "just switch は canonical checkout から実行してください。" >&2; exit 1)
     nh darwin switch path:. -H {{darwin_config_name}}
 
 alias s := switch

@@ -1,16 +1,14 @@
 {
   config,
-  inputs,
   lib,
   pkgs,
   ...
 }:
 let
-  system = pkgs.stdenv.hostPlatform.system;
   updaterPath = lib.makeBinPath [
     pkgs.gh
     pkgs.git
-    inputs.herdr.packages.${system}.default
+    pkgs.herdr
   ];
   mkUpdater = script: interval: {
     enable = true;

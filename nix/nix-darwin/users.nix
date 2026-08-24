@@ -1,7 +1,7 @@
-{ local, ... }:
+{ userName, homeDirectory, ... }:
 {
-  users.users.${local.userName} = {
-    name = local.userName;
-    home = local.homeDirectory;
+  users.users.${userName} = {
+    name = userName;
+    home = homeDirectory;
   };
 }

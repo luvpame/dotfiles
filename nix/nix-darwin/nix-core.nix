@@ -1,7 +1,7 @@
 {
   inputs,
   pkgs,
-  local,
+  userName,
   ...
 }:
 {
@@ -43,7 +43,7 @@
       max-free = 21474836480;
       trusted-users = [
         "root"
-        local.userName
+        userName
       ];
       # 開発CLI用のバイナリキャッシュ。
       extra-substituters = [

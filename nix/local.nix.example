@@ -1,8 +1,0 @@
-{
-  darwinConfigName = "your-darwin-config-name";
-  userName = "your-user-name";
-  homeDirectory = "/Users/your-user-name";
-  dotfilesRoot = "/Users/your-user-name/dev/github.com/your-account/dotfiles";
-  # "work" または "private" を指定すると、用途別パッケージとリンクが切り替わる。
-  profile = "private";
-}

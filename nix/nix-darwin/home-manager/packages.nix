@@ -1,22 +1,16 @@
 {
   inputs,
-  local,
   pkgs,
   ...
 }:
 let
   system = pkgs.stdenv.hostPlatform.system;
-
-  profilePackages = import (./. + "/${local.profile}.nix") {
-    inherit
-      inputs
-      pkgs
-      ;
-  };
-
+  cclens = inputs.cclens.packages.${system}.default;
+  iris = pkgs.callPackage ../../pkgs/iris/default.nix { };
   guardAndGuide = inputs.guard-and-guide.packages.${system}.default;
-
-  commonPackages = with pkgs; [
+in
+{
+  home.packages = with pkgs; [
     efm-langserver
     oxfmt
     nixfmt
@@ -70,13 +64,15 @@ let
     socat
     ov
     guardAndGuide
-    inputs.herdr.packages.${system}.default
+    pkgs.herdr
     inputs.hunk.packages.${system}.default
-    (callPackage ../../../pkgs/pique/default.nix { })
-    (callPackage ../../../pkgs/site2skill/default.nix { })
-    (callPackage ../../../pkgs/tree-sitter-cli/default.nix { })
+    (callPackage ../../pkgs/pique/default.nix { })
+    (callPackage ../../pkgs/site2skill/default.nix { })
+    (callPackage ../../pkgs/tree-sitter-cli/default.nix { })
+    awscli2
+    inputs.crit.packages.${system}.default
+    cclens
+    claude-code
+    iris
   ];
-in
-{
-  home.packages = commonPackages ++ profilePackages;
 }

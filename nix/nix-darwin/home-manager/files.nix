@@ -1,13 +1,14 @@
 {
   config,
-  local,
+  lib,
   pkgs,
+  repoRoot,
   ...
 }:
 let
-  dotfilesRoot = local.dotfilesRoot;
-  configRoot = "${dotfilesRoot}/config";
+  configRoot = "${repoRoot}/config";
   oos = config.lib.file.mkOutOfStoreSymlink;
+  claudeMcpConfig = "${configRoot}/claude/mcp.json";
 in
 {
   xdg.enable = true;
@@ -15,6 +16,7 @@ in
   # Repository内で直接編集する設定は、activationなしで反映する。
   # Applicationが同じdirectoryへ生成するstateは、Gitのignore対象として分離する。
   xdg.configFile = {
+    aerospace.source = oos "${configRoot}/aerospace";
     fish.source = oos "${configRoot}/fish";
     git.source = oos "${configRoot}/git";
     mise.source = oos "${configRoot}/mise";
@@ -52,6 +54,7 @@ in
     ".codex/hooks".source = oos "${configRoot}/codex/hooks";
     ".codex/hooks.json".source = oos "${configRoot}/codex/hooks.json";
     ".codex/AGENTS.md".source = oos "${configRoot}/codex/AGENTS.md";
+    ".codex/config.toml".source = oos "${configRoot}/codex/config.toml";
     ".claude/settings.json" = {
       source = oos "${configRoot}/claude/settings.json";
 
@@ -65,4 +68,26 @@ in
     ".claude/RTK.md".source = oos "${configRoot}/claude/RTK.md";
     ".cursor/skills".source = oos "${configRoot}/agents/skills";
   };
+
+  home.activation.configureClaudeMcp = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    (
+      claudeConfig="$HOME/.claude.json"
+      mcpConfig="${claudeMcpConfig}"
+      mergedConfig="$(mktemp /tmp/claude-json.XXXXXX)"
+      trap 'rm -f "$mergedConfig"' EXIT
+
+      if [ -f "$claudeConfig" ]; then
+        ${pkgs.jq}/bin/jq --slurpfile mcp "$mcpConfig" \
+          '.mcpServers = ((.mcpServers // {}) * ($mcp[0].mcpServers // {}))' \
+          "$claudeConfig" > "$mergedConfig"
+      else
+        ${pkgs.jq}/bin/jq '.' "$mcpConfig" > "$mergedConfig"
+      fi
+
+      chmod 600 "$mergedConfig"
+      if [ ! -f "$claudeConfig" ] || ! cmp -s "$mergedConfig" "$claudeConfig"; then
+        mv "$mergedConfig" "$claudeConfig"
+      fi
+    )
+  '';
 }

@@ -25,31 +25,13 @@ Nix のインストール後は、`nix` コマンドを使えるようにシェ�
 ### 初回適用
 
 ```bash
-git clone https://github.com/luvpame/dotfiles.git <dotfiles_directory>
-cd <dotfiles_directory>
-
-test -f nix/local.nix || cp nix/local.nix.example nix/local.nix
-$EDITOR nix/local.nix
+git clone https://github.com/luvpame/dotfiles.git /Users/nasuno.ayumu/dev/github.com/luvpame/dotfiles
+cd /Users/nasuno.ayumu/dev/github.com/luvpame/dotfiles
 ```
 
-`nix/local.nix` に以下を設定する。
-このファイルはローカル専用で、Git にはコミットしない。
-
-```nix
-{
-  darwinConfigName = "your-darwin-config-name";
-  userName = "your-user-name";
-  homeDirectory = "/Users/your-user-name";
-  dotfilesRoot = "/Users/your-user-name/dev/github.com/your-account/dotfiles";
-  profile = "private";
-}
-```
-
-- `darwinConfigName`: nix-darwin の設定名。
-- `userName`: macOS のユーザー名。
-- `homeDirectory`: ユーザーのホームディレクトリの絶対パス。
-- `dotfilesRoot`: このリポジトリの絶対パス。clone したパスと一致させる。
-- `profile`: `work` または `private`。用途別のパッケージとリンクを切り替える。
+Nix 構成は、単一ユーザーと canonical checkout の場所に固定している。
+ユーザー名、ホームディレクトリ、リポジトリのパスは `nix/flake.nix` に定義する。
+そのため、別の場所へ clone した場合は `just check` と `just build` だけ実行でき、`just switch` は停止する。
 
 Git のユーザー情報は `config/git/config.local` に設定する。
 ひな形は `config/git/config.local.example` を参照する。
@@ -71,15 +53,14 @@ switch 後は Home Manager がリンクした `~/.config/git/config.local` と�
 
 ```bash
 cd nix
-DARWIN_CONFIG_NAME="$(nix eval --file local.nix darwinConfigName --raw)"
 sudo -H nix --extra-experimental-features "nix-command flakes" \
-  run github:LnL7/nix-darwin -- switch --flake "path:.#$DARWIN_CONFIG_NAME"
+  run github:LnL7/nix-darwin -- switch --flake "path:.#default"
 ```
 
 初回 switch 後は Home Manager 経由で `just` が使える。
 
 ```bash
-cd <dotfiles_directory>
+cd /Users/nasuno.ayumu/dev/github.com/luvpame/dotfiles
 just check
 just build
 just switch

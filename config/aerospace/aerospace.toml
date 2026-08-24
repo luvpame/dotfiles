@@ -100,6 +100,10 @@ run = "layout floating"
 if.app-id = "com.openai.chat" # ChatGPT
 run = "layout floating"
 
+[[on-window-detected]]
+if.app-id = "com.fayazahmed.Screendrop" # Screendrop
+run = "layout floating"
+
 # 設定可能な値: (qwerty|dvorak|colemak)
 # 参照: https://nikitabobko.github.io/AeroSpace/guide#key-mapping
 [key-mapping]
