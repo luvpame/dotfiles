@@ -26,6 +26,7 @@
   "staline.nvim": { "branch": "main", "commit": "d337bc9b343df3328921ef4c3f8ff604102d0201" },
   "sunglasses.nvim": { "branch": "main", "commit": "1e4c4ea4d6b46124090df1d35426a705cb3b99cf" },
   "telescope.nvim": { "branch": "master", "commit": "40aedd8a68c78a656a10a8d62d80c54af59420fb" },
+  "tobira.nvim": { "branch": "main", "commit": "1cbe7bd90f598ab7150bfa394a947557cb4e768d" },
   "trouble.nvim": { "branch": "main", "commit": "bd67efe408d4816e25e8491cc5ad4088e708a69a" },
   "which-key.nvim": { "branch": "main", "commit": "3aab2147e74890957785941f0c1ad87d0a44c15a" }
 }
