@@ -80,7 +80,6 @@
     "command": "$HOME/.claude/statusline.py"
   },
   "enabledPlugins": {
-    "cclens@cclens": true,
     "code-review@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
     "crit@crit": true,
@@ -100,12 +99,6 @@
     "mattpocock-skills@mattpocock": true
   },
   "extraKnownMarketplaces": {
-    "cclens": {
-      "source": {
-        "source": "github",
-        "repo": "lambdalisue/cclens"
-      }
-    },
     "crit": {
       "source": {
         "source": "github",
@@ -113,28 +106,52 @@
       }
     }
   },
-  "outputStyle": "Proactive",
   "language": "日本語",
-  "sandbox": {
-    "enabled": false,
-    "failIfUnavailable": true,
-    "allowUnsandboxedCommands": false,
-    "network": {
-      "allowedDomains": [
-        "api.github.com",
-        "github.com"
-      ],
-      "allowUnixSockets": [
-        "~/.config/herdr/herdr.sock",
-        "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-      ]
-    }
-  },
   "tui": "fullscreen",
   "autoMemoryEnabled": true,
   "verbose": false,
   "autoContinueAtUsageLimit": true,
   "skipAutoPermissionPrompt": true,
   "useAutoModeDuringPlan": true,
-  "voiceEnabled": false
+  "voiceEnabled": false,
+  "autoMode": {
+    "environment": [
+      "### Org-wide",
+      "**Organization**: smartcamp (GitHub org owning github.com/smartcamp/shogun)",
+      "**Cloud provider(s)**: AWS (aws/ deployment configs, AWS_ROLE_ARN / AWS_CLAUDE_CODE_ACTIONS_ROLE_ARN CI secrets, BASTION_EC2_INSTANCE_ID)",
+      "**Repository visibility**: private (smartcamp/shogun, confirmed via gh)",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: GitHub Actions encrypted secrets (AWS_CLAUDE_CODE_ACTIONS_ROLE_ARN, AWS_ROLE_ARN, BASTION_EC2_INSTANCE_ID, MASKED_DB_HOSTED_ZONE_ID, MASKED_DB_KMS_KEY_ID, MASKED_DB_SECURITY_GROUP_ID, GITHUB_TOKEN, SLACK_WEBHOOK) plus per-app encrypted .env files (e.g. backend/.env.encrypted, frontend/apps/*/.env.encrypted)",
+      "**Default / protected branches**: main (default); protected branches `base/genpaku` and `main`; rulesets `baes/genpaku_branch_rule` (active), `main` (active), `main_branch_rule` (disabled) — treat main and base/genpaku as protected even though rulesets partially overlap classic protection",
+      "**CI/CD deploy targets**: GitHub Actions workflows targeting AWS ECS production (.github/workflows/deploy-prod.yaml, deploy-prod-continue-deployment.yaml, deploy-prod-stop-deployment.yaml, deploy-masking-scripts-prod.yml, ecs-exec-prod-backend-api.yaml, ecs-exec-prod-backend-api-readonly.yaml)",
+      "**Network posture**: None configured",
+      "**Source control**: smartcamp/shogun (github.com:smartcamp/shogun.git) and its remote(s) only",
+      "**Trusted internal domains**: boxil.jp, user-stg.boxil.jp, user-dev.boxil.jp, user-rev1.boxil.jp (hosts contacted from this project's transcripts)",
+      "**Trusted cloud buckets**: None configured",
+      "**Key internal services**: None configured",
+      "**Internal package registry**: None configured",
+      "**Sensitive data locations & audiences**: .env, .env.local, .env.keys, .env.encrypted files across backend/, cms/mag/, docs/e2e_test/backend/, e2e/, frontend/ and its apps (admin, business, user) — credentials/config, share only with engineers with repo access; DB-related CI secrets prefixed MASKED_DB_* (hosted zone ID, KMS key ID, security group ID)",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any namespace/host/container with `prod` or `production` as a whole word/segment — includes CI workflow targets deploy-prod, deploy-prod-continue-deployment, deploy-prod-stop-deployment, deploy-masking-scripts-prod, ecs-exec-prod-backend-api, ecs-exec-prod-backend-api-readonly",
+      "**Protected deployment namespaces / environments**: ECS production environments referenced by .github/workflows/*prod* (deploy-prod, ecs-exec-prod-backend-api*) and BASTION_EC2_INSTANCE_ID access path",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, node-pool resources; anything tagged prod/production; note per backend/.claude/rules/db-schema.md that scheduled batch/cron config lives in the separate shogun-terraform repo (not confirmed in this session's scope)",
+      "### User-specific",
+      "**Primary use of Claude Code**: software development on the Shogun BOXIL SaaS v2 monorepo (Rails API backend + Next.js frontend)",
+      "**Trusted repo**: /Users/nasuno.ayumu/dev/github.com/smartcamp/shogun (github.com:smartcamp/shogun.git), private — confidential material (non-secret) is fine to commit here; secrets/credentials are never cleared into it by visibility alone",
+      "**Org-specific CLIs**: herdr, wt, rtk, crit, bx, ks (non-standard CLIs seen frequently in this project's transcripts / shell history; purpose not documented in repo)",
+      "routine backend Makefile targets (make m, make rspec, make rubocop, make oas) and frontend pnpm scripts (pnpm test:once, pnpm lint, pnpm typecheck) under this repo are routine dev workflow"
+    ],
+    "allow": [
+      "$defaults",
+      "Bash(make rspec:*)",
+      "Bash(make rubocop:*)",
+      "Bash(pnpm test:once:*)",
+      "Bash(pnpm lint:*)"
+    ],
+    "soft_deny": [
+      "$defaults",
+      "Bash(make m:*) in backend/ when ALLOW_DESTRUCTIVE_SCHEMA_CHANGE is set (destructive Ridgepole schema change, per .claude/rules/db-schema.md)",
+      "gh workflow run / deploy-prod* and ecs-exec-prod-backend-api* GitHub Actions workflows"
+    ]
+  }
 }
