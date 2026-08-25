@@ -113,8 +113,19 @@
   "autoContinueAtUsageLimit": true,
   "skipAutoPermissionPrompt": true,
   "useAutoModeDuringPlan": true,
-  "voiceEnabled": false,
   "autoMode": {
+    "allow": [
+      "$defaults",
+      "Bash(make rspec:*)",
+      "Bash(make rubocop:*)",
+      "Bash(pnpm test:once:*)",
+      "Bash(pnpm lint:*)"
+    ],
+    "soft_deny": [
+      "$defaults",
+      "Bash(make m:*) in backend/ when ALLOW_DESTRUCTIVE_SCHEMA_CHANGE is set (destructive Ridgepole schema change, per .claude/rules/db-schema.md)",
+      "gh workflow run / deploy-prod* and ecs-exec-prod-backend-api* GitHub Actions workflows"
+    ],
     "environment": [
       "### Org-wide",
       "**Organization**: smartcamp (GitHub org owning github.com/smartcamp/shogun)",
@@ -140,18 +151,7 @@
       "**Trusted repo**: /Users/nasuno.ayumu/dev/github.com/smartcamp/shogun (github.com:smartcamp/shogun.git), private — confidential material (non-secret) is fine to commit here; secrets/credentials are never cleared into it by visibility alone",
       "**Org-specific CLIs**: herdr, wt, rtk, crit, bx, ks (non-standard CLIs seen frequently in this project's transcripts / shell history; purpose not documented in repo)",
       "routine backend Makefile targets (make m, make rspec, make rubocop, make oas) and frontend pnpm scripts (pnpm test:once, pnpm lint, pnpm typecheck) under this repo are routine dev workflow"
-    ],
-    "allow": [
-      "$defaults",
-      "Bash(make rspec:*)",
-      "Bash(make rubocop:*)",
-      "Bash(pnpm test:once:*)",
-      "Bash(pnpm lint:*)"
-    ],
-    "soft_deny": [
-      "$defaults",
-      "Bash(make m:*) in backend/ when ALLOW_DESTRUCTIVE_SCHEMA_CHANGE is set (destructive Ridgepole schema change, per .claude/rules/db-schema.md)",
-      "gh workflow run / deploy-prod* and ecs-exec-prod-backend-api* GitHub Actions workflows"
     ]
-  }
+  },
+  "voiceEnabled": false
 }
