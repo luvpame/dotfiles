@@ -41,6 +41,8 @@ alias c := check
 clean:
     nh clean all --keep-since 30d --keep 3
 
+# 通常は GitHub Actions が更新して検証した flake.lock を git pull してから switch（j s）する。
+# 定期実行を待たずにローカルで flake input を更新して適用するときだけ update-and-switch（j us）を使う。
 [working-directory("nix")]
 update-and-switch: update switch
 
