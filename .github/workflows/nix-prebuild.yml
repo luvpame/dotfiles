@@ -8,7 +8,7 @@ on:
       - "nix/**"
       - ".github/workflows/nix-prebuild.yml"
   schedule:
-    - cron: "0 15 * * *"
+    - cron: "17 * * * *"
   workflow_dispatch:
     inputs:
       update_inputs:
