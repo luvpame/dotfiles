@@ -93,8 +93,8 @@ GitHub Actions は `aarch64-darwin` 用の `darwinConfigurations.default.system`
 
 `nix/flake.nix` と nix-darwin の Nix 設定に `luvpame.cachix.org` を宣言しているため、`just switch` などのローカルビルドでも同じキャッシュを利用できる。
 
-main への push は現在の `flake.lock` をビルドして Cachix へ push する。
-Schedule は毎日 0 時（JST）に `nix flake update` を実行し、`flake.lock` が変わった場合だけビルドと Cachix への push を行い、成功後に `flake.lock` を main へ反映する。
+`nix/**` またはこの workflow の変更を main へ push すると、現在の `flake.lock` をビルドして Cachix へ push する。
+Schedule は毎時 17 分（UTC）の cron で `nix flake update` を実行し、`flake.lock` が変わった場合だけビルドと Cachix への push を行い、成功後に `flake.lock` を main へ反映する。
 Actions の手動実行では、`force_build` を有効にすると `flake.lock` が変わっていなくても現在の構成を再度ビルドできる。
 
 キャッシュを利用して適用する場合は、CI が更新した `flake.lock` を pull してから `just switch` を実行する。
