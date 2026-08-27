@@ -1,6 +1,9 @@
 {
   "permissions": {
-    "defaultMode": "auto"
+    "defaultMode": "auto",
+    "allow": [
+      "Workflow"
+    ]
   },
   "model": "fable",
   "enableAllProjectMcpServers": true,
