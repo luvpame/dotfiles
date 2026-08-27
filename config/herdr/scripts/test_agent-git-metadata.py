@@ -104,9 +104,6 @@ class AgentGitMetadataTest(unittest.TestCase):
                     "baseRefName": "main",
                     "updatedAt": "2026-08-03T10:00:00Z",
                     "reviewDecision": "APPROVED",
-                    "statusCheckRollup": [
-                        {"status": "COMPLETED", "conclusion": "SUCCESS"}
-                    ],
                 }
             ]
         )
@@ -116,18 +113,16 @@ class AgentGitMetadataTest(unittest.TestCase):
             "pane report-metadata w1:p1 --source agent-git "
             "--token git_branch=\ue0a0 feature/sidebar "
             "--token pr_open=\uf407 #42 --token pr_draft= "
-            "--token pr_merged= --token pr_closed= "
-            "--clear-token git_additions --clear-token git_deletions",
+            "--token pr_merged= --token pr_closed=",
         )
         self.assertEqual(
             report.splitlines()[1],
             "workspace report-metadata w1 --source workspace-git "
             "--token agent_summary=1 agent "
             "--token git_branch=\ue0a0 feature/sidebar "
-            "--token pr_open=\uf407 #42 --token pr_draft= "
+            "--token pr_open=\u2800\u2800\uf407 #42 --token pr_draft= "
             "--token pr_merged= --token pr_closed= "
-            "--token ci_status=✓ CI --token review_status=✓ approved "
-            "--clear-token git_additions --clear-token git_deletions",
+            "--token review_status=✓ approved",
         )
 
     def test_hides_repeated_branch_and_counts_workspace_agents(self):
@@ -141,7 +136,7 @@ class AgentGitMetadataTest(unittest.TestCase):
         self.assertIn("--token agent_summary=2 agents", workspace_report)
         self.assertIn("--token git_branch= ", workspace_report)
 
-    def test_reports_failed_ci_and_requested_changes(self):
+    def test_reports_requested_changes(self):
         report = self.run_reporter(
             [
                 {
@@ -151,15 +146,11 @@ class AgentGitMetadataTest(unittest.TestCase):
                     "baseRefName": "main",
                     "updatedAt": "2026-08-03T10:00:00Z",
                     "reviewDecision": "CHANGES_REQUESTED",
-                    "statusCheckRollup": [
-                        {"status": "COMPLETED", "conclusion": "FAILURE"}
-                    ],
                 }
             ]
         )
 
         workspace_report = report.splitlines()[1]
-        self.assertIn("--token ci_status=× CI", workspace_report)
         self.assertIn("--token review_status=× changes", workspace_report)
 
     def test_hides_pull_request_when_github_query_fails(self):

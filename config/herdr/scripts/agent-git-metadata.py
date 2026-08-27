@@ -17,22 +17,15 @@ METADATA_TOKENS = (
     "pr_merged",
     "pr_closed",
 )
-MOVED_TOKENS = ("git_additions", "git_deletions")
+PR_TOKEN_NAMES = ("pr_open", "pr_draft", "pr_merged", "pr_closed")
+# Herdr trims regular whitespace around token values, so use U+2800 for indenting.
+WORKSPACE_PR_INDENT = "\u2800\u2800"
 PR_ICONS = {
     "open": "",
     "draft": "",
     "merged": "",
     "closed": "",
 }
-CI_FAILURE_STATES = {
-    "ACTION_REQUIRED",
-    "CANCELLED",
-    "ERROR",
-    "FAILURE",
-    "STALE",
-    "TIMED_OUT",
-}
-CI_SUCCESS_STATES = {"NEUTRAL", "SKIPPED", "SUCCESS"}
 REVIEW_STATUSES = {
     "APPROVED": "✓ approved",
     "CHANGES_REQUESTED": "× changes",
@@ -146,7 +139,7 @@ def pull_requests(root, branch):
         "--limit",
         "100",
         "--json",
-        "number,state,isDraft,baseRefName,updatedAt,reviewDecision,statusCheckRollup",
+        "number,state,isDraft,baseRefName,updatedAt,reviewDecision",
         cwd=root,
         timeout=3,
     )
@@ -187,30 +180,6 @@ def pull_request_state(pull_request):
     if state == "OPEN":
         return "draft" if pull_request.get("isDraft") else "open"
     return state.lower()
-
-
-def ci_status(pull_request):
-    if pull_request is None or pull_request.get("state") != "OPEN":
-        return ""
-    checks = pull_request.get("statusCheckRollup")
-    if not isinstance(checks, list) or not checks:
-        return ""
-
-    states = []
-    for check in checks:
-        if not isinstance(check, dict):
-            continue
-        state = check.get("conclusion") or check.get("state") or check.get("status")
-        if isinstance(state, str):
-            states.append(state.upper())
-    if not states:
-        return ""
-
-    if any(state in CI_FAILURE_STATES for state in states):
-        return "× CI"
-    if any(state not in CI_SUCCESS_STATES for state in states):
-        return "… CI"
-    return "✓ CI"
 
 
 def review_status(pull_request):
@@ -268,9 +237,13 @@ def workspace_metadata(workspace_id, tokens, pull_request):
     workspace_tokens = {
         "agent_summary": agent_summary(workspace_id),
         **tokens,
-        "ci_status": ci_status(pull_request),
         "review_status": review_status(pull_request),
     }
+    for name in PR_TOKEN_NAMES:
+        if workspace_tokens[name]:
+            workspace_tokens[name] = (
+                f"{WORKSPACE_PR_INDENT}{workspace_tokens[name]}"
+            )
 
     branch = workspace_tokens["git_branch"].removeprefix(" ")
     if branch and branch == workspace_label(workspace_id):
@@ -278,7 +251,7 @@ def workspace_metadata(workspace_id, tokens, pull_request):
     return workspace_tokens
 
 
-def report_metadata(target, target_id, source, tokens, clear_tokens=()):
+def report_metadata(target, target_id, source, tokens):
     args = [
         "herdr",
         target,
@@ -289,8 +262,6 @@ def report_metadata(target, target_id, source, tokens, clear_tokens=()):
     ]
     for name, value in tokens.items():
         args.extend(("--token", f"{name}={value}"))
-    for name in clear_tokens:
-        args.extend(("--clear-token", name))
     run(*args)
 
 
@@ -306,16 +277,13 @@ def main():
     current_checkout = checkout(cwd) if cwd else None
     if current_checkout is not None:
         tokens, pull_request = metadata(*current_checkout)
-    report_metadata(
-        "pane", pane_id, "agent-git", tokens, clear_tokens=MOVED_TOKENS
-    )
+    report_metadata("pane", pane_id, "agent-git", tokens)
     if workspace_id:
         report_metadata(
             "workspace",
             workspace_id,
             "workspace-git",
             workspace_metadata(workspace_id, tokens, pull_request),
-            clear_tokens=MOVED_TOKENS,
         )
 
 
