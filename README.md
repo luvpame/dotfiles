@@ -1,16 +1,28 @@
 # dotfiles
 
-## setup
+Reproducible macOS dotfiles for Apple Silicon.
 
-### 対象環境
+Built with Nix, nix-darwin, Home Manager, Homebrew, and Fish.
 
-- Apple Silicon Mac
-- macOS
+## What it manages
 
-### 事前準備
+| Area | Location |
+| --- | --- |
+| System and packages | `nix/` |
+| User and application configuration | `config/` |
+| Menu bar helpers | `menubar-script/` |
+| Small utilities | `script/` |
 
-このリポジトリを適用する前に、Xcode Command Line Tools、Nix、Homebrew をインストールする。
-Nix は [`NixOS/nix-installer`](https://github.com/NixOS/nix-installer) からインストールする。
+Most managed files use Home Manager out-of-store symlinks into the checkout, so edits take effect immediately. Run `just switch` after changing Nix packages, Homebrew applications, macOS defaults, or the set of managed files.
+
+## Requirements
+
+- Apple Silicon Mac running macOS
+- [Xcode Command Line Tools](https://developer.apple.com/xcode/resources/)
+- [Nix](https://github.com/NixOS/nix-installer) with flakes enabled
+- [Homebrew](https://brew.sh/)
+
+Install anything missing:
 
 ```bash
 xcode-select --install
@@ -20,103 +32,83 @@ curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install --enable
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-Nix のインストール後は、`nix` コマンドを使えるようにシェルを再起動する。
+Restart the shell after installing Nix so that `nix` is available.
 
-### 初回適用
+## Setup
 
-clone 先は任意に決められる。
-以下では `~/src/dotfiles` を例にする。
+Clone the repository and point `$HOME/.dotfiles` at the checkout:
 
 ```bash
 git clone https://github.com/luvpame/dotfiles.git ~/src/dotfiles
 cd ~/src/dotfiles
-```
 
-Nix は `$HOME/.dotfiles` を現在使う checkout の入口として参照する。
-初回 switch の前に、clone した場所からこのシンボリックリンクを作成する。
-`$HOME/.dotfiles` にシンボリックリンクではないファイルやディレクトリがある場合は、上書きせずに停止する。
-
-```bash
 if [ -e "$HOME/.dotfiles" ] && [ ! -L "$HOME/.dotfiles" ]; then
-  echo "$HOME/.dotfiles が既存のシンボリックリンクではないため、上書きせずに停止しました。" >&2
+  echo "$HOME/.dotfiles is not a symlink; refusing to overwrite it." >&2
   exit 1
 fi
+
 ln -shf "$(pwd -P)" "$HOME/.dotfiles"
 ```
 
-ユーザー名を変更する場合は、`nix/nix-darwin/users.nix` の `dotfiles.user.name` だけを変更する。
+Set `dotfiles.user.name` in [`nix/nix-darwin/users.nix`](nix/nix-darwin/users.nix). This is the single user name used by the configuration.
 
-設定ファイルは checkout から out-of-store symlink で配置するため、設定の編集は switch を待たずに反映される。
-Nix パッケージ、Homebrew、macOS defaults、配置するファイルの追加や削除を変更した場合は switch を実行する。
-
-Git のユーザー情報は `config/git/config.local` に設定する。
-ひな形は `config/git/config.local.example` を参照する。
-このファイルもローカル専用で、Git にはコミットしない。
+Create the local Git configuration from [`config/git/config.local.example`](config/git/config.local.example), then fill in your identity:
 
 ```bash
 test -f config/git/config.local || cp config/git/config.local.example config/git/config.local
 $EDITOR config/git/config.local
 ```
 
-`config/git/config` は `~/.config/git/config.local` を include しているため、
-switch 後は Home Manager がリンクした `~/.config/git/config.local` として読み込まれる。
-`user.name`、`user.email`、`user.signingkey`、`ghq.root` を環境に合わせて設定する。
-このリポジトリは 1Password の SSH 署名を使うため、コミット前に 1Password と SSH Agent も有効にしておく。
+Set `user.name`, `user.email`, `user.signingkey`, and `ghq.root`. Home Manager exposes this file as `~/.config/git/config.local`, which the managed Git config includes. Keep it out of version control. Commits use 1Password SSH signing, so sign in to 1Password and enable its SSH Agent before committing.
 
-この設定は `mas` で Mac App Store アプリをインストールするため、switch 前に App Store にサインインしておく。
+Sign in to the Mac App Store before switching; `mas` installs App Store applications as part of the configuration.
 
-初回 switch を実行する。このコマンドは `just` がまだインストールされていなくても実行できる。
+Apply the initial system configuration. `just` is installed by Home Manager during this step, so it is not required yet:
 
 ```bash
 cd nix
 sudo -H nix --extra-experimental-features "nix-command flakes" \
   run github:LnL7/nix-darwin -- switch --flake "path:.#default"
+cd ..
 ```
 
-初回 switch 後は Home Manager 経由で `just` が使える。
+## Everyday commands
 
-```bash
-cd ~/src/dotfiles
-just check
-just build
-just switch
-just clean
-```
+| Command | Purpose |
+| --- | --- |
+| `just check` | Validate the flake |
+| `just build` | Build the Darwin system |
+| `just switch` | Apply the configuration |
+| `just clean` | Remove old Nix generations |
 
-### GitHub Actions で Cachix を使う
+`just switch` updates `$HOME/.dotfiles` to the physical path of the current checkout before applying changes, so clone locations and Git worktrees are supported.
 
-GitHub Actions は `aarch64-darwin` 用の `darwinConfigurations.default.system` を `macos-15` で事前ビルドし、公開キャッシュ `luvpame` へ保存する。
+## Fish
 
-リポジトリの Settings > Secrets and variables > Actions で、次の secret を設定する。
-
-- Repository secret `CACHIX_AUTH_TOKEN`：Cachix へ push できる認証トークン
-
-`nix/flake.nix` と nix-darwin の Nix 設定に `luvpame.cachix.org` を宣言しているため、`just switch` などのローカルビルドでも同じキャッシュを利用できる。
-
-`nix/**` またはこの workflow の変更を main へ push すると、現在の `flake.lock` をビルドして Cachix へ push する。
-Schedule は毎時 17 分（UTC）の cron で `nix flake update` を実行し、`flake.lock` が変わった場合だけビルドと Cachix への push を行い、成功後に `flake.lock` を main へ反映する。
-Actions の手動実行では、`force_build` を有効にすると `flake.lock` が変わっていなくても現在の構成を再度ビルドできる。
-
-キャッシュを利用して適用する場合は、CI が更新した `flake.lock` を pull してから `just switch` を実行する。
-`just us` はローカルで入力更新と switch を続けて実行するため、事前ビルドした入力と一致しないことがある。
-
-`just switch`（`just s`）は、実行した checkout の物理パスへ `$HOME/.dotfiles` を更新してから適用する。
-そのため、clone 先を ghq の規約に合わせる必要はなく、Git worktree からも switch できる。
-
-### 適用後の作業
+Set Fish as the default shell after the first switch:
 
 ```bash
 ./script/set-fish-default.sh
 ```
 
-ログアウトして再ログインするか、新しい Fish セッションを開始する。
+Log out and back in, or start a new Fish session, then update plugins:
 
 ```bash
 fish
 fisher update
 ```
 
-switch 後、ユーザー認証が必要なサービスにサインインする。
+## CI and Cachix
 
-- 1Password と 1Password CLI
-- GitHub CLI が必要な場合: `gh auth login`
+GitHub Actions checks and prebuilds `darwinConfigurations.default.system` for `aarch64-darwin` on `macos-15`, then publishes the result to the public `luvpame` Cachix cache. Add a repository secret named `CACHIX_AUTH_TOKEN` with permission to push to Cachix. The flake and nix-darwin configuration already declare `luvpame.cachix.org`, so local builds can use the same cache.
+
+Pushes to `nix/**` or this workflow build the current `flake.lock`. A schedule runs at 17 minutes past every hour (UTC), updates flake inputs, and builds only when `flake.lock` changes. A successful update commits the new lock file to `main`. Manual runs can enable `force_build` to rebuild the current lock even when it is unchanged.
+
+Pull CI's updated `nix/flake.lock` before running `just switch` to use the prebuilt inputs. `just us` updates inputs locally and switches immediately, so its result may differ from the CI build.
+
+## Authentication
+
+After switching, sign in to services that need authentication:
+
+- 1Password and 1Password CLI
+- GitHub CLI, if needed: `gh auth login`
