@@ -5,13 +5,13 @@ _:
 
 [working-directory("nix")]
 update:
-    nix flake update
+    nix --accept-flake-config flake update
 
 alias u := update
 
 [working-directory("nix")]
 build:
-    nh darwin build path:. -H {{darwin_config_name}}
+    nh darwin build --accept-flake-config path:. -H {{darwin_config_name}}
 
 [working-directory("nix")]
 switch:
@@ -27,13 +27,13 @@ switch:
     fi
 
     ln -shf "$repo_root" "$dotfiles_link"
-    nh darwin switch path:. -H {{darwin_config_name}}
+    nh darwin switch --accept-flake-config path:. -H {{darwin_config_name}}
 
 alias s := switch
 
 [working-directory("nix")]
 check:
-    nix flake check path:.
+    nix --accept-flake-config flake check path:.
 
 alias c := check
 
