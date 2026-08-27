@@ -1,0 +1,6 @@
+#!/bin/sh
+
+export SSH_SK_PROVIDER=/usr/lib/ssh-keychain.dylib
+export SSH_ASKPASS_REQUIRE=force
+export SSH_ASKPASS=/usr/bin/true
+exec /usr/bin/ssh-keygen "$@"

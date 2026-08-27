@@ -59,7 +59,40 @@ test -f config/git/config.local || cp config/git/config.local.example config/git
 $EDITOR config/git/config.local
 ```
 
-Set `user.name`, `user.email`, `user.signingkey`, and `ghq.root`. Home Manager exposes this file as `~/.config/git/config.local`, which the managed Git config includes. Keep it out of version control. Commits use 1Password SSH signing, so sign in to 1Password and enable its SSH Agent before committing.
+Set `user.name`, `user.email`, and `ghq.root`. Home Manager exposes this file as `~/.config/git/config.local`, which the managed Git config includes. Keep it out of version control. The shared Git configuration uses Secure Enclave for commit signing, so complete the Git commit signing setup below before committing. Keep the 1Password SSH Agent enabled for push and pull.
+
+## Git commit signing
+
+The repository includes a repeatable setup wizard for moving commit signing to a non-exportable Secure Enclave key. Run it from a normal interactive Terminal session on each Mac. `sc_auth` and CryptoTokenKit may not be available from an agent or another non-interactive process.
+
+The wizard creates a `p-256-ne` CTK identity with `-t none`, writes the SSH key handle pair to `~/.ssh/id_git_sign` and `~/.ssh/id_git_sign.pub`, and runs a temporary signed commit verification. The private key never leaves the Secure Enclave, while the reference files remain device-specific.
+
+OpenSSH may show a generic authenticator PIN prompt even for this key. The wizard answers it with an empty input; if a PIN or password is requested interactively, enter nothing and stop the wizard.
+
+The default command performs the local setup and self-test, then prints the exact GitHub command without changing the GitHub account:
+
+```bash
+./script/setup-git-signing.sh
+```
+
+To let the wizard check the GitHub signing-key list and register the public key after the self-test and an explicit confirmation, use:
+
+```bash
+gh auth login
+# Run this once before the first registration (or when the wizard reports a missing scope).
+gh auth refresh -h github.com -s admin:ssh_signing_key
+./script/setup-git-signing.sh --register-github
+```
+
+The wizard checks that scope before it changes GitHub. If the check reports a network or other API error, it stops without treating that error as a scope problem.
+
+The GitHub key title uses `git-sign@<short-hostname>` so multiple Macs can be distinguished. If the hostname is unavailable, the title falls back to `git-sign`; repeated-run detection compares the public-key contents instead of the title.
+
+The shared Git configuration now uses Secure Enclave for commit signing. On an existing Mac, run the wizard before relying on the new configuration; it completes the local self-test before it contacts GitHub. After the new key produces a `Verified` commit on GitHub, remove only the old 1Password Signing key from GitHub. Keep the 1Password SSH Agent and its authentication key for push and pull.
+
+This migration changes commit signing only. Tag signing is unchanged. `-t none` deliberately avoids Touch ID or passcode prompts so an unattended Coding Agent can finish a commit; any process running as the logged-in user can therefore request a signature. Secure Enclave storage protects the private key from export, but it does not protect against malware already running in that account.
+
+The wizard does not create a permanent `allowedSignersFile`. Its verification file and temporary Git repository are removed after the self-test; GitHub's `Verified` status is the ongoing verification record.
 
 Sign in to the Mac App Store before switching; `mas` installs App Store applications as part of the configuration.
 

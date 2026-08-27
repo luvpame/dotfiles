@@ -15,10 +15,12 @@
   ff = only
 [init]
   defaultBranch = main
+[user]
+  signingkey = ~/.ssh/id_git_sign
 [gpg]
   format = ssh
 [gpg "ssh"]
-  program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+  program = ~/.config/git/ssh-sign
 [commit]
   gpgsign = true
 [push]
