@@ -278,6 +278,15 @@
       "pluginName": "mattpocock-skills",
       "installedAt": "2026-08-05T23:57:24.466Z",
       "updatedAt": "2026-08-05T23:57:24.466Z"
+    },
+    "hallmark": {
+      "source": "nutlope/hallmark",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/nutlope/hallmark.git",
+      "skillPath": "skills/hallmark/SKILL.md",
+      "skillFolderHash": "747c924c4767b4d5fa6f1c59985c87a21c918334",
+      "installedAt": "2026-08-27T02:42:39.993Z",
+      "updatedAt": "2026-08-27T02:42:39.993Z"
     }
   },
   "lastSelectedAgents": [
