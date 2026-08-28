@@ -135,7 +135,7 @@ fisher update
 
 GitHub Actions checks and prebuilds `darwinConfigurations.default.system` for `aarch64-darwin` on `macos-15`, then publishes the result to the public `luvpame` Cachix cache. Add a repository secret named `CACHIX_AUTH_TOKEN` with permission to push to Cachix. The flake and nix-darwin configuration already declare `luvpame.cachix.org`, so local builds can use the same cache.
 
-Pushes to `nix/**` or this workflow build the current `flake.lock`. A schedule runs at 17 minutes past every hour (UTC), updates flake inputs, and builds only when `flake.lock` changes. A successful update commits the new lock file to `main`. Manual runs can enable `force_build` to rebuild the current lock even when it is unchanged.
+Pushes to `main` that change `nix/**` or this workflow build the current `flake.lock`. A schedule runs at 17 minutes past every hour (UTC), updates flake inputs, and builds only when `flake.lock` changes. A successful update commits the new lock file to `main`. Manual runs can enable `force_build` to rebuild the current lock even when it is unchanged.
 
 Pull CI's updated `nix/flake.lock` before running `just switch` to use the prebuilt inputs. `just us` updates inputs locally and switches immediately, so its result may differ from the CI build.
 

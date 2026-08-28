@@ -4,7 +4,7 @@
 - `archive/`: 使用を終了した設定を現行設定から分離して保存する。退避手順は `archive/README.md` に従う。
 - `nix/`: Flake のエントリポイント（`flake.nix` / `flake.lock`）と、macOS の system、Homebrew、Home Manager 状態を管理する `nix-darwin/`、カスタム package 定義の `pkgs/` を持つ。
 - `config/`: 各種ツール設定を集約するディレクトリ。`config/fish/` にシェル設定、`config/git/` に Git 設定、`config/agents/skills/` に再利用可能なエージェントスキルを保存する。加えて `config/aerospace/`、`config/efm-langserver/`、`config/gh/`、`config/guard-and-guide/`、`config/herdr/`、`config/hunk/`、`config/lazygit/`、`config/mise/`、`config/nvim/`、`config/raycast/`、`config/tmux/`、`config/wezterm/`、`config/worktrunk/`、`config/yazi/`、`config/zed/`、`config/ziggity/`、`config/zsh/` などのツール別設定を配置する。`config/claude/` には `CLAUDE.md`・`RTK.md`・`SOUL.md`・`settings.json`・`statusline.py`・`hooks/`、`config/codex/` には `AGENTS.md`・`SOUL.md`・`hooks.json`・`hooks/`・`config.toml` を配置する。
-- `script/`: ユーティリティ Bash スクリプトを配置するディレクトリ。現状は `set-fish-default.sh` がある。
+- `script/`: ユーティリティ Bash スクリプトを配置するディレクトリ。`set-fish-default.sh` と `setup-git-signing.sh` がある。
 - `menubar-script/`: `herdr/`、`ime/`、`media/`、`vpn/` のメニューバー連携用スクリプト群。
 - `docs/`: ADR を `docs/adr/` に、エージェント向けガイドを `docs/agents/` に、調査資料を `docs/research/` に、Superpowers の計画書や仕様メモを `docs/superpowers/` 配下に保存する。
 - 補助生成物として `build/`（`download/` と `markdown/` を含む）、運用コマンドの入口としてトップレベルの `justfile` がある。隠しディレクトリとして `.claude/`（`settings.local.json`）に加え、ツール実行時のキャッシュや状態を保持する `.cache/`・`.data/`・`.state/` がルートに現れる。`nvim.log` は Neovim 実行時に生成される補助ログである。
