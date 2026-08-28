@@ -1,11 +1,11 @@
 {
   "permissions": {
-    "defaultMode": "auto",
     "allow": [
       "Workflow"
-    ]
+    ],
+    "defaultMode": "auto"
   },
-  "model": "fable",
+  "model": "claude-fable-5[1m]",
   "enableAllProjectMcpServers": true,
   "skillOverrides": {
     "code-review": "off",
