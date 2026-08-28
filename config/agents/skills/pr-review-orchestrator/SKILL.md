@@ -36,10 +36,10 @@ GitHub の PR、レビュー、コメント、issue には書き込まない。`
    - `gh api user --jq .login` の出力を `<me>` として固定する（片付けの判断が自分のレビュー状態を引くのに使う）
 2. 専用 workspace へ移る: `herdr pane current --current` で現在の workspace ID を得て、`herdr workspace list` からそのラベルを照合する。ラベルが `pr-review` なら現在の pane ID を `<orchestrator pane>` とする。そうでなければ、`herdr pane move "$HERDR_PANE_ID" --new-workspace --label "pr-review" --tab-label "orchestrator" --no-focus` で自分ごと引っ越す（プロセスは生きたまま移動する）。以後は move の JSON にある `result.move_result.pane.pane_id` を `<orchestrator pane>` として使う。
 3. 自セッションの scratchpad ディレクトリ（システムプロンプト記載）に `<scratchpad>/pr-review-orchestrator/<orchestrator pane>` を state ディレクトリとして作り、パスを以後の `<state>` として固定する。`launched.txt`（起動済みまたは失敗済みのPR番号、1行1件）、`seen.txt`（ウォッチャー通知済みPR番号、1行1件）、`skipped.txt`（ドキュメントのみで対象外としたPR番号、1行1件）を touch する。作成後に `<state>` をユーザーへ一度報告する。
-4. 前セッションの残骸を回収する。`<state>` はセッションごとの scratchpad 配下にあり前回のものは引き継がれないので、環境そのものを走査する: `herdr workspace list` でラベルが `pr#<番号>` の workspace を全部挙げ、`worktree.checkout_path` を `<state>/worktree-pr<番号>` に書き戻してから、1件ずつ「片付けの判断」の分岐に載せる（state と approve はそこで引くので、ここでは判断のための `gh pr view` を叩かない）。`worktree` キーを持たない workspace（過去に `herdr workspace create` で作られた残骸）は checkout_path を引けないので、`gh pr view <番号> --json headRefName` でブランチを求め、「レビュー起動」step 2 と同じ `git worktree list --porcelain` からパスを引く。**引いたパスも同じく `<state>/worktree-pr<番号>` に書く**（「片付けの実行」step 3 がこのファイルしか読まない）。残った分は一覧にしてユーザーへ報告する。該当 workspace が無ければ何もしない。
+4. 前セッションの残骸を回収する。`<state>` はセッションごとの scratchpad 配下にあり前回のものは引き継がれないので、環境そのものを走査する: `herdr workspace list` でラベルが `review-#<番号>` の workspace を全部挙げ、`worktree.checkout_path` を `<state>/worktree-pr<番号>` に書き戻してから、1件ずつ「片付けの判断」の分岐に載せる（state と approve はそこで引くので、ここでは判断のための `gh pr view` を叩かない）。`worktree` キーを持たない workspace（過去に `herdr workspace create` で作られた残骸）は checkout_path を引けないので、`gh pr view <番号> --json headRefName` でブランチを求め、「レビュー起動」step 2 と同じ `git worktree list --porcelain` からパスを引く。**引いたパスも同じく `<state>/worktree-pr<番号>` に書く**（「片付けの実行」step 3 がこのファイルしか読まない）。残った分は一覧にしてユーザーへ報告する。該当 workspace が無ければ何もしない。
 5. ウォッチャーを起動する（次節）。初回ポーリングは即時に走るので、既存のレビュー依頼PRも起動直後の NEW_PR 通知として届く。
 
-完了基準: 前提5点がすべて成功し、自分が `pr-review` workspace におり、state ディレクトリのパスが確定し、既存の `pr#<番号>` workspace を全件仕分け済みで、ウォッチャーが走っていること。
+完了基準: 前提5点がすべて成功し、自分が `pr-review` workspace におり、state ディレクトリのパスが確定し、既存の `review-#<番号>` workspace を全件仕分け済みで、ウォッチャーが走っていること。
 
 ## ウォッチャー（スイープのトリガー）
 
@@ -86,7 +86,7 @@ done
    `gh` が失敗した回は対象外と判定せず通常の「レビュー起動」に乗せる。空リストを真に受けるとコードのPRをドキュメント扱いで捨てる。パスの接頭辞では判定しない。`docs/` 配下にはバックエンドE2Eの hurl（実コード）がある。
 
    `skipped.txt` に載せた番号は `launched.txt` へは載せない。`GONE_PR` は launched.txt が基準なので、対象外PRが閉じても片付け（消す worktree も無い）は走らない。
-3. 再レビュー候補を判定する。稼働中の `pr<番号>` エージェントのうち、sweep.json に番号が載っており（＝現在レビュー依頼が出ている）、かつ idle または done のもの（working / blocked は動いている最中に指示を割り込ませることになるので対象外）を候補にする。**`launched.txt` への掲載は条件にしない**：片付けで launched.txt から番号が消えても pr<番号> エージェントは動き続けるので、掲載を条件にすると再依頼を取りこぼす（実例: PR #8139。片付けで `launched.txt` から消えた後の再依頼が拾われなかった）。候補ごとに `<state>/reviewed-sha-pr<番号>` の SHA と `gh pr view <番号> --json headRefOid --jq .headRefOid` が返す現在の PR HEAD を比較し、ファイルが存在し値が異なるものだけを「再レビュー候補」に確定する。一致するなら前回レビュー以降1コミットも進んでおらず、無関係な通知のたびに再レビューが暴発する（実例: PR #8152。無関係な PR #7981 の通知でスイープが走った際に再レビュー候補へ上がった）。
+3. 再レビュー候補を判定する。稼働中の `pr<番号>` エージェントのうち、sweep.json に番号が載っており（＝現在レビュー依頼が出ている）、かつ idle または done のもの（working / blocked は動いている最中に指示を割り込ませることになるので対象外）を候補にする。**`launched.txt` への掲載は条件にしない**：片付けで launched.txt から番号が消えても pr<番号> エージェントは動き続けるので、掲載を条件にすると再依頼を取りこぼす（実例: PR #8139。片付けで `launched.txt` から消えた後の再依頼が拾われなかった）。候補ごとに `<state>/reviewed-sha-pr<番号>` の SHA と `gh pr view <番号> --json headRefOid --jq .headRefOid` が返す現在の PR HEAD を比較し、ファイルが存在し値が異なるものだけを「再レビュー候補」に確定する。一致するなら前回レビュー以降1コミットも進んでおらず、無関係な通知のたびに再レビューが暴発する（実例: PR #8152。無関係な PR #7981 の通知でスイープが走った際に再レビュー候補へ上がった）。この SHA 比較は一致／不一致のみを見る粗いフィルタで、不一致が rebase による見かけの変化か実変更かは「再レビュー」step 1 のパッチID比較が確定する。
 4. 新規PRを番号の昇順で「レビュー起動」し、再レビュー候補を番号の昇順で「再レビュー」する。
 
 完了基準: 新規PR全件についてドキュメントのみかの判定を終え、対象に残ったPRのレビュー起動と、再レビュー候補全件の再レビューを試行済みであること。
@@ -120,7 +120,9 @@ v0.8.2 の通常 prompt は blocked 中に `agent_blocked` を返して入力を
 worktree が新規か既存か、クラッシュ後の再開かで分岐しない。worktree パスで workspace を照合する step 3 が3ケースすべてを吸収する。
 
 1. worktree を用意する: 自身の Bash で `wt switch pr:<番号> --no-cd` を実行する。非0終了なら失敗。worktree が新規でも既存でも、ここまでで worktree 自体は必ず用意される（新規のときだけ post-start フックが workspace も作る）。**出力を控えておく**。`✓ Created worktree` か `○ Switched to worktree` かが、失敗時に worktree を消してよいかの唯一の判断材料になる。
-2. worktree パスを確定する。`<headRefName>` は sweep.json のもの:
+2. まず origin の remote-tracking ref を更新する: `git fetch origin <baseRefName> <headRefName>`。remote-tracking ref は勝手には更新されないので、これを飛ばすと以降の rev-list / merge-base / diff がすべて古い基準で計算される（実例: ローカルの `origin/main` が19コミット古い（`419dab1b25`、実際は `b654f9873b`）まま merge-base を計算し、main 側の変更が紛れ込んで「25ファイル→56ファイルに増えた」と誤読した。fetch 後は25ファイルのまま、実変更は spec 2行だけだった）。
+
+   worktree パスを確定する。`<headRefName>` は sweep.json のもの:
    ```bash
    git worktree list --porcelain \
      | awk -v b="refs/heads/<headRefName>" '/^worktree /{p=$2} $0=="branch "b{print p}'
@@ -152,10 +154,10 @@ worktree が新規か既存か、クラッシュ後の再開かで分岐しな�
    - **1 件**: その `workspace_id` を `<id>` とする。post-start フックが作った直後も、クラッシュ・中断からの再開もここに乗る。**この分岐なら自分が作った workspace ではない**。
    - **0 件**: フックが走らなかった場合（既存 worktree）。次で作り、返る JSON の `result.workspace.workspace_id` を `<id>` とする。**この分岐で作った workspace だけが自分のもの**:
      ```
-     herdr worktree open --cwd <リポジトリroot> --path <worktreeパス> --label "pr#<番号>" --no-focus
+     herdr worktree open --cwd <リポジトリroot> --path <worktreeパス> --label "review-#<番号>" --no-focus
      ```
    - **複数件**: 推測せず失敗として扱う。
-4. `herdr workspace rename <id> "pr#<番号>"` でラベルを揃える（フック生成分はブランチ名ラベルになっている）。既にラベルが一致していても、判定を挟まず毎回呼ぶ。
+4. `herdr workspace rename <id> "review-#<番号>"` でラベルを揃える（フック生成分はブランチ名ラベルになっている）。既にラベルが一致していても、判定を挟まず毎回呼ぶ。
 5. root tab と root pane を得る。root tab は `herdr tab list --workspace <id>` のうちラベルが `agent review` のもの。無ければ `editor` と `diff` を除いた残りで `number` が最小のもの（フックが最初に作るタブで、ブランチ名ラベルが付いている）。件数で分岐する:
    - **1 件**: `herdr pane list --workspace <id>` からその tab の pane を一つだけ得て `<root pane>` とする。0 件または複数件なら失敗として扱う。ラベルが `agent review` でなければ `herdr tab rename <root tab> "agent review"`。
    - **0 件**: 再試行しても workspace の状態は変わらないので、失敗にせず `herdr tab create --workspace <id> --label "agent review" --cwd <worktreeパス> --no-focus` で新規作成する。返る JSON の `result.root_pane.pane_id` を `<root pane>` とする。
@@ -187,7 +189,7 @@ worktree が新規か既存か、クラッシュ後の再開かで分岐しな�
    test "$(fg)" = "$want"
    ```
    - **editor**: `cmd="nvim ."`、`want=nvim`
-   - **diff**: `cmd="hunk diff origin/<baseRefName>...HEAD"`、`want=hunk`（ベースが `main` なら `origin/main...HEAD`、それ以外ならそのベースブランチと `HEAD` の差分を Hunk で表示）
+   - **diff**: `cmd="hunk diff <baseRefOid>...HEAD"`、`want=hunk`。`<baseRefOid>` は `gh pr view <番号> --json baseRefOid --jq .baseRefOid` で得た SHA。ブランチ名（`origin/<baseRefName>`）を基点にすると、ローカルの remote-tracking ref が古いだけで merge-base が本来より下がり、ベースが別PRのブランチのスタックPRでは下段PR由来の変更まで混入する（実例: PR #8228、ベースは PR #8153 のブランチ。`origin/<baseRefName>` 基点では merge-base が #8153 より下がり 100ファイル+3076/-66 → 正しい基点（`baseRefOid` = #8153 の現HEAD）では 52ファイル+1626/-11）
 
    3回とも起動しなければ `herdr pane read <pane_id>` で原因を確認してユーザーへ報告する。補助タブはレビューの前提ではないので、この step の失敗としては扱わず次へ進む。
 7. Claude Code 起動（agent review タブの root pane で）。direnv / devenv の評価中はシェルに到達しておらず `{"error":{"code":"agent_pane_busy"}}` で落ちるため、このエラーだけを最大10回まで再試行する。
@@ -259,19 +261,44 @@ step 1〜8 のどれかが失敗したら（各 step の「失敗として扱う
 
 スイープ step 3 の再レビュー候補に対して実行する。新規の worktree・workspace・エージェントは作らない。既存の `pr<番号>` エージェントへ指示を送るだけである。
 
-1. worktree を最新化する。「レビュー起動」step 2 の HEAD 追いつき手順（`git status --porcelain` → `rev-list --left-right --count` → `merge --ff-only`）を、sweep.json の最新の `baseRefName` を使ってそのまま実行する。親PRのマージ等でベースブランチが変わっていることがある。ただし divergent で force-push と確認できても、workspace を作り直す分岐だけは再レビューでは取らない。動いている `pr<番号>` エージェントと workspace を道連れに消してしまい、以降の step が前提とする「既存エージェントへ指示を送るだけ」が崩れるためである。この分岐に該当したら reflog の確認結果を添えてユーザーへ報告し、作り直すかどうかの判断を仰ぐ。
-2. diff タブを張り直す。ベースブランチが変わっていれば古い diff タブは前回の base のままで使えないし、前セッションのプロセス再起動でタブ自体が消えていることもある。`herdr workspace list` からラベル `pr#<番号>` の workspace を引き、diff タブがあれば閉じてから「レビュー起動」step 6 と同じ手順で `hunk diff origin/<baseRefName>...HEAD` を張る。
-3. 前回のレビュー以降の変更を控える。追加されたコミットの SHA とメッセージを `git -C <worktreeパス> log` 等で確認する。
-4. `herdr agent prompt pr<番号>` で再レビューを指示する。次を含める:
+1. パッチID比較で実変更の有無を判定する。rebase は HEAD の SHA を必ず変えるが、PR が加える変更は1行も変わっていないことが多く、SHA 比較だけでは無関係な通知のたびにフルレビューが走ってしまう（実例: PR #8152、3回 rebase いずれも内容ゼロ変化）。累積差分のパッチIDを新旧で比較する（コミット単位ではなく累積差分で比較すること。`git log -N` のコミット単位比較はコミット数が変わると破綻する。実例で一度誤判定した）:
+   ```bash
+   base=$(gh pr view <番号> --json baseRefOid --jq .baseRefOid)
+   git fetch origin <baseRefName> <headRefName>
+   old=$(cat <state>/reviewed-sha-pr<番号>); new=$(gh pr view <番号> --json headRefOid --jq .headRefOid)
+   omb=$(git merge-base "$old" "$base"); nmb=$(git merge-base "$new" "$base")
+   o=$(git diff "$omb".."$old" | git patch-id --stable | awk '{print $1}')
+   n=$(git diff "$nmb".."$new" | git patch-id --stable | awk '{print $1}')
+   ```
+   `git patch-id --stable` は行番号・文脈行の位置ズレを吸収するので、rebase による見かけの差分を実変更と誤判定しない。
+
+   - **`$o` と `$n` が一致（純粋な rebase）**: PR が加える変更は1行も変わっていない。下記の worktree 最新化だけ行い、フルレビューはしない。追いついたら `<state>/reviewed-sha-pr<番号>` を `$new` で更新し、この PR の再レビューは完了とする。
+   - **不一致（実変更あり）**: `git diff --stat "$omb".."$old"` と `git diff --stat "$nmb".."$new"` を比較し、変わったファイルを特定する（step 3・4 で使う）。以降を続ける。
+
+   worktree を最新化する。「レビュー起動」step 2 の HEAD 追いつき手順（fetch → `git status --porcelain` → `rev-list --left-right --count` → `merge --ff-only`。fetch は上のパッチID比較で済んでいれば省略してよい）を、sweep.json の最新の `baseRefName` を使ってそのまま実行する。親PRのマージ等でベースブランチが変わっていることがある。ただし divergent で force-push と確認できても、workspace を作り直す分岐だけは再レビューでは取らない。動いている `pr<番号>` エージェントと workspace を道連れに消してしまい、以降の step が前提とする「既存エージェントへ指示を送るだけ」が崩れるためである。この分岐に該当したら reflog の確認結果を添えてユーザーへ報告し、作り直すかどうかの判断を仰ぐ。
+2. diff タブを張り直す。ベースブランチが変わっていれば古い diff タブは前回の base のままで使えないし、前セッションのプロセス再起動でタブ自体が消えていることもある。`herdr workspace list` からラベル `review-#<番号>` の workspace を引き、diff タブがあれば閉じてから「レビュー起動」step 6 と同じ手順で `<baseRefOid>...HEAD` を基点に張る（`<baseRefOid>` は step 1 の `$base` を再利用する）。
+3. 前回のレビュー以降の変更を控える。追加されたコミットの SHA とメッセージ、step 1 で特定した変わったファイルを `git -C <worktreeパス> log` 等で確認する。
+4. レビューの深度を決める。`<me>` がこのPRへレビューを投稿済みかで分岐する:
+   ```
+   gh pr view <番号> --json latestReviews \
+     --jq '[.latestReviews[] | select(.author.login == "<me>") | .state]'
+   ```
+   - **空配列**: 初回レビューの指摘はまだPRへ渡っていない。**フルレビュー**を指示する。
+   - **1件以上**（`COMMENTED` / `CHANGES_REQUESTED` / `APPROVED`）: ユーザーが初回レビューの指摘をPRへ渡し済みで、今回の差分はその応答である。**軽量チェック**を指示する。code-review スキルは1つのPRにつき初回の1回だけ走らせる。同じ観点で20分・数百kトークンを再消費しても、初回指摘の解消確認以上のものは出ない。
+5. `herdr agent prompt pr<番号>` で再レビューを指示する。深度によらず次を含める:
    - 再度レビュー依頼が来たので再レビューすること
-   - 前回のレビュー以降に何が変わったか（step 3 のコミット、ベースブランチが変わったならその旨）
+   - 前回のレビュー以降に何が変わったか（step 3 のコミットと変わったファイル、ベースブランチが変わったならその旨）
    - worktree を最新化済みであること
-   - 差分の基準（`origin/<baseRefName>...HEAD`）
+   - 差分の基準（`<baseRefOid>...HEAD`）
    - 従来と同じ制約（読み取り専用、結果はこのセッションに返答、GitHub を含む外部サービスへ一切書き込まない）
+
+   深度ごとに次を足す:
+   - **フルレビュー**: `/code-review:code-review 敵対的検証をして` で始める。レビュー範囲は step 1 で特定した変わったファイルに絞ってよいこと（フルレビューより速く正確だった。実例: 3分55秒で完了）
+   - **軽量チェック**: 初回レビューで自分が挙げた指摘を1件ずつ挙げ直し、解消・未解消・対応不要のどれかを判定すること。加えて step 1 で特定した変わったファイルだけを通し読みし、新たな問題があれば挙げること。この2点だけで完結させ、`/code-review:code-review` は実行しないこと。結果は判定と新規指摘の有無を数行で返すこと。
 
    送信後の扱い（`send-keys enter` の追い打ち、`herdr agent get` で working を確認、`reviewed-sha-pr<番号>` の更新、`launched.txt` への記録、Monitor での `herdr agent wait` アーム）は「レビュー起動」step 8〜9 と同じ。
 
-完了基準: 再レビュー候補全件について worktree の最新化・diff タブの張り直し・再レビュー指示の送信を終え、`herdr agent get pr<番号>` が working になっていること。
+完了基準: 再レビュー候補全件についてパッチID比較を終え、純粋な rebase と判定したものは worktree の最新化と `reviewed-sha-pr<番号>` の更新を、実変更ありと判定したものは worktree の最新化・diff タブの張り直し・深度の判定・再レビュー指示の送信を終え `herdr agent get pr<番号>` が working になっていること。
 
 ## 監視（agent wait が戻ったとき）
 
@@ -323,9 +350,9 @@ worktree を残す分岐でも、`launched.txt` と `seen.txt` から番号を�
 PR 1件ごとに step 1〜5 を通しで走らせる。複数件あるときは番号の昇順で1件ずつ完結させる（step 単位で横断しない。途中で失敗したPRの影響を他へ広げないため）。
 
 1. `<state>/monitor-pr<番号>-task-id` の task ID を TaskStop に渡し、`unlink <state>/monitor-pr<番号>-task-id` でそのファイルを消す。ファイルが無ければこの手順を飛ばす。前セッションの残骸を回収する経路では監視をアームしていないので必ず不在になる。
-2. `herdr workspace list` からラベル `pr#<番号>` の workspace ID を得て `herdr workspace close <id>` する。agent review / editor / diff の全 pane が閉じ、worktree を掴んでいる claude・nvim・hunk が落ちる。該当 workspace が無ければこの手順を飛ばす。
+2. `herdr workspace list` からラベル `review-#<番号>` の workspace ID を得て `herdr workspace close <id>` する。agent review / editor / diff の全 pane が閉じ、worktree を掴んでいる claude・nvim・hunk が落ちる。該当 workspace が無ければこの手順を飛ばす。
 3. `<state>/worktree-pr<番号>` からパスを読み、`wt remove --foreground --reap <worktreeパス>` を実行する。`--foreground` は削除完了までブロックさせて結果を確かめるため、`--reap` は worktree 内に残ったプロセス（LSP・ウォッチャー等）を先に落とすために付ける。マージ済みならブランチも一緒に消える。
-4. `test ! -d <worktreeパス>` で worktree が実際に消えたことを確かめ、消えていれば `unlink <state>/worktree-pr<番号>` でそのファイルを消す。残っていれば `wt remove` の出力と**残った worktree の絶対パス**をユーザーへ報告し、worktree はそのまま残す。`-f` / `-D` は使わない。未コミットの変更が理由で消せないのは、レビューが読み取り専用のはずなのに書き込みが起きた合図なので、握り潰さずユーザーの判断に渡す。step 2 で workspace を閉じた以上、この worktree は次セッションの残骸回収（`pr#<番号>` ラベルの走査）にも引っかからない。報告したパスがユーザーの手がかりのすべてになる。
+4. `test ! -d <worktreeパス>` で worktree が実際に消えたことを確かめ、消えていれば `unlink <state>/worktree-pr<番号>` でそのファイルを消す。残っていれば `wt remove` の出力と**残った worktree の絶対パス**をユーザーへ報告し、worktree はそのまま残す。`-f` / `-D` は使わない。未コミットの変更が理由で消せないのは、レビューが読み取り専用のはずなのに書き込みが起きた合図なので、握り潰さずユーザーの判断に渡す。step 2 で workspace を閉じた以上、この worktree は次セッションの残骸回収（`review-#<番号>` ラベルの走査）にも引っかからない。報告したパスがユーザーの手がかりのすべてになる。
 5. `launched.txt` と `seen.txt` に番号が残っていれば消す: `awk -v n=<番号> '$0 != n' <ファイル> > <ファイル>.tmp && mv <ファイル>.tmp <ファイル>` を両方に対して実行する。`<state>/reviewed-sha-pr<番号>` が存在すれば `unlink` で消す（PR が閉じた・approve 済みなので、この PR の再レビュー判定はもう発生しない）。**step 3 / 4 の成否によらず実行する**。worktree が消せなかったときも `GONE_PR` の再通知は止める。5 分ごとに同じ判断を蒸し返しても結論は変わらず、消せない理由はユーザーの手にしか無いため。
 
 完了基準: worktree が消えているか、消せなかった事実をユーザーへ報告済みであること。

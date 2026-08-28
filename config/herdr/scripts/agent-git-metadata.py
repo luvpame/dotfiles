@@ -3,6 +3,7 @@
 import hashlib
 import json
 import os
+import re
 import subprocess
 import tempfile
 import time
@@ -10,6 +11,8 @@ from pathlib import Path
 
 
 CACHE_TTL_SECONDS = 60
+REVIEW_SPACE_PATTERN = re.compile(r"^review-#[0-9]+$")
+REVIEW_SPACE_ICON = ""
 METADATA_TOKENS = (
     "git_branch",
     "pr_open",
@@ -213,6 +216,12 @@ def workspace_label(workspace_id):
         return None
 
 
+def review_space_icon(label):
+    if not isinstance(label, str) or REVIEW_SPACE_PATTERN.fullmatch(label) is None:
+        return ""
+    return REVIEW_SPACE_ICON
+
+
 def agent_summary(workspace_id):
     result = stdout("herdr", "agent", "list")
     if result is None:
@@ -234,10 +243,12 @@ def agent_summary(workspace_id):
 
 
 def workspace_metadata(workspace_id, tokens, pull_request):
+    label = workspace_label(workspace_id)
     workspace_tokens = {
         "agent_summary": agent_summary(workspace_id),
         **tokens,
         "review_status": review_status(pull_request),
+        "review_space": review_space_icon(label),
     }
     for name in PR_TOKEN_NAMES:
         if workspace_tokens[name]:
@@ -246,7 +257,7 @@ def workspace_metadata(workspace_id, tokens, pull_request):
             )
 
     branch = workspace_tokens["git_branch"].removeprefix(" ")
-    if branch and branch == workspace_label(workspace_id):
+    if branch and branch == label:
         workspace_tokens["git_branch"] = ""
     return workspace_tokens
 

@@ -122,8 +122,19 @@ class AgentGitMetadataTest(unittest.TestCase):
             "--token git_branch=\ue0a0 feature/sidebar "
             "--token pr_open=\u2800\u2800\uf407 #42 --token pr_draft= "
             "--token pr_merged= --token pr_closed= "
-            "--token review_status=✓ approved",
+            "--token review_status=✓ approved --token review_space=",
         )
+
+    def test_marks_review_workspace_with_eye_icon(self):
+        report = self.run_reporter([], workspace_label="review-#123")
+
+        self.assertIn("--token review_space=", report)
+
+    def test_does_not_mark_non_review_workspace(self):
+        report = self.run_reporter([], workspace_label="review-#123-extra")
+
+        self.assertIn("--token review_space=", report)
+        self.assertNotIn("--token review_space=", report)
 
     def test_hides_repeated_branch_and_counts_workspace_agents(self):
         report = self.run_reporter(

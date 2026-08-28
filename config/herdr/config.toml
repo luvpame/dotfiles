@@ -109,6 +109,7 @@ codex = [
 rows = [
   [
     "state_icon",
+    { token = "$review_space", fg = "#8839ef" },
     "workspace",
     "branch",
     "git_status",
