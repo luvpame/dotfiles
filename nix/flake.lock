@@ -52,11 +52,11 @@
     "claude-code-source": {
       "flake": false,
       "locked": {
-        "lastModified": 1787769193,
-        "narHash": "sha256-JNgYshJ7jZcNBGISYE4sDFfCl215Vf5/nOijMQuUFc0=",
+        "lastModified": 1787884209,
+        "narHash": "sha256-UKQeTmXspdQJoONAmwrGwpl6TXsnEv/GbLbeN0H1WDI=",
         "owner": "ryoppippi",
         "repo": "claude-code-overlay",
-        "rev": "4f06928f372aea53d04be902ad3edf14fff97bc0",
+        "rev": "3d85b174edf73176815671b9b4bfc82c2512a329",
         "type": "github"
       },
       "original": {
@@ -182,11 +182,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787749289,
-        "narHash": "sha256-juqFXU30BI+/9Yooo9Urwa8WqO8nBdm9x1UGfGYBX5M=",
+        "lastModified": 1787879881,
+        "narHash": "sha256-QE4zlC6GN/s9Q+yjepPimMAFEXSlTf1itqbepJ6jDH4=",
         "owner": "kawarimidoll",
         "repo": "guard-and-guide",
-        "rev": "98b364f0f78b77a85489c0823d19cf677f4b3791",
+        "rev": "4c5d8304b055f6e9b4f493d9169e08044c64c801",
         "type": "github"
       },
       "original": {
