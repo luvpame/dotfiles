@@ -182,11 +182,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788022397,
-        "narHash": "sha256-cDLIUj8iUol2Z4FQ09Uh1SGkiMwUApZjw0Fi56C4u/k=",
+        "lastModified": 1788071872,
+        "narHash": "sha256-sphysUT5IXvWM6AU1w42kEhhA4CKy8RYUD4aNWYzoXk=",
         "owner": "kawarimidoll",
         "repo": "guard-and-guide",
-        "rev": "06dad8f33f1e74f6b59c1b69d8371dc332981286",
+        "rev": "448b3093dce2bd3da7a339efbf4943f6609294c4",
         "type": "github"
       },
       "original": {
@@ -306,11 +306,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1787874478,
-        "narHash": "sha256-ubWQiwkhIql/lYwnfK55yKHfAkTBXie2L4iChGNHfI0=",
+        "lastModified": 1787964612,
+        "narHash": "sha256-0N9nghg3nwzX6b6qc77EzjR9cu/Z+UR66FlfsCqiURs=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "7d1a7c21a4c00ea653fc7ed5c083d261340f185f",
+        "rev": "e8be7818e19ada32105a8af937a6a473b38167ca",
         "type": "github"
       },
       "original": {
