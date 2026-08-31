@@ -1,6 +1,6 @@
 ---
 name: pr-review-orchestrator
-description: レビュー依頼が来ているPRを検知し、Herdrタブ + worktrunk worktree + Claude Codeで敵対的コードレビューを並列実行・監視し、PRがマージ・クローズまたは自分がapprove済みになった worktree を自動で片付けるオーケストレーターになる
+description: レビュー依頼が来ているPRを検知してトリアージし、レビューが必要なものだけをHerdrタブ + worktrunk worktree + Claude Codeで敵対的コードレビューを並列実行・監視し、PRがマージ・クローズまたは自分がapprove済みになった worktree を自動で片付けるオーケストレーターになる
 disable-model-invocation: true
 ---
 
@@ -35,7 +35,7 @@ GitHub の PR、レビュー、コメント、issue には書き込まない。`
    - `gh pr list --limit 1` が成功（TLS エラーなら上記 `sandbox.network.allowedDomains` とサンドボックス無効を案内する）
    - `gh api user --jq .login` の出力を `<me>` として固定する（片付けの判断が自分のレビュー状態を引くのに使う）
 2. 専用 workspace へ移る: `herdr pane current --current` で現在の workspace ID を得て、`herdr workspace list` からそのラベルを照合する。ラベルが `pr-review` なら現在の pane ID を `<orchestrator pane>` とする。そうでなければ、`herdr pane move "$HERDR_PANE_ID" --new-workspace --label "pr-review" --tab-label "orchestrator" --no-focus` で自分ごと引っ越す（プロセスは生きたまま移動する）。以後は move の JSON にある `result.move_result.pane.pane_id` を `<orchestrator pane>` として使う。
-3. 自セッションの scratchpad ディレクトリ（システムプロンプト記載）に `<scratchpad>/pr-review-orchestrator/<orchestrator pane>` を state ディレクトリとして作り、パスを以後の `<state>` として固定する。`launched.txt`（起動済みまたは失敗済みのPR番号、1行1件）、`seen.txt`（ウォッチャー通知済みPR番号、1行1件）、`skipped.txt`（ドキュメントのみで対象外としたPR番号、1行1件）を touch する。作成後に `<state>` をユーザーへ一度報告する。
+3. 自セッションの scratchpad ディレクトリ（システムプロンプト記載）に `<scratchpad>/pr-review-orchestrator/<orchestrator pane>` を state ディレクトリとして作り、パスを以後の `<state>` として固定する。`launched.txt`（起動済みまたは失敗済みのPR番号、1行1件）、`seen.txt`（ウォッチャー通知済みPR番号、1行1件）、`skipped.txt`（トリアージで対象外としたPR番号、1行1件）を touch する。作成後に `<state>` をユーザーへ一度報告する。
 4. 前セッションの残骸を回収する。`<state>` はセッションごとの scratchpad 配下にあり前回のものは引き継がれないので、環境そのものを走査する: `herdr workspace list` でラベルが `review-#<番号>` の workspace を全部挙げ、`worktree.checkout_path` を `<state>/worktree-pr<番号>` に書き戻してから、1件ずつ「片付けの判断」の分岐に載せる（state と approve はそこで引くので、ここでは判断のための `gh pr view` を叩かない）。`worktree` キーを持たない workspace（過去に `herdr workspace create` で作られた残骸）は checkout_path を引けないので、`gh pr view <番号> --json headRefName` でブランチを求め、「レビュー起動」step 2 と同じ `git worktree list --porcelain` からパスを引く。**引いたパスも同じく `<state>/worktree-pr<番号>` に書く**（「片付けの実行」step 3 がこのファイルしか読まない）。残った分は一覧にしてユーザーへ報告する。該当 workspace が無ければ何もしない。
 5. ウォッチャーを起動する（次節）。初回ポーリングは即時に走るので、既存のレビュー依頼PRも起動直後の NEW_PR 通知として届く。
 
@@ -76,20 +76,41 @@ done
    ```
    gh pr list --search "review-requested:@me" --state open --json number,title,headRefName,baseRefName,url > <state>/sweep.json
    ```
-2. 新規PR = sweep.json の番号 − `launched.txt` − `skipped.txt` − 稼働中の `pr<番号>` エージェント（`herdr agent list`）。稼働中エージェントで除外された番号は、次の step 3 の再レビュー判定に回る。
-
-   残った新規PRのうち、差分の全ファイルが `.md` / `.mdx` のものはドキュメントのみなので対象外にする。worktree・workspace・エージェントを一切作らず、番号を `skipped.txt` に追記して「PR #<番号> はドキュメントのみのため対象外」と報告し、次のPRへ進む:
-   ```bash
-   files=$(gh pr diff <番号> --name-only) || 判定不能
-   test -n "$files" && ! printf '%s\n' "$files" | grep -qvE '\.(md|mdx)$'
-   ```
-   `gh` が失敗した回は対象外と判定せず通常の「レビュー起動」に乗せる。空リストを真に受けるとコードのPRをドキュメント扱いで捨てる。パスの接頭辞では判定しない。`docs/` 配下にはバックエンドE2Eの hurl（実コード）がある。
-
-   `skipped.txt` に載せた番号は `launched.txt` へは載せない。`GONE_PR` は launched.txt が基準なので、対象外PRが閉じても片付け（消す worktree も無い）は走らない。
+2. 新規PR = sweep.json の番号 − `launched.txt` − `skipped.txt` − 稼働中の `pr<番号>` エージェント（`herdr agent list`）。稼働中エージェントで除外された番号は、次の step 3 の再レビュー判定に回る。残った新規PRは、番号の昇順で1件ずつ「トリアージ」にかける。
 3. 再レビュー候補を判定する。稼働中の `pr<番号>` エージェントのうち、sweep.json に番号が載っており（＝現在レビュー依頼が出ている）、かつ idle または done のもの（working / blocked は動いている最中に指示を割り込ませることになるので対象外）を候補にする。**`launched.txt` への掲載は条件にしない**：片付けで launched.txt から番号が消えても pr<番号> エージェントは動き続けるので、掲載を条件にすると再依頼を取りこぼす（実例: PR #8139。片付けで `launched.txt` から消えた後の再依頼が拾われなかった）。候補ごとに `<state>/reviewed-sha-pr<番号>` の SHA と `gh pr view <番号> --json headRefOid --jq .headRefOid` が返す現在の PR HEAD を比較し、ファイルが存在し値が異なるものだけを「再レビュー候補」に確定する。一致するなら前回レビュー以降1コミットも進んでおらず、無関係な通知のたびに再レビューが暴発する（実例: PR #8152。無関係な PR #7981 の通知でスイープが走った際に再レビュー候補へ上がった）。この SHA 比較は一致／不一致のみを見る粗いフィルタで、不一致が rebase による見かけの変化か実変更かは「再レビュー」step 1 のパッチID比較が確定する。
-4. 新規PRを番号の昇順で「レビュー起動」し、再レビュー候補を番号の昇順で「再レビュー」する。
+4. トリアージがレビューすると決めた新規PRを番号の昇順で「レビュー起動」し、再レビュー候補を番号の昇順で「再レビュー」する。
 
-完了基準: 新規PR全件についてドキュメントのみかの判定を終え、対象に残ったPRのレビュー起動と、再レビュー候補全件の再レビューを試行済みであること。
+完了基準: 新規PR全件のトリアージを終え、レビューすると決めたPRのレビュー起動と、再レビュー候補全件の再レビューを試行済みであること。
+
+## トリアージ（PR 1件ごと）
+
+スイープ step 2 が残した新規PRを、レビューを起こす前にふるいにかける。worktree・workspace・エージェントを一つでも作れば opus セッションで `/code-review` が20分・数百kトークンを消費するので、それに見合わない差分をここで落とす。
+
+判定はオーケストレーター自身が行う。読むのはファイル名の一覧と、対象外の候補に絞ったときだけの差分本文である。
+
+**迷ったらレビューする。** 見逃したレビューは main に残るが、無駄に回したレビューはトークンを失うだけである。以下のどの段階でも、`gh` が失敗した回と判断の付かない回は、対象外にせず「レビュー起動」へ回す。
+
+1. ファイル名を引く。失敗したらレビューする（空リストを真に受けると、コードのPRをドキュメント扱いで捨てる）:
+   ```bash
+   gh pr diff <番号> --name-only
+   ```
+   全ファイルが `.md` / `.mdx` なら、差分本文を読まずに対象外とする（理由はドキュメントのみ）。パスの接頭辞では判定しない。`docs/` 配下にはバックエンドE2Eの hurl（実コード）がある。
+2. 規模を引く:
+   ```bash
+   gh pr view <番号> --json additions,deletions,changedFiles
+   ```
+   差分本文を読む目的は、対象外だと言い切ることだけである。この時点で軽微ではありえないと分かるなら、本文を読まずにレビューする。
+3. 差分本文（`gh pr diff <番号>`）を読み、次のどれかに当てはまるものだけを対象外とする。理由を一つ選べないものはレビューする:
+   - **生成物のみ**: `frontend/packages/typed-routes/index.ts`、`openapi/openapi.yaml` のように手で書かない生成物だけが変わっている（[[typed-routes-generated-but-committed]]）。生成元が同じPRに含まれていればレビューする
+   - **コメント・typo・フォーマットのみ**: 実行される行が1行も変わっていない
+   - **テスト追加のみ**: spec / test だけが増えており、プロダクションコードは1行も変わっていない
+   - **見た目の調整のみ**: `.module.css` の値だけが変わっており、クラス名の増減もロジックの変更もない
+   - **依存の patch 更新のみ**: lockfile と manifest のバージョン指定だけが変わっている。minor / major はレビューする
+
+   スキーマ（`backend/db/schemas/`）、認可・権限、環境変数、バッチの変更が1行でも混ざっていれば、他がどれだけ軽微でもレビューする。
+4. 対象外にしたPRは worktree・workspace・エージェントを一切作らず、番号を `skipped.txt` に追記して「PR #<番号> は<理由>のためレビュー対象外」と報告する。`launched.txt` へは載せない。`GONE_PR` は launched.txt が基準なので、対象外PRが閉じても片付け（消す worktree も無い）は走らない。ユーザーが後からレビューさせたくなったときは `skipped.txt` から番号を消せば、次のスイープが新規PRとして拾う。
+
+完了基準: 新規PR全件について対象外かレビューかを決め、対象外にしたものは `skipped.txt` への追記と理由付きの報告まで終えていること。
 
 ## blocked への回答
 
@@ -361,4 +382,4 @@ PR 1件ごとに step 1〜5 を通しで走らせる。複数件あるときは�
 
 ユーザーが停止を指示したら: `watcher-task-id` と、`<state>` に**ファイルとして存在する**各 `monitor-pr<番号>-task-id` の task ID を TaskStop に渡して止め（既に戻った wait の失効 ID が混ざっても構わない。生きているものを取りこぼす方が悪い）、レビューの一覧（PR番号・workspace ID・worktree パス・`herdr agent get` が返す status）を報告して終わる。workspace・worktree・エージェントはすべて残す。停止は片付けの根拠にならない。残りも消したいとユーザーが言ったら、各PRについて「片付けの実行」を走らせる。
 
-レビュー済みPRへの再レビュー依頼はスイープが自動で拾う。既存の `pr<番号>` エージェントが idle または done で（working / blocked は対象外）、かつ PR の現在の HEAD が `<state>/reviewed-sha-pr<番号>` に記録した前回レビュー時点の SHA と異なる場合だけ再レビュー候補になる。**`launched.txt` への掲載は条件にしない**。片付けで launched.txt から番号が消えても pr<番号> エージェントが動いていれば拾われる一方、HEAD が前回から1コミットも進んでいなければ、再依頼が来ても再レビューはしない。エージェントが落ちている、またはそもそも存在しないPRを再レビューしたいときは、ユーザーが `launched.txt` から番号を消せば新規PRとして「レビュー起動」に乗る。`NEW_PR` 通知も再度必要なら `seen.txt` からも消す。ドキュメントのみで対象外にしたPRをレビューしたいときは `skipped.txt` から番号を消す。検知は個人宛の `review-requested:@me` のみで、チーム宛のレビュー依頼は対象外。
+レビュー済みPRへの再レビュー依頼はスイープが自動で拾う。既存の `pr<番号>` エージェントが idle または done で（working / blocked は対象外）、かつ PR の現在の HEAD が `<state>/reviewed-sha-pr<番号>` に記録した前回レビュー時点の SHA と異なる場合だけ再レビュー候補になる。**`launched.txt` への掲載は条件にしない**。片付けで launched.txt から番号が消えても pr<番号> エージェントが動いていれば拾われる一方、HEAD が前回から1コミットも進んでいなければ、再依頼が来ても再レビューはしない。エージェントが落ちている、またはそもそも存在しないPRを再レビューしたいときは、ユーザーが `launched.txt` から番号を消せば新規PRとして「レビュー起動」に乗る。`NEW_PR` 通知も再度必要なら `seen.txt` からも消す。トリアージで対象外にしたPRをレビューしたいときは `skipped.txt` から番号を消す。検知は個人宛の `review-requested:@me` のみで、チーム宛のレビュー依頼は対象外。
