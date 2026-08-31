@@ -1,4 +1,4 @@
-model_reasoning_effort = "high"
+model_reasoning_effort = "xhigh"
 personality = "friendly"
 forced_login_method = "chatgpt"
 model = "gpt-5.6-sol"
@@ -9,7 +9,7 @@ suppress_unstable_features_warning = true
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 
-service_tier = "fast"
+service_tier = "priority"
 
 notify = ["/Users/nasuno.ayumu/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
 approvals_reviewer = "auto_review"
@@ -104,6 +104,9 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects."/Users/nasuno.ayumu/Documents/Codex/2026-08-24/https-mail-google-com-mail-u"]
+trust_level = "trusted"
+
+[projects."/Users/nasuno.ayumu/Documents/Codex/2026-08-28/r"]
 trust_level = "trusted"
 
 [marketplaces.openai-bundled]
