@@ -68,7 +68,6 @@ let
     "aerospace"
     "figma"
     "raycast"
-    "stats"
     "scroll-reverser"
     "notchnook"
     "logitech-g-hub"
@@ -80,6 +79,7 @@ let
     "ankerwork"
     "codex-app"
     "codex"
+    "crisp"
     "thebrowsercompany-dia"
     "spotify"
     "azookey"
@@ -95,9 +95,7 @@ let
     "orbstack"
     "google-drive"
     "claude"
-    "drawio"
     "tablepro"
-    "cursor"
     "sequel-ace"
 
     ### Fonts
