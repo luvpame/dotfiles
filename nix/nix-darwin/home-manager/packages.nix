@@ -6,7 +6,6 @@
 let
   system = pkgs.stdenv.hostPlatform.system;
   cclens = inputs.cclens.packages.${system}.default;
-  iris = pkgs.callPackage ../../pkgs/iris/default.nix { };
   guardAndGuide = inputs.guard-and-guide.packages.${system}.default;
 in
 {
@@ -75,6 +74,5 @@ in
     agent-browser
     cclens
     claude-code
-    iris
   ];
 }

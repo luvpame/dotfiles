@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "iris": {
-      "type": "stdio",
-      "command": "iris",
-      "args": ["mcp"]
-    }
-  }
-}
