@@ -60,11 +60,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1788187241,
-        "narHash": "sha256-ZeTsUQ2aKoO7NzTm6JuOjZQLckOZYb0+AupJ5Jg1L5o=",
+        "lastModified": 1788250280,
+        "narHash": "sha256-BZD8zGauWq2Sqz2Y8ZTF1bx6HXx4NQoc3FbID8HbULU=",
         "owner": "lambdalisue",
         "repo": "cclens",
-        "rev": "f07d2d1dd64bd55e80748cbb003de1f85b38b1ce",
+        "rev": "57758a8d66854d996efa9de01525b1d91e7f816e",
         "type": "github"
       },
       "original": {
