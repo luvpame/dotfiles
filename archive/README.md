@@ -5,7 +5,7 @@
 
 ## 退避ルール
 
-1. 移動前に `nix/nix-darwin/home-manager/files/` を確認し、Home Manager が参照するリポジトリ内のパスと配置先を特定する。
+1. 移動前に `nix/nix-darwin/home-manager/files.nix` を確認し、Home Manager が参照するリポジトリ内のパスと配置先を特定する。
 2. Home Manager の配置宣言を削除し、同じ位置へ `archive/` 以下の退避先を示す一行コメントを残す。
 3. 退避した設定は `archive/<tool>/` に保存し、現行の起動経路やパッケージ宣言から参照しない。
 
