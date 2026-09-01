@@ -26,13 +26,13 @@ in
     tmux.source = oos "${configRoot}/tmux";
     "herdr/scripts".source = oos "${configRoot}/herdr/scripts";
     "herdr/config.toml".source = oos "${configRoot}/herdr/config.toml";
+    cage.source = oos "${configRoot}/cage";
 
     # Runtime stateを含むHunkの親directory linkはT24でfile単位へ分割する。
     "worktrunk/config.toml".source = oos "${configRoot}/worktrunk/config.toml";
     hunk.source = oos "${configRoot}/hunk";
     wezterm.source = oos "${configRoot}/wezterm";
     zed.source = oos "${configRoot}/zed";
-    # Cage設定はarchive/cage/presets.yamlへ退避し、配布対象から外した。
     guard-and-guide.source = oos "${configRoot}/guard-and-guide";
     efm-langserver.source = oos "${configRoot}/efm-langserver";
 
@@ -52,6 +52,7 @@ in
     ".codex/hooks.json".source = oos "${configRoot}/codex/hooks.json";
     ".codex/AGENTS.md".source = oos "${configRoot}/codex/AGENTS.md";
     ".codex/config.toml".source = oos "${configRoot}/codex/config.toml";
+    ".agent-browser/config.json".source = oos "${configRoot}/agent-browser/config.json";
     ".claude/settings.json" = {
       source = oos "${configRoot}/claude/settings.json";
 

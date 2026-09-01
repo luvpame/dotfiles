@@ -42,6 +42,10 @@ presets:
   git:
     allow-keychain: true
     allow-git: true
+  agent-browser:
+    allow:
+      - path: "$HOME/.agent-browser"
+        eval-symlinks: true
 
 auto-presets:
   - command: claude
@@ -49,7 +53,10 @@ auto-presets:
       - common
       - claude-code
       - git
+      - agent-browser
   - command: codex
     presets:
       - common
       - codex
+      - git
+      - agent-browser

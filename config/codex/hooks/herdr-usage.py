@@ -7,9 +7,9 @@ import sys
 
 
 def latest_usage(transcript_path):
-    # ponytail: rollout JSONL is Codex's only per-session usage source; replace
-    # this parser when lifecycle hooks expose usage directly.
-    # ponytail: scan 200 lines; read backwards if token_count moves away from turn end.
+    # Rollout JSONL is Codex's only per-session usage source; replace this parser
+    # when lifecycle hooks expose usage directly.
+    # Scan 200 lines; read backwards if token_count moves away from turn end.
     result = subprocess.run(
         ["tail", "-n", "200", transcript_path],
         capture_output=True,

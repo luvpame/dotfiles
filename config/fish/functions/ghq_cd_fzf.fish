@@ -59,7 +59,7 @@ end
         begin
             ghq list --full-path
             if test "$argv[1]" = --workspace
-                # ponytail: Herdr exposes pane cwd only; persist workspace paths if the first pane stops being representative.
+                # Herdr は pane の cwd だけを返すため、先頭 pane が代表でなくなっても workspace のパスを保持する。
                 printf '%s\n' "$pane_list" | jq --raw-output \
                     '.result.panes | unique_by(.workspace_id)[] | .cwd'
             end

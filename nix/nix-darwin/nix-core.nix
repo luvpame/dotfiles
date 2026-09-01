@@ -26,7 +26,7 @@ in
     ];
   };
 
-  # ponytail: disabled until nix-darwin stops passing the removed --toc-depth.
+  # nix-darwin が削除済みの --toc-depth を渡すため、ドキュメント生成を無効にする。
   documentation.doc.enable = false;
   system.tools.darwin-uninstaller.enable = false;
 
