@@ -7,18 +7,6 @@
   },
   "model": "claude-fable-5[1m]",
   "enableAllProjectMcpServers": true,
-  "skillOverrides": {
-    "code-review": "off",
-    "code-simplifier": "off",
-    "codebase-design": "off",
-    "diagnosing-bugs": "off",
-    "domain-modeling": "off",
-    "grilling": "off",
-    "prototype": "off",
-    "research": "off",
-    "resolving-merge-conflicts": "off",
-    "tdd": "off"
-  },
   "hooks": {
     "PreToolUse": [
       {
@@ -65,16 +53,6 @@
             "statusMessage": "herdr にセッションを通知中"
           }
         ]
-      },
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash '/Users/nasuno.ayumu/.claude/hooks/herdr-agent-state.sh' session",
-            "timeout": 10
-          }
-        ]
       }
     ]
   },
@@ -88,15 +66,10 @@
     "code-simplifier@claude-plugins-official": true,
     "crit@crit": true,
     "feature-dev@claude-plugins-official": true,
-    "figma@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
-    "notion@claude-plugins-official": true,
     "plugin-dev@claude-plugins-official": true,
     "ponytail@ponytail": true,
-    "pr-review-toolkit@claude-plugins-official": true,
     "ruby-lsp@claude-plugins-official": true,
-    "sentry@claude-plugins-official": true,
-    "slack@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "claude-security@claude-plugins-official": true,
@@ -169,5 +142,7 @@
       "routine backend Makefile targets (make m, make rspec, make rubocop, make oas) and frontend pnpm scripts (pnpm test:once, pnpm lint, pnpm typecheck) under this repo are routine dev workflow"
     ]
   },
-  "voiceEnabled": false
+  "voiceEnabled": false,
+  "advisorModel": "fable",
+  "viewMode": "focus"
 }
