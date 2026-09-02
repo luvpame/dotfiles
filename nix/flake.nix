@@ -11,6 +11,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     cage = {
       url = "github:Warashi/cage/v0.1.13";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -58,6 +62,8 @@
         };
         modules = [
           home-manager.darwinModules.home-manager
+          inputs.nix-index-database.darwinModules.nix-index
+          { programs.nix-index-database.comma.enable = true; }
 
           ./nix-darwin/default.nix
         ];
