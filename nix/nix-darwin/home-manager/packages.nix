@@ -71,7 +71,6 @@ in
     awscli2
     inputs.crit.packages.${system}.default
     inputs.cage.packages.${system}.default
-    agent-browser
     cclens
     claude-code
   ];

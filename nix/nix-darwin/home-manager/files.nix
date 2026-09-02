@@ -50,7 +50,6 @@ in
     ".codex/hooks.json".source = oos "${configRoot}/codex/hooks.json";
     ".codex/AGENTS.md".source = oos "${configRoot}/codex/AGENTS.md";
     ".codex/config.toml".source = oos "${configRoot}/codex/config.toml";
-    ".agent-browser/config.json".source = oos "${configRoot}/agent-browser/config.json";
     ".claude/settings.json" = {
       source = oos "${configRoot}/claude/settings.json";
 

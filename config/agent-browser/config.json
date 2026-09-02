@@ -1,5 +1,0 @@
-{
-  "engine": "chrome",
-  "contentBoundaries": true,
-  "maxOutput": 50000
-}
