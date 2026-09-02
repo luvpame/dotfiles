@@ -32,12 +32,12 @@
 ## コミット & PR ガイドライン
 - コミットメッセージは Conventional Commits（スコープ付き。例: `chore(nix): ...`、`docs(cursor): ...`、`chore(fish): ...`）。命令形を使用。
 - コミットは焦点を絞る。無関係なツール設定と Nix 変更を混ぜない。
-- PR には以下を含める: 簡単な概要、影響範囲（Nix/Fish/アプリ設定）、実行したコマンド（`cd nix && nix flake check`、apply switch）、UI 変更がある場合はスクリーンショット。
+- PR には以下を含める: 簡単な概要、影響範囲（Nix/Fish/アプリ設定）、実行したコマンド（`cd nix && nix flake check`、`just switch`）、UI 変更がある場合はスクリーンショット。
 
 ## セキュリティ & 設定の注意点
 - `nix/nix-darwin/users.nix` の `dotfiles.user.name` にユーザー名を一か所だけ定義し、ホームディレクトリと各モジュールのユーザー情報をそこから導出する。nix-darwin 統合 Home Manager の `home.username` と `home.homeDirectory` は自動導出に任せる。リポジトリは `$HOME/.dotfiles` の安定したシンボリックリンクから参照する。これらは認証情報ではない。
 - 秘密情報はコミットしない。Git の identity は `~/.config/git/config.local`（テンプレート: `config/git/config.local.example`）に保持し、その他の認証情報は 1Password CLI（`op signin`）を使用。
-- `flake.lock` を唯一の正とし、手動編集は避ける。依存更新時にはロックファイルもコミット。
+- `nix/flake.lock` を唯一の正とし、手動編集は避ける。依存更新時にはロックファイルもコミット。
 - 新しい Homebrew cask は `nix/nix-darwin/homebrew.nix`、Nix パッケージは `nix/nix-darwin/home-manager/packages.nix` へ宣言的に追加し、switch コマンドを再実行してシステムに反映。
 - 使用を終了した設定を退避する場合は、Home Manager の配置宣言を確認してから `archive/` へ移し、元の宣言位置に退避先を示す一行コメントを残す。詳細は `archive/README.md` を参照。
 

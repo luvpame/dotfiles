@@ -65,7 +65,7 @@ Set `user.name`, `user.email`, and `ghq.root`. Home Manager exposes this file as
 
 The repository includes a repeatable setup wizard for moving commit signing to a non-exportable Secure Enclave key. Run it from a normal interactive Terminal session on each Mac. `sc_auth` and CryptoTokenKit may not be available from an agent or another non-interactive process.
 
-The wizard creates a `p-256-ne` CTK identity with `-t none`, writes the SSH key handle pair to `~/.ssh/id_git_sign` and `~/.ssh/id_git_sign.pub`, and runs a temporary signed commit verification. The private key never leaves the Secure Enclave, while the reference files remain device-specific.
+The wizard creates or validates a `p-256-ne` CTK identity with `-t none`, creates the SSH key handle pair at `~/.ssh/id_git_sign` and `~/.ssh/id_git_sign.pub` when needed, and runs a temporary signed commit verification. The private key never leaves the Secure Enclave, while the reference files remain device-specific.
 
 OpenSSH may show a generic authenticator PIN prompt even for this key. The wizard answers it with an empty input; if a PIN or password is requested interactively, enter nothing and stop the wizard.
 
