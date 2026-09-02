@@ -1,7 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
-PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+home_dir="${HOME:-}"
+user_name="${USER:-${LOGNAME:-}}"
+
+if [[ -z "$home_dir" || -z "$user_name" ]]; then
+  exit 0
+fi
+
+PATH="$home_dir/.nix-profile/bin:/etc/profiles/per-user/$user_name/bin:/run/current-system/sw/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:${PATH:-}"
 
 # 必要な input source id / pattern はここに追加する
 a_input_patterns=(

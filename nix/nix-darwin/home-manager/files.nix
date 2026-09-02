@@ -44,6 +44,14 @@ in
   # Agent設定もRepository内で直接編集し、各Agentへ即時反映する。
   home.file = {
     ".zshenv".source = oos "${configRoot}/zsh/.zshenv";
+    ".zprofile" = {
+      source = oos "${configRoot}/zsh/.zprofile";
+      force = true;
+    };
+    ".zshrc" = {
+      source = oos "${configRoot}/zsh/.zshrc";
+      force = true;
+    };
     ".agents".source = oos "${configRoot}/agents";
     ".codex/agents".source = oos "${configRoot}/codex/agents";
     ".codex/hooks".source = oos "${configRoot}/codex/hooks";

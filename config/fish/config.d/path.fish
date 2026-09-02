@@ -1,14 +1,3 @@
-# Nix home-manager packages
-if test -d /run/current-system/sw/bin
-    set -gx PATH /run/current-system/sw/bin (string match --invert /run/current-system/sw/bin $PATH)
-end
-
-if test -d /etc/profiles/per-user/$USER/bin
-    if not contains /etc/profiles/per-user/$USER/bin $PATH
-        set -gx PATH /etc/profiles/per-user/$USER/bin $PATH
-    end
-end
-
 # `homebrew.goPackages` installs Go CLI binaries into `~/go/bin`.
 if test -d ~/go/bin
     if not contains ~/go/bin $PATH
@@ -19,6 +8,14 @@ end
 if not contains ~/.local/bin $PATH
     set -gx PATH ~/.local/bin $PATH
 end
+
+# Keep Nix profiles ahead of Homebrew and macOS defaults.
+fish_add_path --path --move \
+    "$HOME/.nix-profile/bin" \
+    "/etc/profiles/per-user/$USER/bin" \
+    /run/current-system/sw/bin \
+    /opt/homebrew/bin \
+    /opt/homebrew/sbin
 
 # brewでインストールしたfisherをnixpkgsでインストールしたfishで使う
 if test -d /opt/homebrew/share/fish/vendor_functions.d
