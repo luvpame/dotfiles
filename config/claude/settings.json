@@ -5,7 +5,7 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "claude-fable-5[1m]",
+  "model": "fable[1m]",
   "enableAllProjectMcpServers": true,
   "hooks": {
     "PreToolUse": [
@@ -95,7 +95,9 @@
       }
     }
   },
+  "viewMode": "focus",
   "language": "日本語",
+  "advisorModel": "fable",
   "tui": "fullscreen",
   "autoMemoryEnabled": true,
   "verbose": false,
@@ -143,6 +145,6 @@
     ]
   },
   "voiceEnabled": false,
-  "advisorModel": "fable",
-  "viewMode": "focus"
+  "theme": "light",
+  "editorMode": "vim"
 }
