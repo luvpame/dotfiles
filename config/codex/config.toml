@@ -112,6 +112,9 @@ trust_level = "trusted"
 [projects."/Users/nasuno.ayumu/Documents/Codex/2026-08-31/for"]
 trust_level = "trusted"
 
+[projects."/Users/nasuno.ayumu/dev/github.com/luvpame/fast-lgtm"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
 source_type = "local"
 source = "/Users/nasuno.ayumu/.codex/.tmp/bundled-marketplaces/openai-bundled"
