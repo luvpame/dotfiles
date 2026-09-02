@@ -57,6 +57,10 @@ class StatuslineTest(unittest.TestCase):
         )
 
         self.assertIn("ctx:", output)
+        self.assertIn(
+            "\uf444 Opus 4.7 \U000f04c5 xhigh",
+            ANSI_ESCAPE.sub("", output),
+        )
         self.assertEqual(
             report,
             "pane report-metadata w1:p1 --source claude-statusline "

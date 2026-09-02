@@ -194,10 +194,14 @@ def report_herdr_git_metadata():
 
 
 model = data.get("model", {}).get("display_name", "Claude")
+effort = nested_value(data, ("effort", "level"))
 
 lines = []
 
-parts = [f"{HEADER_MODEL_COLOR}\uf444 {model}{R}"]
+model_line = f"{HEADER_MODEL_COLOR}\uf444 {model}{R}"
+if effort:
+    model_line += f" {HEADER_MODEL_COLOR}\U000f04c5 {effort}{R}"
+parts = [model_line]
 repo, branch = git_info()
 if repo:
     parts.append(
