@@ -73,5 +73,6 @@ in
     inputs.cage.packages.${system}.default
     cclens
     claude-code
+    cliamp
   ];
 }
