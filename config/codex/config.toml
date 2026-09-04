@@ -127,6 +127,10 @@ source = "/Users/nasuno.ayumu/.cache/codex-runtimes/codex-primary-runtime/plugin
 source_type = "git"
 source = "https://github.com/DietrichGebert/ponytail.git"
 
+[marketplaces.mattpocock]
+source_type = "git"
+source = "https://github.com/mattpocock/skills.git"
+
 [plugins."superpowers@openai-curated"]
 enabled = true
 
@@ -170,6 +174,9 @@ enabled = true
 enabled = true
 
 [plugins."unified-computer-use@openai-bundled"]
+enabled = true
+
+[plugins."mattpocock-skills@mattpocock"]
 enabled = true
 
 [hooks.state]
@@ -303,8 +310,8 @@ BROWSER_USE_TINYSKY_ENABLED = "1"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.901.20858"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/nasuno.ayumu/.codex/plugins/cache/openai-bundled/browser/26.901.20858/scripts/browser-service.mjs"}'
+BROWSER_USE_CODEX_APP_VERSION = "26.901.22334"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/nasuno.ayumu/.codex/plugins/cache/openai-bundled/browser/26.901.22334/scripts/browser-service.mjs"}'
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
 
 [[skills.config]]
