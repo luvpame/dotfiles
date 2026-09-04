@@ -1,5 +1,5 @@
 ---
-name: Conventional Commit
+name: conventional-commit
 description: Use this skill when creating git commits, writing commit messages, or when the user asks to commit changes. Generates Conventional Commits messages with automatic type/scope inference, optional commit splitting, and asks the user only when split decisions are ambiguous.
 argument-hint: "message/type hint"
 ---

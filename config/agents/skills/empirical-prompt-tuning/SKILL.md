@@ -184,9 +184,3 @@ description: agent 向けテキスト指示（skill / slash command / task プ�
 - **イテレーションごとに変更多すぎ**: 「あのときの修正のどれが効いたか」が追えなくなる。1 修正 1 イテレーション
 - **シナリオを修正に合わせてチューニング**: 不明瞭点が潰れたように見せるため、シナリオ側を簡単にする → 本末転倒
 
-## 関連
-
-- `superpowers:writing-skills` — skill 作成時の TDD アプローチ。本 skill の「subagent で baseline → 修正 → 再実行」と本質的に同じ
-- `retrospective-codify` — タスク後の学び固定化。本 skill はプロンプト開発中、retrospective-codify はタスク終了後、と使い分ける
-- `superpowers:dispatching-parallel-agents` — 複数シナリオを並列で走らせるときの作法KILL.md
-

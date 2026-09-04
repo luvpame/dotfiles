@@ -1,34 +1,6 @@
 {
   "version": 3,
-  "skills": {
-    "modern-web-guidance": {
-      "source": "GoogleChrome/modern-web-guidance",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/GoogleChrome/modern-web-guidance.git",
-      "skillPath": "skills/modern-web-guidance/SKILL.md",
-      "skillFolderHash": "8729a5e725e655ba8688a93828e03131fb13857e",
-      "installedAt": "2026-05-25T00:25:35Z",
-      "updatedAt": "2026-05-25T00:30:08Z"
-    },
-    "slidev": {
-      "source": "slidevjs/slidev",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/slidevjs/slidev.git",
-      "skillPath": "skills/slidev/SKILL.md",
-      "skillFolderHash": "15d0e7596290e1b568adf04be0466e6622b69bc8",
-      "installedAt": "2026-06-03T01:28:09Z",
-      "updatedAt": "2026-06-03T01:28:09Z"
-    },
-    "hallmark": {
-      "source": "nutlope/hallmark",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/nutlope/hallmark.git",
-      "skillPath": "skills/hallmark/SKILL.md",
-      "skillFolderHash": "747c924c4767b4d5fa6f1c59985c87a21c918334",
-      "installedAt": "2026-08-27T02:42:39.993Z",
-      "updatedAt": "2026-08-27T02:42:39.993Z"
-    }
-  },
+  "skills": {},
   "lastSelectedAgents": [
     "amp",
     "antigravity",
