@@ -154,5 +154,6 @@
       "routine backend Makefile targets (make m, make rspec, make rubocop, make oas) and frontend pnpm scripts (pnpm test:once, pnpm lint, pnpm typecheck) under this repo are routine dev workflow"
     ]
   },
-  "voiceEnabled": false
+  "voiceEnabled": false,
+  "skipWorkflowUsageWarning": true
 }
