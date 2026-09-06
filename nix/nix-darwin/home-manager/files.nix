@@ -58,17 +58,6 @@ in
     ".codex/hooks.json".source = oos "${configRoot}/codex/hooks.json";
     ".codex/AGENTS.md".source = oos "${configRoot}/codex/AGENTS.md";
     ".codex/config.toml".source = oos "${configRoot}/codex/config.toml";
-    ".claude/settings.json" = {
-      source = oos "${configRoot}/claude/settings.json";
-
-      # Claudeはlocal stateを書き戻さないため、Repositoryを唯一の正とする。
-      force = true;
-    };
-    ".claude/statusline.py".source = oos "${configRoot}/claude/statusline.py";
-    ".claude/hooks".source = oos "${configRoot}/claude/hooks";
-    ".claude/skills".source = oos "${configRoot}/agents/skills";
-    ".claude/CLAUDE.md".source = oos "${configRoot}/claude/CLAUDE.md";
-    ".claude/RTK.md".source = oos "${configRoot}/claude/RTK.md";
     ".cursor/skills".source = oos "${configRoot}/agents/skills";
   };
 }

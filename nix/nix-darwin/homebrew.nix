@@ -99,7 +99,6 @@ let
     "obsidian"
     "orbstack"
     "google-drive"
-    "claude"
     "tablepro"
     "sequel-ace"
 

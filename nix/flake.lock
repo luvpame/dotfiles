@@ -73,22 +73,6 @@
         "type": "github"
       }
     },
-    "claude-code-source": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1788663712,
-        "narHash": "sha256-wK+yP5oKMJPa4TOwwPl3vPeMgk1FruPvN0TA0lKpGVg=",
-        "owner": "ryoppippi",
-        "repo": "claude-code-overlay",
-        "rev": "5ea16210008a108b89166801d86f1b90e2a79b44",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ryoppippi",
-        "repo": "claude-code-overlay",
-        "type": "github"
-      }
-    },
     "crane": {
       "locked": {
         "lastModified": 1781825982,
@@ -462,7 +446,6 @@
       "inputs": {
         "cage": "cage",
         "cclens": "cclens",
-        "claude-code-source": "claude-code-source",
         "crit": "crit",
         "guard-and-guide": "guard-and-guide",
         "home-manager": "home-manager",

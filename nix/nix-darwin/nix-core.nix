@@ -1,6 +1,5 @@
 {
   config,
-  inputs,
   pkgs,
   ...
 }:
@@ -12,11 +11,6 @@ in
   nixpkgs = {
     config.allowUnfree = true;
     overlays = [
-      (final: _: {
-        claude-code = final.callPackage ../pkgs/claude-code/default.nix {
-          claudeCodeSource = inputs.claude-code-source;
-        };
-      })
       (_: prev: {
         # Temporary workaround for statix snapshot tests failing on darwin.
         statix = prev.statix.overrideAttrs (_: {
