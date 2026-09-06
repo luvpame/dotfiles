@@ -4,6 +4,8 @@ Reproducible macOS dotfiles for Apple Silicon.
 
 Built with Nix, nix-darwin, Home Manager, Homebrew, and Fish.
 
+This checkout uses the personal configuration on `personal`. See [personal operation](docs/personal.md) for setup and syncing with the work configuration on `main`.
+
 ## What it manages
 
 | Area | Location |
