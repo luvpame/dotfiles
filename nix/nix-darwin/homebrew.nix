@@ -64,6 +64,9 @@ let
 
   caskNames = [
     ### GUI Applications
+    "altserver"
+    "discord"
+    "rekordbox"
     "wezterm"
     "1password"
     "1password-cli"
@@ -106,6 +109,7 @@ let
   ];
 
   masApplications = {
+    "Xcode" = 497799835;
     "Klack" = 6446206067;
     "Grila" = 6444335028;
     "RunCat Neo" = 6757801838;
