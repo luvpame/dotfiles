@@ -50,6 +50,7 @@ trust_level = "trusted"
 
 [desktop]
 followUpQueueMode = "queue"
+defaultTerminalLocation = "bottom"
 
 [mcp_servers.node_repl]
 args = []
