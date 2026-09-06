@@ -9,7 +9,7 @@ in
   };
 
   config = {
-    dotfiles.user.name = "nasuno.ayumu";
+    dotfiles.user.name = "luvpame";
     system.primaryUser = primaryUser;
     users.users.${primaryUser}.home = "/Users/${primaryUser}";
   };
