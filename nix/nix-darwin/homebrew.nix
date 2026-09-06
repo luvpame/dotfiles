@@ -34,7 +34,6 @@ let
     "worktrunk"
     "media-control" # macOS Now Playing metadata
     "ripgrep" # codex formula dependency; keep cleanup from trying to remove it
-    "roots"
     "cloudflare/cloudflare/cloudflared"
     # `mo` と `mole` は同名バイナリを含むため、必要な link だけ activation で戻す。
     {
@@ -71,7 +70,6 @@ let
     "1password"
     "1password-cli"
     "aerospace"
-    "figma"
     "raycast"
     "scroll-reverser"
     "notchnook"
@@ -79,7 +77,6 @@ let
     "hhkb"
     "zed"
     "visual-studio-code"
-    "deskpad"
     "logi-options+"
     "ankerwork"
     "codex-app"
@@ -95,11 +92,6 @@ let
     "nani"
     "wallspace"
     "screendrop"
-    "firefox"
-    "obsidian"
-    "orbstack"
-    "google-drive"
-    "tablepro"
     "sequel-ace"
 
     ### Fonts
