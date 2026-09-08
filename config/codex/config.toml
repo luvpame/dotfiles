@@ -1,7 +1,7 @@
-model_reasoning_effort = "high"
+model_reasoning_effort = "low"
 personality = "friendly"
 forced_login_method = "chatgpt"
-model = "gpt-5.6-sol"
+model = "gpt-6-astra"
 model_context_window = 1000000
 model_auto_compact_token_limit = 900000
 web_search = "live"
@@ -236,7 +236,7 @@ git-show-sidebar-pr-icons = true
 git-commit-instructions = "$conventional-commit スキルを使用すること"
 notifications-turn-mode = "unfocused"
 selected-avatar-id = "codex"
-conversationDetailMode = "STEPS_COMMANDS"
+conversationDetailMode = "STEPS_PROSE"
 mac-menu-bar-enabled = true
 show-context-window-usage = true
 appearanceDiffMarkerStyle = "symbols"
@@ -311,8 +311,8 @@ BROWSER_USE_TINYSKY_ENABLED = "1"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.901.22334"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/nasuno.ayumu/.codex/plugins/cache/openai-bundled/browser/26.901.22334/scripts/browser-service.mjs"}'
+BROWSER_USE_CODEX_APP_VERSION = "26.901.51231"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/nasuno.ayumu/.codex/plugins/cache/openai-bundled/browser/26.901.51231/scripts/browser-service.mjs"}'
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
 
 [[skills.config]]
