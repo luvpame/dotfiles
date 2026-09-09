@@ -23,6 +23,8 @@ presets:
       # ランタイムで書き込まれるツール設定 (op, gcloud 等)
       - path: "$HOME/.config"
         eval-symlinks: true
+      - path: "$HOME/.dotfiles"
+        eval-symlinks: true
   claude-code:
     allow:
       # Claude Code データ
