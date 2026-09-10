@@ -1,8 +1,12 @@
 model = "gpt-6-astra"
-model_reasoning_effort = "high"
+model_reasoning_effort = "medium"
 service_tier = "default"
 
 notify = ["/Users/luvpame/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
+approval_policy = "on-request"
+approvals_reviewer = "guardian_subagent"
+sandbox_mode = "workspace-write"
+web_search = "live"
 
 [marketplaces.openai-primary-runtime]
 source_type = "local"
@@ -11,6 +15,10 @@ source = "/Users/luvpame/.cache/codex-runtimes/codex-primary-runtime/plugins/ope
 [marketplaces.openai-bundled]
 source_type = "local"
 source = "/Users/luvpame/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[marketplaces.mattpocock]
+source_type = "git"
+source = "git@github.com:mattpocock/skills.git"
 
 [plugins."documents@openai-primary-runtime"]
 enabled = true
@@ -48,14 +56,47 @@ enabled = true
 [plugins."computer-history@openai-bundled"]
 enabled = true
 
+[plugins."mattpocock-skills@mattpocock"]
+enabled = true
+
+[plugins."chrome@openai-bundled"]
+enabled = true
+
 [projects."/Users/luvpame/dev/github.com/luvpame/dotfiles"]
 trust_level = "trusted"
 
+[projects."/Users/luvpame/dev/github.com/luvpame/tsuregoro"]
+trust_level = "trusted"
+
 [desktop]
-followUpQueueMode = "queue"
+followUpQueueMode = "steer"
 defaultTerminalLocation = "bottom"
 browser-show-full-url = true
 worktree-upstream-refresh-mode = "best-effort"
+conversationDetailMode = "STEPS_COMMANDS"
+preventSleepWhileRunning = true
+toys-audio-visualizer-enabled = true
+toys-confetti-enabled = true
+appearanceLightCodeThemeId = "catppuccin"
+usePointerCursors = true
+dock-icon-preference = "codex-system"
+
+[desktop.appearanceLightChromeTheme]
+accent = "#8839ef"
+accentSource = "custom"
+contrast = 45
+ink = "#4c4f69"
+opaqueWindows = false
+surface = "#eff1f5"
+
+[desktop.appearanceLightChromeTheme.fonts]
+content = '"HackGen Console NF"'
+ui = '"HackGen Console NF"'
+
+[desktop.appearanceLightChromeTheme.semanticColors]
+diffAdded = "#40a02b"
+diffRemoved = "#d20f39"
+skill = "#8839ef"
 
 [mcp_servers.node_repl]
 args = []
@@ -74,8 +115,8 @@ NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.901.51231"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/luvpame/.codex/plugins/cache/openai-bundled/browser/26.901.51231/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
+BROWSER_USE_CODEX_APP_VERSION = "26.903.61454"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/luvpame/.codex/plugins/cache/openai-bundled/browser/26.903.61454/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
 SKY_CUA_SERVICE_PATH = "/Users/luvpame/.codex/computer-use/Codex Computer Use.app"
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
 
@@ -115,3 +156,10 @@ trusted_hash = "sha256:c7e90260f748ca2cf997296319e0e5e2523852533151925c503c7c997
 
 [hooks.state."/Users/luvpame/.codex/hooks.json:stop:0:1"]
 trusted_hash = "sha256:7c52bf2a50e603e45d405cb482d234f2abb8c8940c6dae7aaa334a7ac514fe01"
+
+[tui]
+status_line = ["model-with-reasoning", "project-name", "git-branch", "approval-mode", "weekly-limit", "fast-mode", "task-progress"]
+status_line_use_colors = true
+
+[sandbox_workspace_write]
+network_access = true

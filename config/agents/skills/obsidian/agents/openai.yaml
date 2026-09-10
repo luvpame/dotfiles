@@ -1,4 +1,0 @@
-interface:
-  display_name: "Obsidian CLI"
-  short_description: "Manage Obsidian vaults with the CLI"
-  default_prompt: "Use $obsidian to search my vault and update the matching note."
