@@ -48,5 +48,5 @@ elif [[ "$has_connecting" == true ]]; then
 elif [[ "$has_disconnecting" == true ]]; then
   printf '⏳ VPN 切断処理中\n'
 elif [[ "$has_disconnected" == true ]]; then
-  printf '🔓 VPN 未接続\n'
+  printf '○ VPN 未接続 | color=#888888\n'
 fi
