@@ -84,6 +84,7 @@ hide_tab_bar_when_single_tab = false
 tab_bar_position = "bottom"
 tab_bar_right = [
   { type = "zoom" },
+  { type = "command", command = "gh api --method GET search/issues -f 'q=is:pr is:open review-requested:@me' -f per_page=1 --jq '\"PR review: \\(.total_count)\"'", interval_seconds = 60, timeout_seconds = 10 },
   { type = "datetime", format = "%H:%M" },
 ]
 tab_bar_right_separator = " · "
