@@ -224,10 +224,31 @@ trusted_hash = "sha256:51035e20f9602e121fe6afe94e36283df3a6589eebe02f4ad319ee304
 trusted_hash = "sha256:7c52bf2a50e603e45d405cb482d234f2abb8c8940c6dae7aaa334a7ac514fe01"
 
 [hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:session_start:1:0"]
-trusted_hash = "sha256:437ceba89f225c20406c887499e503818a09383964dce7da94d202954eefb46c"
+trusted_hash = "sha256:fc5b9aca2b6be974d70b9def52d0b1b714cd640cb361c2f52bd9e20776b2268f"
 
 [hooks.state."i-have-adhd@i-have-adhd:hooks/hooks.json:session_start:0:0"]
 trusted_hash = "sha256:f14f820a4bb04f568faf482695f08471d7ed733a25fd94181693a7be4f06a637"
+
+[hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:pre_tool_use:1:0"]
+trusted_hash = "sha256:ffc728f77cebaa03c24ec7a89f7335c1d5631817672103d1662e792c0f1fa9f7"
+
+[hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:permission_request:0:0"]
+trusted_hash = "sha256:d96d418c690c8ba97dfe30f0c433ce4f0332b8893beb27da71c054bf80be3e35"
+
+[hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:post_tool_use:0:0"]
+trusted_hash = "sha256:04d23944756e271400a84d6b6fa63efa0530cfcca31eb6c52bf06ab499c79912"
+
+[hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:user_prompt_submit:1:0"]
+trusted_hash = "sha256:313a870008314bb0c34057cb5b40fd431e5fe07ebbb6ac0a7a294a96682da1e9"
+
+[hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:subagent_start:0:0"]
+trusted_hash = "sha256:262bdfb5823ef3c1b8638fad8b4431264ec519415333bef306dbc4500ec26e74"
+
+[hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:subagent_stop:0:0"]
+trusted_hash = "sha256:96fc402ce2fb25ba595aecece1dfc254b0342b3750b9514f41c2d6b3fab37a73"
+
+[hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:stop:1:0"]
+trusted_hash = "sha256:158129f9b947fc3619038c4ffb10bfc4e2abe1a140bc72c9c0baae2e0207c2a8"
 
 [desktop]
 appearanceTheme = "system"
@@ -322,8 +343,8 @@ BROWSER_USE_TINYSKY_ENABLED = "1"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.903.61454"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/nasuno.ayumu/.codex/plugins/cache/openai-bundled/browser/26.903.61454/scripts/browser-service.mjs"}'
+BROWSER_USE_CODEX_APP_VERSION = "26.903.71938"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/nasuno.ayumu/.codex/plugins/cache/openai-bundled/browser/26.903.71938/scripts/browser-service.mjs"}'
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
 
 [[skills.config]]

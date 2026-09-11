@@ -126,10 +126,10 @@ or begin
 end
 assert_contains (string join \t -- workspace focus worktree-workspace) $herdr_calls
 assert_not_contains (string join \t -- worktree open --workspace main-workspace --path "$worktree_path" --focus --json) $herdr_calls
-assert_contains (string join \t -- tab rename agent-tab agent) $herdr_calls
+assert_not_contains (string join \t -- tab rename agent-tab agent) $herdr_calls
 assert_contains (string join \t -- pane run agent-pane cc) $herdr_calls
-assert_contains (string join \t -- tab create --workspace worktree-workspace --cwd "$worktree_path" --label nvim --no-focus) $herdr_calls
-assert_contains (string join \t -- pane run nvim-pane nvim) $herdr_calls
+assert_not_contains (string join \t -- tab create --workspace worktree-workspace --cwd "$worktree_path" --label nvim --no-focus) $herdr_calls
+assert_not_contains (string join \t -- pane run nvim-pane nvim) $herdr_calls
 
 set --global --erase herdr_calls
 set --global fzf_selection (string join \t -- existing /private/tmp/repo-worktrees/existing)

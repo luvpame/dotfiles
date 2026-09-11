@@ -15,7 +15,7 @@ review = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(review)
 
 
-def check(cancel=False, existing=False, stale=False, empty_tabs=False, no_prs=False):
+def check(cancel=False, existing=False, stale=False, split=False, busy=False, no_prs=False):
     calls = []
 
     def run(*args, cwd=None):
@@ -35,15 +35,18 @@ def check(cancel=False, existing=False, stale=False, empty_tabs=False, no_prs=Fa
         if action == ("worktree", "list"):
             result = dict(source=dict(repo_root="/repo"), worktrees=[dict(branch="feature", path="/repo review")] if existing else [])
         elif action == ("worktree", "open"):
-            result = dict(workspace=dict(workspace_id="w2"))
+            result = dict(workspace=dict(workspace_id="w2"), already_open=existing)
         elif action == ("tab", "list"):
-            result = dict(tabs=[dict(label="code review", tab_id="w2:t1")] if empty_tabs else [])
+            result = dict(tabs=[dict(tab_id="w2:t1")])
         elif action == ("pane", "list"):
-            result = dict(panes=[dict(tab_id="w2:t1", pane_id="w2:p1")])
-        elif action == ("tab", "create"):
-            result = dict(root_pane=dict(pane_id=f"w2:p{len(calls)}"))
+            result = dict(panes=[dict(tab_id="w2:t1", pane_id="w2:p1")]
+                          + ([dict(tab_id="w2:t1", pane_id="w2:p2")] if split else []))
+        elif action == ("pane", "split"):
+            assert args == ("herdr", "pane", "split", "w2:p1", "--direction", "right",
+                            "--cwd", "/repo review", "--no-focus")
+            result = dict(pane=dict(pane_id="w2:p2"))
         elif action == ("pane", "process-info"):
-            result = dict(process_info=dict(shell_pid=1, foreground_processes=[dict(pid=1)]))
+            result = dict(process_info=dict(shell_pid=1, foreground_processes=[dict(pid=2 if busy else 1)]))
         else:
             assert action == ("agent", "start"), args
             result = {}
@@ -69,8 +72,13 @@ def check(cancel=False, existing=False, stale=False, empty_tabs=False, no_prs=Fa
     starts = [args for args in calls if args[:3] == ("herdr", "agent", "start")]
     creates = [args for args in calls if args[0] == "direnv"]
     assert len(creates) == (0 if cancel or existing else 1)
-    assert len(starts) == (0 if cancel or stale else 2)
+    assert len(starts) == (0 if cancel or stale or split or busy else 2)
+    splits = [args for args in calls if args[:3] == ("herdr", "pane", "split")]
+    assert len(splits) == (1 if starts else 0)
+    assert not any(args[:3] in (("herdr", "tab", "create"), ("herdr", "tab", "rename")) for args in calls)
     if starts:
+        assert starts[0][starts[0].index("--pane") + 1] == "w2:p1"
+        assert starts[1][starts[1].index("--pane") + 1] == "w2:p2"
         assert "code-review:code-review" in starts[0][-1]
         assert "pr-review-assist" in starts[1][-1]
     if cancel or stale:
@@ -82,5 +90,6 @@ check(cancel=True)
 check(existing=True, stale=True)
 check(existing=True)
 check()
-check(existing=True, empty_tabs=True)
+check(existing=True, split=True)
+check(existing=True, busy=True)
 print("PR Review checks passed")

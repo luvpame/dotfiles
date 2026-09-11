@@ -145,7 +145,7 @@ inner.horizontal = 5
 inner.vertical = 5
 outer.left = 5
 outer.bottom = [
-  { monitor.'^built-in retina display$' = 5},
+  { monitor.secondary = 5},
   88
 ]
 outer.top = 5

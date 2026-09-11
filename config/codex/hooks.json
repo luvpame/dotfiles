@@ -9,6 +9,15 @@
           }
         ],
         "matcher": "Bash"
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ] && [ -r '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ] && [ -x '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "SessionStart": [
@@ -30,6 +39,15 @@
             "type": "command"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ] && [ -r '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ] && [ -x '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "Stop": [
@@ -46,6 +64,15 @@
             "type": "command"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ] && [ -r '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ] && [ -x '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "UserPromptSubmit": [
@@ -55,6 +82,59 @@
             "command": "bash \"$HOME/.codex/hooks/herdr-tab-rename-reminder.sh\"",
             "timeout": 5,
             "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ] && [ -r '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ] && [ -x '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ] && [ -r '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ] && [ -x '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ] && [ -r '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ] && [ -x '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ] && [ -r '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ] && [ -x '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ] && [ -r '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ] && [ -x '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/Users/nasuno.ayumu/.orca/agent-hooks/codex-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
+            "timeout": 10
           }
         ]
       }

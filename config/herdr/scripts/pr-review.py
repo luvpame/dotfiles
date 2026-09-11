@@ -63,6 +63,21 @@ def main():
     opened = herdr("worktree", "open", "--cwd", root, "--path", checkout, "--focus", "--json")
     review_workspace = opened["workspace"]["workspace_id"]
     tabs = herdr("tab", "list", "--workspace", review_workspace)["tabs"]
+    tab = tabs[0]
+    panes = [p for p in herdr("pane", "list", "--workspace", review_workspace)["panes"]
+             if p["tab_id"] == tab["tab_id"]]
+    if len(panes) != 1:
+        print("既存の pane 構成を残しました。再レビューは各 pane から指示してください。")
+        return
+    left = panes[0]["pane_id"]
+    if opened.get("already_open"):
+        info = herdr("pane", "process-info", "--pane", left)["process_info"]
+        processes = info.get("foreground_processes") or []
+        if not processes or any(p.get("pid") != info.get("shell_pid") for p in processes):
+            print("使用中の pane を残しました。再レビューはその pane から指示してください。")
+            return
+    right = herdr("pane", "split", left, "--direction", "right", "--cwd", checkout,
+                  "--no-focus")["pane"]["pane_id"]
     prompts = {
         "code review": (
             "opus",
@@ -73,28 +88,9 @@ def main():
         "pr-review-assist": ("sonnet", f"pr-review-assist スキルを PR #{number} に対して実行してください。"),
     }
     failures = []
-    for label, (model, prompt) in prompts.items():
+    for pane, (label, (model, prompt)) in zip((left, right), prompts.items()):
         try:
-            matches = [tab for tab in tabs if tab.get("label") == label]
-            if matches:
-                if len(matches) != 1:
-                    raise RuntimeError(f"同名タブが複数あります: {label}")
-                panes = [p for p in herdr("pane", "list", "--workspace", review_workspace)["panes"]
-                         if p["tab_id"] == matches[0]["tab_id"]]
-                if len(panes) != 1:
-                    raise RuntimeError(f"既存タブの pane を確認してください: {label}")
-                pane = panes[0]["pane_id"]
-                info = herdr("pane", "process-info", "--pane", pane)["process_info"]
-                processes = info.get("foreground_processes") or []
-                if not processes or any(p.get("pid") != info.get("shell_pid") for p in processes):
-                    print(f"{label}: 既存タブを残しました。再実行はそのタブから指示してください。")
-                    continue
-            else:
-                pane = herdr(
-                    "tab", "create", "--workspace", review_workspace, "--cwd", checkout,
-                    "--label", label, "--no-focus",
-                )["root_pane"]["pane_id"]
-            # Shell initialization may still be running immediately after tab creation.
+            # Shell initialization may still be running immediately after pane creation.
             for attempt in range(30):
                 info = herdr("pane", "process-info", "--pane", pane)["process_info"]
                 processes = info.get("foreground_processes") or []

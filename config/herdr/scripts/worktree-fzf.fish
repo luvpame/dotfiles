@@ -149,32 +149,11 @@ function herdr_worktree_fzf --description 'Open a Git worktree in Herdr'
 
     set -l tab_list (herdr tab list --workspace "$workspace_id")
     or return
-    set -l agent_tab_id (printf '%s\n' "$tab_list" | jq --raw-output \
-        'first(.result.tabs[] | select(.label == "agent") | .tab_id) // empty')
-    set -l nvim_tab_id (printf '%s\n' "$tab_list" | jq --raw-output \
-        'first(.result.tabs[] | select(.label == "nvim") | .tab_id) // empty')
+    set -l agent_tab_id (printf '%s\n' "$tab_list" | jq --raw-output '.result.tabs[0].tab_id')
+    set -l pane_list (herdr pane list)
+    or return
+    set -l agent_pane_id (printf '%s\n' "$pane_list" | jq --raw-output --arg tab_id "$agent_tab_id" \
+        'first(.result.panes[] | select(.tab_id == $tab_id) | .pane_id) // empty')
 
-    if test -z "$agent_tab_id"
-        set agent_tab_id (printf '%s\n' "$tab_list" | jq --raw-output '.result.tabs[0].tab_id')
-        set -l pane_list (herdr pane list)
-        or return
-        set -l agent_pane_id (printf '%s\n' "$pane_list" | jq --raw-output --arg tab_id "$agent_tab_id" \
-            'first(.result.panes[] | select(.tab_id == $tab_id) | .pane_id) // empty')
-
-        herdr tab rename "$agent_tab_id" agent >/dev/null
-        or return
-        herdr pane run "$agent_pane_id" cc
-        or return
-    end
-
-    if test -z "$nvim_tab_id"
-        set -l nvim_tab (herdr tab create \
-            --workspace "$workspace_id" \
-            --cwd "$worktree_path" \
-            --label nvim \
-            --no-focus)
-        or return
-        set -l nvim_pane_id (printf '%s\n' "$nvim_tab" | jq --raw-output '.result.root_pane.pane_id')
-        herdr pane run "$nvim_pane_id" nvim
-    end
+    herdr pane run "$agent_pane_id" cc
 end
