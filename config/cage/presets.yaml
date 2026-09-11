@@ -18,6 +18,8 @@ presets:
       # 各種キャッシュ
       - path: "$HOME/.cache"
         eval-symlinks: true
+      - path: "$HOME/Library/Caches"
+        eval-symlinks: true
       # ローカル state/bin (nvim, pnpm, mise 等)
       - "$HOME/.local"
       # ランタイムで書き込まれるツール設定 (op, gcloud 等)

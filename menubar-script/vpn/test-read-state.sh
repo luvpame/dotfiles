@@ -32,27 +32,27 @@ assert_output() {
 
 assert_output \
   "接続中のVPNを表示する" \
-  $'🔒 VPN 接続中' \
+  $'' \
   '* (Connected) 001 VPN (com.example.vpn) "Work" [VPN:com.example.vpn]'
 assert_output \
   "接続中のVPNがあれば他の状態より優先する" \
-  $'🔒 VPN 接続中' \
+  $'' \
   $'* (Disconnected) 001 VPN (com.example.off) "Off" [VPN:com.example.off]\n* (Connecting) 002 VPN (com.example.connecting) "Connecting" [VPN:com.example.connecting]\n* (Connected) 003 VPN (com.example.on) "On" [VPN:com.example.on]'
 assert_output \
   "ConnectingをDisconnectingより優先する" \
-  $'⏳ VPN 接続処理中' \
+  $' ' \
   $'* (Disconnected) 001 VPN (com.example.off) "Off" [VPN:com.example.off]\n* (Disconnecting) 002 VPN (com.example.disconnecting) "Disconnecting" [VPN:com.example.disconnecting]\n* (Connecting) 003 VPN (com.example.connecting) "Connecting" [VPN:com.example.connecting]'
 assert_output \
   "Disconnectingを未接続より優先する" \
-  $'⏳ VPN 切断処理中' \
+  $' ' \
   $'* (Disconnected) 001 VPN (com.example.off) "Off" [VPN:com.example.off]\n* (Disconnecting) 002 VPN (com.example.disconnecting) "Disconnecting" [VPN:com.example.disconnecting]'
 assert_output \
   "Connectingを表示する" \
-  $'⏳ VPN 接続処理中' \
+  $' ' \
   '* (Connecting) 001 VPN (com.example.connecting) "Connecting" [VPN:com.example.connecting]'
 assert_output \
   "未接続のVPNを表示する" \
-  $'○ VPN 未接続 | color=#888888' \
+  $' | color=#888888' \
   '* (Disconnected) 001 VPN (com.example.vpn) "Work" [VPN:com.example.vpn]'
 assert_output \
   "VPN以外の接続サービスを無視する" \

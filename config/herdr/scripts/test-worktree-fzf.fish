@@ -4,8 +4,9 @@ set --global git_calls
 set --global direnv_calls
 set --global fzf_candidates
 set --global fzf_selection ' New Worktree'
-set --global repo_candidates
-set --global repo_selection /private/tmp/repo
+set --global action_candidates
+set --global action_selection ' Worktree 作成・移動'
+set --global python_calls
 set --global worktree_path /private/tmp/repo-worktrees/feature
 set --global workspace_initialized false
 set --global source_checkout_path /private/tmp/repo-worktrees/current
@@ -34,8 +35,8 @@ function direnv
     $argv[3..]
 end
 
-function ghq
-    printf '/private/tmp/another-repo\n%s\n' "$repo_selection"
+function python3
+    set --global --append python_calls (string join \t -- $argv)
 end
 
 function herdr
@@ -65,12 +66,12 @@ function herdr
 end
 
 function fzf
-    if contains -- "--prompt=repo> " $argv
-        set --global --erase repo_candidates
+    if contains -- "--prompt=repo action> " $argv
+        set --global --erase action_candidates
         while read --local candidate
-            set --global --append repo_candidates "$candidate"
+            set --global --append action_candidates "$candidate"
         end
-        printf '%s\n' "$repo_selection"
+        printf '%s\n' "$action_selection"
         return
     end
 
@@ -109,11 +110,10 @@ or begin
     echo ' New Worktree was not the first candidate.' >&2
     exit 1
 end
-test "$fzf_candidates[2]" = (string join \t -- '󰉋 Original Root' /private/tmp/repo)
-or begin
-    echo '󰉋 Original Root was not the second candidate.' >&2
-    exit 1
-end
+test (string join , -- $action_candidates) = ' PR Review, Worktree 作成・移動,󰉋 Original Root,󰆴 Worktree 削除,󰘬 マージ済み PR の Worktree を一括削除'
+or exit 1
+assert_not_contains ' PR Review' $fzf_candidates
+assert_not_contains (string join \t -- '󰉋 Original Root' /private/tmp/repo) $fzf_candidates
 assert_not_contains (string join \t -- main /private/tmp/repo) $fzf_candidates
 assert_contains (string join \t -- existing /private/tmp/repo-worktrees/existing) $fzf_candidates
 assert_contains (string join \t -- -C /private/tmp/repo switch --no-cd --create feature --format=json) $wt_calls
@@ -147,43 +147,42 @@ assert_not_contains (string join \t -- pane run agent-pane cc) $herdr_calls
 assert_not_contains (string join \t -- tab create --workspace worktree-workspace --cwd "$worktree_path" --label nvim --no-focus) $herdr_calls
 
 set --global --erase herdr_calls
-set --global fzf_selection (string join \t -- '󰉋 Original Root' /private/tmp/repo)
+set --global action_selection '󰉋 Original Root'
+set --global --erase fzf_candidates
 
 herdr_worktree_fzf
 or exit 1
 
 assert_contains (string join \t -- worktree open --workspace main-workspace --path /private/tmp/repo --focus --json) $herdr_calls
 
-set --global --erase herdr_calls
-set --global repo_selection /private/tmp/repo
-
-herdr_worktree_fzf --repo
+test (count $fzf_candidates) -eq 0
 or exit 1
 
-assert_contains "$repo_selection" $repo_candidates
-test "$fzf_candidates[2]" = (string join \t -- '󰉋 Original Root' /private/tmp/repo)
-or begin
-    echo '󰉋 Original Root was not offered in repo mode.' >&2
-    exit 1
-end
-assert_contains (string join \t -- worktree list --cwd "$repo_selection" --json) $herdr_calls
-assert_contains (string join \t -- worktree open --cwd "$repo_selection" --path /private/tmp/repo --focus --json) $herdr_calls
-
 set --global --erase herdr_calls
-set --global --erase wt_calls
-set --global --erase git_calls
-set --global --erase direnv_calls
-set --global fzf_selection ' New Worktree'
-set --global worktree_path /private/tmp/repo-worktrees/repo-feature
+set --global action_selection ' PR Review'
+herdr_worktree_fzf
+or exit 1
+assert_contains ~/.config/herdr/scripts/pr-review.py $python_calls
+test (count $herdr_calls) -eq 0
+or exit 1
 
-printf 'repo-feature\n' | herdr_worktree_fzf --repo
-or begin
-    echo 'Failed to create a worktree in repo mode.' >&2
-    exit 1
+# Cancel either menu without opening a workspace or starting a review.
+for action in '' ' Worktree 作成・移動'
+    set --global action_selection "$action"
+    set --global fzf_selection ''
+    set --global --erase herdr_calls
+    set --global --erase python_calls
+    herdr_worktree_fzf
+    or exit 1
+    test (count $python_calls) -eq 0
+    or exit 1
+    for call in $herdr_calls
+        test "$call" = (string join \t -- worktree list --workspace main-workspace --json)
+        or exit 1
+    end
 end
 
-assert_contains (string join \t -- exec /private/tmp/repo wt -C /private/tmp/repo switch --no-cd --create repo-feature --format=json) $direnv_calls
-
+set --global action_selection ' Worktree 作成・移動'
 set --global --erase herdr_calls
 set --global --erase wt_calls
 set --global --erase git_calls
@@ -205,3 +204,12 @@ or begin
     echo 'Remote refs were inspected before fetching.' >&2
     exit 1
 end
+
+set --global action_selection '󰆴 Worktree 削除'
+herdr_worktree_fzf
+or exit 1
+assert_contains ~/.config/herdr/scripts/worktree-remove.py $python_calls
+set --global action_selection '󰘬 マージ済み PR の Worktree を一括削除'
+herdr_worktree_fzf
+or exit 1
+assert_contains (string join \t -- ~/.config/herdr/scripts/worktree-remove.py --merged) $python_calls

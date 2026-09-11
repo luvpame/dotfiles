@@ -40,16 +40,16 @@
       dock = {
         # アプリケーションスイッチャーを全てのディスプレイに表示する
         appswitcher-all-displays = true;
-        # Dockの自動非表示を有効にする
-        autohide = true;
+        # Dockを常時表示する
+        autohide = false;
         # Mission ControlのExposeでアプリケーションをグループ化する
         expose-group-apps = true;
         # Dockのホバー時の拡大サイズ
         largesize = 48;
         # Dockのホバー時の拡大を有効にする
         magnification = true;
-        # Dockの位置を左側に設定する
-        orientation = "right";
+        # Dockの位置を下側に設定する
+        orientation = "bottom";
         # 最近使用したアプリケーションをDockに表示しない
         show-recents = false;
         # 開いているアプリケーションのみをDockに表示する

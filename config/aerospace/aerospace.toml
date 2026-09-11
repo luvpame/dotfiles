@@ -145,16 +145,10 @@ inner.horizontal = 5
 inner.vertical = 5
 outer.left = 5
 outer.bottom = [
-  { monitor.secondary = 3 },
-  { monitor.'^built-in retina display$' = 3 },
-  { monitor.'DeskPad*' = 3},
-  34,
+  { monitor.'^built-in retina display$' = 5},
+  88
 ]
-outer.top = [
-  { monitor.secondary = 7 },
-  { monitor.'^built-in retina display$' = 3 },
-  34,
-]
+outer.top = 5
 outer.right = 5
 
 # 'main' バインディングモードの宣言

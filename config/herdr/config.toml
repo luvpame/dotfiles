@@ -1,6 +1,8 @@
 onboarding = false
 [keys]
 prefix = "ctrl+j"
+toggle_sidebar = ""
+rename_pane = ""
 
 new_tab = "prefix+c"
 cycle_pane_next = "prefix+tab"
@@ -32,16 +34,16 @@ command = "ziggity"
 [[keys.command]]
 key = "prefix+p"
 type = "popup"
-description = "open git worktree"
+description = "PR Review, worktree or root"
 command = "fish -c 'source ~/.config/herdr/scripts/worktree-fzf.fish; herdr_worktree_fzf'"
 width = "80%"
 height = "80%"
 
 [[keys.command]]
-key = "prefix+shift+p"
+key = "prefix+b"
 type = "popup"
-description = "choose repo and open git worktree"
-command = "fish -c 'source ~/.config/herdr/scripts/worktree-fzf.fish; herdr_worktree_fzf --repo'"
+description = "switch repository"
+command = "fish -c 'ghq_cd_fzf --workspace'"
 width = "80%"
 height = "80%"
 
@@ -53,6 +55,14 @@ command = "fish"
 width = "80%"
 height = "80%"
 
+[[keys.command]]
+key = "prefix+shift+r"
+type = "popup"
+description = "PR Review"
+command = "python3 ~/.config/herdr/scripts/pr-review.py"
+width = "80%"
+height = "80%"
+
 [theme]
 name = "catppuccin-latte"
 auto_switch = false
@@ -61,6 +71,8 @@ auto_switch = false
 delivery = "terminal"
 
 [ui]
+pane_borders = "always"
+pane_outer_borders = true
 show_agent_labels_on_pane_borders = true
 sidebar_width = 72
 sidebar_max_width = 72
@@ -120,7 +132,11 @@ rows = [
     { token = "$pr_draft", fg = "#9ca0b0" },
     { token = "$pr_merged", fg = "#8839ef" },
     { token = "$pr_closed", fg = "#d20f39" },
-    { token = "$review_status", fg = "#8839ef" },
+    { token = "$review_status", fg = "#8839ef", rules = [
+      { equals = "✓ approved", fg = "#40a02b" },
+      { equals = "× changes", fg = "#d20f39", bold = true },
+      { equals = "○ review", fg = "#df8e1d" },
+    ] },
   ],
 ]
 

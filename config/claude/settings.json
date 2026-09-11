@@ -53,6 +53,16 @@
             "statusMessage": "herdr にセッションを通知中"
           }
         ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/nasuno.ayumu/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
       }
     ]
   },
@@ -67,14 +77,14 @@
     "crit@crit": true,
     "feature-dev@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
-    "i-have-adhd@i-have-adhd": true,
     "plugin-dev@claude-plugins-official": true,
     "ponytail@ponytail": true,
     "ruby-lsp@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "claude-security@claude-plugins-official": true,
-    "mattpocock-skills@mattpocock": true
+    "mattpocock-skills@mattpocock": true,
+    "i-have-adhd@i-have-adhd": true
   },
   "extraKnownMarketplaces": {
     "cclens": {
@@ -115,6 +125,7 @@
   "advisorModel": "fable",
   "tui": "fullscreen",
   "autoMemoryEnabled": true,
+  "skipWorkflowUsageWarning": true,
   "theme": "light",
   "editorMode": "vim",
   "verbose": false,
@@ -162,5 +173,5 @@
     ]
   },
   "voiceEnabled": false,
-  "skipWorkflowUsageWarning": true
+  "outputStyle": "Concise"
 }
