@@ -1,4 +1,4 @@
-model_reasoning_effort = "low"
+model_reasoning_effort = "high"
 personality = "friendly"
 forced_login_method = "chatgpt"
 model = "gpt-6-astra"
@@ -267,7 +267,7 @@ hotkey-window-projectless-default-enabled = true
 git-show-sidebar-pr-icons = true
 git-commit-instructions = "$conventional-commit スキルを使用すること"
 notifications-turn-mode = "unfocused"
-selected-avatar-id = "codex"
+selected-avatar-id = "fireball"
 conversationDetailMode = "STEPS_COMMANDS"
 mac-menu-bar-enabled = true
 show-context-window-usage = true
@@ -283,6 +283,7 @@ realtimeVoiceScreenContextEnabled = true
 defaultTerminalLocation = "right"
 toys-confetti-enabled = true
 toys-audio-visualizer-enabled = true
+avatar-overlay-pet-visible = false
 
 [desktop.appearanceLightChromeTheme]
 accent = "#8839ef"
@@ -293,7 +294,7 @@ surface = "#eff1f5"
 
 [desktop.appearanceLightChromeTheme.fonts]
 code = '"HackGen Console NF"'
-ui = '"Gen Interface JP"'
+ui = '"HackGen Console NF"'
 
 [desktop.appearanceLightChromeTheme.fonts.codeFace]
 family = "HackGen Console NF"
@@ -343,8 +344,8 @@ BROWSER_USE_TINYSKY_ENABLED = "1"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.908.31457"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/nasuno.ayumu/.codex/plugins/cache/openai-bundled/browser/26.908.31457/scripts/browser-service.mjs"}'
+BROWSER_USE_CODEX_APP_VERSION = "26.908.40834"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/nasuno.ayumu/.codex/plugins/cache/openai-bundled/browser/26.908.40834/scripts/browser-service.mjs"}'
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
 
 [[skills.config]]
