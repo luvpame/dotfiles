@@ -16,7 +16,7 @@ remove = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(remove)
 
 
-def check(merged=True, confirm='delete', state='MERGED', tip='head', dirty=False, changed=False,
+def check(merged=True, confirm=0, state='MERGED', tip='head', dirty=False, changed=False,
           cancel=False, newer=False, failure=False, missing=False, multiple=False):
     calls = []
     acknowledged = False
@@ -65,31 +65,33 @@ def check(merged=True, confirm='delete', state='MERGED', tip='head', dirty=False
             raise subprocess.CalledProcessError(1, args)
         return '[{"branch_outcome":"deleted"}]'
 
-    def answer(prompt):
+    def fzf_run(args, **kwargs):
         nonlocal acknowledged
-        if 'delete' in prompt:
-            acknowledged = confirm == 'delete'
-            return confirm
-        return ''
+        if '--disabled' in args:
+            acknowledged = confirm == 0
+            assert '--no-multi' in args
+            assert '全件を削除' in next(arg for arg in args if arg.startswith('--header='))
+            return subprocess.CompletedProcess(args, confirm, stdout=kwargs['input'].splitlines()[0] + '\n')
+        return subprocess.CompletedProcess(args, 130 if cancel else 0,
+                                           stdout='0\tfeature\n1\tsecond\n' if multiple else '0\tfeature\n')
 
-    selection = subprocess.CompletedProcess([], 130 if cancel else 0, stdout='0\tfeature\n1\tsecond\n' if multiple else '0\tfeature\n')
     with patch.dict(remove.os.environ, HERDR_ACTIVE_WORKSPACE_ID='w1'), \
             patch.object(remove, 'run', side_effect=run), \
-            patch.object(remove.subprocess, 'run', return_value=selection) as fzf, \
+            patch.object(remove.subprocess, 'run', side_effect=fzf_run) as fzf, \
             patch.object(remove.os.path, 'isdir', side_effect=lambda path: path != '/repo/missing'), \
-            patch('builtins.input', side_effect=answer), patch('builtins.print') as messages:
+            patch('builtins.input', return_value=''), patch('builtins.print') as messages:
         remove.main(merged=merged)
     if missing:
         assert not any('/repo/missing' in str(call) for call in messages.call_args_list)
     if dirty:
         assert any('未コミット' in str(call) for call in messages.call_args_list)
     deletes = [args for args in calls if args[0] == 'wt']
-    expected = (confirm == 'delete' and not dirty and not changed
+    expected = (confirm == 0 and not dirty and not changed
                 and (not merged and not cancel or merged and state == 'MERGED' and tip == 'head' and not newer))
     assert len(deletes) == int(expected) * (2 if multiple else 1), calls
     if multiple and not merged:
-        assert '--multi' in fzf.call_args.args[0]
-        assert '--no-height' in fzf.call_args.args[0]
+        assert '--multi' in fzf.call_args_list[0].args[0]
+        assert '--no-height' in fzf.call_args_list[0].args[0]
     closes = [args for args in calls if args[:3] == ('herdr', 'workspace', 'close')]
     assert len(closes) == int(expected)
 
@@ -100,7 +102,9 @@ check(merged=False, multiple=True)
 check(multiple=True)
 check()
 check(merged=False)
-check(confirm='no')
+check(confirm=130)
+check(confirm=1)
+check(merged=False, confirm=130)
 check(state='OPEN')
 check(state='CLOSED')
 check(tip='old')

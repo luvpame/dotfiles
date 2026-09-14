@@ -112,17 +112,28 @@ def main(merged=False):
         if not set(selected) <= {str(i) for i in range(len(candidates))}:
             raise RuntimeError('選択された worktree が一覧にありません。')
         candidates = [candidates[int(index)] for index in selected]
-    print('削除対象（開いている workspace のエディタ・エージェントも終了します）:')
+    rows = []
     for item in candidates:
         label = json.dumps(item.get('branch') or 'detached HEAD', ensure_ascii=False)
         path = json.dumps(item['path'], ensure_ascii=False)
         details = ' / workspace も終了' if item.get('open_workspace_id') else ''
         if item['pr']:
             details += f" / PR #{item['pr']['number']}"
-        print(f"  {label} — {path}{details}")
-    print('ブランチは Worktrunk がマージ済みと確認できる場合のみ削除します。')
-    if input('削除するには delete と入力: ').strip() != 'delete':
+        rows.append(f"{label}{details} — {path}")
+    confirmation = subprocess.run(
+        ['fzf', '--no-height', '--no-multi', '--disabled', '--layout=reverse',
+         '--border=rounded', f'--border-label= 削除確認 · {len(candidates)} 件 ',
+         '--prompt=対象一覧 > ', '--info=hidden',
+         '--header=Enter: 一覧の全件を削除 / Esc: キャンセル\n'
+         '開いている対象 workspace のエディタ・エージェントも終了します。\n'
+         'ブランチは Worktrunk がマージ済みと確認できる場合のみ削除します。'],
+        input='\n'.join(rows), text=True, stdout=subprocess.PIPE,
+    )
+    if confirmation.returncode in (1, 130):
         return
+    confirmation.check_returncode()
+    if confirmation.stdout.rstrip('\n') not in rows:
+        raise RuntimeError('削除確認の応答が一覧にありません。')
     for item in candidates:
         path = item['path']
         try:
