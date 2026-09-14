@@ -1,5 +1,42 @@
 {
   "nodes": {
+    "agent-skills": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789145426,
+        "narHash": "sha256-Wf+7Qzt8+nz4TXPCbWnMjOAdzbVM6blW9J6JP+YhSy8=",
+        "owner": "Kyure-A",
+        "repo": "agent-skills-nix",
+        "rev": "5133c874553c6c295654d8de4e3f62c95736b9c6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Kyure-A",
+        "repo": "agent-skills-nix",
+        "type": "github"
+      }
+    },
+    "anthropic-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789340901,
+        "narHash": "sha256-aDBAfdm8zaRIHaMuMPL9tD7cjoy266fribVMAxPC2po=",
+        "owner": "anthropics",
+        "repo": "claude-plugins-official",
+        "rev": "022b3c274938ddfb9fd928fc582eb9b9ed0f537f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "anthropics",
+        "repo": "claude-plugins-official",
+        "rev": "022b3c274938ddfb9fd928fc582eb9b9ed0f537f",
+        "type": "github"
+      }
+    },
     "bun2nix": {
       "inputs": {
         "flake-parts": "flake-parts_2",
@@ -87,6 +124,23 @@
         "owner": "ryoppippi",
         "repo": "claude-code-overlay",
         "type": "github"
+      }
+    },
+    "cognitive-rhythm-writing": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1783600534,
+        "narHash": "sha256-Zo3iVnTvVG6IfU9vBf4Zv/bEcKmNKnI2IY1D0uvzkNM=",
+        "ref": "refs/heads/main",
+        "rev": "a3b1e26beced71d582e13314fb6f5b179b023c76",
+        "revCount": 3,
+        "type": "git",
+        "url": "https://gist.github.com/eb2929f13ed19c97188393d297be8432.git"
+      },
+      "original": {
+        "rev": "a3b1e26beced71d582e13314fb6f5b179b023c76",
+        "type": "git",
+        "url": "https://gist.github.com/eb2929f13ed19c97188393d297be8432.git"
       }
     },
     "crane": {
@@ -298,6 +352,23 @@
         "type": "github"
       }
     },
+    "herdr-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787161794,
+        "narHash": "sha256-sEGIN3dLZasaHob3EHscWBCIQHflMQVchYmzgsETDk4=",
+        "owner": "herdrdev",
+        "repo": "herdr",
+        "rev": "9eb521456ac0d19d3ab3d9d7cea3cca10baa8a4c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "herdrdev",
+        "repo": "herdr",
+        "rev": "9eb521456ac0d19d3ab3d9d7cea3cca10baa8a4c",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -315,6 +386,23 @@
       "original": {
         "owner": "nix-community",
         "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "humanlayer-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786633530,
+        "narHash": "sha256-lJvu9CGAN/+dzmzck0CodRXn/p7GUkCbfyZxys4nIoU=",
+        "owner": "humanlayer",
+        "repo": "skills",
+        "rev": "3c2629142c5d437428269b1b722b08c0b87f574d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "humanlayer",
+        "repo": "skills",
+        "rev": "3c2629142c5d437428269b1b722b08c0b87f574d",
         "type": "github"
       }
     },
@@ -353,6 +441,40 @@
       "original": {
         "owner": "vic",
         "repo": "import-tree",
+        "type": "github"
+      }
+    },
+    "japanese-tech-writing": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1781587188,
+        "narHash": "sha256-+3k6/lvdMCEUEbtWM4O8uyNQhDgNOVXxQgWulzT/eF4=",
+        "ref": "refs/heads/main",
+        "rev": "5ed08e4475365fd233aa0d3ab71c19b87e1a5732",
+        "revCount": 4,
+        "type": "git",
+        "url": "https://gist.github.com/fd287c3133457c4fd8f5601d34aa817d.git"
+      },
+      "original": {
+        "rev": "5ed08e4475365fd233aa0d3ab71c19b87e1a5732",
+        "type": "git",
+        "url": "https://gist.github.com/fd287c3133457c4fd8f5601d34aa817d.git"
+      }
+    },
+    "mizchi-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1777041365,
+        "narHash": "sha256-bsqnnK0n/R4Ksc4SajCFG2cPp/PCElPmdv1Zdnmsfq8=",
+        "owner": "mizchi",
+        "repo": "skills",
+        "rev": "95b8a50edf0684620c29d09848591de453b99831",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mizchi",
+        "repo": "skills",
+        "rev": "95b8a50edf0684620c29d09848591de453b99831",
         "type": "github"
       }
     },
@@ -460,13 +582,20 @@
     },
     "root": {
       "inputs": {
+        "agent-skills": "agent-skills",
+        "anthropic-skills": "anthropic-skills",
         "cage": "cage",
         "cclens": "cclens",
         "claude-code-source": "claude-code-source",
+        "cognitive-rhythm-writing": "cognitive-rhythm-writing",
         "crit": "crit",
         "guard-and-guide": "guard-and-guide",
+        "herdr-skills": "herdr-skills",
         "home-manager": "home-manager",
+        "humanlayer-skills": "humanlayer-skills",
         "hunk": "hunk",
+        "japanese-tech-writing": "japanese-tech-writing",
+        "mizchi-skills": "mizchi-skills",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs_2"

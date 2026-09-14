@@ -52,7 +52,7 @@ in
       source = oos "${configRoot}/zsh/.zshrc";
       force = true;
     };
-    ".agents".source = oos "${configRoot}/agents";
+    ".agents/.skill-lock.json".source = oos "${configRoot}/agents/.skill-lock.json";
     ".codex/agents".source = oos "${configRoot}/codex/agents";
     ".codex/hooks".source = oos "${configRoot}/codex/hooks";
     ".codex/hooks.json".source = oos "${configRoot}/codex/hooks.json";
@@ -66,9 +66,7 @@ in
     };
     ".claude/statusline.py".source = oos "${configRoot}/claude/statusline.py";
     ".claude/hooks".source = oos "${configRoot}/claude/hooks";
-    ".claude/skills".source = oos "${configRoot}/agents/skills";
     ".claude/CLAUDE.md".source = oos "${configRoot}/claude/CLAUDE.md";
     ".claude/RTK.md".source = oos "${configRoot}/claude/RTK.md";
-    ".cursor/skills".source = oos "${configRoot}/agents/skills";
   };
 }

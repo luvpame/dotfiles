@@ -19,6 +19,7 @@ in
       imports = [
         ./packages.nix
         ./files.nix
+        ./skills.nix
         ./services/herdr.nix
       ];
 

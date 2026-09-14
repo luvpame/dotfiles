@@ -30,7 +30,7 @@
 - Nix の入力やサービスを変更した後は darwin の switch コマンドを再実行し、サービスをスポットチェック（例: `launchctl list | grep herdr`）。
 
 ## コミット & PR ガイドライン
-- コミットメッセージは Conventional Commits（スコープ付き。例: `chore(nix): ...`、`docs(cursor): ...`、`chore(fish): ...`）。命令形を使用。
+- コミットメッセージは Conventional Commits（スコープ付き。例: `chore(nix): ...`、`docs(codex): ...`、`chore(fish): ...`）。命令形を使用。
 - コミットは焦点を絞る。無関係なツール設定と Nix 変更を混ぜない。
 - PR には以下を含める: 簡単な概要、影響範囲（Nix/Fish/アプリ設定）、実行したコマンド（`cd nix && nix flake check`、`just switch`）、UI 変更がある場合はスクリーンショット。
 
@@ -44,6 +44,7 @@
 ## Agent skills
 
 - 再利用可能なスキルは `config/agents/skills/` に保存。
+- ローカルスキルを追加または削除したら、`nix/nix-darwin/home-manager/skills.nix` の `localSkills` も更新して `just switch` で反映する。既存ファイルの編集は即時反映される。
 - タスクで特定のスキルが明示された場合は、そのスキルのワークフローを使用し、変更範囲は要求された領域に限定。
 
 ### Issue tracker

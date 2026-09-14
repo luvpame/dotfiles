@@ -15,7 +15,7 @@ description: 日本語の語順と名詞化の規範。原因・理由を漢語�
 
 ## 併用する規範
 
-作業前に `../japanese-tech-writing/SKILL.md` を読む。
+作業前に `~/.agents/skills/japanese-tech-writing/SKILL.md` を読む。
 
 この規範が扱うのは、語順と名詞化だけである。文体・語彙・演出・段落構成は `japanese-tech-writing` に従う。推敲を頼まれた原稿が両方に反しているときは、両方を直す。
 
