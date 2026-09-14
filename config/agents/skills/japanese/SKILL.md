@@ -1,12 +1,15 @@
 ---
 name: japanese
-description: 日本語の技術文書を書く、推敲する、リライトするときに、整形、論証、文末焦点、認知リズムの規範をまとめて適用する。
+description: 日本語の技術文書や記事を執筆、推敲するときに、目的に合う文章規範を選ぶ。短い作業報告や操作案内には使わない。
 ---
 
-作業前に、次の `SKILL.md` を順に最後まで読み、三つの規範を同時に適用する。
+依頼の目的に合う規範だけを読み、適用する。既読の規範は再読不要。
 
-1. [日本語技術文書の文章規範](~/.agents/skills/japanese-tech-writing/SKILL.md)
-2. [文末焦点と名詞化の規範](~/.agents/skills/japanese-end-focus/SKILL.md)
-3. [認知リズムを生むための日本語ライティング規範](~/.agents/skills/cognitive-rhythm-writing/SKILL.md)
+| 依頼の目的 | 読む規範 |
+| --- | --- |
+| 技術文書や記事の執筆、文章全体の推敲 | [日本語技術文書の文章規範](~/.agents/skills/japanese-tech-writing/SKILL.md) |
+| 翻訳調、硬い漢語、原因説明の語順の修正 | [文末焦点と名詞化の規範](~/.agents/skills/japanese-end-focus/SKILL.md) |
+| 読み物の緩急を作る、平坦な文章を直す | [認知リズムを生むための規範](~/.agents/skills/cognitive-rhythm-writing/SKILL.md) |
 
-書き上げたら、3つのファイルにある執筆後の点検手順を対象原稿へ適用し、整形、文末焦点、認知リズムを確認してから完了する。
+一文の修正など範囲が限定されている場合は、該当する箇所だけを確認する。
+選んだ規範で変更箇所を点検し、原稿の意味と不確実性を保っていることを確認して完了する。

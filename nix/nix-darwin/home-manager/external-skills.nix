@@ -34,6 +34,10 @@ pkgs.runCommand "external-agent-skill-sources" { nativeBuildInputs = [ pkgs.patc
   # コピー済み原本と一致することを検証する。意図して内容を更新するときだけhashも更新する。
   (cd "$out" && sha256sum --check ${./skill-patches/original-skills.sha256})
 
+  # 原本の検証後に、用途に応じて規範を読むための変更を適用する。
+  patch --batch --fuzz=0 --no-backup-if-mismatch "$out/japanese-tech-writing/SKILL.md" < ${./skill-patches/japanese-tech-writing.patch}
+  patch --batch --fuzz=0 --no-backup-if-mismatch "$out/cognitive-rhythm-writing/SKILL.md" < ${./skill-patches/cognitive-rhythm-writing.patch}
+
   # ../ は Nix store 側へ解決されるため、規範間の参照を実際の配布先へ向ける。
   substituteInPlace "$out/cognitive-rhythm-writing/SKILL.md" \
     --replace-fail '../japanese-tech-writing/SKILL.md' '${installedSkills}/japanese-tech-writing/SKILL.md' \

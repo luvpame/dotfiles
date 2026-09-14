@@ -1,6 +1,6 @@
 ---
 name: pr-review-assist
-description: PRのレビューを始めるとき、変更をどの順で読めばいいか整理したいときに使う。
+description: PR の変更を読む順序と確認点を、差分リンク付きの HTML に整理する。
 argument-hint: "[PR番号 または PR URL（省略時は現在ブランチのPR）]"
 disable-model-invocation: true
 ---
@@ -13,14 +13,18 @@ disable-model-invocation: true
 
 引数 `{n}`（PR番号 or URL）があればそれを対象にする。無ければ現在ブランチの PR を対象にする。
 
-1. `gh pr view [{n}] --json number,title,body,headRefName,baseRefName,baseRefOid,url,additions,deletions,changedFiles,files` を実行する。
-2. `git fetch origin {headRefName} --no-write-fetch-head` に続けて `git log --oneline {baseRefOid}..origin/{headRefName}` を実行する（1 の結果を使う）。
+1. `gh pr view [{n}] --json number,title,body,url,additions,deletions,changedFiles,files,commits` を実行する。
+2. 取得した `url` を使い、`gh pr diff "{url}"` で差分本文を読む。
 
-`gh pr view` が失敗する（PR がまだ無い）場合は、PR を作成してから再実行するよう伝えて終了する。
+失敗した場合はエラーを確認する。認証や通信の失敗を PR 不在と決めつけず、取得できなかった情報と原因を報告する。
 
-ファイル一覧は `files[*].path` で得る。差分本文は `gh pr diff {n}` で読む（層への分類にも HTML の内容にも使う）。base は必ず `baseRefOid` の SHA を使う（`origin/{baseRefName}` はスタック PR で差分が膨張するため使わない）。
+ファイル一覧は `files[*].path`、コミットの要約は `commits[*].oid` と `commits[*].messageHeadline` から得る。
+PR 自体の差分とコミット情報を使い、head のブランチ名から `origin` の履歴を推測しない。これにより fork PR も同じ手順で扱う。
+`files` の件数が `changedFiles` と一致することを確認する。
+`commits` が100件なら取得上限に達した可能性があるため、`gh api graphql --paginate` で対象 PR のコミットを全ページ取得する。クエリに `$endCursor: String` 変数を宣言し、`commits(first: 100, after: $endCursor)` と `pageInfo { hasNextPage endCursor }` を含める。
+ファイル、コミット、差分を追加取得できない場合は、欠けた範囲を未確認として示し、全件を確認したと扱わない。
 
-完了条件: `gh pr view` の JSON、`git log` の出力、`gh pr diff` の出力を取得済みである。
+完了条件: 対象 PR のメタデータ、ファイル一覧、コミット情報、差分本文を取得し、追加取得できなかった範囲があれば特定している。
 
 ## 2. 変更の分類
 
@@ -49,14 +53,10 @@ disable-model-invocation: true
 
 `template.html`（このスキルと同じディレクトリ）の構造に沿って HTML を書く。差分を羅列するのではなく判断を書く。
 
-まず次の2つを手順として実行する。
-
-1. Skill ツールで `eli33` を呼ぶ。題材は「この PR が何をするか」。得られた説明を要約セクションの本文にする。図解は SVG かテキスト図としてそのまま HTML 本体に埋める（別ファイルにしない）。
-2. Skill ツールで `show-me` を呼ぶ。題材は「この PR の変更の構造」。得られたテキスト図（ファイルツリーか依存図）を構造図セクションに `<pre>` で埋める。
-
-注意:
-- どちらも claude.ai への publish はしない。出力は HTML 本体に取り込む。
-- show-me の mermaid 記法はローカル HTML では描画されないため使わない。ファイルツリー・コールツリー・コンポーネントツリーなどのテキスト図にする。
+理解に役立つ図だけを HTML 本体へ SVG や `<pre>` のテキスト図として埋める。図が不要なら構造図セクションを省く。
+成人初心者への説明を組み立てるなら `eli33`、依存関係などの図を選ぶなら `show-me` を必要に応じて参照する。利用環境にある方法で該当スキルを読み、両方の呼び出しを必須にしない。
+Mermaid のコードをそのまま HTML に貼らない。テンプレートに描画機能はない。
+PR のタイトルや本文、パスを HTML に取り込む際は、テキストと属性値をエスケープする。
 
 - 差分本文そのものは HTML に貼らない。リンクが差分である。引用するとしても要点の数行まで。
 - 説明は短く書く。背景・経緯・言い換えを足さない。リンク先の差分で分かることは書かない。
@@ -90,10 +90,10 @@ disable-model-invocation: true
 
 ## 4. 出力
 
-1. スクラッチパッドディレクトリ（セッションのシステムプロンプト記載のパス）に `pr-{n}-review.html` として書き出す。
-2. `open` で開く。
-3. claude.ai への publish はしない。
-4. ターミナルには次の3行だけを出す。
+1. ユーザー指定の出力先、環境が提供する成果物ディレクトリの順に選ぶ。どちらもなければ `mktemp -d` で専用ディレクトリを作る。
+2. JSON の `number` を使った `pr-{number}-review.html` として保存する。引数の URL をファイル名に使わない。
+3. 保存した HTML の内容と差分リンクを確認し、利用可能なプレビュー機能か macOS の `open` で開く。開けない場合は保存先と理由を報告する。
+4. 最後に次の情報と、取得や表示ができなかった範囲があればその内容を短く示す。
 
    ```
    PRタイトル: {title}
@@ -101,6 +101,6 @@ disable-model-invocation: true
    HTML: {path}
    ```
 
-GitHub 上の Approve / Request changes は行わない（ユーザーが GitHub 上で行う）。
+成果物はローカルに保存する。外部への publish や GitHub 上の Approve / Request changes は、このスキルの実行に含めない。
 
-完了条件: HTML ファイルが書き出され `open` で開かれ、ターミナルに上記3行が出ている。
+完了条件: HTML を保存して内容とリンクを確認し、保存先と表示結果を報告している。
