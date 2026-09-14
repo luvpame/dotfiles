@@ -1,24 +1,102 @@
+model_reasoning_effort = "high"
+personality = "friendly"
+forced_login_method = "chatgpt"
 model = "gpt-6-astra"
-model_reasoning_effort = "medium"
+model_context_window = 1000000
+model_auto_compact_token_limit = 900000
+web_search = "live"
+suppress_unstable_features_warning = true
+approval_policy = "on-request"
+sandbox_mode = "danger-full-access"
+
 service_tier = "default"
 
 notify = ["/Users/luvpame/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
-approval_policy = "on-request"
-approvals_reviewer = "guardian_subagent"
-sandbox_mode = "workspace-write"
-web_search = "live"
+approvals_reviewer = "auto_review"
 
-[marketplaces.openai-primary-runtime]
-source_type = "local"
-source = "/Users/luvpame/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+[features]
+shell_snapshot = true
+# https://github.com/openai/codex/issues/26753 が解消されるまで無効化
+multi_agent_v2 = false
+prevent_idle_sleep = true
+hooks = true
+undo = true
+tool_search = true
+chronicle = false
+js_repl = false
+enable_mcp_apps = true
+mentions_v2 = true
+# web_search = "live" の組み込み web namespace と衝突するため無効化
+standalone_web_search = false
+terminal_resize_reflow = true
+
+[feedback]
+enabled = false
+
+[sandbox_workspace_write]
+network_access = true
+
+[tui]
+status_line = ["model-with-reasoning", "project-name", "git-branch", "context-used", "five-hour-limit", "weekly-limit", "codex-version", "pull-request-number", "branch-changes", "run-state", "fast-mode", "task-progress", "approval-mode"]
+theme = "catppuccin-latte"
+status_line_use_colors = true
+pet = "disabled"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+"gpt-5.6-sol" = 4
+gpt-6-astra = 4
+
+[projects."/Users/luvpame/dev/github.com/luvpame/dotfiles"]
+trust_level = "trusted"
+
+[projects."/Users/luvpame/dev/github.com/luvpame/tsuregoro"]
+trust_level = "trusted"
 
 [marketplaces.openai-bundled]
 source_type = "local"
 source = "/Users/luvpame/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
+[marketplaces.openai-primary-runtime]
+source_type = "local"
+source = "/Users/luvpame/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[marketplaces.ponytail]
+source_type = "git"
+source = "https://github.com/DietrichGebert/ponytail.git"
+
 [marketplaces.mattpocock]
 source_type = "git"
-source = "git@github.com:mattpocock/skills.git"
+source = "https://github.com/mattpocock/skills.git"
+
+[marketplaces.i-have-adhd]
+source_type = "git"
+source = "https://github.com/ayghri/i-have-adhd.git"
+ref = "main"
+
+[plugins."superpowers@openai-curated"]
+enabled = true
+
+[plugins."codex-security@openai-curated"]
+enabled = true
+
+[plugins."hugging-face@openai-curated"]
+enabled = false
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[plugins."sites@openai-bundled"]
+enabled = true
+
+[plugins."visualize@openai-bundled"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = false
+
+[plugins."chrome@openai-bundled"]
+enabled = false
 
 [plugins."documents@openai-primary-runtime"]
 enabled = true
@@ -32,71 +110,160 @@ enabled = true
 [plugins."presentations@openai-primary-runtime"]
 enabled = true
 
-[plugins."template-creator@openai-primary-runtime"]
-enabled = true
-
 [plugins."codex-app-tools@openai-bundled"]
 enabled = true
 
-[plugins."sites@openai-bundled"]
-enabled = true
-
-[plugins."browser@openai-bundled"]
+[plugins."ponytail@ponytail"]
 enabled = true
 
 [plugins."unified-computer-use@openai-bundled"]
 enabled = true
 
-[plugins."computer-use@openai-bundled"]
-enabled = true
-
-[plugins."visualize@openai-bundled"]
-enabled = true
-
-[plugins."computer-history@openai-bundled"]
-enabled = true
-
 [plugins."mattpocock-skills@mattpocock"]
 enabled = true
 
-[plugins."chrome@openai-bundled"]
+[plugins."i-have-adhd@i-have-adhd"]
 enabled = true
 
-[projects."/Users/luvpame/dev/github.com/luvpame/dotfiles"]
-trust_level = "trusted"
+[hooks.state]
 
-[projects."/Users/luvpame/dev/github.com/luvpame/tsuregoro"]
-trust_level = "trusted"
+[hooks.state."/Users/luvpame/.codex/hooks.json:pre_tool_use:0:0"]
+trusted_hash = "sha256:834b651aa08dfd2df53a7236deeea5833d288e73624e6265cff78ea1dd38d3fd"
+
+[hooks.state."/Users/luvpame/.codex/hooks.json:pre_tool_use:0:1"]
+trusted_hash = "sha256:834b651aa08dfd2df53a7236deeea5833d288e73624e6265cff78ea1dd38d3fd"
+
+[hooks.state."/Users/luvpame/.codex/hooks.json:session_start:0:0"]
+trusted_hash = "sha256:341f095eb06db5b52fa3c919f6e3ba2ada4c63883b73a18707a760623a7fc589"
+
+[hooks.state."/Users/luvpame/.codex/hooks.json:stop:0:0"]
+trusted_hash = "sha256:c7e90260f748ca2cf997296319e0e5e2523852533151925c503c7c9972d874fd"
+
+[hooks.state."/Users/luvpame/.codex/hooks.json:user_prompt_submit:0:0"]
+trusted_hash = "sha256:bdc746f856ae64e9f31d4775827bf8823a09a8272a17959d196b42f4c9ff06f8"
+
+[hooks.state."ponytail@ponytail:hooks/claude-codex-hooks.json:session_start:0:0"]
+trusted_hash = "sha256:5f81d38f47448a1581c08ec877e044d9e04dd6f814dce3f2671f7a8edadd719b"
+
+[hooks.state."ponytail@ponytail:hooks/claude-codex-hooks.json:user_prompt_submit:0:0"]
+trusted_hash = "sha256:6a6f42bc3b58d6262db38bfd74d7f340fcca2b09cdb134aad365063f0bfefca4"
+
+[hooks.state."ponytail@ponytail:hooks/claude-codex-hooks.json:subagent_start:0:0"]
+trusted_hash = "sha256:1423b56c1322f96c8f74c51c1e7ae9a047b904c1fa43ee9165d462fd7a6e70ef"
+
+[hooks.state."/Users/luvpame/.codex/hooks.json:session_start:0:1"]
+trusted_hash = "sha256:b0d480f84b028d26ee9a2384f70653cac0565870b0543aa317e4c67d5d75e3d5"
+
+[hooks.state."/Users/luvpame/.codex/hooks.json:session_start:0:2"]
+trusted_hash = "sha256:51035e20f9602e121fe6afe94e36283df3a6589eebe02f4ad319ee304d16351e"
+
+[hooks.state."/Users/luvpame/.codex/hooks.json:stop:0:1"]
+trusted_hash = "sha256:7c52bf2a50e603e45d405cb482d234f2abb8c8940c6dae7aaa334a7ac514fe01"
+
+[hooks.state."/Users/luvpame/.codex/hooks.json:session_start:1:0"]
+trusted_hash = "sha256:fc5b9aca2b6be974d70b9def52d0b1b714cd640cb361c2f52bd9e20776b2268f"
+
+[hooks.state."i-have-adhd@i-have-adhd:hooks/hooks.json:session_start:0:0"]
+trusted_hash = "sha256:f14f820a4bb04f568faf482695f08471d7ed733a25fd94181693a7be4f06a637"
+
+[hooks.state."/Users/luvpame/.codex/hooks.json:pre_tool_use:1:0"]
+trusted_hash = "sha256:ffc728f77cebaa03c24ec7a89f7335c1d5631817672103d1662e792c0f1fa9f7"
+
+[hooks.state."/Users/luvpame/.codex/hooks.json:permission_request:0:0"]
+trusted_hash = "sha256:d96d418c690c8ba97dfe30f0c433ce4f0332b8893beb27da71c054bf80be3e35"
+
+[hooks.state."/Users/luvpame/.codex/hooks.json:post_tool_use:0:0"]
+trusted_hash = "sha256:04d23944756e271400a84d6b6fa63efa0530cfcca31eb6c52bf06ab499c79912"
+
+[hooks.state."/Users/luvpame/.codex/hooks.json:user_prompt_submit:1:0"]
+trusted_hash = "sha256:313a870008314bb0c34057cb5b40fd431e5fe07ebbb6ac0a7a294a96682da1e9"
+
+[hooks.state."/Users/luvpame/.codex/hooks.json:subagent_start:0:0"]
+trusted_hash = "sha256:262bdfb5823ef3c1b8638fad8b4431264ec519415333bef306dbc4500ec26e74"
+
+[hooks.state."/Users/luvpame/.codex/hooks.json:subagent_stop:0:0"]
+trusted_hash = "sha256:96fc402ce2fb25ba595aecece1dfc254b0342b3750b9514f41c2d6b3fab37a73"
+
+[hooks.state."/Users/luvpame/.codex/hooks.json:stop:1:0"]
+trusted_hash = "sha256:158129f9b947fc3619038c4ffb10bfc4e2abe1a140bc72c9c0baae2e0207c2a8"
 
 [desktop]
-followUpQueueMode = "steer"
-defaultTerminalLocation = "bottom"
-browser-show-full-url = true
-worktree-upstream-refresh-mode = "best-effort"
-conversationDetailMode = "STEPS_COMMANDS"
-preventSleepWhileRunning = true
-toys-audio-visualizer-enabled = true
-toys-confetti-enabled = true
+appearanceTheme = "system"
 appearanceLightCodeThemeId = "catppuccin"
+appearanceDarkCodeThemeId = "catppuccin"
+sansFontSize = 16
+codeFontSize = 16
 usePointerCursors = true
+followUpQueueMode = "steer"
+composerEnterBehavior = "enter"
+reviewDelivery = "detached"
+localeOverride = "ja-JP"
+preventSleepWhileRunning = true
+keepRemoteControlAwakeWhilePluggedIn = true
+hotkey-window-projectless-default-enabled = true
+git-show-sidebar-pr-icons = true
+git-commit-instructions = "$conventional-commit スキルを使用すること"
+notifications-turn-mode = "unfocused"
+selected-avatar-id = "fireball"
+conversationDetailMode = "STEPS_COMMANDS"
+mac-menu-bar-enabled = true
+show-context-window-usage = true
+appearanceDiffMarkerStyle = "symbols"
+ambient-suggestions-enabled = false
 dock-icon-preference = "codex-system"
+avatar-overlay-mascot-width-px = 80
+appshotDestination = "last-chat"
+show-ultra-in-model-picker-slider = false
+enabled-reasoning-efforts = ["low", "medium", "high", "xhigh", "ultra", "max"]
+git-pull-request-merge-method = "squash"
+realtimeVoiceScreenContextEnabled = true
+defaultTerminalLocation = "right"
+toys-confetti-enabled = true
+toys-audio-visualizer-enabled = true
+avatar-overlay-pet-visible = false
 
 [desktop.appearanceLightChromeTheme]
 accent = "#8839ef"
-accentSource = "custom"
-contrast = 45
+contrast = 40
 ink = "#4c4f69"
 opaqueWindows = false
 surface = "#eff1f5"
 
 [desktop.appearanceLightChromeTheme.fonts]
-content = '"HackGen Console NF"'
+code = '"HackGen Console NF"'
 ui = '"HackGen Console NF"'
+
+[desktop.appearanceLightChromeTheme.fonts.codeFace]
+family = "HackGen Console NF"
+fullName = "HackGen Console NF Bold"
+postscriptName = "HackGenConsoleNF-Bold"
 
 [desktop.appearanceLightChromeTheme.semanticColors]
 diffAdded = "#40a02b"
 diffRemoved = "#d20f39"
 skill = "#8839ef"
+
+[desktop.appearanceDarkChromeTheme]
+accent = "#cba6f7"
+contrast = 100
+ink = "#cdd6f4"
+opaqueWindows = false
+surface = "#1e1e2e"
+
+[desktop.appearanceDarkChromeTheme.fonts]
+code = "HackGen Console NF"
+ui = "Gen Interface JP"
+
+[desktop.appearanceDarkChromeTheme.semanticColors]
+diffAdded = "#a6e3a1"
+diffRemoved = "#f38ba8"
+skill = "#cba6f7"
+
+[desktop.open-in-target-preferences]
+global = "systemDefault"
+
+[desktop.open-in-target-preferences.perPath]
+"/Users/luvpame/dev/local-extensions" = "zed"
 
 [mcp_servers.node_repl]
 args = []
@@ -115,51 +282,17 @@ NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.903.61454"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/luvpame/.codex/plugins/cache/openai-bundled/browser/26.903.61454/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
+BROWSER_USE_CODEX_APP_VERSION = "26.903.71938"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/luvpame/.codex/plugins/cache/openai-bundled/browser/26.903.71938/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
 SKY_CUA_SERVICE_PATH = "/Users/luvpame/.codex/computer-use/Codex Computer Use.app"
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
 
-[mcp_servers.computer-use]
-command = "./Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient"
-args = ["mcp"]
-cwd = "."
+[[skills.config]]
+name = "superpowers:using-superpowers"
 enabled = false
 
-[features]
-memories = true
-chronicle = true
+[notice]
+hide_rate_limit_model_nudge = true
 
-[memories]
-generate_memories = true
-use_memories = true
-
-[hooks.state]
-
-[hooks.state."/Users/luvpame/.codex/hooks.json:pre_tool_use:0:0"]
-trusted_hash = "sha256:834b651aa08dfd2df53a7236deeea5833d288e73624e6265cff78ea1dd38d3fd"
-
-[hooks.state."/Users/luvpame/.codex/hooks.json:session_start:0:0"]
-trusted_hash = "sha256:341f095eb06db5b52fa3c919f6e3ba2ada4c63883b73a18707a760623a7fc589"
-
-[hooks.state."/Users/luvpame/.codex/hooks.json:session_start:0:1"]
-trusted_hash = "sha256:b0d480f84b028d26ee9a2384f70653cac0565870b0543aa317e4c67d5d75e3d5"
-
-[hooks.state."/Users/luvpame/.codex/hooks.json:session_start:0:2"]
-trusted_hash = "sha256:51035e20f9602e121fe6afe94e36283df3a6589eebe02f4ad319ee304d16351e"
-
-[hooks.state."/Users/luvpame/.codex/hooks.json:user_prompt_submit:0:0"]
-trusted_hash = "sha256:bdc746f856ae64e9f31d4775827bf8823a09a8272a17959d196b42f4c9ff06f8"
-
-[hooks.state."/Users/luvpame/.codex/hooks.json:stop:0:0"]
-trusted_hash = "sha256:c7e90260f748ca2cf997296319e0e5e2523852533151925c503c7c9972d874fd"
-
-[hooks.state."/Users/luvpame/.codex/hooks.json:stop:0:1"]
-trusted_hash = "sha256:7c52bf2a50e603e45d405cb482d234f2abb8c8940c6dae7aaa334a7ac514fe01"
-
-[tui]
-status_line = ["model-with-reasoning", "project-name", "git-branch", "approval-mode", "weekly-limit", "fast-mode", "task-progress"]
-status_line_use_colors = true
-
-[sandbox_workspace_write]
-network_access = true
+[apps.connector_openai_codex_document_control]
+enabled = false

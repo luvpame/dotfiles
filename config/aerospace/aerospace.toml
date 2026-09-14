@@ -52,20 +52,36 @@ on-mode-changed = []
 # 参照: https://nikitabobko.github.io/AeroSpace/goodies#automation
 
 [[on-window-detected]]
+if.app-id = "com.stengo.DeskPad"
+run = "move-node-to-workspace 1" # DeskPadをワークスペース1に移動
+
+[[on-window-detected]]
 if.app-id = "company.thebrowser.dia"
 run = "move-node-to-workspace 1" # Diaをワークスペース1に移動
 
 [[on-window-detected]]
+if.app-id = "com.tinyspeck.slackmacgap"
+run = "move-node-to-workspace 2" # Slackをワークスペース2に移動
+
+[[on-window-detected]]
 if.app-id = "com.github.wez.wezterm"
-run = "move-node-to-workspace 2" # WezTermをワークスペース3に移動
+run = "move-node-to-workspace 3" # WezTermをワークスペース3に移動
+
+[[on-window-detected]]
+if.app-id = "com.anthropic.claudefordesktop"
+run = "move-node-to-workspace 4" # Claudeをワークスペース4に移動
 
 [[on-window-detected]]
 if.app-id = "com.openai.codex"
-run = "move-node-to-workspace 3" # Codexをワークスペース5に移動
+run = "move-node-to-workspace 5" # Codexをワークスペース5に移動
 
 [[on-window-detected]]
 if.app-id = "com.spotify.client"
 run = "move-node-to-workspace 8" # Spotifyをワークスペース8に移動
+
+[[on-window-detected]]
+if.app-id = "md.obsidian"
+run = "move-node-to-workspace 9" # Obsidianをワークスペース9に移動
 
 # フローティングで扱うアプリ
 [[on-window-detected]]
@@ -104,7 +120,7 @@ preset = "qwerty"
 #   複数のパターンを配列で指定可能（最初にマッチしたものが使用される）
 
 [workspace-to-monitor-force-assignment]
-0 = "main"  # ワークスペース0をDeskPad(仮想ディスプレイ)に割り当て
+0 = "DeskPad*"  # ワークスペース0をDeskPad(仮想ディスプレイ)に割り当て
 1 = "main"      # ワークスペース1をメインモニターに割り当て
 2 = "main"      # ワークスペース2をメインモニターに割り当て
 3 = "main"      # ワークスペース3をメインモニターに割り当て
@@ -128,12 +144,11 @@ preset = "qwerty"
 inner.horizontal = 5
 inner.vertical = 5
 outer.left = 5
-outer.bottom = 5
-outer.top = [
-  { monitor.secondary = 7 },
-  { monitor.'^built-in retina display$' = 3 },
-  36,
+outer.bottom = [
+  { monitor.secondary = 5},
+  88
 ]
+outer.top = 5
 outer.right = 5
 
 # 'main' バインディングモードの宣言

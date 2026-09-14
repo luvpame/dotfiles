@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PR #{{pr_number}} レビュー</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --card: #f9fafb;
+    --accent: #2563eb;
+    --badge-read: #b45309;
+    --badge-diff: #6b7280;
+    --warn-bg: #fffbeb;
+    --warn-border: #fbbf24;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181d;
+      --fg: #e6e6e6;
+      --muted: #9aa0a8;
+      --border: #2c2f36;
+      --card: #1d2026;
+      --accent: #7aa2f7;
+      --badge-read: #d29922;
+      --badge-diff: #9aa0a8;
+      --warn-bg: #2a2410;
+      --warn-border: #7a5c10;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px 16px 80px;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.7;
+  }
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+  header h1 {
+    font-size: 1.4em;
+    margin: 0 0 8px;
+  }
+  header .meta {
+    color: var(--muted);
+    font-size: 0.9em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+  }
+  header .stat-add { color: #22863a; }
+  header .stat-del { color: #cb2431; }
+  header .commits {
+    margin-top: 12px;
+    font-size: 0.85em;
+    color: var(--muted);
+    white-space: pre-wrap;
+  }
+  a { color: var(--accent); }
+  h2 { font-size: 1.15em; margin-top: 0; }
+  section.summary, section.cautions {
+    margin-bottom: 24px;
+  }
+  section.cautions {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    border-radius: 8px;
+    padding: 12px 16px;
+  }
+  section.cautions ul { margin: 8px 0 0; padding-left: 1.2em; }
+  details.layer {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+  }
+  details.layer summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.05em;
+  }
+  details.layer .purpose {
+    color: var(--muted);
+    margin: 4px 0 12px;
+  }
+  .sublayer-heading {
+    font-weight: 600;
+    font-size: 0.9em;
+    color: var(--muted);
+    margin: 16px 0 8px;
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+  }
+  .file-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+  }
+  .file-item .file-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .file-item .file-path {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.9em;
+    word-break: break-all;
+  }
+  .badge {
+    font-size: 0.75em;
+    padding: 1px 8px;
+    border-radius: 999px;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .badge-read { background: var(--badge-read); }
+  .badge-diff { background: var(--badge-diff); }
+  .file-item .point { margin: 6px 0 0; }
+  .file-item ul.checks {
+    margin: 4px 0 0;
+    padding-left: 1.2em;
+    color: var(--muted);
+  }
+  section.structure {
+    margin-bottom: 24px;
+  }
+  section.structure pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.85em;
+    overflow-x: auto;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 8px 0 0;
+  }
+  footer.notes {
+    margin-top: 24px;
+    font-size: 0.9em;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+  #progress-bar {
+    position: sticky;
+    bottom: 0;
+    max-width: 760px;
+    margin: 24px auto 0;
+    padding: 8px 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.85em;
+    color: var(--muted);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <h1><a href="{{pr_url}}">#{{pr_number}} {{pr_title}}</a></h1>
+  <div class="meta">
+    <span><span class="stat-add">+{{additions}}</span> <span class="stat-del">-{{deletions}}</span></span>
+    <span>{{changed_files}} files changed</span>
+    <span>base: {{base_sha_short}}</span>
+  </div>
+  <div class="commits">{{commit_log}}</div>
+</header>
+
+<section class="summary">
+  <h2>要約</h2>
+  <!-- eli33 の図解があれば <p> の前後に埋める -->
+  <p>{{pr_summary_3_sentences}}</p>
+</section>
+
+<section class="structure">
+  <h2>変更の構造</h2>
+  <pre>{{structure_diagram}}</pre>
+</section>
+
+<!-- 横断の注意点: 該当なしなら section ごと省略する -->
+<section class="cautions">
+  <h2>横断の注意点</h2>
+  <ul>
+    <!-- 繰り返し: 注意点1件ごとに <li> -->
+    <li>{{cross_cutting_caution}}</li>
+  </ul>
+</section>
+
+<!-- 繰り返し: 層(1〜5)ごとに <details class="layer"> 。空の層は出力しない -->
+<details class="layer" open>
+  <summary>{{layer_name}}</summary>
+  <p class="purpose">{{layer_purpose_1_sentence}}</p>
+
+  <!-- 層内が10件を超えたときだけ機能ディレクトリ単位の小見出しを入れる。10件以下なら出さない -->
+  <p class="sublayer-heading">{{sublayer_name}}</p>
+
+  <!-- 繰り返し: 層内のファイルごとに .file-item -->
+  <div class="file-item">
+    <div class="file-head">
+      <input type="checkbox" class="file-check" data-id="{{file_path}}">
+      <span class="file-path">{{file_path}}</span>
+      <a href="{{pr_url}}/files#diff-{{path_sha256}}" target="_blank" rel="noopener">差分</a>
+      <span class="badge badge-read">精読</span>
+      <!-- 同型確認ファイルは badge-diff に差し替え、ラベルは「差分同型確認」 -->
+    </div>
+    <p class="point">{{change_summary_1_sentence}}</p>
+    <ul class="checks">
+      <!-- 繰り返し: 確認ポイント1〜3個。無ければ <li>確認ポイントなし（自明な変更）</li> の1行のみ -->
+      <li>{{check_point}}</li>
+    </ul>
+  </div>
+
+</details>
+
+<footer class="notes">
+  <p>末尾の調整コミット・自動生成物について: 生成物は生成元の変更と対応しているか、調整コミットは直前の層の差分に含まれているかを確認する。</p>
+</footer>
+
+<div id="progress-bar"><span id="progress-counter">0 / 0 読了</span></div>
+
+</main>
+
+<script>
+(function () {
+  var prNum = '{{pr_number}}';
+  var key = 'pr-review-' + prNum;
+  var boxes = document.querySelectorAll('.file-check');
+  var counter = document.getElementById('progress-counter');
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(key) || '{}'); } catch (e) {}
+
+  function updateCounter() {
+    var done = document.querySelectorAll('.file-check:checked').length;
+    counter.textContent = done + ' / ' + boxes.length + ' 読了';
+  }
+
+  boxes.forEach(function (cb) {
+    if (saved[cb.dataset.id]) cb.checked = true;
+    cb.addEventListener('change', function () {
+      saved[cb.dataset.id] = cb.checked;
+      try { localStorage.setItem(key, JSON.stringify(saved)); } catch (e) {}
+      updateCounter();
+    });
+  });
+
+  updateCounter();
+})();
+</script>
+
+</body>
+</html>

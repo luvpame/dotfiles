@@ -110,6 +110,22 @@
         "type": "github"
       }
     },
+    "claude-code-source": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789239707,
+        "narHash": "sha256-+gAWn/nihm4tL812Pqpf7FXdsrOThSRizhuE8bj7epU=",
+        "owner": "ryoppippi",
+        "repo": "claude-code-overlay",
+        "rev": "d3ffa75cab359b63bed589f53cf09c4ca065a9dc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ryoppippi",
+        "repo": "claude-code-overlay",
+        "type": "github"
+      }
+    },
     "cognitive-rhythm-writing": {
       "flake": false,
       "locked": {
@@ -570,6 +586,7 @@
         "anthropic-skills": "anthropic-skills",
         "cage": "cage",
         "cclens": "cclens",
+        "claude-code-source": "claude-code-source",
         "cognitive-rhythm-writing": "cognitive-rhythm-writing",
         "crit": "crit",
         "guard-and-guide": "guard-and-guide",

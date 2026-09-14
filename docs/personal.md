@@ -1,6 +1,6 @@
 # Personal dotfiles
 
-`main` maintains the work configuration. `personal` keeps the personal changes on top of it, using the same `darwinConfigurations.default` entry point and the same checkout at `/Users/luvpame/dev/github.com/luvpame/dotfiles`.
+`main` is the source of truth for shared configuration. `personal` keeps only the local user/home paths, machine-specific runtime/project state, and required personal applications on top of it, using the same `darwinConfigurations.default` entry point and the same checkout at `/Users/luvpame/dev/github.com/luvpame/dotfiles`.
 
 Do not create a second checkout for the personal branch. Switch branches in this checkout so ghq continues to find the repository at its canonical path.
 
@@ -46,7 +46,7 @@ git switch personal
 git merge main
 ```
 
-Review incoming user settings, application lists, agent configuration, and any merge conflicts. Preserve the personal user name and required personal applications. Then run `just check` and `just build` before applying the result with `just switch`.
+Resolve shared configuration and merge conflicts in favor of `main`, including application settings, agent features, skill distribution, and dependency locks. Preserve only the personal user/home paths, machine-specific runtime/project state, and required personal applications (AltServer, Discord, rekordbox, and Xcode). Do not carry forward removed features or personal UI preferences by default. Then run `just check` and `just build` before applying the result with `just switch`.
 
 Prefer landing shared improvements on `main`, then merging them into the personal branch. Do not merge the entire personal branch back into the work configuration.
 

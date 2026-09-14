@@ -19,7 +19,7 @@ just switch
 
 # 全配布先が Nix store を参照していることを、原本を移動する前に確認する。
 for name in "${names[@]}"; do
-  for target in "$HOME/.agents/skills"; do
+  for target in "$HOME/.agents/skills" "$HOME/.claude/skills"; do
     actual="$(cd "$target/$name" && pwd -P)"
     case "$actual" in
       /nix/store/*) ;;

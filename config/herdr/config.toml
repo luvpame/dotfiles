@@ -37,7 +37,7 @@ command = "lazygit"
 [[keys.command]]
 key = "prefix+p"
 type = "popup"
-description = "worktree or root"
+description = "PR Review, worktree or root"
 command = "fish -c 'source ~/.config/herdr/scripts/worktree-fzf.fish; herdr_worktree_fzf'"
 width = "80%"
 height = "80%"
@@ -55,6 +55,14 @@ key = "prefix+t"
 type = "popup"
 description = "open floating terminal"
 command = "fish"
+width = "80%"
+height = "80%"
+
+[[keys.command]]
+key = "prefix+shift+r"
+type = "popup"
+description = "PR Review"
+command = "python3 ~/.config/herdr/scripts/pr-review.py"
 width = "80%"
 height = "80%"
 

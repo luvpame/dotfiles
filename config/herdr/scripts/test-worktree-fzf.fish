@@ -37,7 +37,6 @@ end
 
 function python3
     set --global --append python_calls (string join \t -- $argv)
-    return 0
 end
 
 function herdr
@@ -111,7 +110,7 @@ or begin
     echo ' New Worktree was not the first candidate.' >&2
     exit 1
 end
-test (string join , -- $action_candidates) = ' Worktree 作成・移動,󰉋 Original Root,󰆴 Worktree 削除,󰘬 マージ済み PR の Worktree を一括削除'
+test (string join , -- $action_candidates) = ' PR Review, Worktree 作成・移動,󰉋 Original Root,󰆴 Worktree 削除,󰘬 マージ済み PR の Worktree を一括削除'
 or exit 1
 assert_not_contains ' PR Review' $fzf_candidates
 assert_not_contains (string join \t -- '󰉋 Original Root' /private/tmp/repo) $fzf_candidates
@@ -157,6 +156,14 @@ or exit 1
 assert_contains (string join \t -- worktree open --workspace main-workspace --path /private/tmp/repo --focus --json) $herdr_calls
 
 test (count $fzf_candidates) -eq 0
+or exit 1
+
+set --global --erase herdr_calls
+set --global action_selection ' PR Review'
+herdr_worktree_fzf
+or exit 1
+assert_contains ~/.config/herdr/scripts/pr-review.py $python_calls
+test (count $herdr_calls) -eq 0
 or exit 1
 
 # Cancel either menu without opening a workspace or starting a review.

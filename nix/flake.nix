@@ -52,6 +52,10 @@
       url = "github:Warashi/cage/v0.1.13";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    claude-code-source = {
+      url = "github:ryoppippi/claude-code-overlay";
+      flake = false;
+    };
     cclens.url = "github:lambdalisue/cclens";
     crit = {
       url = "git+https://github.com/tomasz-tomczyk/crit.git";

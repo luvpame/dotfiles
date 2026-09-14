@@ -25,9 +25,20 @@ presets:
       # ランタイムで書き込まれるツール設定 (op, gcloud 等)
       - path: "$HOME/.config"
         eval-symlinks: true
-      # 個人用設定ディレクトリ
       - path: "$HOME/.dotfiles"
         eval-symlinks: true
+  claude-code:
+    allow:
+      # Claude Code データ
+      - path: "$HOME/.claude"
+        eval-symlinks: true
+      - path: "$HOME/.crit"
+        eval-symlinks: true
+      - "$HOME/.claude.json"
+      - "$HOME/.claude.json.backup"
+      - "$HOME/.claude.json.lock"
+      - "$HOME/.claude.lock"
+      - "$HOME/Library/Caches/claude-cli-nodejs"
   codex:
     allow:
       - path: "$HOME/.codex"
@@ -37,6 +48,11 @@ presets:
     allow-git: true
 
 auto-presets:
+  - command: claude
+    presets:
+      - common
+      - claude-code
+      - git
   - command: codex
     presets:
       - common
