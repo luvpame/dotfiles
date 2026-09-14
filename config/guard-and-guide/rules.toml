@@ -1,18 +1,6 @@
 version = 1
 
-# 削除を禁止する
-[[rules]]
-matcher = "Bash"
-regex = '\brm\b'
-message = "ファイル・ディレクトリの削除は禁止されています。削除コマンドをユーザーに提示し、ユーザー自身に実行してもらってください。"
-
-# 単純に実行を禁止する例
-[[rules]]
-matcher = "Bash"
-regex = '\bgit\s+push\b'
-message = "'git push'の使用は禁止されています。ユーザー自身に実行するように求めてください。"
-
-# 代替案を提示する例
+# 一括 add を禁止する
 [[rules]]
 matcher = "Bash"
 regex = '\bgit\s+add\s+(-A|--all|\.($|[ ;|&]))'
