@@ -52,12 +52,11 @@ in
       source = oos "${configRoot}/zsh/.zshrc";
       force = true;
     };
-    ".agents".source = oos "${configRoot}/agents";
+    ".agents/.skill-lock.json".source = oos "${configRoot}/agents/.skill-lock.json";
     ".codex/agents".source = oos "${configRoot}/codex/agents";
     ".codex/hooks".source = oos "${configRoot}/codex/hooks";
     ".codex/hooks.json".source = oos "${configRoot}/codex/hooks.json";
     ".codex/AGENTS.md".source = oos "${configRoot}/codex/AGENTS.md";
     ".codex/config.toml".source = oos "${configRoot}/codex/config.toml";
-    ".cursor/skills".source = oos "${configRoot}/agents/skills";
   };
 }

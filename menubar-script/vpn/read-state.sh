@@ -42,11 +42,11 @@ while IFS= read -r line; do
 done <<< "$vpn_services"
 
 if [[ "$has_connected" == true ]]; then
-  printf '🔒 VPN 接続中\n'
+  printf '\n'
 elif [[ "$has_connecting" == true ]]; then
-  printf '⏳ VPN 接続処理中\n'
+  printf ' \n'
 elif [[ "$has_disconnecting" == true ]]; then
-  printf '⏳ VPN 切断処理中\n'
+  printf ' \n'
 elif [[ "$has_disconnected" == true ]]; then
-  printf '○ VPN 未接続 | color=#888888\n'
+  printf ' | color=#888888\n'
 fi

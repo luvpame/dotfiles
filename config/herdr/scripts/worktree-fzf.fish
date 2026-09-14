@@ -1,10 +1,10 @@
 function herdr_worktree_fzf --description 'Open a Git worktree in Herdr'
     set -l new_worktree_label ' New Worktree'
     set -l original_root_label '󰉋 Original Root'
+    set -l worktree_label ' Worktree 作成・移動'
+    set -l remove_label '󰆴 Worktree 削除'
+    set -l merged_label '󰘬 マージ済み PR の Worktree を一括削除'
     set -l commands herdr jq fzf wt git direnv
-    if test "$argv[1]" = --repo
-        set --append commands ghq
-    end
 
     for command in $commands
         if not type -q $command
@@ -13,22 +13,28 @@ function herdr_worktree_fzf --description 'Open a Git worktree in Herdr'
         end
     end
 
-    if test "$argv[1]" != --repo; and test -z "$HERDR_ACTIVE_WORKSPACE_ID"
+    if test -z "$HERDR_ACTIVE_WORKSPACE_ID"
         echo 'herdr_worktree_fzf: run this command from a Herdr custom command.' >&2
         return 1
     end
 
     set -l worktree_source --workspace "$HERDR_ACTIVE_WORKSPACE_ID"
-    if test "$argv[1]" = --repo
-        set -l repo_path (
-            ghq list --full-path | sort --unique | fzf \
-                --layout=reverse \
-                --prompt='repo> '
-        )
-        if test -z "$repo_path"
-            return
-        end
-        set worktree_source --cwd "$repo_path"
+    set -l action (
+        printf '%s\n' "$worktree_label" "$original_root_label" "$remove_label" "$merged_label" | fzf \
+            --no-sort \
+            --layout=reverse \
+            --prompt='repo action> '
+    )
+    if test -z "$action"
+        return
+    end
+
+    if test "$action" = "$remove_label"
+        python3 ~/.config/herdr/scripts/worktree-remove.py
+        return $status
+    else if test "$action" = "$merged_label"
+        python3 ~/.config/herdr/scripts/worktree-remove.py --merged
+        return $status
     end
 
     set -l worktree_list (herdr worktree list $worktree_source --json)
@@ -36,23 +42,27 @@ function herdr_worktree_fzf --description 'Open a Git worktree in Herdr'
     set -l repo_root (printf '%s\n' "$worktree_list" | jq --raw-output '.result.source.repo_root')
     or return
 
-    set -l selection (
-        begin
-            printf '%s\n' "$new_worktree_label"
-            printf '%s\t%s\n' "$original_root_label" "$repo_root"
-            printf '%s\n' "$worktree_list" | jq --raw-output '
-                .result.source.source_checkout_path as $source
-                | .result.source.repo_root as $root
-                | .result.worktrees[]
-                | select(.path != $source and .path != $root)
-                | [.branch, .path]
-                | @tsv
-            '
-        end | fzf \
-            --no-sort \
-            --layout=reverse \
-            --prompt='worktree> '
-    )
+    set -l selection
+    if test "$action" = "$original_root_label"
+        set selection (printf '%s\t%s\n' "$original_root_label" "$repo_root")
+    else if test "$action" = "$worktree_label"
+        set selection (
+            begin
+                printf '%s\n' "$new_worktree_label"
+                printf '%s\n' "$worktree_list" | jq --raw-output '
+                    .result.source.source_checkout_path as $source
+                    | .result.source.repo_root as $root
+                    | .result.worktrees[]
+                    | select(.path != $source and .path != $root)
+                    | [.branch, .path]
+                    | @tsv
+                '
+            end | fzf \
+                --no-sort \
+                --layout=reverse \
+                --prompt='worktree> '
+        )
+    end
     if test -z "$selection"
         return
     end
@@ -134,32 +144,11 @@ function herdr_worktree_fzf --description 'Open a Git worktree in Herdr'
 
     set -l tab_list (herdr tab list --workspace "$workspace_id")
     or return
-    set -l agent_tab_id (printf '%s\n' "$tab_list" | jq --raw-output \
-        'first(.result.tabs[] | select(.label == "agent") | .tab_id) // empty')
-    set -l nvim_tab_id (printf '%s\n' "$tab_list" | jq --raw-output \
-        'first(.result.tabs[] | select(.label == "nvim") | .tab_id) // empty')
+    set -l agent_tab_id (printf '%s\n' "$tab_list" | jq --raw-output '.result.tabs[0].tab_id')
+    set -l pane_list (herdr pane list)
+    or return
+    set -l agent_pane_id (printf '%s\n' "$pane_list" | jq --raw-output --arg tab_id "$agent_tab_id" \
+        'first(.result.panes[] | select(.tab_id == $tab_id) | .pane_id) // empty')
 
-    if test -z "$agent_tab_id"
-        set agent_tab_id (printf '%s\n' "$tab_list" | jq --raw-output '.result.tabs[0].tab_id')
-        set -l pane_list (herdr pane list)
-        or return
-        set -l agent_pane_id (printf '%s\n' "$pane_list" | jq --raw-output --arg tab_id "$agent_tab_id" \
-            'first(.result.panes[] | select(.tab_id == $tab_id) | .pane_id) // empty')
-
-        herdr tab rename "$agent_tab_id" agent >/dev/null
-        or return
-        herdr pane run "$agent_pane_id" cc
-        or return
-    end
-
-    if test -z "$nvim_tab_id"
-        set -l nvim_tab (herdr tab create \
-            --workspace "$workspace_id" \
-            --cwd "$worktree_path" \
-            --label nvim \
-            --no-focus)
-        or return
-        set -l nvim_pane_id (printf '%s\n' "$nvim_tab" | jq --raw-output '.result.root_pane.pane_id')
-        herdr pane run "$nvim_pane_id" nvim
-    end
+    herdr pane run "$agent_pane_id" cc
 end

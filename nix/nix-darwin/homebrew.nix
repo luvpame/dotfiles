@@ -30,7 +30,6 @@ let
     "fisher"
     "mas" # Mac App Store CLI
     "im-select"
-    "ziggity"
     "worktrunk"
     "media-control" # macOS Now Playing metadata
     "ripgrep" # codex formula dependency; keep cleanup from trying to remove it

@@ -1,5 +1,42 @@
 {
   "nodes": {
+    "agent-skills": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789145426,
+        "narHash": "sha256-Wf+7Qzt8+nz4TXPCbWnMjOAdzbVM6blW9J6JP+YhSy8=",
+        "owner": "Kyure-A",
+        "repo": "agent-skills-nix",
+        "rev": "5133c874553c6c295654d8de4e3f62c95736b9c6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Kyure-A",
+        "repo": "agent-skills-nix",
+        "type": "github"
+      }
+    },
+    "anthropic-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789340901,
+        "narHash": "sha256-aDBAfdm8zaRIHaMuMPL9tD7cjoy266fribVMAxPC2po=",
+        "owner": "anthropics",
+        "repo": "claude-plugins-official",
+        "rev": "022b3c274938ddfb9fd928fc582eb9b9ed0f537f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "anthropics",
+        "repo": "claude-plugins-official",
+        "rev": "022b3c274938ddfb9fd928fc582eb9b9ed0f537f",
+        "type": "github"
+      }
+    },
     "bun2nix": {
       "inputs": {
         "flake-parts": "flake-parts_2",
@@ -73,6 +110,23 @@
         "type": "github"
       }
     },
+    "cognitive-rhythm-writing": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1783600534,
+        "narHash": "sha256-Zo3iVnTvVG6IfU9vBf4Zv/bEcKmNKnI2IY1D0uvzkNM=",
+        "ref": "refs/heads/main",
+        "rev": "a3b1e26beced71d582e13314fb6f5b179b023c76",
+        "revCount": 3,
+        "type": "git",
+        "url": "https://gist.github.com/eb2929f13ed19c97188393d297be8432.git"
+      },
+      "original": {
+        "rev": "a3b1e26beced71d582e13314fb6f5b179b023c76",
+        "type": "git",
+        "url": "https://gist.github.com/eb2929f13ed19c97188393d297be8432.git"
+      }
+    },
     "crane": {
       "locked": {
         "lastModified": 1781825982,
@@ -95,11 +149,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788947744,
-        "narHash": "sha256-wo9QraW+dkPkeYaANv5LOhFxz+0oxk1n3bFedenOtUk=",
+        "lastModified": 1789203800,
+        "narHash": "sha256-Ki+okFial8fox396xRSTn5swvS687wdsmI+mQ3cuRyg=",
         "ref": "refs/heads/main",
-        "rev": "d85e52a2f11e4caa46520c014c03c5592bbb9985",
-        "revCount": 862,
+        "rev": "cd38b26380cbe7900b3bbf237f85c04410ad1b03",
+        "revCount": 867,
         "type": "git",
         "url": "https://github.com/tomasz-tomczyk/crit.git"
       },
@@ -269,16 +323,33 @@
         ]
       },
       "locked": {
-        "lastModified": 1789002787,
-        "narHash": "sha256-2yMEh7fx3BNwmCfxNe25aQ8JZ7Q8hQR4uwi0petBzsc=",
+        "lastModified": 1789231399,
+        "narHash": "sha256-80SWdrccesBPDuCJQkimSFZTbAB/A1HHJxxB6EJVXz8=",
         "owner": "kawarimidoll",
         "repo": "guard-and-guide",
-        "rev": "3911c8d6eb8730a9db422eaf7fc9a675bec6bfa4",
+        "rev": "93a6fbd7f0fc6731d7699ea2e643008da8cab23c",
         "type": "github"
       },
       "original": {
         "owner": "kawarimidoll",
         "repo": "guard-and-guide",
+        "type": "github"
+      }
+    },
+    "herdr-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787161794,
+        "narHash": "sha256-sEGIN3dLZasaHob3EHscWBCIQHflMQVchYmzgsETDk4=",
+        "owner": "herdrdev",
+        "repo": "herdr",
+        "rev": "9eb521456ac0d19d3ab3d9d7cea3cca10baa8a4c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "herdrdev",
+        "repo": "herdr",
+        "rev": "9eb521456ac0d19d3ab3d9d7cea3cca10baa8a4c",
         "type": "github"
       }
     },
@@ -289,16 +360,33 @@
         ]
       },
       "locked": {
-        "lastModified": 1789012927,
-        "narHash": "sha256-+h1H0g2XMGXK0fNUlX4ajCmCz8u05IR7k0Cj2MJviBY=",
+        "lastModified": 1789339793,
+        "narHash": "sha256-1TGxgma8jQGhw0yfjyndwPhgcoXAYtlSm4ezENVzrPA=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "df044b78fd9ec60d0e54752169666e6e1d393798",
+        "rev": "dd0b74e2b53eb6aa03fe120fcc00a4d37cc288f8",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
         "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "humanlayer-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786633530,
+        "narHash": "sha256-lJvu9CGAN/+dzmzck0CodRXn/p7GUkCbfyZxys4nIoU=",
+        "owner": "humanlayer",
+        "repo": "skills",
+        "rev": "3c2629142c5d437428269b1b722b08c0b87f574d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "humanlayer",
+        "repo": "skills",
+        "rev": "3c2629142c5d437428269b1b722b08c0b87f574d",
         "type": "github"
       }
     },
@@ -340,6 +428,40 @@
         "type": "github"
       }
     },
+    "japanese-tech-writing": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1781587188,
+        "narHash": "sha256-+3k6/lvdMCEUEbtWM4O8uyNQhDgNOVXxQgWulzT/eF4=",
+        "ref": "refs/heads/main",
+        "rev": "5ed08e4475365fd233aa0d3ab71c19b87e1a5732",
+        "revCount": 4,
+        "type": "git",
+        "url": "https://gist.github.com/fd287c3133457c4fd8f5601d34aa817d.git"
+      },
+      "original": {
+        "rev": "5ed08e4475365fd233aa0d3ab71c19b87e1a5732",
+        "type": "git",
+        "url": "https://gist.github.com/fd287c3133457c4fd8f5601d34aa817d.git"
+      }
+    },
+    "mizchi-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1777041365,
+        "narHash": "sha256-bsqnnK0n/R4Ksc4SajCFG2cPp/PCElPmdv1Zdnmsfq8=",
+        "owner": "mizchi",
+        "repo": "skills",
+        "rev": "95b8a50edf0684620c29d09848591de453b99831",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mizchi",
+        "repo": "skills",
+        "rev": "95b8a50edf0684620c29d09848591de453b99831",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -367,11 +489,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788680125,
-        "narHash": "sha256-amGSoDobwmp4CFvCn841ws2iuitus+HUJdD/gKgsrJA=",
+        "lastModified": 1789286446,
+        "narHash": "sha256-xVstyCdg0DpzjyrEacm72VJAIP9DMhfWJdPDzhWxHuo=",
         "owner": "nix-community",
         "repo": "nix-index-database",
-        "rev": "116ad1c2adb642405ef8916f6a94c8626f971344",
+        "rev": "a74e173407559083a412ea89a1cc58ea389c3b65",
         "type": "github"
       },
       "original": {
@@ -428,11 +550,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1789012029,
-        "narHash": "sha256-1CBkBf+Nhggykzlx0jvXrj5rk20btl+tK8Fa8Ml/BL4=",
+        "lastModified": 1789264731,
+        "narHash": "sha256-llGJbC0CcU8DfROr6mZjRJgMLQd/SKwfpzxJH/2lHO4=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d5dfd8e6716dde34398bc14bc87c10dece9c8c68",
+        "rev": "02f5696b0e6097e589076d886b317b83ff0437d7",
         "type": "github"
       },
       "original": {
@@ -444,12 +566,19 @@
     },
     "root": {
       "inputs": {
+        "agent-skills": "agent-skills",
+        "anthropic-skills": "anthropic-skills",
         "cage": "cage",
         "cclens": "cclens",
+        "cognitive-rhythm-writing": "cognitive-rhythm-writing",
         "crit": "crit",
         "guard-and-guide": "guard-and-guide",
+        "herdr-skills": "herdr-skills",
         "home-manager": "home-manager",
+        "humanlayer-skills": "humanlayer-skills",
         "hunk": "hunk",
+        "japanese-tech-writing": "japanese-tech-writing",
+        "mizchi-skills": "mizchi-skills",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs_2"
