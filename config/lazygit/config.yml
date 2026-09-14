@@ -1,16 +1,13 @@
 # Lazygit の画面設定
 gui:
   tabWidth: 2
-
   # 次のいずれか: 'auto'（既定） | 'en' | 'zh-CN' | 'zh-TW' | 'pl' | 'nl' | 'ja' | 'ko'
   # | 'ru' | 'pt'
   language: ja
-
   # 使用する Nerd Fonts バージョン
   # 次のいずれか: '2' | '3' | 空文字列（既定）
   # 空の場合、アイコンを表示しない。
   nerdFontsVersion: "3"
-
 # git に関する設定
 git:
   # ページャー設定の配列。各要素は次の形式:
@@ -35,9 +32,8 @@ git:
   #
   # 参照: https://github.com/jesseduffield/lazygit/blob/master/docs/Custom_Pagers.md
   # 詳細は上記を参照。
-  pagers:
-    - pager: hunk pager
-
+  diffRenderers:
+    - command: hunk pager
   # true の場合、コミットメッセージ内の絵文字文字列を解釈（例: :rocket: -> 🚀）
   # （本来は 'git' ではなく 'gui' 配下にあるべき設定）
   parseEmoji: true

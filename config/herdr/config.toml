@@ -31,8 +31,8 @@ height = "100%"
 [[keys.command]]
 key = "prefix+g"
 type = "pane"
-description = "open ziggity"
-command = "ziggity"
+description = "open lazygit"
+command = "lazygit"
 
 [[keys.command]]
 key = "prefix+p"
