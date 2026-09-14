@@ -20,18 +20,6 @@
     "claude-acp": {
       "type": "registry",
     },
-    "cursor": {
-      "default_config_options": {
-        "model": "grok-4.5",
-        "mode": "agent"
-      },
-      "favorite_config_option_values": {
-        "model": [
-          "composer-2[fast=true]"
-        ]
-      },
-      "type": "registry",
-    },
   },
   "toolbar": {
     "agent_review": false,
