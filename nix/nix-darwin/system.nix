@@ -21,21 +21,34 @@
         };
       };
       CustomUserPreferences = {
+        NSGlobalDomain = {
+          # フルスクリーン時もメニューバーを表示する
+          AppleMenuBarVisibleInFullscreen = true;
+          # メニューバーの背景を表示する（macOS Tahoe）
+          SLSMenuBarUseBlurredAppearance = true;
+        };
+        "com.apple.controlcenter" = {
+          "NSStatusItem VisibleCC WiFi" = true;
+        };
         "com.apple.desktopservices" = {
           DSDontWriteNetworkStores = true;
         };
+      };
+      NSGlobalDomain = {
+        # メニューバーを自動的に隠さない
+        _HIHideMenuBar = false;
       };
       WindowManager = {
         # デスクトップ上のアイテムを非表示にする
         StandardHideDesktopIcons = true;
       };
       controlcenter = {
-        # メニューバーにAirDropを表示する
-        AirDrop = true;
-        # メニューバーにバッテリー残量を表示する
-        BatteryShowPercentage = true;
-        # メニューバーにBluetoothを表示する
-        Bluetooth = true;
+        # メニューバーにAirDropを表示しない
+        AirDrop = false;
+        # メニューバーにバッテリー残量を表示しない
+        BatteryShowPercentage = false;
+        # メニューバーにBluetoothを表示しない
+        Bluetooth = false;
       };
       dock = {
         # アプリケーションスイッチャーを全てのディスプレイに表示する
@@ -92,15 +105,12 @@
         TrackpadRightClick = true;
       };
       menuExtraClock = {
-        # メニューバーの時計を24時間表示にする
-        Show24Hour = true;
-        # メニューバーに余裕がある場合は日付を表示する
-        ShowDate = 0;
-        # 日付を表示する
-        ShowDayOfMonth = true;
-        # 曜日を表示する
-        ShowDayOfWeek = true;
-        # 秒は表示しない
+        # 日付なしのアナログ時計を表示する
+        IsAnalog = true;
+        Show24Hour = false;
+        ShowDate = 2;
+        ShowDayOfMonth = false;
+        ShowDayOfWeek = false;
         ShowSeconds = false;
       };
       screensaver = {

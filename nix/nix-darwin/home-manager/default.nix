@@ -25,6 +25,13 @@ in
 
       home.stateVersion = "24.11";
 
+      # macOS Tahoe の設定画面で非表示時の値を確認済み。
+      targets.darwin.currentHostDefaults."com.apple.controlcenter" = {
+        Battery = 9;
+        BatteryShowEnergyMode = 0;
+        Weather = 8;
+      };
+
       home.activation.linkApplications = inputs.home-manager.lib.hm.dag.entryAfter [ "linkGeneration" ] ''
         apps="$HOME/Applications"
         source="$apps/Home Manager Apps"
