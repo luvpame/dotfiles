@@ -125,6 +125,9 @@ enabled = true
 [plugins."i-have-adhd@i-have-adhd"]
 enabled = true
 
+[plugins."computer-use@openai-bundled"]
+enabled = true
+
 [hooks.state]
 
 [hooks.state."/Users/luvpame/.codex/hooks.json:pre_tool_use:0:0"]
@@ -282,10 +285,16 @@ NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.903.71938"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/luvpame/.codex/plugins/cache/openai-bundled/browser/26.903.71938/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
+BROWSER_USE_CODEX_APP_VERSION = "26.908.40834"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/luvpame/.codex/plugins/cache/openai-bundled/browser/26.908.40834/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
 SKY_CUA_SERVICE_PATH = "/Users/luvpame/.codex/computer-use/Codex Computer Use.app"
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
+
+[mcp_servers.computer-use]
+command = "./Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient"
+args = ["mcp"]
+cwd = "."
+enabled = false
 
 [[skills.config]]
 name = "superpowers:using-superpowers"
