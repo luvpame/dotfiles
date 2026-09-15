@@ -70,6 +70,7 @@ let
     "1password"
     "1password-cli"
     "aerospace"
+    "thaw"
     "figma"
     "raycast"
     "scroll-reverser"

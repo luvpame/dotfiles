@@ -1,4 +1,4 @@
-model_reasoning_effort = "high"
+model_reasoning_effort = "low"
 personality = "friendly"
 forced_login_method = "chatgpt"
 model = "gpt-6-astra"
