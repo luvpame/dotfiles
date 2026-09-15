@@ -67,6 +67,7 @@ let
     "1password"
     "1password-cli"
     "aerospace"
+    "jordanbaird-ice"
     "figma"
     "raycast"
     "scroll-reverser"
