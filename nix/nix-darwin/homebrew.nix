@@ -34,7 +34,6 @@ let
     "media-control" # macOS Now Playing metadata
     "ripgrep" # codex formula dependency; keep cleanup from trying to remove it
     "roots"
-    "cloudflare/cloudflare/cloudflared"
     # `mo` と `mole` は同名バイナリを含むため、必要な link だけ activation で戻す。
     {
       name = "mo";
@@ -54,7 +53,6 @@ let
     "productdevbook/tap" # portkiller
     "simoarpe/ziggity" # ziggity
     "fayazara/tap" # screendrop
-    "cloudflare/cloudflare" # cloudflared
   ];
   trustedTaps = map (name: {
     inherit name;

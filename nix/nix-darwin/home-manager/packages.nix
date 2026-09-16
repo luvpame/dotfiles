@@ -43,6 +43,7 @@ in
     hyperfine
     fd
     wget
+    cloudflared
     just-lsp
     tmux
     ghq
