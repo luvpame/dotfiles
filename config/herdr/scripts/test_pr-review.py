@@ -3,6 +3,7 @@
 
 import importlib.util
 import json
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -39,16 +40,17 @@ def check(cancel=False, existing=False, stale=False, split=False, busy=False, no
         elif action == ("tab", "list"):
             result = dict(tabs=[dict(tab_id="w2:t1")])
         elif action == ("pane", "list"):
-            result = dict(panes=[dict(tab_id="w2:t1", pane_id="w2:p1")]
-                          + ([dict(tab_id="w2:t1", pane_id="w2:p2")] if split else []))
+            result = dict(panes=[dict(tab_id="w2:t1", pane_id="w3C:p1")]
+                          + ([dict(tab_id="w2:t1", pane_id="w3C:p2")] if split else []))
         elif action == ("pane", "split"):
-            assert args == ("herdr", "pane", "split", "w2:p1", "--direction", "right",
+            assert args == ("herdr", "pane", "split", "w3C:p1", "--direction", "right",
                             "--cwd", "/repo review", "--no-focus")
-            result = dict(pane=dict(pane_id="w2:p2"))
+            result = dict(pane=dict(pane_id="w3C:p2"))
         elif action == ("pane", "process-info"):
             result = dict(process_info=dict(shell_pid=1, foreground_processes=[dict(pid=2 if busy else 1)]))
         else:
             assert action == ("agent", "start"), args
+            assert re.fullmatch(r"[a-z][a-z0-9_-]{0,31}", args[3]), args[3]
             result = {}
         return json.dumps(dict(result=result))
 
@@ -77,8 +79,8 @@ def check(cancel=False, existing=False, stale=False, split=False, busy=False, no
     assert len(splits) == (1 if starts else 0)
     assert not any(args[:3] in (("herdr", "tab", "create"), ("herdr", "tab", "rename")) for args in calls)
     if starts:
-        assert starts[0][starts[0].index("--pane") + 1] == "w2:p1"
-        assert starts[1][starts[1].index("--pane") + 1] == "w2:p2"
+        assert starts[0][starts[0].index("--pane") + 1] == "w3C:p1"
+        assert starts[1][starts[1].index("--pane") + 1] == "w3C:p2"
         assert "code-review:code-review" in starts[0][-1]
         assert "pr-review-assist" in starts[1][-1]
     if cancel or stale:

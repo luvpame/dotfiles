@@ -6,6 +6,7 @@ import os
 import subprocess
 import sys
 import time
+import uuid
 
 
 def run(*args, cwd=None):
@@ -99,7 +100,7 @@ def main():
                 time.sleep(1)
             else:
                 raise RuntimeError(f"シェルの準備が完了しません: {pane}")
-            name = "review-" + pane.replace(":", "-")
+            name = "review-" + uuid.uuid4().hex[:24]
             herdr("agent", "start", name, "--kind", "claude", "--pane", pane,
                   "--", "--model", model, prompt)
         except (subprocess.CalledProcessError, RuntimeError, KeyError, ValueError) as error:
