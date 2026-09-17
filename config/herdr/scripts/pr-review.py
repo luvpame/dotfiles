@@ -6,6 +6,7 @@ import os
 import subprocess
 import sys
 import time
+import uuid
 
 
 def run(*args, cwd=None):
@@ -79,13 +80,8 @@ def main():
     right = herdr("pane", "split", left, "--direction", "right", "--cwd", checkout,
                   "--no-focus")["pane"]["pane_id"]
     prompts = {
-        "code review": (
-            "opus",
-            f"code-review:code-review スキルを使い PR #{number} を敵対的に検証してください。"
-            f'差分の基準は {pr["baseRefOid"]}...{pr["headRefOid"]}。'
-            "読み取り専用で実施し、結果をこのセッションに返してください。外部サービスへ投稿しないでください。",
-        ),
-        "pr-review-assist": ("sonnet", f"pr-review-assist スキルを PR #{number} に対して実行してください。"),
+        "code review": ("opus", f"/code-review:code-review {number} 敵対的検証をして。"),
+        "pr-review-assist": ("sonnet", f"/pr-review-assist {number}"),
     }
     failures = []
     for pane, (label, (model, prompt)) in zip((left, right), prompts.items()):
@@ -99,7 +95,7 @@ def main():
                 time.sleep(1)
             else:
                 raise RuntimeError(f"シェルの準備が完了しません: {pane}")
-            name = "review-" + pane.replace(":", "-")
+            name = "review-" + uuid.uuid4().hex[:24]
             herdr("agent", "start", name, "--kind", "claude", "--pane", pane,
                   "--", "--model", model, prompt)
         except (subprocess.CalledProcessError, RuntimeError, KeyError, ValueError) as error:

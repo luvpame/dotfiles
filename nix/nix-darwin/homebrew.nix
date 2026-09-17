@@ -46,6 +46,7 @@ let
   ];
 
   tapNames = [
+    "abue-ammar/tinycast"
     "nikitabobko/tap" # aerospace
     "daipeihust/tap" # im-select
     "k1LoW/tap" # mo (browser markdown viewer)
@@ -68,7 +69,7 @@ let
     "1password-cli"
     "aerospace"
     "thaw"
-    "raycast"
+    "tinycast"
     "scroll-reverser"
     "notchnook"
     "logitech-g-hub"

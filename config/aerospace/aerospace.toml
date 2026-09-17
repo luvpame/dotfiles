@@ -141,12 +141,12 @@ preset = "qwerty"
 #                 参照:
 #                 https://nikitabobko.github.io/AeroSpace/guide#assign-workspaces-to-monitors
 [gaps]
-inner.horizontal = 5
-inner.vertical = 5
-outer.left = 5
+inner.horizontal = 4
+inner.vertical = 4
+outer.left = 4
 outer.bottom = 5
-outer.top = 5
-outer.right = 5
+outer.top = 4
+outer.right = 4
 
 # 'main' バインディングモードの宣言
 # 参照: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
