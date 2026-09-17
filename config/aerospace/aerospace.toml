@@ -144,10 +144,7 @@ preset = "qwerty"
 inner.horizontal = 5
 inner.vertical = 5
 outer.left = 5
-outer.bottom = [
-  { monitor.secondary = 5},
-  88
-]
+outer.bottom = 5
 outer.top = 5
 outer.right = 5
 

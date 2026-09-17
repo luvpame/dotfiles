@@ -68,11 +68,8 @@ in
     (callPackage ../../pkgs/pique/default.nix { })
     (callPackage ../../pkgs/site2skill/default.nix { })
     (callPackage ../../pkgs/tree-sitter-cli/default.nix { })
-    awscli2
     inputs.crit.packages.${system}.default
     inputs.cage.packages.${system}.default
-    cclens
-    claude-code
     cliamp
   ];
 }

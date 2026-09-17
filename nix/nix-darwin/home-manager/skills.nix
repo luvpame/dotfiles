@@ -17,14 +17,11 @@ let
     "japanese"
     "japanese-end-focus"
     "mo"
-    "obsidian"
-    "pr-review-assist"
   ];
   skillsRoot = "${config.home.homeDirectory}/.dotfiles/config/agents/skills";
   # ローカルスキルの配布先。変更時は下の programs.agent-skills.targets も揃える。
   targets = [
     ".agents/skills"
-    ".claude/skills"
   ];
 in
 {
@@ -108,11 +105,6 @@ in
       agents = {
         enable = true;
         dest = ".agents/skills";
-        structure = "link";
-      };
-      claude = {
-        enable = true;
-        dest = ".claude/skills";
         structure = "link";
       };
     };

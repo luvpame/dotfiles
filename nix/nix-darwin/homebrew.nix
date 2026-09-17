@@ -34,7 +34,6 @@ let
     "media-control" # macOS Now Playing metadata
     "ripgrep" # codex formula dependency; keep cleanup from trying to remove it
     "roots"
-    "cloudflare/cloudflare/cloudflared"
     # `mo` と `mole` は同名バイナリを含むため、必要な link だけ activation で戻す。
     {
       name = "mo";
@@ -52,9 +51,7 @@ let
     "k1LoW/tap" # mo (browser markdown viewer)
     "Jean-Tinland/a-bar" # menubar
     "productdevbook/tap" # portkiller
-    "simoarpe/ziggity" # ziggity
     "fayazara/tap" # screendrop
-    "cloudflare/cloudflare" # cloudflared
   ];
   trustedTaps = map (name: {
     inherit name;
@@ -71,7 +68,6 @@ let
     "1password-cli"
     "aerospace"
     "thaw"
-    "figma"
     "raycast"
     "scroll-reverser"
     "notchnook"
@@ -79,7 +75,6 @@ let
     "hhkb"
     "zed"
     "visual-studio-code"
-    "deskpad"
     "logi-options+"
     "ankerwork"
     "codex-app"
@@ -96,11 +91,7 @@ let
     "wallspace"
     "screendrop"
     "firefox"
-    "obsidian"
     "orbstack"
-    "google-drive"
-    "claude"
-    "tablepro"
     "sequel-ace"
 
     ### Fonts

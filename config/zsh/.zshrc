@@ -12,3 +12,12 @@ _dotfiles_restore_path() {
 
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd _dotfiles_restore_path
+
+# Vite+ bin (https://viteplus.dev)
+. "/Users/luvpame/.config/vite-plus/env"
+
+# Vite+ bin (https://viteplus.dev)
+. "/tmp/tsuregoro-vp-isolated/env"
+
+# Vite+ bin (https://viteplus.dev)
+. "/Users/luvpame/dev/github.com/luvpame/tsuregoro/.devenv/state/vite-plus/env"

@@ -22,13 +22,14 @@ prevent_idle_sleep = true
 hooks = true
 undo = true
 tool_search = true
-chronicle = false
+chronicle = true
 js_repl = false
 enable_mcp_apps = true
 mentions_v2 = true
 # web_search = "live" の組み込み web namespace と衝突するため無効化
 standalone_web_search = false
 terminal_resize_reflow = true
+memories = true
 
 [feedback]
 enabled = false
@@ -51,6 +52,12 @@ gpt-6-astra = 4
 trust_level = "trusted"
 
 [projects."/Users/luvpame/dev/github.com/luvpame/tsuregoro"]
+trust_level = "trusted"
+
+[projects."/Users/luvpame/Documents/Codex/2026-09-15/t"]
+trust_level = "trusted"
+
+[projects."/Users/luvpame/Documents/Codex/2026-09-15/x20"]
 trust_level = "trusted"
 
 [marketplaces.openai-bundled]
@@ -93,7 +100,7 @@ enabled = true
 enabled = true
 
 [plugins."browser@openai-bundled"]
-enabled = false
+enabled = true
 
 [plugins."chrome@openai-bundled"]
 enabled = false
@@ -126,6 +133,9 @@ enabled = true
 enabled = true
 
 [plugins."computer-use@openai-bundled"]
+enabled = true
+
+[plugins."computer-history@openai-bundled"]
 enabled = true
 
 [hooks.state]
@@ -208,14 +218,14 @@ git-show-sidebar-pr-icons = true
 git-commit-instructions = "$conventional-commit スキルを使用すること"
 notifications-turn-mode = "unfocused"
 selected-avatar-id = "fireball"
-conversationDetailMode = "STEPS_COMMANDS"
+conversationDetailMode = "STEPS_PROSE"
 mac-menu-bar-enabled = true
 show-context-window-usage = true
 appearanceDiffMarkerStyle = "symbols"
 ambient-suggestions-enabled = false
 dock-icon-preference = "codex-system"
 avatar-overlay-mascot-width-px = 80
-appshotDestination = "last-chat"
+appshotDestination = "automatic"
 show-ultra-in-model-picker-slider = false
 enabled-reasoning-efforts = ["low", "medium", "high", "xhigh", "ultra", "max"]
 git-pull-request-merge-method = "squash"
@@ -224,6 +234,25 @@ defaultTerminalLocation = "right"
 toys-confetti-enabled = true
 toys-audio-visualizer-enabled = true
 avatar-overlay-pet-visible = false
+browser-show-full-url = true
+git-pr-watch-auto-merge = false
+git-pr-instructions = """
+## Issue の紐付け
+関連する Issue を PR に紐づけること
+
+## PR descriptionの書き方
+
+- 「何を変更したか」と「レビュアーが見るべき点」に絞る。実装の手順を逐一説明しない
+- Design docへのリンクを貼り、設計の詳細はそちらに譲る（PR本文に重複させない）
+- 実装ファイルの一覧など、diffを見れば分かる情報は書かない
+
+## 避けるべき表現
+
+- 「〜することができます」など回りくどい語尾（「〜します」で言い切る）
+- 自明なメリット・デメリットの羅列（例:「コード量が増える」「可読性が向上する」だけで終わる説明）
+- 同じ主張を異なる見出しで繰り返すこと"""
+worktree-upstream-refresh-mode = "best-effort"
+git-always-force-push = true
 
 [desktop.appearanceLightChromeTheme]
 accent = "#8839ef"
@@ -285,8 +314,8 @@ NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.908.40834"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/luvpame/.codex/plugins/cache/openai-bundled/browser/26.908.40834/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
+BROWSER_USE_CODEX_APP_VERSION = "26.908.70816"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/luvpame/.codex/plugins/cache/openai-bundled/browser/26.908.70816/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
 SKY_CUA_SERVICE_PATH = "/Users/luvpame/.codex/computer-use/Codex Computer Use.app"
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
 

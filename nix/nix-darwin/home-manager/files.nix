@@ -19,7 +19,6 @@ in
     mise.source = oos "${configRoot}/mise";
     nvim.source = oos "${configRoot}/nvim";
     lazygit.source = oos "${configRoot}/lazygit";
-    ziggity.source = oos "${configRoot}/ziggity";
     yazi.source = oos "${configRoot}/yazi";
     tmux.source = oos "${configRoot}/tmux";
     "herdr/scripts".source = oos "${configRoot}/herdr/scripts";
@@ -58,15 +57,5 @@ in
     ".codex/hooks.json".source = oos "${configRoot}/codex/hooks.json";
     ".codex/AGENTS.md".source = oos "${configRoot}/codex/AGENTS.md";
     ".codex/config.toml".source = oos "${configRoot}/codex/config.toml";
-    ".claude/settings.json" = {
-      source = oos "${configRoot}/claude/settings.json";
-
-      # Claudeはlocal stateを書き戻さないため、Repositoryを唯一の正とする。
-      force = true;
-    };
-    ".claude/statusline.py".source = oos "${configRoot}/claude/statusline.py";
-    ".claude/hooks".source = oos "${configRoot}/claude/hooks";
-    ".claude/CLAUDE.md".source = oos "${configRoot}/claude/CLAUDE.md";
-    ".claude/RTK.md".source = oos "${configRoot}/claude/RTK.md";
   };
 }
