@@ -435,7 +435,6 @@
               "com.jamf.connect:Item-0"
             ],
             "hidden" : [
-              "com.raycast.macos:Item-0",
               "bobko.aerospace:Item-0",
               "com.henrikruscon.Klack:Klack",
               "com.logi.ghub:Item-0",
@@ -485,7 +484,6 @@
             "com.openai.codex:Item-0" : "hidden",
             "com.pilotmoon.scroll-reverser:Item-0" : "hidden",
             "com.portkiller.app:Item-0" : "hidden",
-            "com.raycast.macos:Item-0" : "hidden",
             "com.stonerl.Thaw:Thaw.ControlItem.Visible" : "visible",
             "com.vinz.codenotch:Item-0" : "hidden",
             "jp.kiok.nani:Item-0" : "hidden",
@@ -508,7 +506,6 @@
               "com.jamf.connect:Item-0"
             ],
             "hidden" : [
-              "com.raycast.macos:Item-0",
               "bobko.aerospace:Item-0",
               "com.henrikruscon.Klack:Klack",
               "com.logi.ghub:Item-0",

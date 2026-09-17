@@ -46,6 +46,7 @@ let
   ];
 
   tapNames = [
+    "abue-ammar/tinycast"
     "nikitabobko/tap" # aerospace
     "daipeihust/tap" # im-select
     "k1LoW/tap" # mo (browser markdown viewer)
@@ -67,7 +68,7 @@ let
     "aerospace"
     "thaw"
     "figma"
-    "raycast"
+    "tinycast"
     "scroll-reverser"
     "notchnook"
     "logitech-g-hub"
