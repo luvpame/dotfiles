@@ -80,13 +80,8 @@ def main():
     right = herdr("pane", "split", left, "--direction", "right", "--cwd", checkout,
                   "--no-focus")["pane"]["pane_id"]
     prompts = {
-        "code review": (
-            "opus",
-            f"code-review:code-review スキルを使い PR #{number} を敵対的に検証してください。"
-            f'差分の基準は {pr["baseRefOid"]}...{pr["headRefOid"]}。'
-            "読み取り専用で実施し、結果をこのセッションに返してください。外部サービスへ投稿しないでください。",
-        ),
-        "pr-review-assist": ("sonnet", f"pr-review-assist スキルを PR #{number} に対して実行してください。"),
+        "code review": ("opus", f"/code-review:code-review {number} 敵対的検証をして。"),
+        "pr-review-assist": ("sonnet", f"/pr-review-assist {number}"),
     }
     failures = []
     for pane, (label, (model, prompt)) in zip((left, right), prompts.items()):

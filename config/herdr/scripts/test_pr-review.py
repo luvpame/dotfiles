@@ -81,8 +81,8 @@ def check(cancel=False, existing=False, stale=False, split=False, busy=False, no
     if starts:
         assert starts[0][starts[0].index("--pane") + 1] == "w3C:p1"
         assert starts[1][starts[1].index("--pane") + 1] == "w3C:p2"
-        assert "code-review:code-review" in starts[0][-1]
-        assert "pr-review-assist" in starts[1][-1]
+        assert starts[0][-1] == "/code-review:code-review 42 敵対的検証をして。"
+        assert starts[1][-1] == "/pr-review-assist 42"
     if cancel or stale:
         assert not any(args[:3] == ("herdr", "worktree", "open") for args in calls)
 
