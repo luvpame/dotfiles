@@ -105,8 +105,8 @@
         TrackpadRightClick = true;
       };
       menuExtraClock = {
-        # 日付なしのアナログ時計を表示する
-        IsAnalog = true;
+        # 日付なしのデジタル時計を表示する
+        IsAnalog = false;
         Show24Hour = false;
         ShowDate = 2;
         ShowDayOfMonth = false;
