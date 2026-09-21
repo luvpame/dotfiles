@@ -1,6 +1,7 @@
 set -l dotenv_file "$HOME/.config/fish/.env"
 
-if test -f $dotenv_file
+# 1Password mounts local .env files as named pipes (FIFOs).
+if test -f "$dotenv_file"; or test -p "$dotenv_file"
   while read -l raw_line
     set -l line (string trim -- $raw_line)
 

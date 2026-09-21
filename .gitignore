@@ -3,6 +3,7 @@
 config/git/config.local
 .DS_Store
 fish_variables
+config/fish/.env
 nix/result
 .nvimlog
 nvim.log
