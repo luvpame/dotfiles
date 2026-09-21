@@ -53,6 +53,7 @@ let
     "Jean-Tinland/a-bar" # menubar
     "productdevbook/tap" # portkiller
     "fayazara/tap" # screendrop
+    "gauthierpiarrette/highball"
   ];
   trustedTaps = map (name: {
     inherit name;
@@ -83,6 +84,8 @@ let
     "crisp"
     "thebrowsercompany-dia"
     "spotify"
+    "steam"
+    "highball"
     "azookey"
     "a-bar"
     "keycastr"

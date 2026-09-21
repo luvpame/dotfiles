@@ -144,8 +144,12 @@ preset = "qwerty"
 inner.horizontal = 4
 inner.vertical = 4
 outer.left = 4
-outer.bottom = 5
-outer.top = 4
+outer.bottom = 4
+outer.top = [
+  { monitor.main = 34 },
+  { monitor.secondary = 4 },
+  4
+]
 outer.right = 4
 
 # 'main' バインディングモードの宣言
