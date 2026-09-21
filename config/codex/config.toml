@@ -1,4 +1,4 @@
-model_reasoning_effort = "medium"
+model_reasoning_effort = "low"
 personality = "friendly"
 forced_login_method = "chatgpt"
 model = "gpt-6-astra"
@@ -9,27 +9,10 @@ suppress_unstable_features_warning = true
 approval_policy = "on-request"
 sandbox_mode = "danger-full-access"
 
-service_tier = "priority"
+service_tier = "default"
 
 notify = ["/Users/luvpame/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
 approvals_reviewer = "auto_review"
-
-[features]
-shell_snapshot = true
-# https://github.com/openai/codex/issues/26753 が解消されるまで無効化
-multi_agent_v2 = false
-prevent_idle_sleep = true
-hooks = true
-undo = true
-tool_search = true
-chronicle = true
-js_repl = false
-enable_mcp_apps = true
-mentions_v2 = true
-# web_search = "live" の組み込み web namespace と衝突するため無効化
-standalone_web_search = false
-terminal_resize_reflow = true
-memories = true
 
 [feedback]
 enabled = false
@@ -71,10 +54,6 @@ source = "/Users/luvpame/.codex/.tmp/bundled-marketplaces/openai-bundled"
 source_type = "local"
 source = "/Users/luvpame/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
-[marketplaces.ponytail]
-source_type = "git"
-source = "https://github.com/DietrichGebert/ponytail.git"
-
 [marketplaces.mattpocock]
 source_type = "git"
 source = "https://github.com/mattpocock/skills.git"
@@ -85,7 +64,7 @@ source = "https://github.com/ayghri/i-have-adhd.git"
 ref = "main"
 
 [plugins."superpowers@openai-curated"]
-enabled = true
+enabled = false
 
 [plugins."codex-security@openai-curated"]
 enabled = true
@@ -94,10 +73,10 @@ enabled = true
 enabled = false
 
 [plugins."template-creator@openai-primary-runtime"]
-enabled = true
+enabled = false
 
 [plugins."visualize@openai-bundled"]
-enabled = true
+enabled = false
 
 [plugins."browser@openai-bundled"]
 enabled = true
@@ -106,21 +85,18 @@ enabled = true
 enabled = false
 
 [plugins."documents@openai-primary-runtime"]
-enabled = true
+enabled = false
 
 [plugins."pdf@openai-primary-runtime"]
-enabled = true
+enabled = false
 
 [plugins."spreadsheets@openai-primary-runtime"]
-enabled = true
+enabled = false
 
 [plugins."presentations@openai-primary-runtime"]
-enabled = true
+enabled = false
 
 [plugins."codex-app-tools@openai-bundled"]
-enabled = true
-
-[plugins."ponytail@ponytail"]
 enabled = true
 
 [plugins."unified-computer-use@openai-bundled"]
@@ -133,7 +109,7 @@ enabled = true
 enabled = true
 
 [plugins."computer-use@openai-bundled"]
-enabled = true
+enabled = false
 
 [plugins."computer-history@openai-bundled"]
 enabled = true
@@ -218,7 +194,7 @@ git-show-sidebar-pr-icons = true
 git-commit-instructions = "$conventional-commit スキルを使用すること"
 notifications-turn-mode = "unfocused"
 selected-avatar-id = "fireball"
-conversationDetailMode = "STEPS_PROSE"
+conversationDetailMode = "STEPS_COMMANDS"
 mac-menu-bar-enabled = true
 show-context-window-usage = true
 appearanceDiffMarkerStyle = "symbols"
@@ -253,6 +229,7 @@ git-pr-instructions = """
 - 同じ主張を異なる見出しで繰り返すこと"""
 worktree-upstream-refresh-mode = "best-effort"
 git-always-force-push = true
+browser-annotation-screenshots-mode = "necessary"
 
 [desktop.appearanceLightChromeTheme]
 accent = "#8839ef"
@@ -312,21 +289,29 @@ BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 BROWSER_USE_TINYSKY_ENABLED = "1"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
-NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
 BROWSER_USE_CODEX_APP_VERSION = "26.915.31945"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/luvpame/.codex/plugins/cache/openai-bundled/browser/26.915.31945/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
-SKY_CUA_SERVICE_PATH = "/Users/luvpame/.codex/computer-use/Codex Computer Use.app"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/luvpame/.codex/plugins/cache/openai-bundled/browser/26.915.31945/scripts/browser-service.mjs"}'
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
-
-[mcp_servers.computer-use]
-command = "./Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient"
-args = ["mcp"]
-cwd = "."
-enabled = false
 
 [[skills.config]]
 name = "superpowers:using-superpowers"
+enabled = false
+
+[[skills.config]]
+name = "cloudflare:agents-sdk"
+enabled = false
+
+[[skills.config]]
+name = "cloudflare:building-ai-agent-on-cloudflare"
+enabled = false
+
+[[skills.config]]
+name = "cloudflare:sandbox-sdk"
+enabled = false
+
+[[skills.config]]
+name = "cloudflare:building-mcp-server-on-cloudflare"
 enabled = false
 
 [notice]
@@ -334,3 +319,7 @@ hide_rate_limit_model_nudge = true
 
 [apps.connector_openai_codex_document_control]
 enabled = false
+
+[features]
+chronicle = true
+memories = true

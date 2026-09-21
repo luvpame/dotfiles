@@ -22,25 +22,11 @@
           }
         ],
         "matcher": "Bash"
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "if [ -f '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ] && [ -r '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ] && [ -x '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/Users/luvpame/.orca/agent-hooks/codex-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
-            "timeout": 10
-          }
-        ]
       }
     ],
     "SessionStart": [
       {
         "hooks": [
-          {
-            "command": "bash \"$HOME/.codex/herdr-agent-state.sh\" session",
-            "timeout": 10,
-            "type": "command"
-          },
           {
             "command": "\"$HOME/.codex/hooks/herdr-usage.py\"",
             "timeout": 5,
@@ -50,15 +36,6 @@
             "command": "\"$HOME/.config/herdr/scripts/agent-git-metadata.py\"",
             "timeout": 5,
             "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "if [ -f '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ] && [ -r '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ] && [ -x '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/Users/luvpame/.orca/agent-hooks/codex-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
-            "timeout": 10
           }
         ]
       }
@@ -77,15 +54,6 @@
             "type": "command"
           }
         ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "if [ -f '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ] && [ -r '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ] && [ -x '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/Users/luvpame/.orca/agent-hooks/codex-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
-            "timeout": 10
-          }
-        ]
       }
     ],
     "UserPromptSubmit": [
@@ -95,59 +63,6 @@
             "command": "bash \"$HOME/.codex/hooks/herdr-tab-rename-reminder.sh\"",
             "timeout": 5,
             "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "if [ -f '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ] && [ -r '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ] && [ -x '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/Users/luvpame/.orca/agent-hooks/codex-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "PermissionRequest": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "if [ -f '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ] && [ -r '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ] && [ -x '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/Users/luvpame/.orca/agent-hooks/codex-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "if [ -f '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ] && [ -r '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ] && [ -x '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/Users/luvpame/.orca/agent-hooks/codex-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "SubagentStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "if [ -f '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ] && [ -r '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ] && [ -x '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/Users/luvpame/.orca/agent-hooks/codex-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "SubagentStop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "if [ -f '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ] && [ -r '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ] && [ -x '/Users/luvpame/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/Users/luvpame/.orca/agent-hooks/codex-hook.sh'; else { command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :; fi",
-            "timeout": 10
           }
         ]
       }
