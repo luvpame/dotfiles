@@ -24,8 +24,8 @@
         NSGlobalDomain = {
           # フルスクリーン時もメニューバーを表示する
           AppleMenuBarVisibleInFullscreen = true;
-          # メニューバーの背景を表示する（macOS Tahoe）
-          SLSMenuBarUseBlurredAppearance = true;
+          # メニューバーの背景を非表示にする（macOS Tahoe）
+          SLSMenuBarUseBlurredAppearance = false;
         };
         "com.apple.controlcenter" = {
           "NSStatusItem VisibleCC WiFi" = true;

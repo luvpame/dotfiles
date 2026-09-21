@@ -1,4 +1,4 @@
-model_reasoning_effort = "low"
+model_reasoning_effort = "medium"
 personality = "friendly"
 forced_login_method = "chatgpt"
 model = "gpt-6-astra"
@@ -58,6 +58,9 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects."/Users/luvpame/Documents/Codex/2026-09-15/x20"]
+trust_level = "trusted"
+
+[projects."/Users/nasuno.ayumu/Documents/Codex/2026-09-17/url-30-id-claude-code-codex"]
 trust_level = "trusted"
 
 [marketplaces.openai-bundled]
@@ -215,7 +218,7 @@ git-show-sidebar-pr-icons = true
 git-commit-instructions = "$conventional-commit スキルを使用すること"
 notifications-turn-mode = "unfocused"
 selected-avatar-id = "fireball"
-conversationDetailMode = "STEPS_COMMANDS"
+conversationDetailMode = "STEPS_PROSE"
 mac-menu-bar-enabled = true
 show-context-window-usage = true
 appearanceDiffMarkerStyle = "symbols"
