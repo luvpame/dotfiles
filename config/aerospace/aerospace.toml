@@ -52,36 +52,20 @@ on-mode-changed = []
 # 参照: https://nikitabobko.github.io/AeroSpace/goodies#automation
 
 [[on-window-detected]]
-if.app-id = "com.stengo.DeskPad"
-run = "move-node-to-workspace 1" # DeskPadをワークスペース1に移動
-
-[[on-window-detected]]
 if.app-id = "company.thebrowser.dia"
 run = "move-node-to-workspace 1" # Diaをワークスペース1に移動
 
 [[on-window-detected]]
-if.app-id = "com.tinyspeck.slackmacgap"
-run = "move-node-to-workspace 2" # Slackをワークスペース2に移動
+if.app-id = "com.openai.codex"
+run = "move-node-to-workspace 1" # Codexをワークスペース1に移動
 
 [[on-window-detected]]
 if.app-id = "com.github.wez.wezterm"
-run = "move-node-to-workspace 3" # WezTermをワークスペース3に移動
-
-[[on-window-detected]]
-if.app-id = "com.anthropic.claudefordesktop"
-run = "move-node-to-workspace 4" # Claudeをワークスペース4に移動
-
-[[on-window-detected]]
-if.app-id = "com.openai.codex"
-run = "move-node-to-workspace 5" # Codexをワークスペース5に移動
+run = "move-node-to-workspace 2" # WezTermをワークスペース2に移動
 
 [[on-window-detected]]
 if.app-id = "com.spotify.client"
-run = "move-node-to-workspace 8" # Spotifyをワークスペース8に移動
-
-[[on-window-detected]]
-if.app-id = "md.obsidian"
-run = "move-node-to-workspace 9" # Obsidianをワークスペース9に移動
+run = "move-node-to-workspace 0" # Spotifyをワークスペース0に移動
 
 # フローティングで扱うアプリ
 [[on-window-detected]]
@@ -94,10 +78,6 @@ run = "layout floating"
 
 [[on-window-detected]]
 if.app-id = "jp.kiok.nani" # Nani
-run = "layout floating"
-
-[[on-window-detected]]
-if.app-id = "com.openai.chat" # ChatGPT
 run = "layout floating"
 
 [[on-window-detected]]
@@ -120,7 +100,7 @@ preset = "qwerty"
 #   複数のパターンを配列で指定可能（最初にマッチしたものが使用される）
 
 [workspace-to-monitor-force-assignment]
-0 = "DeskPad*"  # ワークスペース0をDeskPad(仮想ディスプレイ)に割り当て
+0 = "secondary"      # ワークスペース0をセカンダリモニターに割り当て
 1 = "main"      # ワークスペース1をメインモニターに割り当て
 2 = "main"      # ワークスペース2をメインモニターに割り当て
 3 = "main"      # ワークスペース3をメインモニターに割り当て
@@ -128,8 +108,8 @@ preset = "qwerty"
 5 = "main"      # ワークスペース5をメインモニターに割り当て
 6 = "main"      # ワークスペース6をメインモニターに割り当て
 7 = "main"      # ワークスペース7をメインモニターに割り当て
-8 = "^built-in retina display$" # ワークスペース8をセカンダリモニターに割り当て
-9 = "^built-in retina display$" # ワークスペース9をセカンダリモニターに割り当て
+8 = "main"      # ワークスペース8をメインモニターに割り当て
+9 = "main"      # ワークスペース9をメインモニターに割り当て
 
 
 # ウィンドウ間のギャップ(inner-*)とモニター端とのギャップ(outer-*)
@@ -145,11 +125,7 @@ inner.horizontal = 4
 inner.vertical = 4
 outer.left = 4
 outer.bottom = 4
-outer.top = [
-  { monitor.main = 34 },
-  { monitor.secondary = 4 },
-  4
-]
+outer.top = 4
 outer.right = 4
 
 # 'main' バインディングモードの宣言
