@@ -64,7 +64,8 @@ jobs:
 
       - name: Check flake
         working-directory: ${{ env.FLAKE_DIR }}
-        run: nix flake check --no-build
+        # スキル探索は評価中に生成物を読むため、--no-build では空の store で失敗する。
+        run: nix flake check
 
       - name: Build darwin configuration
         working-directory: ${{ env.FLAKE_DIR }}
@@ -142,7 +143,8 @@ jobs:
       - name: Check flake
         if: ${{ steps.build.outputs.should_build == 'true' }}
         working-directory: ${{ env.FLAKE_DIR }}
-        run: nix flake check --no-build
+        # スキル探索は評価中に生成物を読むため、--no-build では空の store で失敗する。
+        run: nix flake check
 
       - name: Build darwin configuration
         if: ${{ steps.build.outputs.should_build == 'true' }}
