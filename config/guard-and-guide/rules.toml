@@ -12,3 +12,9 @@ message = "すべてのファイルを一括で git-add しないでください
 matcher = "File"
 regex = '\.env$'
 message = ".envファイルへのアクセスは禁止されています。必要な値はユーザーに直接入力を求めてください。"
+
+# make コマンドの使用を禁止する
+[[rules]]
+matcher = "Bash"
+regex = '(?:^|&&|\|\||[;|])\s*(?:sudo\s+)?make(?:\s|$)'
+message = "make コマンドは使用しないでください。 代わりに just や素のコマンドの使用を検討してください。"

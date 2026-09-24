@@ -580,6 +580,23 @@
         "type": "github"
       }
     },
+    "no-ai-slop": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788322740,
+        "narHash": "sha256-l/BZaNnPvFKTUN7jVs5p5aEtRvOUbwMElu37cnP+k8E=",
+        "owner": "petergyang",
+        "repo": "no-ai-slop",
+        "rev": "000650b156983f5159695b441477f4e63b25dc85",
+        "type": "github"
+      },
+      "original": {
+        "owner": "petergyang",
+        "repo": "no-ai-slop",
+        "rev": "000650b156983f5159695b441477f4e63b25dc85",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agent-skills": "agent-skills",
@@ -598,7 +615,8 @@
         "mizchi-skills": "mizchi-skills",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": "nixpkgs_2",
+        "no-ai-slop": "no-ai-slop"
       }
     },
     "rust-overlay": {

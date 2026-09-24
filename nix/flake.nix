@@ -35,6 +35,10 @@
       url = "github:mizchi/skills/95b8a50edf0684620c29d09848591de453b99831";
       flake = false;
     };
+    no-ai-slop = {
+      url = "github:petergyang/no-ai-slop/000650b156983f5159695b441477f4e63b25dc85";
+      flake = false;
+    };
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin = {
       url = "github:LnL7/nix-darwin";

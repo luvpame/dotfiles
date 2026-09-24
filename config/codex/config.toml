@@ -1,4 +1,4 @@
-model_reasoning_effort = "medium"
+model_reasoning_effort = "low"
 personality = "friendly"
 forced_login_method = "chatgpt"
 model = "gpt-6-astra"
@@ -122,6 +122,15 @@ trust_level = "trusted"
 [projects."/Users/nasuno.ayumu/Documents/Codex/2026-09-17/url-30-id-claude-code-codex"]
 trust_level = "trusted"
 
+[projects."/Users/nasuno.ayumu/Documents/Codex/2026-09-18/new-chat"]
+trust_level = "trusted"
+
+[projects."/Users/nasuno.ayumu/dev/github.com/luvpame"]
+trust_level = "trusted"
+
+[projects."/Users/nasuno.ayumu/dev/github.com/luvpame/luvpame-browser-extension"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
 source_type = "local"
 source = "/Users/nasuno.ayumu/.codex/.tmp/bundled-marketplaces/openai-bundled"
@@ -159,10 +168,10 @@ enabled = true
 enabled = true
 
 [plugins."browser@openai-bundled"]
-enabled = false
+enabled = true
 
 [plugins."chrome@openai-bundled"]
-enabled = false
+enabled = true
 
 [plugins."documents@openai-primary-runtime"]
 enabled = true
@@ -274,14 +283,14 @@ git-show-sidebar-pr-icons = true
 git-commit-instructions = "$conventional-commit スキルを使用すること"
 notifications-turn-mode = "unfocused"
 selected-avatar-id = "fireball"
-conversationDetailMode = "STEPS_PROSE"
+conversationDetailMode = "STEPS_COMMANDS"
 mac-menu-bar-enabled = true
 show-context-window-usage = true
 appearanceDiffMarkerStyle = "symbols"
 ambient-suggestions-enabled = false
 dock-icon-preference = "codex-system"
 avatar-overlay-mascot-width-px = 80
-appshotDestination = "last-chat"
+appshotDestination = "automatic"
 show-ultra-in-model-picker-slider = false
 enabled-reasoning-efforts = ["low", "medium", "high", "xhigh", "ultra", "max"]
 git-pull-request-merge-method = "squash"

@@ -52,7 +52,6 @@ let
     "k1LoW/tap" # mo (browser markdown viewer)
     "Jean-Tinland/a-bar" # menubar
     "productdevbook/tap" # portkiller
-    "simoarpe/ziggity" # ziggity
     "fayazara/tap" # screendrop
   ];
   trustedTaps = map (name: {
@@ -78,7 +77,6 @@ let
     "deskpad"
     "logi-options+"
     "ankerwork"
-    "codex-app"
     "codex"
     "crisp"
     "thebrowsercompany-dia"
