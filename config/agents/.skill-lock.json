@@ -2,18 +2,8 @@
   "version": 3,
   "skills": {},
   "lastSelectedAgents": [
-    "amp",
-    "antigravity",
-    "antigravity-cli",
-    "cline",
     "codex",
-    "deepagents",
-    "gemini-cli",
-    "github-copilot",
-    "kimi-code-cli",
-    "opencode",
-    "warp",
-    "zed"
+    "claude-code"
   ],
   "dismissed": {
     "findSkillsPrompt": true
