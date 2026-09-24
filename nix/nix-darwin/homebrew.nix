@@ -53,6 +53,7 @@ let
     "Jean-Tinland/a-bar" # menubar
     "productdevbook/tap" # portkiller
     "fayazara/tap" # screendrop
+    "driceroland/tap" # search
   ];
   trustedTaps = map (name: {
     inherit name;
@@ -90,6 +91,7 @@ let
     "wallspace"
     "screendrop"
     "firefox"
+    "search"
     "obsidian"
     "orbstack"
     "google-drive"
