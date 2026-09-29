@@ -1,7 +1,7 @@
 model_reasoning_effort = "medium"
 personality = "friendly"
 forced_login_method = "chatgpt"
-model = "gpt-6-sol"
+model = "gpt-6-astra"
 model_context_window = 1000000
 model_auto_compact_token_limit = 900000
 web_search = "live"
@@ -132,6 +132,9 @@ trust_level = "trusted"
 [projects."/Users/nasuno.ayumu/dev/github.com/luvpame/luvpame-browser-extension"]
 trust_level = "trusted"
 
+[projects."/Users/nasuno.ayumu/dev/github.com/luvpame/nikki"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
 source_type = "local"
 source = "/Users/nasuno.ayumu/.codex/.tmp/bundled-marketplaces/openai-bundled"
@@ -202,7 +205,7 @@ enabled = true
 enabled = true
 
 [plugins."computer-use@openai-bundled"]
-enabled = true
+enabled = false
 
 [hooks.state]
 
@@ -300,6 +303,7 @@ defaultTerminalLocation = "right"
 toys-confetti-enabled = true
 toys-audio-visualizer-enabled = true
 avatar-overlay-pet-visible = false
+"browser-family-enabled:chrome" = false
 
 [desktop.appearanceLightChromeTheme]
 accent = "#8839ef"
@@ -359,12 +363,10 @@ BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 BROWSER_USE_TINYSKY_ENABLED = "1"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
-NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.911.61220"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/nasuno.ayumu/.codex/plugins/cache/openai-bundled/browser/26.911.61220/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
-SKY_CUA_SERVICE_PATH = "/Users/nasuno.ayumu/.codex/computer-use/Codex Computer Use.app"
-CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
+BROWSER_USE_CODEX_APP_VERSION = "26.924.22138"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/nasuno.ayumu/.codex/plugins/cache/openai-bundled/browser/26.924.22138/scripts/browser-service.mjs"}'
+CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex"
 
 [mcp_servers.computer-use]
 command = "./Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient"
