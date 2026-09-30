@@ -1,7 +1,7 @@
-model_reasoning_effort = "medium"
+model_reasoning_effort = "high"
 personality = "friendly"
 forced_login_method = "chatgpt"
-model = "gpt-6-sol"
+model = "gpt-6.1-sol"
 model_context_window = 1000000
 model_auto_compact_token_limit = 900000
 web_search = "live"
@@ -37,17 +37,18 @@ enabled = false
 network_access = true
 
 [tui]
-status_line = ["model-with-reasoning", "project-name", "git-branch", "context-used", "five-hour-limit", "weekly-limit", "codex-version", "pull-request-number", "branch-changes", "run-state", "fast-mode", "task-progress", "approval-mode"]
+status_line = ["model-with-reasoning", "project-name", "git-branch", "context-used", "weekly-limit", "codex-version", "branch-changes", "run-state", "fast-mode", "task-progress", "approval-mode"]
 theme = "catppuccin-latte"
 status_line_use_colors = true
-pet = "disabled"
+pet = "codex"
 screen_reader_detection_done = true
+fullscreen_transcript = true
 
 [tui.model_availability_nux]
 "gpt-5.5" = 4
 "gpt-5.6-sol" = 4
 gpt-6-astra = 4
-"gpt-6.1-sol" = 1
+"gpt-6.1-sol" = 2
 
 [projects."/Users/nasuno.ayumu/dev/github.com/luvpame/dotfiles"]
 trust_level = "trusted"
@@ -208,6 +209,9 @@ enabled = true
 [plugins."computer-use@openai-bundled"]
 enabled = false
 
+[plugins."code-review@openai-bundled"]
+enabled = true
+
 [hooks.state]
 
 [hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:pre_tool_use:0:0"]
@@ -305,6 +309,10 @@ toys-confetti-enabled = true
 toys-audio-visualizer-enabled = true
 avatar-overlay-pet-visible = false
 "browser-family-enabled:chrome" = false
+default-workspace-full-view = false
+agent-usage-reset-enabled = true
+git-pr-watch-auto-merge = true
+code-review-sidebar-sections = ["waiting_for_review", "needs_my_review", "needs_my_teams_review", "merged"]
 
 [desktop.appearanceLightChromeTheme]
 accent = "#8839ef"
@@ -360,13 +368,13 @@ NODE_REPL_NODE_MODULE_DIRS = "/Applications/ChatGPT.app/Contents/Resources/cua_n
 NODE_REPL_NODE_PATH = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/nasuno.ayumu/.codex:/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
 CODEX_HOME = "/Users/nasuno.ayumu/.codex"
-BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab,mcpapps"
 BROWSER_USE_TINYSKY_ENABLED = "1"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.924.22138"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/nasuno.ayumu/.codex/plugins/cache/openai-bundled/browser/26.924.22138/scripts/browser-service.mjs"}'
+BROWSER_USE_CODEX_APP_VERSION = "26.928.20755"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/nasuno.ayumu/.codex/plugins/cache/openai-bundled/browser/26.928.20755/scripts/browser-service.mjs"}'
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex"
 
 [mcp_servers.computer-use]
