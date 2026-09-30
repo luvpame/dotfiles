@@ -80,7 +80,7 @@
   .panel { border: 1px solid var(--border); padding: 16px; }
   .purpose, .evidence, figcaption, .notes { color: var(--muted); }
   .legend { font-size: .8rem; margin-bottom: 12px; }
-  .diagram-scroll, .flow {
+  .diagram-scroll {
     background-color: var(--bg);
     background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
     background-size: 20px 20px;
@@ -88,14 +88,6 @@
   }
   .diagram-scroll { overflow-x: auto; padding: 12px; }
   .diagram svg { display: block; width: 100%; min-width: 960px; height: auto; }
-  .diagram .node { fill: var(--bg); stroke: var(--fg); stroke-width: 1.5; }
-  .diagram .changed { stroke: var(--accent); }
-  .diagram .added { stroke: var(--added); }
-  .diagram .removed { stroke: var(--removed); }
-  .diagram text { fill: var(--fg); font-size: 16px; }
-  .diagram .edge { fill: none; stroke: var(--accent); stroke-width: 2; }
-  .diagram .arrow-head { fill: var(--accent); }
-  .diagram .unconfirmed { stroke-dasharray: 6 4; }
   figcaption { margin-top: 10px; font-size: .9rem; }
   .evidence { margin-top: 10px; font-size: .8rem; }
   pre, code, kbd, samp, .file-path, .code-label { font-family: var(--font-mono); font-variant-ligatures: none; }
@@ -114,13 +106,7 @@
   .comparison { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: 12px; }
   .comparison > figure { min-width: 0; border: 1px solid var(--border); padding: 14px; }
   .comparison h3 { border-left: 4px solid var(--accent); padding-left: 10px; }
-  .flow { display: grid; align-content: start; gap: 12px; padding: 20px 14px; }
-  .flow-node { position: relative; background: var(--bg); border: 1px solid var(--fg); padding: 12px; }
-  .flow-node > strong, .flow-node > code { display: block; }
-  .flow-edge { color: var(--accent); text-align: center; font-size: .85rem; }
-  .responsibility { border: 1px dashed var(--muted); background: var(--surface); margin-top: 12px; padding: 12px; }
   .callout { display: inline-grid; place-items: center; min-width: 24px; height: 24px; padding: 0 5px; background: var(--accent); color: var(--on-accent); font: 700 .85rem/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
-  .flow-node > .callout { position: absolute; right: -1px; top: -12px; }
   .annotations { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; border-top: 1px solid var(--border); padding-top: 14px; margin-top: 16px; }
   .annotation { display: flex; align-items: baseline; gap: 10px; }
   .annotation .callout { flex-shrink: 0; }
@@ -210,27 +196,10 @@
     <span class="status-changed">変更</span><span class="status-added">追加</span>
     <span class="status-removed">削除</span><span>変更なし</span><span>破線＋未確認：未確認の関係</span>
   </div>
-  <!-- ノードと接続は構成例。実際の依存関係に合わせて組み替える。図を増やす場合は SVG の ID も一意にする -->
+  <!-- explainer で検査した SVG を埋め込む。図を増やす場合は SVG の ID も一意にする -->
   <figure class="diagram">
     <div class="diagram-scroll" tabindex="0" role="region" aria-label="全体の依存図（横スクロール可能）">
-      <svg viewBox="0 0 960 220" role="img" aria-labelledby="overview-title overview-desc">
-        <title id="overview-title">{{overview_title}}</title>
-        <desc id="overview-desc">{{overview_accessible_description}}</desc>
-        <defs><marker id="overview-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow-head" d="M 0 0 L 10 5 L 0 10 z"/></marker></defs>
-        <rect class="node changed" x="10" y="64" width="240" height="100"/>
-        <text x="26" y="91">変更 · {{source_role}}</text>
-        <text class="code-label" x="26" y="123">{{source_symbol}}</text>
-        <path class="edge" d="M 250 114 H 360" marker-end="url(#overview-arrow)"/>
-        <text x="305" y="96" text-anchor="middle">{{edge_1}}</text>
-        <rect class="node added" x="360" y="64" width="240" height="100"/>
-        <text x="376" y="91">追加 · {{dependency_role}}</text>
-        <text class="code-label" x="376" y="123">{{dependency_symbol}}</text>
-        <path class="edge" d="M 600 114 H 710" marker-end="url(#overview-arrow)"/>
-        <text x="655" y="96" text-anchor="middle">{{edge_2}}</text>
-        <rect class="node" x="710" y="64" width="240" height="100"/>
-        <text x="726" y="91">変更なし · {{target_role}}</text>
-        <text class="code-label" x="726" y="123">{{target_symbol}}</text>
-      </svg>
+      {{overview_figure_svg}}
     </div>
     <figcaption>{{overview_impact_1_or_2_sentences}}</figcaption>
   </figure>
@@ -239,17 +208,13 @@
 
 <section id="changes" class="panel">
   <h2>変更前後</h2>
-  <!-- 主要変更ごとに article を繰り返す。下は前後比較の作例。変更の性質に応じてフロー・分岐・構造図へ置き換える -->
+  <!-- 主要変更ごとに article を繰り返す。図は explainer で作成・検査してから埋め込む -->
   <article>
     <h3>{{change_title}}</h3>
     <div class="comparison">
       <figure class="diagram">
         <h3>変更前</h3>
-        <div class="flow">
-          <div class="flow-node"><span class="callout">1</span><strong>{{before_source_role}}</strong><code>{{before_source_symbol}}</code><div class="responsibility">{{before_responsibility}}</div></div>
-          <div class="flow-edge">↓ {{before_relationship}}</div>
-          <div class="flow-node"><strong>{{before_target_role}}</strong><code>{{before_target_symbol}}</code></div>
-        </div>
+        <div class="diagram-scroll" tabindex="0" role="region" aria-label="変更前の図（横スクロール可能）">{{before_figure_svg}}</div>
         <figcaption>{{before_behavior}}</figcaption>
         <!-- コード引用が判断に必要な場合だけ code-sample を残す。トークンの仕様は SKILL.md「コードとファイル名」を参照 -->
         <div class="code-sample">
@@ -259,11 +224,7 @@
       </figure>
       <figure class="diagram after">
         <h3>変更後</h3>
-        <div class="flow">
-          <div class="flow-node"><strong>{{after_source_role_and_status}}</strong><code>{{after_source_symbol}}</code></div>
-          <div class="flow-edge">↓ {{after_relationship}}</div>
-          <div class="flow-node"><span class="callout">2</span><strong>{{after_target_role_and_status}}</strong><code>{{after_target_symbol}}</code></div>
-        </div>
+        <div class="diagram-scroll" tabindex="0" role="region" aria-label="変更後の図（横スクロール可能）">{{after_figure_svg}}</div>
         <figcaption>{{after_behavior}}</figcaption>
         <!-- コード引用が判断に必要な場合だけ code-sample を残す -->
         <div class="code-sample">
