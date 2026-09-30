@@ -178,6 +178,23 @@
         "url": "https://github.com/tomasz-tomczyk/crit.git"
       }
     },
+    "explainer": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1790609697,
+        "narHash": "sha256-APpYnavTQ9FLXWrqiw1b+LMFigK7edBRBNaTavn6TpA=",
+        "owner": "mizchi",
+        "repo": "explainer",
+        "rev": "1e393e0b3039a8a38a77d436f387ea58ab48b2fb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mizchi",
+        "repo": "explainer",
+        "rev": "1e393e0b3039a8a38a77d436f387ea58ab48b2fb",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -623,6 +640,7 @@
         "claude-code-source": "claude-code-source",
         "cognitive-rhythm-writing": "cognitive-rhythm-writing",
         "crit": "crit",
+        "explainer": "explainer",
         "guard-and-guide": "guard-and-guide",
         "herdr-gpui": "herdr-gpui",
         "herdr-skills": "herdr-skills",

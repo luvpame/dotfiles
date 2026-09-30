@@ -1,0 +1,13 @@
+{
+  "name": "explainer-runtime",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@mizchi/vlmkit": "0.22.0",
+    "@mizchi/vlmkit-anim": "0.22.0",
+    "@playwright/test": "1.61.1",
+    "marked": "18.0.14",
+    "mermaid": "12.0.0",
+    "playwright": "1.61.1"
+  }
+}

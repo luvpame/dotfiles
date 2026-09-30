@@ -68,6 +68,7 @@ in
     inputs.self.packages.${system}.herdr-gpui
     inputs.hunk.packages.${system}.default
     (callPackage ../../pkgs/pique/default.nix { })
+    (callPackage ../../pkgs/explainer/default.nix { src = inputs.explainer; })
     (callPackage ../../pkgs/site2skill/default.nix { })
     (callPackage ../../pkgs/tree-sitter-cli/default.nix { })
     awscli2

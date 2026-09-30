@@ -19,6 +19,10 @@
       url = "git+https://gist.github.com/eb2929f13ed19c97188393d297be8432.git?rev=a3b1e26beced71d582e13314fb6f5b179b023c76";
       flake = false;
     };
+    explainer = {
+      url = "github:mizchi/explainer/1e393e0b3039a8a38a77d436f387ea58ab48b2fb";
+      flake = false;
+    };
     herdr-skills = {
       url = "github:herdrdev/herdr/9eb521456ac0d19d3ab3d9d7cea3cca10baa8a4c";
       flake = false;

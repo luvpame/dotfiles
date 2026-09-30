@@ -96,6 +96,12 @@ in
       subdir = "skills";
       filter.nameRegex = "no-ai-slop";
     };
+    sources.explainer = {
+      path = "${
+        (pkgs.callPackage ../../pkgs/explainer/default.nix { src = inputs.explainer; }).runtime
+      }/skills";
+      filter.nameRegex = "explainer";
+    };
     # 外部スキルの追加・配布停止はこの一覧で指定する。sources の絞り込み条件にも含める。
     # 変更後は just switch。入力も変更した場合は、その前に nix/ で nix flake lock path:. を実行。
     # 内容の更新は nix/flake.nix の取得リビジョンを変更する（配布済みファイルは編集しない）。
@@ -104,6 +110,7 @@ in
       "code-simplifier"
       "cognitive-rhythm-writing"
       "empirical-prompt-tuning"
+      "explainer"
       "herdr"
       "japanese-tech-writing"
       "no-ai-slop"

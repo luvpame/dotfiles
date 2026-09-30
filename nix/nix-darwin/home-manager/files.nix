@@ -59,6 +59,7 @@ in
     };
     ".agents/.skill-lock.json".source = oos "${configRoot}/agents/.skill-lock.json";
     ".codex/agents".source = oos "${configRoot}/codex/agents";
+    ".codex/herdr-agent-state.sh".source = oos "${configRoot}/codex/herdr-agent-state.sh";
     ".codex/hooks".source = oos "${configRoot}/codex/hooks";
     ".codex/hooks.json".source = oos "${configRoot}/codex/hooks.json";
     ".codex/AGENTS.md".source = oos "${configRoot}/codex/AGENTS.md";
