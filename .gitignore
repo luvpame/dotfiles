@@ -1,4 +1,5 @@
 *.local.*
+!config/herdr/config-gpui.local.toml
 !config/git/config.local.example
 config/git/config.local
 .DS_Store

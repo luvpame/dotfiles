@@ -1,0 +1,18 @@
+theme = "Catppuccin Latte"
+confirm_close_tab = false
+layout = "normal"
+
+[sidebar]
+family = "HackGen Console NF"
+size = 14.0
+
+[tabs]
+family = "HackGen Console NF"
+size = 14.0
+
+[terminal]
+family = "HackGen Console NF"
+
+[ui]
+family = "HackGen Console NF"
+size = 14.0

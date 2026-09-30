@@ -65,6 +65,7 @@ in
     ov
     guardAndGuide
     pkgs.herdr
+    inputs.self.packages.${system}.herdr-gpui
     inputs.hunk.packages.${system}.default
     (callPackage ../../pkgs/pique/default.nix { })
     (callPackage ../../pkgs/site2skill/default.nix { })

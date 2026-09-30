@@ -24,6 +24,11 @@ in
     tmux.source = oos "${configRoot}/tmux";
     "herdr/scripts".source = oos "${configRoot}/herdr/scripts";
     "herdr/config.toml".source = oos "${configRoot}/herdr/config.toml";
+    # GUI 内で保存すると symlink が置き換わるため、設定は Repository 側で編集する。
+    "herdr/config-gpui.local.toml" = {
+      source = oos "${configRoot}/herdr/config-gpui.local.toml";
+      force = true;
+    };
     cage.source = oos "${configRoot}/cage";
 
     # Runtime stateを含むHunkの親directory linkはT24でfile単位へ分割する。
