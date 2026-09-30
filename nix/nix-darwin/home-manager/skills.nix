@@ -14,6 +14,7 @@ let
   localSkills = [
     "conventional-commit"
     "eli33"
+    "evidence-code-review"
     "japanese"
     "japanese-end-focus"
     "mo"

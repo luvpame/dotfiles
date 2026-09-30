@@ -8,236 +8,308 @@
   :root {
     color-scheme: light dark;
     --bg: #ffffff;
-    --fg: #1a1a1a;
-    --muted: #6b7280;
-    --border: #e5e7eb;
-    --card: #f9fafb;
-    --accent: #2563eb;
-    --badge-read: #b45309;
-    --badge-diff: #6b7280;
-    --warn-bg: #fffbeb;
-    --warn-border: #fbbf24;
+    --fg: #17202e;
+    --muted: #526179;
+    --border: #ccd4df;
+    --surface: #f4f7fb;
+    --grid: #e9eef5;
+    --accent: #0055ed;
+    --on-accent: #ffffff;
+    --added: #176346;
+    --removed: #ab293e;
+    --warn-bg: #fff8e8;
+    --warn-border: #ad7a16;
+    --font-mono: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    --syntax-keyword: #7c3ab0;
+    --syntax-string: #176346;
+    --syntax-number: #9c4515;
+    --syntax-function: #0055b8;
+    --syntax-type: #086b7c;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #16181d;
-      --fg: #e6e6e6;
-      --muted: #9aa0a8;
-      --border: #2c2f36;
-      --card: #1d2026;
-      --accent: #7aa2f7;
-      --badge-read: #d29922;
-      --badge-diff: #9aa0a8;
-      --warn-bg: #2a2410;
-      --warn-border: #7a5c10;
+      --bg: #121923;
+      --fg: #edf2fa;
+      --muted: #acbad0;
+      --border: #3c4b60;
+      --surface: #1b2636;
+      --grid: #233044;
+      --accent: #91b8ff;
+      --on-accent: #101b30;
+      --added: #83dbb2;
+      --removed: #ff9da9;
+      --warn-bg: #322a18;
+      --warn-border: #b68a39;
+      --syntax-keyword: #d6a8ff;
+      --syntax-string: #83dbb2;
+      --syntax-number: #ffb785;
+      --syntax-function: #91b8ff;
+      --syntax-type: #80d6e5;
     }
   }
   * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    padding: 24px 16px 80px;
-    background: var(--bg);
-    color: var(--fg);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    line-height: 1.7;
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; overflow-wrap: anywhere; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:focus-visible, summary:focus-visible, input:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+  h1, h2, h3, p, figure { margin: 0; }
+  h1 { font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.3; letter-spacing: -.035em; }
+  h2 { font-size: 1.15rem; border-left: 4px solid var(--accent); padding-left: 12px; margin-bottom: 16px; }
+  h3 { font-size: 1rem; margin-bottom: 10px; }
+  p + p { margin-top: 8px; }
+  .topbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; border-bottom: 1px solid var(--border); padding: 16px 24px; }
+  .brand { font-size: 1.25rem; font-weight: 750; letter-spacing: .03em; }
+  .brand a { text-decoration: none; }
+  .meta, .legend, .file-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+  .meta { border-left: 1px solid var(--border); padding-left: 24px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .stat-add, .status-added { color: var(--added); }
+  .stat-del, .status-removed { color: var(--removed); }
+  .status-changed { color: var(--accent); }
+  .workspace { display: grid; grid-template-columns: 180px minmax(0, 1fr); max-width: 1600px; margin: 0 auto; }
+  .sidebar { border-right: 1px solid var(--border); padding: 24px 12px; }
+  .sidebar nav { position: sticky; top: 16px; }
+  .reading-order { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+  .reading-order a { display: flex; gap: 14px; padding: 10px 12px; color: var(--muted); text-decoration: none; }
+  .reading-order a:hover, .reading-order a:focus-visible { background: var(--surface); color: var(--accent); }
+  .reading-order span { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; }
+  main { min-width: 0; padding: 24px 28px 40px; }
+  section, footer { margin-top: 20px; scroll-margin-top: 16px; }
+  .hero > p { color: var(--muted); margin-top: 12px; }
+  .commits { margin-top: 12px; color: var(--muted); font-size: .85rem; }
+  summary { cursor: pointer; }
+  .commits pre { white-space: pre-wrap; }
+  .panel { border: 1px solid var(--border); padding: 16px; }
+  .purpose, .evidence, figcaption, .notes { color: var(--muted); }
+  .legend { font-size: .8rem; margin-bottom: 12px; }
+  .diagram-scroll, .flow {
+    background-color: var(--bg);
+    background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 20px 20px;
+    border: 1px solid var(--grid);
   }
-  main {
-    max-width: 760px;
-    margin: 0 auto;
+  .diagram-scroll { overflow-x: auto; padding: 12px; }
+  .diagram svg { display: block; width: 100%; min-width: 960px; height: auto; }
+  .diagram .node { fill: var(--bg); stroke: var(--fg); stroke-width: 1.5; }
+  .diagram .changed { stroke: var(--accent); }
+  .diagram .added { stroke: var(--added); }
+  .diagram .removed { stroke: var(--removed); }
+  .diagram text { fill: var(--fg); font-size: 16px; }
+  .diagram .edge { fill: none; stroke: var(--accent); stroke-width: 2; }
+  .diagram .arrow-head { fill: var(--accent); }
+  .diagram .unconfirmed { stroke-dasharray: 6 4; }
+  figcaption { margin-top: 10px; font-size: .9rem; }
+  .evidence { margin-top: 10px; font-size: .8rem; }
+  pre, code, kbd, samp, .file-path, .code-label { font-family: var(--font-mono); font-variant-ligatures: none; }
+  code, .file-path { font-size: .9em; }
+  .code-sample { min-width: 0; margin-top: 12px; border: 1px solid var(--border); background: var(--surface); }
+  .code-caption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--muted); font-size: .85rem; }
+  .code-block { margin: 0; padding: 12px; max-width: 100%; overflow-x: auto; white-space: pre; overflow-wrap: normal; tab-size: 2; font-size: .85rem; line-height: 1.65; }
+  .code-block code { font: inherit; }
+  .token.keyword { color: var(--syntax-keyword); }
+  .token.string { color: var(--syntax-string); }
+  .token.number { color: var(--syntax-number); }
+  .token.function { color: var(--syntax-function); }
+  .token.type { color: var(--syntax-type); }
+  .token.comment { color: var(--muted); }
+  article + article { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border); }
+  .comparison { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: 12px; }
+  .comparison > figure { min-width: 0; border: 1px solid var(--border); padding: 14px; }
+  .comparison h3 { border-left: 4px solid var(--accent); padding-left: 10px; }
+  .flow { display: grid; align-content: start; gap: 12px; padding: 20px 14px; }
+  .flow-node { position: relative; background: var(--bg); border: 1px solid var(--fg); padding: 12px; }
+  .flow-node > strong, .flow-node > code { display: block; }
+  .flow-edge { color: var(--accent); text-align: center; font-size: .85rem; }
+  .responsibility { border: 1px dashed var(--muted); background: var(--surface); margin-top: 12px; padding: 12px; }
+  .callout { display: inline-grid; place-items: center; min-width: 24px; height: 24px; padding: 0 5px; background: var(--accent); color: var(--on-accent); font: 700 .85rem/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .flow-node > .callout { position: absolute; right: -1px; top: -12px; }
+  .annotations { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; border-top: 1px solid var(--border); padding-top: 14px; margin-top: 16px; }
+  .annotation { display: flex; align-items: baseline; gap: 10px; }
+  .annotation .callout { flex-shrink: 0; }
+  .impact { border-left: 2px solid var(--accent); padding-left: 12px; margin-top: 16px; }
+  .cautions { background: var(--warn-bg); border-color: var(--warn-border); }
+  .cautions ul, .checks { margin: 8px 0 0; padding-left: 22px; }
+  details.layer { margin-top: 12px; border: 1px solid var(--border); padding: 16px; }
+  details.layer > summary { font-weight: 700; }
+  .purpose { margin: 8px 0 16px; }
+  .sublayer-heading { margin: 20px 0 8px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .file-item { border-top: 1px solid var(--border); padding: 14px 0 0; margin-top: 14px; }
+  .file-head label { display: flex; gap: 10px; align-items: baseline; cursor: pointer; min-width: 0; }
+  .file-check { appearance: none; position: relative; width: 18px; height: 18px; flex-shrink: 0; border: 1px solid currentColor; background: var(--bg); margin: 0; }
+  .file-check:checked { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .file-check:checked::after { content: "✓"; position: absolute; inset: 0; font: 700 15px/16px sans-serif; text-align: center; }
+  .badge { padding: 1px 6px; font-size: .75rem; background: var(--surface); }
+  .badge-read { color: var(--accent); }
+  .badge-diff { color: var(--muted); }
+  .point { margin-top: 8px; }
+  .notes { border-top: 1px solid var(--border); padding-top: 16px; font-size: .85rem; }
+  #progress-bar { border-top: 1px solid var(--border); margin-top: 24px; padding-top: 12px; text-align: right; color: var(--muted); font-size: .85rem; }
+  @media (max-width: 900px) {
+    .workspace { grid-template-columns: 140px minmax(0, 1fr); }
+    .sidebar { padding: 16px 8px; }
+    .reading-order a { gap: 8px; padding: 10px 8px; }
+    main { padding: 20px 16px 32px; }
+    .comparison, .annotations { grid-template-columns: 1fr; }
   }
-  header {
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 16px;
-    margin-bottom: 24px;
+  @media (max-width: 640px) {
+    .topbar { padding: 12px 16px; gap: 8px 16px; }
+    .meta { border: 0; padding: 0; font-size: .8rem; }
+    .workspace { display: block; }
+    .sidebar { border-right: 0; border-bottom: 1px solid var(--border); padding: 8px; }
+    .sidebar nav { position: static; }
+    .reading-order { display: flex; flex-wrap: wrap; gap: 0; }
+    .reading-order a { font-size: .8rem; padding: 8px; }
+    .panel { padding: 12px; }
   }
-  header h1 {
-    font-size: 1.4em;
-    margin: 0 0 8px;
-  }
-  header .meta {
-    color: var(--muted);
-    font-size: 0.9em;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 12px;
-  }
-  header .stat-add { color: #22863a; }
-  header .stat-del { color: #cb2431; }
-  header .commits {
-    margin-top: 12px;
-    font-size: 0.85em;
-    color: var(--muted);
-    white-space: pre-wrap;
-  }
-  a { color: var(--accent); }
-  h2 { font-size: 1.15em; margin-top: 0; }
-  section.summary, section.cautions {
-    margin-bottom: 24px;
-  }
-  section.cautions {
-    background: var(--warn-bg);
-    border: 1px solid var(--warn-border);
-    border-radius: 8px;
-    padding: 12px 16px;
-  }
-  section.cautions ul { margin: 8px 0 0; padding-left: 1.2em; }
-  details.layer {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 16px;
-    padding: 12px 16px;
-  }
-  details.layer summary {
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 1.05em;
-  }
-  details.layer .purpose {
-    color: var(--muted);
-    margin: 4px 0 12px;
-  }
-  .sublayer-heading {
-    font-weight: 600;
-    font-size: 0.9em;
-    color: var(--muted);
-    margin: 16px 0 8px;
-    border-top: 1px solid var(--border);
-    padding-top: 8px;
-  }
-  .file-item {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 10px 12px;
-    margin-bottom: 10px;
-  }
-  .file-item .file-head {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .file-item .file-path {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.9em;
-    word-break: break-all;
-  }
-  .badge {
-    font-size: 0.75em;
-    padding: 1px 8px;
-    border-radius: 999px;
-    color: #fff;
-    white-space: nowrap;
-  }
-  .badge-read { background: var(--badge-read); }
-  .badge-diff { background: var(--badge-diff); }
-  .file-item .point { margin: 6px 0 0; }
-  .file-item ul.checks {
-    margin: 4px 0 0;
-    padding-left: 1.2em;
-    color: var(--muted);
-  }
-  section.structure {
-    margin-bottom: 24px;
-  }
-  section.structure pre {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.85em;
-    overflow-x: auto;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 16px;
-    margin: 8px 0 0;
-  }
-  footer.notes {
-    margin-top: 24px;
-    font-size: 0.9em;
-    color: var(--muted);
-    border-top: 1px solid var(--border);
-    padding-top: 12px;
-  }
-  #progress-bar {
-    position: sticky;
-    bottom: 0;
-    max-width: 760px;
-    margin: 24px auto 0;
-    padding: 8px 12px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 0.85em;
-    color: var(--muted);
-    text-align: center;
+  @media (forced-colors: active) { .file-check { appearance: auto; } .file-check:checked::after { content: none; } }
+  @media print {
+    .workspace { display: block; }
+    .sidebar { display: none; }
+    main { padding: 16px 0; }
+    .diagram-scroll { overflow: visible; }
+    .diagram svg { min-width: 0; }
   }
 </style>
 </head>
 <body>
-<main>
-
-<header>
-  <h1><a href="{{pr_url}}">#{{pr_number}} {{pr_title}}</a></h1>
+<header class="topbar">
+  <div class="brand">PR REVIEW / <a href="{{pr_url}}">#{{pr_number}} ↗</a></div>
   <div class="meta">
-    <span><span class="stat-add">+{{additions}}</span> <span class="stat-del">-{{deletions}}</span></span>
-    <span>{{changed_files}} files changed</span>
-    <span>base: {{base_sha_short}}</span>
+    <span>{{changed_files}} files</span>
+    <span><span class="stat-add">+{{additions}}</span> / <span class="stat-del">−{{deletions}}</span></span>
   </div>
-  <div class="commits">{{commit_log}}</div>
+</header>
+<div class="workspace">
+<aside class="sidebar">
+  <nav aria-label="読む順序">
+    <ol class="reading-order">
+      <li><a href="#overview"><span>01</span>概要</a></li>
+      <li><a href="#structure"><span>02</span>依存関係</a></li>
+      <li><a href="#changes"><span>03</span>変更前後</a></li>
+      <li><a href="#review"><span>04</span>確認ポイント</a></li>
+    </ol>
+  </nav>
+</aside>
+<main>
+<header class="hero" id="overview">
+  <h1>{{pr_title}}</h1>
+  <p>{{pr_summary_3_sentences}}</p>
+  <details class="commits">
+    <summary>コミットの内訳</summary>
+    <pre>{{commit_log}}</pre>
+  </details>
 </header>
 
-<section class="summary">
-  <h2>要約</h2>
-  <!-- eli33 の図解があれば <p> の前後に埋める -->
-  <p>{{pr_summary_3_sentences}}</p>
+<!-- 該当なしなら section ごと省略 -->
+<section class="panel cautions">
+  <h2>先に確認すること</h2>
+  <ul><li>{{cross_cutting_caution}}</li></ul>
 </section>
 
-<section class="structure">
-  <h2>変更の構造</h2>
-  <pre>{{structure_diagram}}</pre>
-</section>
-
-<!-- 横断の注意点: 該当なしなら section ごと省略する -->
-<section class="cautions">
-  <h2>横断の注意点</h2>
-  <ul>
-    <!-- 繰り返し: 注意点1件ごとに <li> -->
-    <li>{{cross_cutting_caution}}</li>
-  </ul>
-</section>
-
-<!-- 繰り返し: 層(1〜5)ごとに <details class="layer"> 。空の層は出力しない -->
-<details class="layer" open>
-  <summary>{{layer_name}}</summary>
-  <p class="purpose">{{layer_purpose_1_sentence}}</p>
-
-  <!-- 層内が10件を超えたときだけ機能ディレクトリ単位の小見出しを入れる。10件以下なら出さない -->
-  <p class="sublayer-heading">{{sublayer_name}}</p>
-
-  <!-- 繰り返し: 層内のファイルごとに .file-item -->
-  <div class="file-item">
-    <div class="file-head">
-      <input type="checkbox" class="file-check" data-id="{{file_path}}">
-      <span class="file-path">{{file_path}}</span>
-      <a href="{{pr_url}}/files#diff-{{path_sha256}}" target="_blank" rel="noopener">差分</a>
-      <span class="badge badge-read">精読</span>
-      <!-- 同型確認ファイルは badge-diff に差し替え、ラベルは「差分同型確認」 -->
-    </div>
-    <p class="point">{{change_summary_1_sentence}}</p>
-    <ul class="checks">
-      <!-- 繰り返し: 確認ポイント1〜3個。無ければ <li>確認ポイントなし（自明な変更）</li> の1行のみ -->
-      <li>{{check_point}}</li>
-    </ul>
+<section class="panel structure" id="structure">
+  <h2>依存関係</h2>
+  <div class="legend" aria-label="図の凡例">
+    <span class="status-changed">変更</span><span class="status-added">追加</span>
+    <span class="status-removed">削除</span><span>変更なし</span><span>破線＋未確認：未確認の関係</span>
   </div>
+  <!-- ノードと接続は構成例。実際の依存関係に合わせて組み替える。図を増やす場合は SVG の ID も一意にする -->
+  <figure class="diagram">
+    <div class="diagram-scroll" tabindex="0" role="region" aria-label="全体の依存図（横スクロール可能）">
+      <svg viewBox="0 0 960 220" role="img" aria-labelledby="overview-title overview-desc">
+        <title id="overview-title">{{overview_title}}</title>
+        <desc id="overview-desc">{{overview_accessible_description}}</desc>
+        <defs><marker id="overview-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow-head" d="M 0 0 L 10 5 L 0 10 z"/></marker></defs>
+        <rect class="node changed" x="10" y="64" width="240" height="100"/>
+        <text x="26" y="91">変更 · {{source_role}}</text>
+        <text class="code-label" x="26" y="123">{{source_symbol}}</text>
+        <path class="edge" d="M 250 114 H 360" marker-end="url(#overview-arrow)"/>
+        <text x="305" y="96" text-anchor="middle">{{edge_1}}</text>
+        <rect class="node added" x="360" y="64" width="240" height="100"/>
+        <text x="376" y="91">追加 · {{dependency_role}}</text>
+        <text class="code-label" x="376" y="123">{{dependency_symbol}}</text>
+        <path class="edge" d="M 600 114 H 710" marker-end="url(#overview-arrow)"/>
+        <text x="655" y="96" text-anchor="middle">{{edge_2}}</text>
+        <rect class="node" x="710" y="64" width="240" height="100"/>
+        <text x="726" y="91">変更なし · {{target_role}}</text>
+        <text class="code-label" x="726" y="123">{{target_symbol}}</text>
+      </svg>
+    </div>
+    <figcaption>{{overview_impact_1_or_2_sentences}}</figcaption>
+  </figure>
+  <p class="evidence">根拠: <code>{{overview_evidence_paths_and_symbols}}</code></p>
+</section>
 
-</details>
+<section id="changes" class="panel">
+  <h2>変更前後</h2>
+  <!-- 主要変更ごとに article を繰り返す。下は前後比較の作例。変更の性質に応じてフロー・分岐・構造図へ置き換える -->
+  <article>
+    <h3>{{change_title}}</h3>
+    <div class="comparison">
+      <figure class="diagram">
+        <h3>変更前</h3>
+        <div class="flow">
+          <div class="flow-node"><span class="callout">1</span><strong>{{before_source_role}}</strong><code>{{before_source_symbol}}</code><div class="responsibility">{{before_responsibility}}</div></div>
+          <div class="flow-edge">↓ {{before_relationship}}</div>
+          <div class="flow-node"><strong>{{before_target_role}}</strong><code>{{before_target_symbol}}</code></div>
+        </div>
+        <figcaption>{{before_behavior}}</figcaption>
+        <!-- コード引用が判断に必要な場合だけ code-sample を残す。トークンの仕様は SKILL.md「コードとファイル名」を参照 -->
+        <div class="code-sample">
+          <p class="code-caption"><code>{{before_code_file}}</code><span>{{before_code_language}}</span></p>
+          <pre class="code-block" tabindex="0" role="region" aria-label="変更前のコード（横スクロール可能）"><code>{{before_code_tokens}}</code></pre>
+        </div>
+      </figure>
+      <figure class="diagram after">
+        <h3>変更後</h3>
+        <div class="flow">
+          <div class="flow-node"><strong>{{after_source_role_and_status}}</strong><code>{{after_source_symbol}}</code></div>
+          <div class="flow-edge">↓ {{after_relationship}}</div>
+          <div class="flow-node"><span class="callout">2</span><strong>{{after_target_role_and_status}}</strong><code>{{after_target_symbol}}</code></div>
+        </div>
+        <figcaption>{{after_behavior}}</figcaption>
+        <!-- コード引用が判断に必要な場合だけ code-sample を残す -->
+        <div class="code-sample">
+          <p class="code-caption"><code>{{after_code_file}}</code><span>{{after_code_language}}</span></p>
+          <pre class="code-block" tabindex="0" role="region" aria-label="変更後のコード（横スクロール可能）"><code>{{after_code_tokens}}</code></pre>
+        </div>
+      </figure>
+    </div>
+    <!-- 図内の番号と説明を対応させる。主要変更ごとに内容と番号を組み替える -->
+    <div class="annotations">
+      <p class="annotation"><span class="callout">1</span><span>{{before_annotation}}</span></p>
+      <p class="annotation"><span class="callout">2</span><span>{{after_annotation}}</span></p>
+    </div>
+    <p class="impact">{{change_impact_1_or_2_sentences}}</p>
+    <p class="evidence">根拠: <code>{{change_evidence_paths_and_symbols}}</code></p>
+  </article>
+</section>
 
+<section id="review" aria-labelledby="review-heading">
+  <h2 id="review-heading">層ごとの確認点</h2>
+  <!-- 層(1〜5)ごとに details を繰り返す。空の層は省略 -->
+  <details class="layer" open>
+    <summary>{{layer_name}}</summary>
+    <p class="purpose">{{layer_purpose_1_sentence}}</p>
+    <!-- 層内が10件を超える場合だけ、機能ディレクトリ単位の小見出しを置く -->
+    <h3 class="sublayer-heading">{{sublayer_name}}</h3>
+    <!-- ファイルごとに file-item を繰り返す -->
+    <div class="file-item">
+      <div class="file-head">
+        <label><input type="checkbox" class="file-check" data-id="{{file_path}}"><span class="file-path">{{file_path}}</span></label>
+        <span class="badge badge-read">精読</span>
+        <!-- 同型確認は badge-diff と「差分同型確認」に差し替える -->
+      </div>
+      <p class="point">{{change_summary_1_sentence}}</p>
+      <ul class="checks"><li>{{check_point}}</li></ul>
+    </div>
+  </details>
+</section>
+
+<!-- 層6がある場合だけ対象パスと注意点を記す -->
 <footer class="notes">
-  <p>末尾の調整コミット・自動生成物について: 生成物は生成元の変更と対応しているか、調整コミットは直前の層の差分に含まれているかを確認する。</p>
+  <p>調整コミット・自動生成物: {{adjustment_paths_and_checks}}</p>
 </footer>
-
-<div id="progress-bar"><span id="progress-counter">0 / 0 読了</span></div>
-
+<div id="progress-bar" role="status"><span id="progress-counter">0 / 0 読了</span></div>
 </main>
+</div>
 
 <script>
 (function () {
@@ -265,6 +337,5 @@
   updateCounter();
 })();
 </script>
-
 </body>
 </html>

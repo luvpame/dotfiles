@@ -80,11 +80,11 @@ def main():
     right = herdr("pane", "split", left, "--direction", "right", "--cwd", checkout,
                   "--no-focus")["pane"]["pane_id"]
     prompts = {
-        "code review": ("opus", f"/code-review:code-review {number} 敵対的検証をして。"),
-        "pr-review-assist": ("sonnet", f"/pr-review-assist {number}"),
+        "evidence-code-review": (("--model", "opus", "--effort", "medium"), f"/evidence-code-review {number}"),
+        "pr-review-assist": (("--model", "sonnet"), f"/pr-review-assist {number}"),
     }
     failures = []
-    for pane, (label, (model, prompt)) in zip((left, right), prompts.items()):
+    for pane, (label, (options, prompt)) in zip((left, right), prompts.items()):
         try:
             # Shell initialization may still be running immediately after pane creation.
             for attempt in range(30):
@@ -97,7 +97,7 @@ def main():
                 raise RuntimeError(f"シェルの準備が完了しません: {pane}")
             name = "review-" + uuid.uuid4().hex[:24]
             herdr("agent", "start", name, "--kind", "claude", "--pane", pane,
-                  "--", "--model", model, prompt)
+                  "--", *options, prompt)
         except (subprocess.CalledProcessError, RuntimeError, KeyError, ValueError) as error:
             failures.append(f"{label}: {error}")
     if failures:
