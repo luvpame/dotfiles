@@ -339,11 +339,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790575971,
-        "narHash": "sha256-GJJp1PZ0L477QdO2GWC9y3SDkpgjP0iMeB5JECVxR+I=",
+        "lastModified": 1790722335,
+        "narHash": "sha256-PlRG+zEjajhr6+AMD8MzvJlrzyGeGo+JFmwWIZ/VXgM=",
         "owner": "kawarimidoll",
         "repo": "guard-and-guide",
-        "rev": "816e7a98c5420a0cfd327989e9a66b884128f5e9",
+        "rev": "558d85ece259b2a2a880a977c4190ada4a58b28a",
         "type": "github"
       },
       "original": {
@@ -393,11 +393,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790365885,
-        "narHash": "sha256-iQ0ebhiVo64NktTnwft9hNxlFu4j5cvljVxyJaEVIP4=",
+        "lastModified": 1790726651,
+        "narHash": "sha256-zvULbL+SmLPPB1PwORjYU61W5SulQLjzUxFp4Vjl6B0=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "7b4c5ec4bedaf1e062bbc1bcaeddbc6bd242aa1b",
+        "rev": "b0d0106ef6a7c7c36ebff9a74f803d23d9b383d3",
         "type": "github"
       },
       "original": {
