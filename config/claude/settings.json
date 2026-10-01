@@ -52,6 +52,16 @@
             "statusMessage": "herdr にセッションを通知中"
           }
         ]
+      },
+      {
+        "matcher": "^(startup|resume|clear|compact|fork)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/nasuno.ayumu/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
       }
     ]
   },
@@ -69,9 +79,10 @@
     "ruby-lsp@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "claude-security@claude-plugins-official": true,
-    "mattpocock-skills@mattpocock": true,
+    "mattpocock-skills@mattpocock": false,
     "i-have-adhd@i-have-adhd": true,
-    "launchpad@sandbox-launchpad": true
+    "launchpad@sandbox-launchpad": true,
+    "pstack@pstack-claude": true
   },
   "extraKnownMarketplaces": {
     "cclens": {
@@ -96,6 +107,12 @@
       "source": {
         "source": "github",
         "repo": "DietrichGebert/ponytail"
+      }
+    },
+    "pstack-claude": {
+      "source": {
+        "source": "github",
+        "repo": "michael-denyer/pstack-claude"
       }
     }
   },
