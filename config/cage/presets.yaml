@@ -39,6 +39,7 @@ presets:
       - "$HOME/.claude.json.lock"
       - "$HOME/.claude.lock"
       - "$HOME/Library/Caches/claude-cli-nodejs"
+      - "$HOME/GoogleDrive/meet-transcripts-md"
   codex:
     allow:
       - path: "$HOME/.codex"
