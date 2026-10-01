@@ -87,7 +87,7 @@
     border: 1px solid var(--grid);
   }
   .diagram-scroll { overflow-x: auto; padding: 12px; }
-  .diagram svg { display: block; width: 100%; min-width: 960px; height: auto; }
+  .diagram svg { display: block; width: auto; min-width: 0; max-width: none; height: auto; margin-inline: auto; }
   figcaption { margin-top: 10px; font-size: .9rem; }
   .evidence { margin-top: 10px; font-size: .8rem; }
   pre, code, kbd, samp, .file-path, .code-label { font-family: var(--font-mono); font-variant-ligatures: none; }
@@ -151,7 +151,7 @@
     .sidebar { display: none; }
     main { padding: 16px 0; }
     .diagram-scroll { overflow: visible; }
-    .diagram svg { min-width: 0; }
+    .diagram svg { max-width: 100%; }
   }
 </style>
 </head>
