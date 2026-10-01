@@ -54,6 +54,7 @@ let
     "productdevbook/tap" # portkiller
     "fayazara/tap" # screendrop
     "driceroland/tap" # search
+    "penso/tap" # herdr-gpui
   ];
   trustedTaps = map (name: {
     inherit name;
@@ -98,6 +99,7 @@ let
     "claude"
     "tablepro"
     "sequel-ace"
+    "herdr-gpui"
 
     ### Fonts
     "font-hackgen-nerd"

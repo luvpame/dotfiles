@@ -369,23 +369,6 @@
         "type": "github"
       }
     },
-    "herdr-gpui": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1790667880,
-        "narHash": "sha256-ZW6gTKwJts/iLxS+pIh4FDPnRTVbO7dwvzTXit54tKc=",
-        "owner": "penso",
-        "repo": "herdr-gpui",
-        "rev": "920edbb26b29f039bde6d1ae643954acf9b1bd7b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "penso",
-        "repo": "herdr-gpui",
-        "rev": "920edbb26b29f039bde6d1ae643954acf9b1bd7b",
-        "type": "github"
-      }
-    },
     "herdr-skills": {
       "flake": false,
       "locked": {
@@ -642,7 +625,6 @@
         "crit": "crit",
         "explainer": "explainer",
         "guard-and-guide": "guard-and-guide",
-        "herdr-gpui": "herdr-gpui",
         "herdr-skills": "herdr-skills",
         "home-manager": "home-manager",
         "humanlayer-skills": "humanlayer-skills",

@@ -27,10 +27,6 @@
       url = "github:herdrdev/herdr/9eb521456ac0d19d3ab3d9d7cea3cca10baa8a4c";
       flake = false;
     };
-    herdr-gpui = {
-      url = "github:penso/herdr-gpui/920edbb26b29f039bde6d1ae643954acf9b1bd7b";
-      flake = false;
-    };
     humanlayer-skills = {
       url = "github:humanlayer/skills/3c2629142c5d437428269b1b722b08c0b87f574d";
       flake = false;
@@ -100,12 +96,6 @@
       ...
     }:
     {
-      packages.aarch64-darwin.herdr-gpui =
-        inputs.nixpkgs.legacyPackages.aarch64-darwin.callPackage ./pkgs/herdr-gpui/default.nix
-          {
-            src = inputs.herdr-gpui;
-          };
-
       checks.aarch64-darwin.agent-skills =
         let
           config = inputs.self.darwinConfigurations.default.config;
