@@ -12,7 +12,7 @@ REPORTER = Path(__file__).with_name("agent-git-metadata.py")
 class AgentGitMetadataTest(unittest.TestCase):
     def setUp(self):
         self.temporary_directory = tempfile.TemporaryDirectory()
-        self.directory = Path(self.temporary_directory.name)
+        self.directory = Path(self.temporary_directory.name).resolve()
         self.repo = self.directory / "repo"
         self.bin = self.directory / "bin"
         self.cache = self.directory / "cache"
@@ -44,25 +44,39 @@ class AgentGitMetadataTest(unittest.TestCase):
     def write_fake_commands(self):
         herdr = self.bin / "herdr"
         herdr.write_text(
-            "#!/bin/sh\n"
-            "if [ \"$1 $2\" = \"pane get\" ]; then\n"
-            "  printf '{\"result\":{\"pane\":{\"foreground_cwd\":\"%s\"}}}\\n' \"$TEST_REPO\"\n"
-            "elif [ \"$1 $2\" = \"workspace get\" ]; then\n"
-            "  printf '{\"result\":{\"workspace\":{\"label\":\"%s\"}}}\\n' \"$WORKSPACE_LABEL\"\n"
-            "elif [ \"$1 $2\" = \"agent list\" ]; then\n"
-            "  printf '%s\\n' \"$HERDR_AGENTS\"\n"
-            "else\n"
-            "  printf '%s\\n' \"$*\" >> \"$HERDR_LOG\"\n"
-            "fi\n"
+            "#!/usr/bin/env python3\n"
+            "import json, os, sys\n"
+            "args = sys.argv[1:]\n"
+            "action = ' '.join(args[:2])\n"
+            "if action == os.environ.get('HERDR_FAIL'): sys.exit(1)\n"
+            "workspaces = json.loads(os.environ['HERDR_WORKSPACES'])\n"
+            "panes = json.loads(os.environ['HERDR_PANES'])\n"
+            "if action == 'pane get':\n"
+            "    result = {'pane': {'foreground_cwd': os.environ['TEST_REPO']}}\n"
+            "elif action == 'workspace get':\n"
+            "    result = {'workspace': next(w for w in workspaces if w['workspace_id'] == args[2])}\n"
+            "elif action == 'workspace list':\n"
+            "    result = {'workspaces': workspaces}\n"
+            "elif action == 'pane list':\n"
+            "    result = {'panes': panes[args[3]]}\n"
+            "elif action == 'agent list':\n"
+            "    result = json.loads(os.environ['HERDR_AGENTS'])['result']\n"
+            "else:\n"
+            "    with open(os.environ['HERDR_LOG'], 'a') as file:\n"
+            "        file.write(' '.join(args) + '\\n')\n"
+            "    sys.exit(0)\n"
+            "print(json.dumps({'result': result}))\n"
         )
         herdr.chmod(0o755)
 
         gh = self.bin / "gh"
         gh.write_text(
-            "#!/bin/sh\n"
-            "printf 'query\\n' >> \"$GH_LOG\"\n"
-            "if [ \"${GH_EXIT:-0}\" -ne 0 ]; then exit \"$GH_EXIT\"; fi\n"
-            "printf '%s\\n' \"$GH_RESPONSE\"\n"
+            "#!/usr/bin/env python3\n"
+            "import json, os, sys\n"
+            "with open(os.environ['GH_LOG'], 'a') as file: file.write('query\\n')\n"
+            "if int(os.environ['GH_EXIT']): sys.exit(int(os.environ['GH_EXIT']))\n"
+            "responses = json.loads(os.environ['GH_RESPONSES'])\n"
+            "print(json.dumps(responses.get(os.getcwd(), json.loads(os.environ['GH_RESPONSE']))))\n"
         )
         gh.chmod(0o755)
 
@@ -73,9 +87,18 @@ class AgentGitMetadataTest(unittest.TestCase):
         agents=None,
         gh_exit=0,
         workspace_label="workspace",
+        all_workspaces=False,
+        workspaces=None,
+        panes=None,
+        herdr_fail="",
+        gh_responses=None,
     ):
         if agents is None:
             agents = [{"workspace_id": "w1"}]
+        if workspaces is None:
+            workspaces = [{"workspace_id": "w1", "label": workspace_label}]
+        if panes is None:
+            panes = {"w1": [{"pane_id": "w1:p1", "foreground_cwd": str(self.repo)}]}
         env = {
             **os.environ,
             "PATH": f"{self.bin}{os.pathsep}{os.environ['PATH']}",
@@ -86,13 +109,21 @@ class AgentGitMetadataTest(unittest.TestCase):
             "HERDR_LOG": str(self.herdr_log),
             "GH_LOG": str(self.gh_log),
             "GH_RESPONSE": json.dumps(pull_requests),
+            "GH_RESPONSES": json.dumps(gh_responses or {}),
             "GH_EXIT": str(gh_exit),
             "TEST_REPO": str(self.repo),
-            "WORKSPACE_LABEL": workspace_label,
+            "HERDR_WORKSPACES": json.dumps(workspaces),
+            "HERDR_PANES": json.dumps(panes),
+            "HERDR_FAIL": herdr_fail,
             "XDG_CACHE_HOME": str(self.cache),
         }
-        subprocess.run([REPORTER], env=env, check=True)
-        return self.herdr_log.read_text().strip()
+        args = [REPORTER]
+        if all_workspaces:
+            args.append("--all-workspaces")
+            for name in ("HERDR_ENV", "HERDR_PANE_ID", "HERDR_WORKSPACE_ID"):
+                env.pop(name, None)
+        subprocess.run(args, env=env, check=True, timeout=20)
+        return self.herdr_log.read_text().strip() if self.herdr_log.exists() else ""
 
     def test_reports_branch_and_open_pull_request(self):
         report = self.run_reporter(
@@ -223,6 +254,170 @@ class AgentGitMetadataTest(unittest.TestCase):
         self.run_reporter(pull_requests)
 
         self.assertEqual(self.gh_log.read_text().splitlines(), ["query"])
+
+    def second_repository(self):
+        repo = self.directory / "other-repo"
+        subprocess.run(
+            ["git", "clone", "--quiet", str(self.repo), str(repo)], check=True
+        )
+        subprocess.run(
+            ["git", "-C", str(repo), "checkout", "--quiet", "-b", "other-branch"],
+            check=True,
+        )
+        return repo
+
+    def test_polls_two_workspaces_without_agent_environment(self):
+        other = self.second_repository()
+        report = self.run_reporter(
+            [],
+            all_workspaces=True,
+            agents=[],
+            workspaces=[
+                {"workspace_id": "w1", "label": "workspace"},
+                {"workspace_id": "w2", "label": "review-#12"},
+            ],
+            panes={
+                "w1": [{"pane_id": "w1:p1", "cwd": str(self.repo)}],
+                "w2": [
+                    {"pane_id": "w2:p2", "cwd": str(self.repo)},
+                    {
+                        "pane_id": "w2:p1",
+                        "foreground_cwd": str(self.directory),
+                        "cwd": str(other),
+                    },
+                ],
+            },
+            gh_responses={
+                str(other): [
+                    {
+                        "number": 12,
+                        "state": "OPEN",
+                        "baseRefName": "main",
+                        "reviewDecision": "APPROVED",
+                    }
+                ]
+            },
+        )
+
+        lines = report.splitlines()
+        self.assertEqual(len(lines), 5)
+        self.assertIn("pane report-metadata w1:p1", lines[0])
+        self.assertIn("git_branch= feature/sidebar", lines[1])
+        self.assertIn("workspace report-metadata w2", lines[4])
+        self.assertIn("git_branch= other-branch", lines[4])
+        self.assertIn("--token agent_summary= ", lines[4])
+        self.assertIn("--token review_space=", lines[4])
+        self.assertIn("--token pr_open=⠀⠀ #12", lines[4])
+        self.assertIn("--token review_status=✓ approved", lines[4])
+
+    def test_hook_and_poller_use_worktree_instead_of_other_pane_repository(self):
+        other = self.second_repository()
+        workspaces = [
+            {
+                "workspace_id": "w1",
+                "label": "workspace",
+                "worktree": {"checkout_path": str(other)},
+            }
+        ]
+        responses = {
+            str(self.repo): [{"number": 42, "state": "OPEN", "baseRefName": "main"}],
+            str(other): [{"number": 99, "state": "OPEN", "baseRefName": "main"}],
+        }
+        for all_workspaces in (False, True):
+            with self.subTest(all_workspaces=all_workspaces):
+                self.herdr_log.unlink(missing_ok=True)
+                report = self.run_reporter(
+                    [],
+                    all_workspaces=all_workspaces,
+                    workspaces=workspaces,
+                    gh_responses=responses,
+                )
+                pane_report, workspace_report = report.splitlines()
+                self.assertIn("pr_open= #42", pane_report)
+                self.assertIn("git_branch= other-branch", workspace_report)
+                self.assertIn("pr_open=⠀⠀ #99", workspace_report)
+                self.assertNotIn("#42", workspace_report)
+
+    def test_empty_worktree_workspace_still_reports_git_metadata(self):
+        report = self.run_reporter(
+            [],
+            all_workspaces=True,
+            workspaces=[
+                {
+                    "workspace_id": "w1",
+                    "label": "workspace",
+                    "worktree": {"checkout_path": str(self.repo)},
+                }
+            ],
+            panes={"w1": []},
+        )
+
+        self.assertEqual(len(report.splitlines()), 1)
+        self.assertIn("workspace report-metadata w1", report)
+        self.assertIn("git_branch= feature/sidebar", report)
+
+    def test_invalid_worktree_does_not_fall_back_to_valid_pane(self):
+        other = self.second_repository()
+        subprocess.run(["git", "-C", str(other), "checkout", "--detach"], check=True)
+        for root in (self.directory, other, self.directory / "missing"):
+            with self.subTest(root=root):
+                self.herdr_log.unlink(missing_ok=True)
+                report = self.run_reporter(
+                    [],
+                    all_workspaces=True,
+                    workspaces=[
+                        {
+                            "workspace_id": "w1",
+                            "label": "workspace",
+                            "worktree": {"checkout_path": str(root)},
+                        }
+                    ],
+                )
+                pane_report, workspace_report = report.splitlines()
+                self.assertIn("git_branch= feature/sidebar", pane_report)
+                self.assertIn("git_branch= --token pr_open=", workspace_report)
+
+    def test_non_git_and_detached_panes_clear_metadata(self):
+        self.git("checkout", "--detach")
+        report = self.run_reporter(
+            [],
+            all_workspaces=True,
+            panes={
+                "w1": [
+                    {"pane_id": "w1:p1", "cwd": str(self.repo)},
+                    {"pane_id": "w1:p2", "cwd": str(self.directory)},
+                ]
+            },
+        )
+
+        self.assertEqual(len(report.splitlines()), 3)
+        for line in report.splitlines():
+            self.assertIn("git_branch= --token pr_open=", line)
+        self.assertFalse(self.gh_log.exists())
+
+    def test_api_failure_does_not_clear_metadata(self):
+        for action in ("workspace list", "pane list"):
+            with self.subTest(action=action):
+                report = self.run_reporter(
+                    [], all_workspaces=True, herdr_fail=action
+                )
+                self.assertEqual(report, "")
+        self.assertFalse(self.gh_log.exists())
+
+    def test_hook_pane_api_failure_does_not_clear_pane_metadata(self):
+        report = self.run_reporter([], herdr_fail="pane get")
+
+        self.assertEqual(len(report.splitlines()), 1)
+        self.assertIn("workspace report-metadata w1", report)
+
+    def test_empty_workspace_clears_git_metadata(self):
+        report = self.run_reporter(
+            [], all_workspaces=True, panes={"w1": []}, agents=[]
+        )
+
+        self.assertEqual(len(report.splitlines()), 1)
+        self.assertIn("git_branch= --token pr_open=", report)
+        self.assertFalse(self.gh_log.exists())
 
 
 if __name__ == "__main__":

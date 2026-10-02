@@ -5,6 +5,7 @@ import json
 import os
 import re
 import subprocess
+import sys
 import tempfile
 import time
 from pathlib import Path
@@ -36,7 +37,7 @@ REVIEW_STATUSES = {
 }
 
 
-def run(*args, cwd=None, timeout=None):
+def run(*args, cwd=None, timeout=5):
     try:
         return subprocess.run(
             args,
@@ -58,12 +59,12 @@ def stdout(*args, cwd=None):
     return result.stdout.strip()
 
 
-def pane_cwd(pane_id):
-    result = stdout("herdr", "pane", "get", pane_id)
+def herdr_data(name, *args):
+    result = stdout("herdr", *args)
     if result is None:
         return None
     try:
-        return json.loads(result)["result"]["pane"]["foreground_cwd"]
+        return json.loads(result)["result"][name]
     except (json.JSONDecodeError, KeyError, TypeError):
         return None
 
@@ -74,6 +75,27 @@ def checkout(cwd):
     if not root or not branch:
         return None
     return Path(root), branch
+
+
+def pane_checkout(pane):
+    for name in ("foreground_cwd", "cwd"):
+        cwd = pane.get(name)
+        if isinstance(cwd, str) and cwd:
+            current_checkout = checkout(cwd)
+            if current_checkout is not None:
+                return current_checkout
+    return None
+
+
+def workspace_checkout(workspace, pane_checkouts):
+    worktree = workspace.get("worktree")
+    if isinstance(worktree, dict):
+        cwd = worktree.get("checkout_path")
+        return checkout(cwd) if isinstance(cwd, str) and cwd else None
+    for pane_id in sorted(pane_checkouts):
+        if pane_checkouts[pane_id] is not None:
+            return pane_checkouts[pane_id]
+    return None
 
 
 def cache_path(root, branch):
@@ -206,16 +228,6 @@ def metadata(root, branch):
     return tokens, pull_request
 
 
-def workspace_label(workspace_id):
-    result = stdout("herdr", "workspace", "get", workspace_id)
-    if result is None:
-        return None
-    try:
-        return json.loads(result)["result"]["workspace"]["label"]
-    except (json.JSONDecodeError, KeyError, TypeError):
-        return None
-
-
 def review_space_icon(label):
     if not isinstance(label, str) or REVIEW_SPACE_PATTERN.fullmatch(label) is None:
         return ""
@@ -242,10 +254,10 @@ def agent_summary(workspace_id):
     return f"{count} agent" if count == 1 else f"{count} agents"
 
 
-def workspace_metadata(workspace_id, tokens, pull_request):
-    label = workspace_label(workspace_id)
+def workspace_metadata(workspace, tokens, pull_request):
+    label = workspace.get("label")
     workspace_tokens = {
-        "agent_summary": agent_summary(workspace_id),
+        "agent_summary": agent_summary(workspace["workspace_id"]),
         **tokens,
         "review_status": review_status(pull_request),
         "review_space": review_space_icon(label),
@@ -276,26 +288,62 @@ def report_metadata(target, target_id, source, tokens):
     run(*args)
 
 
+def checkout_metadata(current_checkout):
+    if current_checkout is None:
+        return {name: "" for name in METADATA_TOKENS}, None
+    return metadata(*current_checkout)
+
+
+def update_workspace(workspace, *, report_panes=False):
+    workspace_id = workspace["workspace_id"]
+    panes = herdr_data("panes", "pane", "list", "--workspace", workspace_id)
+    if not isinstance(panes, list):
+        return
+    pane_checkouts = {
+        pane["pane_id"]: pane_checkout(pane)
+        for pane in panes
+        if isinstance(pane, dict) and isinstance(pane.get("pane_id"), str)
+    }
+    if report_panes:
+        for pane_id, current_checkout in pane_checkouts.items():
+            tokens, _ = checkout_metadata(current_checkout)
+            report_metadata("pane", pane_id, "agent-git", tokens)
+    tokens, pull_request = checkout_metadata(
+        workspace_checkout(workspace, pane_checkouts)
+    )
+    report_metadata(
+        "workspace",
+        workspace_id,
+        "workspace-git",
+        workspace_metadata(workspace, tokens, pull_request),
+    )
+
+
 def main():
+    if sys.argv[1:] == ["--all-workspaces"]:
+        workspaces = herdr_data("workspaces", "workspace", "list")
+        if isinstance(workspaces, list):
+            for workspace in workspaces:
+                if isinstance(workspace, dict) and isinstance(
+                    workspace.get("workspace_id"), str
+                ):
+                    update_workspace(workspace, report_panes=True)
+        return
+    if sys.argv[1:]:
+        return
     pane_id = os.environ.get("HERDR_PANE_ID")
     workspace_id = os.environ.get("HERDR_WORKSPACE_ID")
     if os.environ.get("HERDR_ENV") != "1" or not pane_id:
         return
 
-    tokens = {name: "" for name in METADATA_TOKENS}
-    pull_request = None
-    cwd = pane_cwd(pane_id)
-    current_checkout = checkout(cwd) if cwd else None
-    if current_checkout is not None:
-        tokens, pull_request = metadata(*current_checkout)
-    report_metadata("pane", pane_id, "agent-git", tokens)
+    pane = herdr_data("pane", "pane", "get", pane_id)
+    if isinstance(pane, dict):
+        tokens, _ = checkout_metadata(pane_checkout(pane))
+        report_metadata("pane", pane_id, "agent-git", tokens)
     if workspace_id:
-        report_metadata(
-            "workspace",
-            workspace_id,
-            "workspace-git",
-            workspace_metadata(workspace_id, tokens, pull_request),
-        )
+        workspace = herdr_data("workspace", "workspace", "get", workspace_id)
+        if isinstance(workspace, dict) and workspace.get("workspace_id") == workspace_id:
+            update_workspace(workspace)
 
 
 if __name__ == "__main__":
