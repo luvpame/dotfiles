@@ -3,10 +3,10 @@
 
 import json
 import os
+import shlex
 import subprocess
 import sys
 import time
-import uuid
 
 
 def run(*args, cwd=None):
@@ -95,9 +95,7 @@ def main():
                 time.sleep(1)
             else:
                 raise RuntimeError(f"シェルの準備が完了しません: {pane}")
-            name = "review-" + uuid.uuid4().hex[:24]
-            herdr("agent", "start", name, "--kind", "claude", "--pane", pane,
-                  "--", *options, prompt)
+            run("herdr", "pane", "run", pane, shlex.join(("claude", *options, prompt)))
         except (subprocess.CalledProcessError, RuntimeError, KeyError, ValueError) as error:
             failures.append(f"{label}: {error}")
     if failures:
@@ -110,4 +108,9 @@ if __name__ == "__main__":
         main()
     except (subprocess.CalledProcessError, RuntimeError, KeyError, ValueError) as error:
         print(str(error), file=sys.stderr)
+        if sys.stdin.isatty():
+            try:
+                input("Enter で閉じます。")
+            except EOFError:
+                pass
         sys.exit(1)
