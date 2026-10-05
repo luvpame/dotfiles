@@ -1,5 +1,22 @@
 {
   "nodes": {
+    "agent-browser-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1790885571,
+        "narHash": "sha256-PNIQvTMYqcu8hS1TOiXJtVEYTmFJdRv1nu0T5nG3MlE=",
+        "owner": "vercel-labs",
+        "repo": "agent-browser",
+        "rev": "39a74c70d7759d5a6de7a22c04570bb626bbd081",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vercel-labs",
+        "ref": "v0.38.2",
+        "repo": "agent-browser",
+        "type": "github"
+      }
+    },
     "agent-skills": {
       "inputs": {
         "nixpkgs": [
@@ -616,6 +633,7 @@
     },
     "root": {
       "inputs": {
+        "agent-browser-skills": "agent-browser-skills",
         "agent-skills": "agent-skills",
         "anthropic-skills": "anthropic-skills",
         "cage": "cage",
@@ -634,7 +652,8 @@
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs_2",
-        "no-ai-slop": "no-ai-slop"
+        "no-ai-slop": "no-ai-slop",
+        "yomiyasu": "yomiyasu"
       }
     },
     "rust-overlay": {
@@ -728,6 +747,23 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "yomiyasu": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1790909101,
+        "narHash": "sha256-dZc9NRFBTl4tEKfSLAIE77smW50M5dEbzn5vzTXduRk=",
+        "owner": "nanaism",
+        "repo": "yomiyasu",
+        "rev": "e5c6a8443a427726a472e2e560fc8679125ea2b8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nanaism",
+        "repo": "yomiyasu",
+        "rev": "e5c6a8443a427726a472e2e560fc8679125ea2b8",
         "type": "github"
       }
     }

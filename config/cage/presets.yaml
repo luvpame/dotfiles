@@ -29,6 +29,8 @@ presets:
         eval-symlinks: true
   claude-code:
     allow:
+      # agent-browser のセッションと daemon socket
+      - "$HOME/.agent-browser"
       # Claude Code データ
       - path: "$HOME/.claude"
         eval-symlinks: true

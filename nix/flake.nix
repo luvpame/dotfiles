@@ -11,6 +11,10 @@
     # nix-darwin/home-manager/skills.nix の sources と skills.enable に登録する。
     # 入力の変更後は nix/ で nix flake lock path:. → just check → just switch。
     # URLにコミットを指定した入力の更新は、URLのコミットも変更する必要がある。
+    agent-browser-skills = {
+      url = "github:vercel-labs/agent-browser/v0.38.2";
+      flake = false;
+    };
     anthropic-skills = {
       url = "github:anthropics/claude-plugins-official/022b3c274938ddfb9fd928fc582eb9b9ed0f537f";
       flake = false;
@@ -41,6 +45,10 @@
     };
     no-ai-slop = {
       url = "github:petergyang/no-ai-slop/000650b156983f5159695b441477f4e63b25dc85";
+      flake = false;
+    };
+    yomiyasu = {
+      url = "github:nanaism/yomiyasu/e5c6a8443a427726a472e2e560fc8679125ea2b8";
       flake = false;
     };
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";

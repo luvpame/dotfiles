@@ -85,6 +85,11 @@ in
     # 外部スキルの取得元。input は nix/flake.nix の入力名、subdir は取得元内の探索場所。
     # 同じ取得元から追加する場合は nameRegex も広げる（例: "(skill-a|skill-b)"）。
     # 新しい取得元なら nix/flake.nix に flake = false の入力を追加し、ここから参照する。
+    sources.agent-browser = {
+      input = "agent-browser-skills";
+      subdir = "skills";
+      filter.nameRegex = "agent-browser";
+    };
     sources.external = {
       # 既存6スキルのファイル名変換と差分保持は external-skills.nix で行う。
       # この取得元の追加・削除時は、同ファイルのコピー処理と原本hashも更新する。
@@ -95,6 +100,11 @@ in
       input = "no-ai-slop";
       subdir = "skills";
       filter.nameRegex = "no-ai-slop";
+    };
+    sources.yomiyasu = {
+      input = "yomiyasu";
+      subdir = "skills";
+      filter.nameRegex = "yomiyasu";
     };
     sources.explainer = {
       path = "${
@@ -107,6 +117,7 @@ in
     # 内容の更新は nix/flake.nix の取得リビジョンを変更する（配布済みファイルは編集しない）。
     # コピー済み6件の内容変更は skill-patches/ と external-skills.nix で管理する。
     skills.enable = [
+      "agent-browser"
       "code-simplifier"
       "cognitive-rhythm-writing"
       "empirical-prompt-tuning"
@@ -115,6 +126,7 @@ in
       "japanese-tech-writing"
       "no-ai-slop"
       "show-me"
+      "yomiyasu"
     ];
     # 外部スキルの配布先。変更時は上のローカル用 targets も揃える。
     # プラグイン由来のスキル、Codex の .system と chronicle は、それぞれの管理元に任せる。

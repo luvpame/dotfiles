@@ -27,6 +27,7 @@ let
 
   brewPackages = [
     ### CLI Applications not available in nixpkgs
+    "agent-browser"
     "fisher"
     "mas" # Mac App Store CLI
     "im-select"
