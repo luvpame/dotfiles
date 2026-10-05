@@ -2,7 +2,8 @@
   "env": {
     "AGENT_BROWSER_CDP": "9222",
     "AGENT_BROWSER_PIN_TAB": "1",
-    "CLAUDE_CODE_ENABLE_FUNCTION_HOOKS": "1"
+    "CLAUDE_CODE_ENABLE_FUNCTION_HOOKS": "1",
+    "CLAUDE_CODE_PLUGIN_DIRS": "~/.dotfiles/config/claude/mods/session-links"
   },
   "permissions": {
     "allow": [

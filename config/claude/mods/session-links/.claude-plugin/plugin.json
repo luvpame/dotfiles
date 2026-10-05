@@ -1,0 +1,1 @@
+{ "name": "session-links", "version": "0.1.0", "description": "List external links in this session and open them in the default browser", "types": "./types/index.d.ts" }
