@@ -51,7 +51,7 @@ in
     devenv
     nix-direnv
     lazygit
-    openssl_3
+    openssl
     (yazi.override {
       _7zz = pkgs._7zz-rar;
     })
