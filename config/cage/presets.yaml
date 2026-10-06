@@ -42,6 +42,8 @@ presets:
       - "$HOME/.claude.lock"
       - "$HOME/Library/Caches/claude-cli-nodejs"
       - "$HOME/GoogleDrive/meet-transcripts-md"
+      # Agent Memory Repo（work / personal）
+      - "$HOME/agent-memory"
   codex:
     allow:
       - path: "$HOME/.codex"
