@@ -138,7 +138,7 @@
   },
   "advisorModel": "fable",
   "tui": "fullscreen",
-  "autoMemoryEnabled": true,
+  "autoMemoryEnabled": false,
   "skipWorkflowUsageWarning": true,
   "theme": "light",
   "editorMode": "vim",
