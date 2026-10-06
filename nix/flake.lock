@@ -17,6 +17,23 @@
         "type": "github"
       }
     },
+    "agent-memory-repo": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791180818,
+        "narHash": "sha256-OKaA7uqqlBRtZXtygJTGA0F4BH8+VD/vn15xBh1GlgA=",
+        "owner": "AgentMemoryRepo",
+        "repo": "agentmemoryrepo",
+        "rev": "1db04a5735adbc4f2158308f2077fd960e243c04",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AgentMemoryRepo",
+        "repo": "agentmemoryrepo",
+        "rev": "1db04a5735adbc4f2158308f2077fd960e243c04",
+        "type": "github"
+      }
+    },
     "agent-skills": {
       "inputs": {
         "nixpkgs": [
@@ -634,6 +651,7 @@
     "root": {
       "inputs": {
         "agent-browser-skills": "agent-browser-skills",
+        "agent-memory-repo": "agent-memory-repo",
         "agent-skills": "agent-skills",
         "anthropic-skills": "anthropic-skills",
         "cage": "cage",

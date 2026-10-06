@@ -96,6 +96,11 @@ in
       path = import ./external-skills.nix { inherit config inputs pkgs; };
       filter.maxDepth = 1;
     };
+    sources.agent-memory-repo = {
+      input = "agent-memory-repo";
+      subdir = "skills";
+      filter.nameRegex = "agent-memory-repo";
+    };
     sources.no-ai-slop = {
       input = "no-ai-slop";
       subdir = "skills";
@@ -118,6 +123,7 @@ in
     # コピー済み6件の内容変更は skill-patches/ と external-skills.nix で管理する。
     skills.enable = [
       "agent-browser"
+      "agent-memory-repo"
       "code-simplifier"
       "cognitive-rhythm-writing"
       "empirical-prompt-tuning"
