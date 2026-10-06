@@ -44,6 +44,11 @@
             "command": "bash \"$HOME/.claude/hooks/herdr-tab-rename-reminder.sh\"",
             "timeout": 5,
             "statusMessage": "herdr タブ名を確認中"
+          },
+          {
+            "type": "command",
+            "command": "sh \"$HOME/.claude/hooks/agent-memory-reminder.sh\"",
+            "timeout": 5
           }
         ]
       }
