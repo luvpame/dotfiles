@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }:
@@ -23,12 +24,6 @@ in
     yazi.source = oos "${configRoot}/yazi";
     tmux.source = oos "${configRoot}/tmux";
     "herdr/scripts".source = oos "${configRoot}/herdr/scripts";
-    "herdr/config.toml".source = oos "${configRoot}/herdr/config.toml";
-    # GUI 内で保存すると symlink が置き換わるため、設定は Repository 側で編集する。
-    "herdr/config-gpui.local.toml" = {
-      source = oos "${configRoot}/herdr/config-gpui.local.toml";
-      force = true;
-    };
     cage.source = oos "${configRoot}/cage";
 
     # Runtime stateを含むHunkの親directory linkはT24でfile単位へ分割する。
@@ -45,6 +40,16 @@ in
       text = "source ${pkgs.nix-direnv}/share/nix-direnv/direnvrc";
     };
   };
+
+  # GUI が共有設定の symlink を拒否するため、通常ファイルとしてコピーする。
+  home.activation.copyHerdrConfig = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    run ${pkgs.coreutils}/bin/install -Dm600 \
+      "${configRoot}/herdr/config.toml" \
+      "${config.xdg.configHome}/herdr/config.toml"
+    run ${pkgs.coreutils}/bin/install -Dm600 \
+      "${configRoot}/herdr/config-gpui.local.toml" \
+      "${config.xdg.configHome}/herdr/config-gpui.local.toml"
+  '';
 
   # Agent設定もRepository内で直接編集し、各Agentへ即時反映する。
   home.file = {

@@ -72,7 +72,7 @@ name = "catppuccin-latte"
 auto_switch = false
 
 [ui.toast]
-delivery = "terminal"
+delivery = "system"
 
 [ui]
 pane_borders = "always"
