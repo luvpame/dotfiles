@@ -384,8 +384,8 @@ BROWSER_USE_TINYSKY_ENABLED = "1"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.930.31730"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/nasuno.ayumu/.codex/plugins/cache/openai-bundled/browser/26.930.31730/scripts/browser-service.mjs"}'
+BROWSER_USE_CODEX_APP_VERSION = "26.930.51102"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/nasuno.ayumu/.codex/plugins/cache/openai-bundled/browser/26.930.51102/scripts/browser-service.mjs"}'
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex"
 
 [mcp_servers.computer-use]
