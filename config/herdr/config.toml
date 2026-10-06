@@ -5,6 +5,7 @@ toggle_sidebar = ""
 rename_pane = ""
 
 new_tab = "prefix+c"
+previous_tab = ""
 cycle_pane_next = "prefix+tab"
 split_vertical = "prefix+|"
 split_horizontal = "prefix+minus"
