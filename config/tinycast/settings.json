@@ -1,0 +1,167 @@
+{
+  "general": {
+    "showInMenuBar": true,
+    "popToRootSeconds": 0,
+    "escapeKeyBehavior": "navigateBackOrClose",
+    "autoSwitchInputSource": "com.apple.keylayout.UnicodeHexInput",
+    "supportReminders": true
+  },
+  "appearance": {
+    "theme": "system",
+    "interfaceSize": "larger",
+    "compactMode": true,
+    "showFavoritesInCompactMode": false,
+    "followCursorAcrossDisplays": true,
+    "dragToReposition": false
+  },
+  "hyperKey": {
+    "key": "rightCommand",
+    "includesShift": true,
+    "quickPress": "none"
+  },
+  "calculator": {
+    "numberStyle": "system"
+  },
+  "search": {
+    "showsSuggestions": true,
+    "sensitivity": "medium"
+  },
+  "applications": {
+    "searchScopes": [
+      "/Applications",
+      "/Applications/Utilities",
+      "/System/Applications",
+      "/System/Applications/Utilities",
+      "/System/Library/CoreServices/Applications",
+      "/System/Volumes/Preboot/Cryptexes/App/System/Applications",
+      "/System/Library/CoreServices/Finder.app",
+      "~/Applications"
+    ]
+  },
+  "commands": {
+    "enabled": false,
+    "showInLauncher": true
+  },
+  "quicklinks": {
+    "enabled": true,
+    "showInLauncher": true,
+    "opensNewWindow": false,
+    "selectionFallback": "ask",
+    "confirmsBeforeDelete": true
+  },
+  "appleShortcuts": {
+    "enabled": false
+  },
+  "ai": {
+    "enabled": true,
+    "webSearch": true,
+    "systemPrompt": "Always Responsed “日本語”",
+    "systemPromptEnabled": true,
+    "retentionDays": 7,
+    "opensTo": "recent",
+    "newChatAfterMinutes": 10,
+    "toolRounds": 25
+  },
+  "quickActions": {
+    "targetLanguage": ""
+  },
+  "fileSearch": {
+    "enabled": false,
+    "scopes": [
+      "~"
+    ],
+    "ignorePatterns": []
+  },
+  "notes": {
+    "enabled": false,
+    "rendersMarkdown": true,
+    "showsFormattingBar": true,
+    "folder": null
+  },
+  "snippets": {
+    "showInLauncher": false,
+    "folder": null
+  },
+  "navigation": {
+    "enabled": false,
+    "menuSearchShowsAppleMenu": false,
+    "menuSearchDisabledApps": []
+  },
+  "windowManagement": {
+    "enabled": false,
+    "showInLauncher": true,
+    "gap": 0,
+    "cycle": "off",
+    "layoutsShowInLauncher": true,
+    "roomsShowInLauncher": true,
+    "shortcuts": {
+      "left-half": null,
+      "right-half": null,
+      "top-half": null,
+      "bottom-half": null,
+      "top-left-quarter": null,
+      "top-right-quarter": null,
+      "bottom-left-quarter": null,
+      "bottom-right-quarter": null,
+      "first-three-fourths": null,
+      "last-three-fourths": null,
+      "first-third": null,
+      "center-third": null,
+      "last-third": null,
+      "first-two-thirds": null,
+      "last-two-thirds": null,
+      "maximize": null,
+      "almost-maximize": null,
+      "reasonable-size": null,
+      "maximize-height": null,
+      "maximize-width": null,
+      "center": null,
+      "center-half": null,
+      "center-two-thirds": null,
+      "make-larger": null,
+      "make-smaller": null,
+      "restore": null,
+      "move-left": null,
+      "move-right": null,
+      "move-up": null,
+      "move-down": null,
+      "next-display": null,
+      "previous-display": null,
+      "toggle-fullscreen": null,
+      "previous-space": null,
+      "next-space": null
+    },
+    "customSizes": [],
+    "layouts": [],
+    "rooms": []
+  },
+  "clipboard": {
+    "enabled": true,
+    "retentionDays": 90,
+    "defaultAction": "paste",
+    "disabledApps": [
+      "com.apple.keychainaccess",
+      "com.apple.Passwords"
+    ]
+  },
+  "emoji": {
+    "skinTone": "none",
+    "gridColumns": 8
+  },
+  "calendar": {
+    "showInLauncher": true,
+    "launcherLimit": 5,
+    "span": "todayAndTomorrow",
+    "joinWindowMinutes": 5,
+    "autoJoinConfirms": false,
+    "meetingBrowser": null,
+    "menuBar": "meetingTitle",
+    "menuBarUpcomingEvents": 30,
+    "menuBarLinkedEventsOnly": true,
+    "menuBarHidesWhenEmpty": true,
+    "hideCurrentEventAfterMinutes": "never"
+  },
+  "extensions": {
+    "showInLauncher": true
+  }
+}

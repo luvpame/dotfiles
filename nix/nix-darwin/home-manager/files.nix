@@ -23,6 +23,7 @@ in
     ziggity.source = oos "${configRoot}/ziggity";
     yazi.source = oos "${configRoot}/yazi";
     tmux.source = oos "${configRoot}/tmux";
+    "tinycast/settings.json".source = oos "${configRoot}/tinycast/settings.json";
     "herdr/scripts".source = oos "${configRoot}/herdr/scripts";
     cage.source = oos "${configRoot}/cage";
 
