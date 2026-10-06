@@ -83,9 +83,6 @@ trust_level = "trusted"
 [projects."/Users/nasuno.ayumu/Documents/Codex/2026-06-05/files-mentioned-by-the-user-2026"]
 trust_level = "trusted"
 
-[projects."/Users/nasuno.ayumu/dev/github.com/smartcamp/kaitai-shinsho"]
-trust_level = "trusted"
-
 [projects."/Users/nasuno.ayumu/Documents/Codex/2026-07-10/neovim"]
 trust_level = "trusted"
 
