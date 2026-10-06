@@ -101,6 +101,7 @@ let
     "tablepro"
     "sequel-ace"
     "herdr-gpui"
+    "linear"
 
     ### Fonts
     "font-hackgen-nerd"
