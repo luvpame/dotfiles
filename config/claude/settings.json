@@ -157,7 +157,8 @@
       "Bash(make rspec:*)",
       "Bash(make rubocop:*)",
       "Bash(pnpm test:once:*)",
-      "Bash(pnpm lint:*)"
+      "Bash(pnpm lint:*)",
+      "Bash(curl) POST to Slack incoming webhooks (https://hooks.slack.com/services/*) to notify the team channel from the review-migration-adr routine; payload is a short PR-review request message"
     ],
     "soft_deny": [
       "$defaults",
