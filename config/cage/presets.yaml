@@ -11,8 +11,8 @@ presets:
       - "/dev"
       # npm/npx キャッシュ (MCP サーバー等)
       - "$HOME/.npm"
-      # pnpm (lefthook)
-      - "$HOME/Library/pnpm/.tools/pnpm/"
+      # pnpm
+      - "$HOME/Library/pnpm"
       # bun キャッシュ (bunx for ccstatusline 等)
       - "$HOME/.bun"
       # 各種キャッシュ
@@ -42,7 +42,7 @@ presets:
       - "$HOME/.claude.lock"
       - "$HOME/Library/Caches/claude-cli-nodejs"
       - "$HOME/GoogleDrive/meet-transcripts-md"
-      # Agent Memory Repo（work / personal）
+      # Agent Memory Repo
       - "$HOME/agent-memory"
   codex:
     allow:
