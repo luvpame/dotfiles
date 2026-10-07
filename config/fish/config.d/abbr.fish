@@ -6,9 +6,10 @@ if status is-interactive
     abbr -a g git
     abbr -a pn pnpm
     abbr -a j just
-    abbr -a cc 'CLAUDE_CODE_NO_FLICKER=1 cage claude --append-system-prompt "$__CAGE_SANDBOX_NOTE" --model opus --effort medium'
-    abbr -a ccs 'CLAUDE_CODE_NO_FLICKER=1 cage claude --append-system-prompt "$__CAGE_SANDBOX_NOTE" --model sonnet --effort medium'
+    abbr -a cc 'CLAUDE_CODE_NO_FLICKER=1 cage claude --append-system-prompt "$__CAGE_SANDBOX_NOTE" --model opus --effort high'
+    abbr -a ccs 'CLAUDE_CODE_NO_FLICKER=1 cage claude --append-system-prompt "$__CAGE_SANDBOX_NOTE" --model sonnet --effort high'
     abbr -a ccf 'CLAUDE_CODE_NO_FLICKER=1 cage claude --append-system-prompt "$__CAGE_SANDBOX_NOTE" --model fable'
+    abbr -a cch 'CLAUDE_CODE_NO_FLICKER=1 cage claude --append-system-prompt "$__CAGE_SANDBOX_NOTE" --model haiku --effort high'
     abbr -a v nvim
     abbr -a cdg cd-gitroot
     abbr -a cat bat
