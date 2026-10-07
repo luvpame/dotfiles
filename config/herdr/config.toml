@@ -139,8 +139,7 @@ rows = [
     { token = "$pr_closed", fg = "#d20f39" },
     { token = "$review_status", fg = "#8839ef", rules = [
       { equals = "✓ approved", fg = "#40a02b" },
-      { equals = "× changes", fg = "#d20f39", bold = true },
-      { equals = "○ review", fg = "#df8e1d" },
+      { equals = "○ unreviewed", fg = "#df8e1d" },
     ] },
   ],
 ]

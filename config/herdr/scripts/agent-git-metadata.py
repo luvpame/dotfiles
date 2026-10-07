@@ -9,9 +9,11 @@ import sys
 import tempfile
 import time
 from pathlib import Path
+from urllib.parse import urlparse
 
 
 CACHE_TTL_SECONDS = 60
+CACHE_VERSION = 3
 REVIEW_SPACE_PATTERN = re.compile(r"^review-#[0-9]+$")
 REVIEW_SPACE_ICON = ""
 METADATA_TOKENS = (
@@ -32,8 +34,8 @@ PR_ICONS = {
 }
 REVIEW_STATUSES = {
     "APPROVED": "✓ approved",
-    "CHANGES_REQUESTED": "× changes",
-    "REVIEW_REQUIRED": "○ review",
+    "REVIEWED": "✓ reviewed",
+    "UNREVIEWED": "○ unreviewed",
 }
 
 
@@ -114,6 +116,8 @@ def read_cache(path):
         data = json.loads(path.read_text())
     except (OSError, json.JSONDecodeError, TypeError):
         return None
+    if not isinstance(data, dict) or data.get("version") != CACHE_VERSION:
+        return None
     queried_at = data.get("queried_at")
     pull_requests = data.get("pull_requests")
     if not isinstance(queried_at, (int, float)) or not isinstance(pull_requests, list):
@@ -131,7 +135,11 @@ def write_cache(path, pull_requests):
             "w", dir=path.parent, delete=False, encoding="utf-8"
         ) as file:
             json.dump(
-                {"queried_at": time.time(), "pull_requests": pull_requests},
+                {
+                    "version": CACHE_VERSION,
+                    "queried_at": time.time(),
+                    "pull_requests": pull_requests,
+                },
                 file,
             )
             temporary_path = Path(file.name)
@@ -149,35 +157,107 @@ def write_cache(path, pull_requests):
 
 def pull_requests(root, branch):
     path = cache_path(root, branch)
-    cached = read_cache(path)
-    if cached is not None:
-        return cached
+    found = read_cache(path)
+    changed = found is None
+    if found is None:
+        result = run(
+            "gh",
+            "pr",
+            "list",
+            "--head",
+            branch,
+            "--state",
+            "all",
+            "--limit",
+            "100",
+            "--json",
+            "id,url,number,state,isDraft,baseRefName,updatedAt",
+            cwd=root,
+            timeout=3,
+        )
+        if result is None or result.returncode != 0:
+            return None
+        try:
+            found = json.loads(result.stdout)
+        except json.JSONDecodeError:
+            return None
+        if not isinstance(found, list):
+            return None
+    pull_request = select_pull_request(found)
+    if (
+        sys.argv[1:] == ["--all-workspaces"]
+        and pull_request is not None
+        and pull_request["state"] == "OPEN"
+        and "viewerReviewState" not in pull_request
+    ):
+        pull_request["viewerReviewState"] = viewer_review_state(root, pull_request)
+        changed = True
+    if changed:
+        write_cache(path, found)
+    return found
 
+
+def viewer_review_state(root, pull_request):
+    node_id = pull_request.get("id")
+    url = pull_request.get("url")
+    if not isinstance(node_id, str) or not isinstance(url, str):
+        return None
+    try:
+        host = urlparse(url).hostname
+    except ValueError:
+        return None
+    if not host:
+        return None
+    login = stdout(
+        "gh", "api", "user", "--hostname", host, "--jq", ".login", cwd=root
+    )
+    if not login:
+        return None
     result = run(
         "gh",
-        "pr",
-        "list",
-        "--head",
-        branch,
-        "--state",
-        "all",
-        "--limit",
-        "100",
-        "--json",
-        "number,state,isDraft,baseRefName,updatedAt,reviewDecision",
+        "api",
+        "graphql",
+        "--hostname",
+        host,
+        "-f",
+        "query=query($id:ID!,$login:String!){node(id:$id){... on PullRequest{"
+        "reviews(author:$login,states:[COMMENTED,APPROVED,CHANGES_REQUESTED,DISMISSED],"
+        "first:1){totalCount}decision:reviews(author:$login,"
+        "states:[APPROVED,CHANGES_REQUESTED,DISMISSED],last:1){nodes{state}}}}}",
+        "-f",
+        f"id={node_id}",
+        "-f",
+        f"login={login}",
         cwd=root,
         timeout=3,
     )
     if result is None or result.returncode != 0:
         return None
     try:
-        found = json.loads(result.stdout)
-    except json.JSONDecodeError:
+        data = json.loads(result.stdout)
+        if data.get("errors"):
+            return None
+        node = data["data"]["node"]
+        count = node["reviews"]["totalCount"]
+        decisions = node["decision"]["nodes"]
+    except (json.JSONDecodeError, KeyError, TypeError, AttributeError):
         return None
-    if not isinstance(found, list):
+    if type(count) is not int or count < 0 or not isinstance(decisions, list):
         return None
-    write_cache(path, found)
-    return found
+    if len(decisions) > 1:
+        return None
+    decision = None
+    if decisions:
+        if not isinstance(decisions[0], dict):
+            return None
+        decision = decisions[0].get("state")
+        if not isinstance(decision, str) or decision not in {
+            "APPROVED", "CHANGES_REQUESTED", "DISMISSED"
+        }:
+            return None
+    if count == 0:
+        return "UNREVIEWED" if decision is None else None
+    return "APPROVED" if decision == "APPROVED" else "REVIEWED"
 
 
 def select_pull_request(candidates):
@@ -210,7 +290,8 @@ def pull_request_state(pull_request):
 def review_status(pull_request):
     if pull_request is None or pull_request.get("state") != "OPEN":
         return ""
-    return REVIEW_STATUSES.get(pull_request.get("reviewDecision"), "")
+    state = pull_request.get("viewerReviewState")
+    return REVIEW_STATUSES.get(state, "") if isinstance(state, str) else ""
 
 
 def metadata(root, branch):
