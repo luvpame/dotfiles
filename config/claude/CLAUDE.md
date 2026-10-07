@@ -1,6 +1,11 @@
-@RTK.md
+## 書き分けの原則
 
-# Agent Memory Repo
+コードには How
+テストコードには What
+コミットログには Why
+コードコメントには Why not
+
+## Agent Memory Repo
 
 セッションをまたいで残す記憶は agent-memory-repo スキルで `~/agent-memory` に保存する。auto memory は使わない。
 
@@ -9,3 +14,4 @@
 - エントリには `added` を必ず付け、PR・Notion などの URL があれば `source` に入れる。
 
 @~/agent-memory/MEMORY.md
+@RTK.md
