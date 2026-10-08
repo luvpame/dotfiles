@@ -147,11 +147,11 @@
     "claude-code-source": {
       "flake": false,
       "locked": {
-        "lastModified": 1791435796,
-        "narHash": "sha256-V2eJcvtyrmybcY8yPN6QHgR0KaH/e3iOr/OMy52GQ5k=",
+        "lastModified": 1791486196,
+        "narHash": "sha256-MXzh2fbaXV//k84Eks2D8wZiADncobwt89hIj5gjpZU=",
         "owner": "ryoppippi",
         "repo": "claude-code-overlay",
-        "rev": "1255ef602087c56d805a4b1272dcf151f82fab5d",
+        "rev": "1ffdc6151eaae78c81ddf25e6c8be7b7f56b9622",
         "type": "github"
       },
       "original": {
@@ -427,11 +427,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791465139,
-        "narHash": "sha256-hXTjOf2VQDXrNt4aU9rmNhc0qdOhnjy9FcA4tlPEdq8=",
+        "lastModified": 1791484883,
+        "narHash": "sha256-iKxFHJrg7Sltwhq3ssCZYQ4CFEDVvReVVuVuO9dj3sE=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "678e6c11cd5d24226087dc758d17f705c7c4106a",
+        "rev": "dfadbe5162d5e86bc0808badec8f346f81b4b3f0",
         "type": "github"
       },
       "original": {
