@@ -15,3 +15,4 @@
 
 @~/agent-memory/MEMORY.md
 @RTK.md
+@pstack-models.md
