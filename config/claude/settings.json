@@ -41,9 +41,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$HOME/.claude/hooks/herdr-tab-rename-reminder.sh\"",
+            "command": "bash \"$HOME/.claude/hooks/herdr-tab-rename.sh\"",
             "timeout": 5,
-            "statusMessage": "herdr タブ名を確認中"
+            "statusMessage": "herdr タブ名を更新中"
           },
           {
             "type": "command",
