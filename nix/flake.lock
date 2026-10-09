@@ -771,17 +771,17 @@
     "yomiyasu": {
       "flake": false,
       "locked": {
-        "lastModified": 1790909101,
-        "narHash": "sha256-dZc9NRFBTl4tEKfSLAIE77smW50M5dEbzn5vzTXduRk=",
+        "lastModified": 1791427304,
+        "narHash": "sha256-t/R2QBoktkTpvPcy88U6URKwW6Qz5Fmc2RjZovHZvXk=",
         "owner": "nanaism",
         "repo": "yomiyasu",
-        "rev": "e5c6a8443a427726a472e2e560fc8679125ea2b8",
+        "rev": "c2ffae670994fec96daef92e0bc219f5c1923113",
         "type": "github"
       },
       "original": {
         "owner": "nanaism",
         "repo": "yomiyasu",
-        "rev": "e5c6a8443a427726a472e2e560fc8679125ea2b8",
+        "rev": "c2ffae670994fec96daef92e0bc219f5c1923113",
         "type": "github"
       }
     }
