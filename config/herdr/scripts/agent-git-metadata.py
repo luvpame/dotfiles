@@ -13,7 +13,7 @@ from urllib.parse import urlparse
 
 
 CACHE_TTL_SECONDS = 60
-CACHE_VERSION = 3
+CACHE_VERSION = 4
 REVIEW_SPACE_PATTERN = re.compile(r"^review-#[0-9]+$")
 REVIEW_SPACE_ICON = ""
 METADATA_TOKENS = (
@@ -33,6 +33,7 @@ PR_ICONS = {
     "closed": "",
 }
 REVIEW_STATUSES = {
+    "AUTHORED": "● authored",
     "APPROVED": "✓ approved",
     "REVIEWED": "✓ reviewed",
     "UNREVIEWED": "○ unreviewed",
@@ -220,7 +221,7 @@ def viewer_review_state(root, pull_request):
         "--hostname",
         host,
         "-f",
-        "query=query($id:ID!,$login:String!){node(id:$id){... on PullRequest{"
+        "query=query($id:ID!,$login:String!){node(id:$id){... on PullRequest{viewerDidAuthor "
         "reviews(author:$login,states:[COMMENTED,APPROVED,CHANGES_REQUESTED,DISMISSED],"
         "first:1){totalCount}decision:reviews(author:$login,"
         "states:[APPROVED,CHANGES_REQUESTED,DISMISSED],last:1){nodes{state}}}}}",
@@ -238,6 +239,10 @@ def viewer_review_state(root, pull_request):
         if data.get("errors"):
             return None
         node = data["data"]["node"]
+        if node["viewerDidAuthor"] is True:
+            return "AUTHORED"
+        if node["viewerDidAuthor"] is not False:
+            return None
         count = node["reviews"]["totalCount"]
         decisions = node["decision"]["nodes"]
     except (json.JSONDecodeError, KeyError, TypeError, AttributeError):

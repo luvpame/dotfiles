@@ -85,6 +85,7 @@ class AgentGitMetadataTest(unittest.TestCase):
             "elif action == 'api graphql':\n"
             "    if int(os.environ['GH_REVIEW_EXIT']): sys.exit(1)\n"
             "    query = args[args.index('-f') + 1]\n"
+            "    assert 'viewerDidAuthor' in query\n"
             "    assert 'reviews(author:$login,states:[COMMENTED,APPROVED,CHANGES_REQUESTED,DISMISSED],first:1){totalCount}' in query\n"
             "    assert 'decision:reviews(author:$login,states:[APPROVED,CHANGES_REQUESTED,DISMISSED],last:1){nodes{state}}' in query\n"
             "    assert 'states:[COMMENTED,APPROVED,CHANGES_REQUESTED,DISMISSED]' in args[args.index('-f') + 1]\n"
@@ -95,7 +96,7 @@ class AgentGitMetadataTest(unittest.TestCase):
             "    decisions = [r for r in reviews if r['author']['login'].lower() == os.environ['GH_VIEWER'].lower() and r['state'] in ('APPROVED', 'CHANGES_REQUESTED', 'DISMISSED')]\n"
             "    nodes = [{'state': r['state']} for r in decisions[-1:]]\n"
             "    response = json.loads(os.environ['GH_REVIEW_RESPONSE'])\n"
-            "    print(json.dumps(response if response is not None else {'data': {'node': {'reviews': {'totalCount': count}, 'decision': {'nodes': nodes}}}}))\n"
+            "    print(json.dumps(response if response is not None else {'data': {'node': {'viewerDidAuthor': os.environ['GH_AUTHORED'] == '1', 'reviews': {'totalCount': count}, 'decision': {'nodes': nodes}}}}))\n"
             "else:\n"
             "    if int(os.environ['GH_EXIT']): sys.exit(int(os.environ['GH_EXIT']))\n"
             "    responses = json.loads(os.environ['GH_RESPONSES'])\n"
@@ -121,6 +122,7 @@ class AgentGitMetadataTest(unittest.TestCase):
         gh_responses=None,
         reviews=None,
         viewer_login="me",
+        viewer_did_author=False,
         auth_exit=0,
         review_exit=0,
         review_response=None,
@@ -147,6 +149,7 @@ class AgentGitMetadataTest(unittest.TestCase):
             "GH_AUTH_EXIT": str(auth_exit),
             "GH_REVIEW_EXIT": str(review_exit),
             "GH_VIEWER": viewer_login,
+            "GH_AUTHORED": "1" if viewer_did_author else "0",
             "GH_REVIEWS": json.dumps(reviews or []),
             "GH_REVIEW_RESPONSE": json.dumps(review_response),
             "GH_HOST": github_host,
@@ -216,6 +219,22 @@ class AgentGitMetadataTest(unittest.TestCase):
         workspace_report = report.splitlines()[1]
         self.assertIn("--token agent_summary=2 agents", workspace_report)
         self.assertIn("--token git_branch= ", workspace_report)
+
+    def test_marks_own_pull_requests_as_authored_regardless_of_reviews(self):
+        for reviews in (
+            [],
+            [{"author": {"login": "me"}, "state": "COMMENTED"}],
+            [{"author": {"login": "other"}, "state": "APPROVED"}],
+        ):
+            with self.subTest(reviews=reviews):
+                self.cache_file().unlink(missing_ok=True)
+                report = self.run_reporter(
+                    [self.open_pull_request()],
+                    all_workspaces=True,
+                    viewer_did_author=True,
+                    reviews=reviews,
+                )
+                self.assertIn("--token review_status=● authored", report.splitlines()[-1])
 
     def test_reports_own_submitted_reviews(self):
         for state in ("COMMENTED", "APPROVED", "CHANGES_REQUESTED", "DISMISSED"):
@@ -345,11 +364,15 @@ class AgentGitMetadataTest(unittest.TestCase):
 
     def test_hides_review_status_when_review_response_is_unknown(self):
         for response in (
+            *[
+                {"data": {"node": {"viewerDidAuthor": value, "reviews": {"totalCount": 1}, "decision": {"nodes": []}}}}
+                for value in (None, 1, "true")
+            ],
             {"data": {"node": None}},
             {"data": {"node": {"reviews": {"totalCount": None}}}},
             {"data": {"node": {"reviews": {"totalCount": 1}}}},
             *[
-                {"data": {"node": {"reviews": {"totalCount": count}, "decision": {"nodes": nodes}}}}
+                {"data": {"node": {"viewerDidAuthor": False, "reviews": {"totalCount": count}, "decision": {"nodes": nodes}}}}
                 for count, nodes in (
                     (None, []),
                     (True, []),
@@ -464,6 +487,7 @@ class AgentGitMetadataTest(unittest.TestCase):
 
     def test_poller_enriches_hook_cache_and_hooks_display_cached_review(self):
         for state, expected in (
+            ("AUTHORED", "● authored"),
             ("UNREVIEWED", "○ unreviewed"),
             ("REVIEWED", "✓ reviewed"),
             ("APPROVED", "✓ approved"),
@@ -478,6 +502,7 @@ class AgentGitMetadataTest(unittest.TestCase):
                 report = self.run_reporter(
                     [self.open_pull_request()],
                     all_workspaces=True,
+                    viewer_did_author=state == "AUTHORED",
                     reviews=[] if state == "UNREVIEWED" else [
                         {
                             "author": {"login": "me"},
@@ -555,9 +580,25 @@ class AgentGitMetadataTest(unittest.TestCase):
             self.gh_log.read_text().splitlines(), ["pr list", "api user", "api graphql"]
         )
         cached = json.loads(path.read_text())
-        self.assertEqual(cached["version"], 3)
+        self.assertEqual(cached["version"], 4)
         self.assertNotIn("viewerReviewed", cached["pull_requests"][0])
         self.assertEqual(cached["pull_requests"][0]["viewerReviewState"], "APPROVED")
+
+    def test_refreshes_reviewed_cache_for_own_pull_request(self):
+        path = self.cache_file()
+        path.parent.mkdir(parents=True)
+        path.write_text(json.dumps({
+            "version": 3,
+            "queried_at": time.time(),
+            "pull_requests": [{**self.open_pull_request(), "viewerReviewState": "REVIEWED"}],
+        }))
+        report = self.run_reporter(
+            [self.open_pull_request()], all_workspaces=True, viewer_did_author=True
+        )
+        self.assertIn("--token review_status=● authored", report)
+        cached = json.loads(path.read_text())
+        self.assertEqual(cached["version"], 4)
+        self.assertEqual(cached["pull_requests"][0]["viewerReviewState"], "AUTHORED")
 
     def test_refreshes_expired_review_result(self):
         self.run_reporter([self.open_pull_request()], all_workspaces=True)
