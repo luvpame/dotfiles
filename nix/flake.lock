@@ -390,11 +390,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791606569,
-        "narHash": "sha256-YKKWdiwzB0Fqt356PgkRYI4y6gFRTLMZ21PV7+ohWuM=",
+        "lastModified": 1791695995,
+        "narHash": "sha256-9oaSV38fawuuSPul2SH2Zknf2Enrha5umBFe6aWhjFk=",
         "owner": "kawarimidoll",
         "repo": "guard-and-guide",
-        "rev": "c96db651c2da381600621ab37b7dd6434d4e4312",
+        "rev": "b995d765a12c132c716cd180d45f2fa7fec9da20",
         "type": "github"
       },
       "original": {
