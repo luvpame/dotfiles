@@ -5,6 +5,14 @@
 コミットログには Why
 コードコメントには Why not
 
+## レビューコメント
+
+Claude が GitHub にレビューコメントを投稿するときは、各コメントの1行目に次のバッジを付け、空行の後に本文を書く。インラインコメントとレビュー全体のサマリーの両方に適用する。本文の見出しや重要度など、既存のレビュー形式はバッジの後に保つ。
+
+```markdown
+![reviewed by Claude](https://img.shields.io/badge/reviewed_by-Claude-D97757?logo=claude&logoColor=white)
+```
+
 ## Agent Memory Repo
 
 セッションをまたいで残す記憶は agent-memory-repo スキルで `~/agent-memory` に保存する。auto memory は使わない。
