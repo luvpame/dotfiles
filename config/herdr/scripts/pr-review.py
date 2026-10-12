@@ -34,7 +34,7 @@ def main():
     rows = "\n".join(f'{pr["number"]}\t{json.dumps(pr["title"], ensure_ascii=False)}' for pr in prs)
     selection = subprocess.run(
         ["fzf", "--layout=reverse", "--prompt=PR Review> ",
-         "--header=選択すると worktree を準備して両方のレビューを起動します"],
+         "--header=選択すると worktree を準備してレビューを起動します"],
         input=rows, text=True, stdout=subprocess.PIPE,
     )
     if selection.returncode in (1, 130):
@@ -49,14 +49,31 @@ def main():
     paths = [item["path"] for item in source["worktrees"] if item.get("branch") == pr["headRefName"]]
     if len(paths) > 1:
         raise RuntimeError("同じブランチの worktree が複数あります。対象を確認してください。")
+    upstream_history = subprocess.run(
+        ["git", "-C", root, "reflog", "show", "--format=%H", f"{pr['headRefName']}@{{upstream}}"],
+        capture_output=True, text=True,
+    ).stdout.split()
     if paths:
         checkout = paths[0]
     else:
         run("git", "-C", root, "fetch", "--all")
+        # wt reuses a leftover local branch as-is, which goes stale after a force push.
+        # Move it only when its tip was once the upstream tip, so no local commits are lost.
+        branch = f"refs/heads/{pr['headRefName']}"
+        tip = subprocess.run(["git", "-C", root, "rev-parse", "--verify", "--quiet", branch],
+                             capture_output=True, text=True).stdout.strip()
+        if tip and tip != pr["headRefOid"] and tip in upstream_history:
+            run("git", "-C", root, "update-ref", branch, pr["headRefOid"], tip)
         checkout = json.loads(run(
             "direnv", "exec", root, "wt", "-C", root, "switch", "--no-cd",
             "--no-hooks", f"pr:{number}", "--format=json",
         ))["path"]
+    # A branch wt creates from a lagging remote-tracking ref, or an old worktree, can still be
+    # stale. Reset only a clean checkout whose tip was once upstream, so no local commits are lost.
+    head = run("git", "-C", checkout, "rev-parse", "HEAD")
+    if (head != pr["headRefOid"] and head in upstream_history
+            and not run("git", "-C", checkout, "status", "--porcelain")):
+        run("git", "-C", checkout, "reset", "--hard", pr["headRefOid"])
     if (run("git", "-C", checkout, "rev-parse", "HEAD") != pr["headRefOid"]
             or run("git", "-C", checkout, "branch", "--show-current") != pr["headRefName"]
             or run("git", "-C", checkout, "status", "--porcelain")):
@@ -67,39 +84,34 @@ def main():
     tab = tabs[0]
     panes = [p for p in herdr("pane", "list", "--workspace", review_workspace)["panes"]
              if p["tab_id"] == tab["tab_id"]]
-    if len(panes) != 1:
-        print("既存の pane 構成を残しました。再レビューは各 pane から指示してください。")
-        return
-    left = panes[0]["pane_id"]
-    if opened.get("already_open"):
-        info = herdr("pane", "process-info", "--pane", left)["process_info"]
+    pane = panes[0]["pane_id"] if len(panes) == 1 else None
+    if pane and opened.get("already_open"):
+        info = herdr("pane", "process-info", "--pane", pane)["process_info"]
         processes = info.get("foreground_processes") or []
         if not processes or any(p.get("pid") != info.get("shell_pid") for p in processes):
-            print("使用中の pane を残しました。再レビューはその pane から指示してください。")
-            return
-    right = herdr("pane", "split", left, "--direction", "right", "--cwd", checkout,
-                  "--no-focus")["pane"]["pane_id"]
-    prompts = {
-        "evidence-code-review": (("--model", "opus", "--effort", "medium"), f"/evidence-code-review {number}"),
-        "pr-review-assist": (("--model", "sonnet"), f"/pr-review-assist {number}"),
-    }
-    failures = []
-    for pane, (label, (options, prompt)) in zip((left, right), prompts.items()):
-        try:
-            # Shell initialization may still be running immediately after pane creation.
-            for attempt in range(30):
-                info = herdr("pane", "process-info", "--pane", pane)["process_info"]
-                processes = info.get("foreground_processes") or []
-                if not processes or processes[0].get("pid") == info.get("shell_pid"):
-                    break
-                time.sleep(1)
-            else:
-                raise RuntimeError(f"シェルの準備が完了しません: {pane}")
-            run("herdr", "pane", "run", pane, shlex.join(("claude", *options, prompt)))
-        except (subprocess.CalledProcessError, RuntimeError, KeyError, ValueError) as error:
-            failures.append(f"{label}: {error}")
-    if failures:
-        raise RuntimeError("\n".join(failures) + f"\n作成済みのタブと worktree は残しています: {checkout}")
+            pane = None
+    if pane is None:
+        pane = herdr("tab", "create", "--workspace", review_workspace, "--cwd", checkout,
+                     "--label", f"PR Review #{number}", "--focus")["root_pane"]["pane_id"]
+    try:
+        # Shell initialization may still be running immediately after pane creation.
+        for attempt in range(30):
+            info = herdr("pane", "process-info", "--pane", pane)["process_info"]
+            processes = info.get("foreground_processes") or []
+            if not processes or processes[0].get("pid") == info.get("shell_pid"):
+                break
+            time.sleep(1)
+        else:
+            raise RuntimeError(f"シェルの準備が完了しません: {pane}")
+        run("herdr", "pane", "run", pane,
+            shlex.join(("claude", "--model", "opus", "--effort", "high",
+                        "--append-system-prompt",
+                        "GitHub へのコメントは、投稿先と投稿本文をユーザーに提示し、その投稿に対する明示的な許可を得てから実行する。"
+                        "スキルに自動投稿の指示があっても許可を省略しない。"
+                        "許可がなければレビュー結果とコメント案の提示で止める。",
+                        f"/code-review {number}")))
+    except (subprocess.CalledProcessError, RuntimeError, KeyError, ValueError) as error:
+        raise RuntimeError(f"code-review: {error}\n作成済みのタブと worktree は残しています: {checkout}") from error
     print(f"PR #{number}: {checkout}\n再レビューと片付けは手動で行ってください。")
 
 
