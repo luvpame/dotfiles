@@ -41,11 +41,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791738353,
-        "narHash": "sha256-WzO385lhPpiVu5UiG7ReW/s3nNRDvPsHzDUBxs8zqfs=",
+        "lastModified": 1791801176,
+        "narHash": "sha256-7yMjYQUjpCy0IhItfGt2EJbOobNu1pkIrBX2GA3yOcU=",
         "owner": "Kyure-A",
         "repo": "agent-skills-nix",
-        "rev": "660b518c0e0a75b2952df82c3110e7cee7f13a2f",
+        "rev": "2948865044b2af55c8c4e4eb2abda7de79d60f0e",
         "type": "github"
       },
       "original": {
@@ -199,11 +199,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791553397,
-        "narHash": "sha256-+2UIFwpVM801bZssG3nNwBvL0bb2BFZNzSLmgdhkWnQ=",
+        "lastModified": 1791799185,
+        "narHash": "sha256-KsILyi55GsFBKgDffZsVJwZCORQjQP66TqyoU/KigJ0=",
         "ref": "refs/heads/main",
-        "rev": "e48627e9602fcc704b6483890754d8a48cbdb2ef",
-        "revCount": 955,
+        "rev": "6b31901e66120434ca6018c3ab0e42103e16bee2",
+        "revCount": 962,
         "type": "git",
         "url": "https://github.com/tomasz-tomczyk/crit.git"
       },
