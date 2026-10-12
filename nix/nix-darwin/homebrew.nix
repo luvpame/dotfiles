@@ -95,7 +95,6 @@ let
     "firefox"
     "search"
     "obsidian"
-    "openclip"
     "orbstack"
     "google-drive"
     "claude"
