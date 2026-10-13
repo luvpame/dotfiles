@@ -22,6 +22,12 @@ presets:
         eval-symlinks: true
       # ローカル state/bin (nvim, pnpm, mise 等)
       - "$HOME/.local"
+      # Homebrew のインストール先、ログ、信頼設定
+      - "/opt/homebrew"
+      - "/Applications"
+      - "$HOME/Library/Logs/Homebrew"
+      - "$HOME/.config/homebrew"
+      - "$HOME/.homebrew"
       # ランタイムで書き込まれるツール設定 (op, gcloud 等)
       - path: "$HOME/.config"
         eval-symlinks: true
