@@ -44,12 +44,22 @@ in
 
   # GUI が共有設定の symlink を拒否するため、通常ファイルとしてコピーする。
   home.activation.copyHerdrConfig = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-    run ${pkgs.coreutils}/bin/install -Dm600 \
-      "${configRoot}/herdr/config.toml" \
-      "${config.xdg.configHome}/herdr/config.toml"
-    run ${pkgs.coreutils}/bin/install -Dm600 \
-      "${configRoot}/herdr/config-gpui.local.toml" \
-      "${config.xdg.configHome}/herdr/config-gpui.local.toml"
+    herdr_state_dir="${config.xdg.stateHome}/dotfiles/herdr"
+    run ${pkgs.coreutils}/bin/install -dm700 "$herdr_state_dir"
+
+    for file in config.toml config-gpui.local.toml; do
+      source="${configRoot}/herdr/$file"
+      target="${config.xdg.configHome}/herdr/$file"
+      previous="$herdr_state_dir/$file"
+
+      # 初回は既存設定を残し、以後は dotfiles の変更時だけ GUI 設定を上書きする。
+      if [ ! -e "$target" ] || {
+        [ -e "$previous" ] && ! ${pkgs.diffutils}/bin/cmp -s "$source" "$previous"
+      }; then
+        run ${pkgs.coreutils}/bin/install -Dm600 "$source" "$target"
+      fi
+      run ${pkgs.coreutils}/bin/install -Dm600 "$source" "$previous"
+    done
   '';
 
   # Agent設定もRepository内で直接編集し、各Agentへ即時反映する。
