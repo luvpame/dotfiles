@@ -159,6 +159,9 @@
       "gh workflow run / deploy-prod* and ecs-exec-prod-backend-api* GitHub Actions workflows"
     ]
   },
-  "voiceEnabled": false,
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
   "outputStyle": "Concise"
 }
