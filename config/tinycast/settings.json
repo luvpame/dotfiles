@@ -383,7 +383,7 @@
     "destination": "both",
     "adaptsCapitalization": true,
     "releaseAfterMinutes": 1,
-    "language": null
+    "language": "Japanese"
   },
   "fileSearch": {
     "enabled": false,
