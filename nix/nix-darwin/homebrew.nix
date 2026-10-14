@@ -56,7 +56,6 @@ let
     "fayazara/tap" # screendrop
     "driceroland/tap" # search
     "penso/tap" # herdr-gpui
-    "saragordic/tap" # window-sweaters
   ];
   trustedTaps = map (name: {
     inherit name;
@@ -103,7 +102,6 @@ let
     "sequel-ace"
     "herdr-gpui"
     "linear"
-    "saragordic/tap/window-sweaters"
 
     ### Fonts
     "font-hackgen-nerd"
