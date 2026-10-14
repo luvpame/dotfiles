@@ -1,6 +1,8 @@
 {
   "general": {
+    "launcherShortcut": "cmd+space",
     "showInMenuBar": true,
+    "automaticallyCheckForUpdates": true,
     "popToRootSeconds": 0,
     "escapeKeyBehavior": "navigateBackOrClose",
     "autoSwitchInputSource": "com.apple.keylayout.UnicodeHexInput",
@@ -27,6 +29,7 @@
     "sensitivity": "medium"
   },
   "applications": {
+    "enabled": true,
     "searchScopes": [
       "/Applications",
       "/Applications/Utilities",
@@ -36,9 +39,313 @@
       "/System/Volumes/Preboot/Cryptexes/App/System/Applications",
       "/System/Library/CoreServices/Finder.app",
       "~/Applications"
-    ]
+    ],
+    "apps": {
+      "com.apple.AddressBook": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.BluetoothFileExchange": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.Chess": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.ColorSyncUtility": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.DVDPlayer": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.DigitalColorMeter": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.DirectoryUtility": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.DiskUtility": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.ExpansionSlotUtility": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.FaceTime": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.FolderActionsSetup": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.GenerativePlaygroundApp": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.Home": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.IPAInstaller": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.Image_Capture": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.Magnifier": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.MigrateAssistant": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.ScreenContinuity": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.Stickies": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.Ticket-Viewer": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.VoiceOverUtility": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.airport.airportutility": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.appleseed.FeedbackAssistant": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.archiveutility": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.audio.AudioMIDISetup": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.backup.launcher": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.bootcampassistant": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.freeform": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.games": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.grapher": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.helpviewer": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.iBooksX": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.journal": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.news": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.podcasts": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.reminders": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.siri.launcher": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.stocks": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.systempreferences": {
+        "shortcut": null,
+        "alias": "setting",
+        "showInLauncher": true
+      },
+      "com.apple.wifi.diagnostics": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.fortinet.Uninstall": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.github.macadmins.Nudge": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.islonline.islalwayson.overview": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.islonline.islalwayson.remove": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.islonline.islalwayson.settings": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.jamf.setupmanager": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.zarifpour.superconductor": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      }
+    }
+  },
+  "systemSettings": {
+    "enabled": true,
+    "panes": {
+      "com.apple.AirDrop-Handoff-Settings.extension": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.CD-DVD-Settings.extension": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.ClassKit-Settings.extension": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.Classroom-Settings.extension": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.Coverage-Settings.extension": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.Game-Center-Settings.extension": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.Home.PrivacySettingsExtension": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "com.apple.Time-Machine-Settings.extension": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      }
+    }
+  },
+  "systemActions": {
+    "enabled": true,
+    "actions": {}
   },
   "commands": {
+    "builtInEnabled": true,
+    "builtIn": {
+      "open-camera": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "import-from-raycast": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "support": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      }
+    },
     "enabled": false,
     "showInLauncher": true
   },
@@ -47,7 +354,8 @@
     "showInLauncher": true,
     "opensNewWindow": false,
     "selectionFallback": "ask",
-    "confirmsBeforeDelete": true
+    "confirmsBeforeDelete": true,
+    "commands": {}
   },
   "appleShortcuts": {
     "enabled": false
@@ -55,37 +363,53 @@
   "ai": {
     "enabled": true,
     "webSearch": true,
-    "systemPrompt": "Always Responsed “日本語”",
+    "systemPrompt": "いついかなる時も必ず日本語で回答すること。",
     "systemPromptEnabled": true,
     "retentionDays": 7,
     "opensTo": "recent",
     "newChatAfterMinutes": 10,
-    "toolRounds": 25
+    "toolRounds": 25,
+    "commands": {}
   },
   "quickActions": {
-    "targetLanguage": ""
+    "targetLanguage": "",
+    "commands": {}
+  },
+  "dictation": {
+    "mode": "pushToTalk",
+    "shortcut": "hyper+d",
+    "model": "qwen-0.6b",
+    "microphone": "LogiGamingAudio:Generic:Blue Microphones:LT_250119102039AD020050_111000:1",
+    "destination": "both",
+    "adaptsCapitalization": true,
+    "releaseAfterMinutes": 1,
+    "language": null
   },
   "fileSearch": {
     "enabled": false,
     "scopes": [
       "~"
     ],
-    "ignorePatterns": []
+    "ignorePatterns": [],
+    "commands": {}
   },
   "notes": {
     "enabled": false,
     "rendersMarkdown": true,
     "showsFormattingBar": true,
-    "folder": null
+    "folder": null,
+    "commands": {}
   },
   "snippets": {
     "showInLauncher": false,
-    "folder": null
+    "folder": null,
+    "commands": {}
   },
   "navigation": {
     "enabled": false,
     "menuSearchShowsAppleMenu": false,
-    "menuSearchDisabledApps": []
+    "menuSearchDisabledApps": [],
+    "commands": {}
   },
   "windowManagement": {
     "enabled": false,
@@ -131,9 +455,11 @@
       "previous-space": null,
       "next-space": null
     },
+    "aliases": {},
     "customSizes": [],
     "layouts": [],
-    "rooms": []
+    "rooms": [],
+    "commands": {}
   },
   "clipboard": {
     "enabled": true,
@@ -142,11 +468,30 @@
     "disabledApps": [
       "com.apple.keychainaccess",
       "com.apple.Passwords"
-    ]
+    ],
+    "commands": {
+      "clipboard-history": {
+        "shortcut": "hyper+v",
+        "alias": null,
+        "showInLauncher": true
+      },
+      "paste-sequentially": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      }
+    }
   },
   "emoji": {
     "skinTone": "none",
-    "gridColumns": 8
+    "gridColumns": 8,
+    "commands": {
+      "search-emoji": {
+        "shortcut": "hyper+e",
+        "alias": null,
+        "showInLauncher": true
+      }
+    }
   },
   "calendar": {
     "showInLauncher": true,
@@ -154,12 +499,30 @@
     "span": "todayAndTomorrow",
     "joinWindowMinutes": 5,
     "autoJoinConfirms": false,
+    "autoJoinNamedProvidersOnly": false,
     "meetingBrowser": null,
     "menuBar": "meetingTitle",
     "menuBarUpcomingEvents": 30,
     "menuBarLinkedEventsOnly": true,
     "menuBarHidesWhenEmpty": true,
-    "hideCurrentEventAfterMinutes": "never"
+    "hideCurrentEventAfterMinutes": "never",
+    "commands": {
+      "create-event": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "copy-meeting-link": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "open-in-calendar": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      }
+    }
   },
   "extensions": {
     "showInLauncher": true
