@@ -74,6 +74,17 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"$HOME/.claude/hooks/desktop-worktree-setup.sh\"",
+            "timeout": 60,
+            "statusMessage": "worktree をセットアップ中"
+          }
+        ]
       }
     ]
   },
