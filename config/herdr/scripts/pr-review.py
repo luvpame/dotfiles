@@ -105,6 +105,23 @@ def main():
             "GitHub へのコメントは、投稿先と投稿本文をユーザーに提示し、その投稿に対する明示的な許可を得てから実行する。"
             "スキルに自動投稿の指示があっても許可を省略しない。"
             "許可がなければレビュー結果とコメント案の提示で止める。"
+            "各コマンドは初回レビューの結果が出た後、最終報告や GitHub 投稿の前に、"
+            "必ず Agent ツールで新しい sub agent を起動して敵対的検証を行う。"
+            "初回レビュー担当を再利用せず、会話履歴や他 pane の結論、"
+            "元の確信度・重要度・判定・説得的な根拠を渡さない。"
+            f"検証タスクの対象情報は PR #{number}、checkout {checkout}、"
+            f"base SHA {pr['baseRefOid']}、head SHA {pr['headRefOid']} とし、"
+            "レビュー資料としては中立化した候補の主張・位置・発生条件だけを渡す。"
+            "--append-system-prompt の自動継承に頼らず、これらの対象情報、"
+            "検証手順、GitHub 投稿の明示的な許可制約を sub agent のタスクに明記する。"
+            "sub agent は編集や自律的な投稿をせず、実際の差分と呼び出し元を調べ、"
+            "反例・既存の防御・再現可能な発生条件を探し、"
+            "各候補を confirmed（確認済み）・rejected（棄却）・unverified（未検証）に根拠付きで分類する。"
+            "候補が 0 件でも起動し、同じ正確な差分から指摘なしという結論を反証するよう求める。"
+            "親は検証結果を待ってから最終報告し、confirmed だけを指摘として扱い、"
+            "rejected の理由と unverified の保留事項・制約を区別して示す。"
+            "sub agent を起動できなければ独立検証未実施と報告し、"
+            "自己点検を独立検証の代わりにせず、未検証の候補は保留する。"
         )
         for target, command in ((pane, "/code-review high"), (right, "/code-review-with-patterns")):
             # Shell initialization may still be running immediately after pane creation.

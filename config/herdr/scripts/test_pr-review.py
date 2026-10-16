@@ -106,7 +106,7 @@ def check(cancel=False, existing=False, stale=False, split=False, busy=False, no
         left = "w3C:p3" if new_tab else "w3C:p1"
         assert splits[0] == ("herdr", "pane", "split", "--pane", left, "--direction", "right",
                              "--cwd", "/repo review", "--no-focus")
-        context = (
+        existing_context = (
             "レビュー対象は PR #42。PR のベースブランチは release/next。"
             "差分は git diff base...head を使い、"
             "PR のベースと HEAD の merge base から HEAD までをレビューする。"
@@ -118,10 +118,41 @@ def check(cancel=False, existing=False, stale=False, split=False, busy=False, no
         for launch, (pane, command) in zip(starts, ((left, "/code-review high"),
                                                   ("w3C:p4", "/code-review-with-patterns"))):
             assert launch[3] == pane
-            assert shlex.split(launch[4]) == [
+            argv = shlex.split(launch[4])
+            assert argv[:9] == [
                 "cd", "/repo review", "&&", "claude", "--model", "opus", "--effort", "high",
-                "--append-system-prompt", context, command,
+                "--append-system-prompt",
             ]
+            assert argv[10:] == [command]
+            context = argv[9]
+            assert context.startswith(existing_context), "GitHub posting still requires explicit permission"
+            workflow = context[len(existing_context):]
+            assert "初回レビューの結果が出た後" in workflow
+            assert "最終報告や GitHub 投稿の前" in workflow
+            assert "必ず Agent ツールで新しい sub agent を起動" in workflow
+            assert "初回レビュー担当を再利用せず" in workflow
+            assert all(excluded in workflow for excluded in (
+                "会話履歴", "他 pane の結論", "確信度", "重要度", "判定", "説得的な根拠を渡さない",
+            )), "Independent validation must not inherit the original reviewers' conclusions"
+            assert all(target in workflow for target in (
+                "PR #42", "checkout /repo review", "base SHA base", "head SHA head",
+            )), "A fresh subagent needs the exact review target in its own task"
+            assert "中立化した候補の主張・位置・発生条件だけ" in workflow
+            assert "--append-system-prompt の自動継承に頼らず" in workflow
+            assert "GitHub 投稿の明示的な許可制約を sub agent のタスクに明記" in workflow
+            assert "編集や自律的な投稿をせず" in workflow
+            assert all(evidence in workflow for evidence in (
+                "実際の差分", "呼び出し元", "反例", "既存の防御", "再現可能な発生条件", "根拠付きで分類",
+            ))
+            assert all(status in workflow for status in ("confirmed", "rejected", "unverified"))
+            assert "候補が 0 件でも起動" in workflow
+            assert "同じ正確な差分から指摘なしという結論を反証" in workflow
+            assert "親は検証結果を待ってから最終報告" in workflow
+            assert "confirmed だけを指摘" in workflow
+            assert "rejected の理由と unverified の保留事項・制約を区別" in workflow
+            assert "起動できなければ独立検証未実施" in workflow
+            assert "自己点検を独立検証の代わりにせず" in workflow
+            assert "未検証の候補は保留" in workflow
             assert ("herdr", "pane", "process-info", "--pane", pane) in calls
         fetch = calls.index(("git", "-C", "/repo", "fetch", "--all"))
         merge_base = calls.index(("git", "-C", "/repo review", "merge-base", "base", "head"))
