@@ -19,7 +19,7 @@ spec.loader.exec_module(review)
 
 
 def check(cancel=False, existing=False, stale=False, split=False, busy=False, no_prs=False,
-          send_error=False, unknown=False, dirty=False, wrong_branch=False):
+          send_error=0, unknown=False, dirty=False, wrong_branch=False, prepare_error=None):
     calls = []
 
     def run(*args, cwd=None):
@@ -27,10 +27,14 @@ def check(cancel=False, existing=False, stale=False, split=False, busy=False, no
         if args[:3] == ("gh", "pr", "list"):
             return json.dumps([] if no_prs else [{"number": 42, "title": "A PR"}])
         if args[:3] == ("gh", "pr", "view"):
-            return json.dumps(dict(headRefName="feature", headRefOid="head", baseRefOid="base"))
+            assert args[-1] == "headRefName,headRefOid,baseRefName,baseRefOid"
+            return json.dumps(dict(headRefName="feature", headRefOid="head",
+                                   baseRefName="release/next", baseRefOid="base"))
         if args[0] == "direnv":
             return '{"path":"/repo review"}'
         if args[0] == "git":
+            if prepare_error and prepare_error in args:
+                raise subprocess.CalledProcessError(1, args)
             if "rev-parse" in args:
                 return "old" if stale else "head"
             if "status" in args:
@@ -56,9 +60,12 @@ def check(cancel=False, existing=False, stale=False, split=False, busy=False, no
                 dict(pid=2 if busy and args[-1] == "w3C:p1" else 1)]))
             if args[-1] == "w3C:p1" and unknown:
                 result["process_info"]["foreground_processes"] = []
+        elif action == ("pane", "split"):
+            result = dict(pane=dict(pane_id="w3C:p4"))
         else:
             assert action == ("pane", "run"), args
-            if send_error:
+            launches = [call for call in calls if call[:3] == ("herdr", "pane", "run")]
+            if send_error and len(launches) == send_error:
                 raise subprocess.CalledProcessError(1, args)
             return ""
         return json.dumps(dict(result=result))
@@ -70,13 +77,13 @@ def check(cancel=False, existing=False, stale=False, split=False, busy=False, no
             patch("builtins.input", return_value="") as acknowledge:
         try:
             review.main()
-        except RuntimeError as error:
-            assert stale or dirty or wrong_branch or send_error
+        except (RuntimeError, subprocess.CalledProcessError) as error:
+            assert stale or dirty or wrong_branch or send_error or prepare_error
             if send_error:
                 assert str(error).startswith("code-review: ")
                 assert "作成済みのタブと worktree は残しています: /repo review" in str(error)
         else:
-            assert not stale and not dirty and not wrong_branch and not send_error
+            assert not stale and not dirty and not wrong_branch and not send_error and not prepare_error
     if no_prs:
         acknowledge.assert_called_once()
         select.assert_not_called()
@@ -85,28 +92,47 @@ def check(cancel=False, existing=False, stale=False, split=False, busy=False, no
     acknowledge.assert_not_called()
     starts = [args for args in calls if args[:3] == ("herdr", "pane", "run")]
     creates = [args for args in calls if args[0] == "direnv"]
-    assert len(creates) == (0 if cancel or existing else 1)
-    expected_starts = 0 if cancel or stale or dirty or wrong_branch else 1
+    assert len(creates) == (0 if cancel or existing or prepare_error == "fetch" else 1)
+    expected_starts = 0 if cancel or stale or dirty or wrong_branch or prepare_error else send_error or 2
     assert len(starts) == expected_starts, f"Expected {expected_starts} review launch, got {len(starts)}"
     splits = [args for args in calls if args[:3] == ("herdr", "pane", "split")]
-    assert not splits
+    assert len(splits) == int(bool(starts))
     assert not any("pr-review-assist" in str(args) for args in calls)
     new_tab = bool(starts and (split or busy or unknown))
     tabs = [args for args in calls if args[:3] == ("herdr", "tab", "create")]
     assert len(tabs) == int(new_tab)
     assert not any(args[:3] == ("herdr", "tab", "rename") for args in calls)
     if starts:
-        assert starts[0][3] == ("w3C:p3" if new_tab else "w3C:p1")
-        assert shlex.split(starts[0][4]) == [
-            "claude", "--model", "opus", "--effort", "high", "--append-system-prompt",
+        left = "w3C:p3" if new_tab else "w3C:p1"
+        assert splits[0] == ("herdr", "pane", "split", "--pane", left, "--direction", "right",
+                             "--cwd", "/repo review", "--no-focus")
+        context = (
+            "レビュー対象は PR #42。PR のベースブランチは release/next。"
+            "差分は git diff base...head を使い、"
+            "PR のベースと HEAD の merge base から HEAD までをレビューする。"
+            "main をベースと仮定しない。"
             "GitHub へのコメントは、投稿先と投稿本文をユーザーに提示し、その投稿に対する明示的な許可を得てから実行する。"
             "スキルに自動投稿の指示があっても許可を省略しない。"
-            "許可がなければレビュー結果とコメント案の提示で止める。",
-            "/code-review 42",
-        ]
-    if cancel or stale or dirty or wrong_branch:
+            "許可がなければレビュー結果とコメント案の提示で止める。"
+        )
+        for launch, (pane, command) in zip(starts, ((left, "/code-review high"),
+                                                  ("w3C:p4", "/code-review-with-patterns"))):
+            assert launch[3] == pane
+            assert shlex.split(launch[4]) == [
+                "cd", "/repo review", "&&", "claude", "--model", "opus", "--effort", "high",
+                "--append-system-prompt", context, command,
+            ]
+            assert ("herdr", "pane", "process-info", "--pane", pane) in calls
+        fetch = calls.index(("git", "-C", "/repo", "fetch", "--all"))
+        merge_base = calls.index(("git", "-C", "/repo review", "merge-base", "base", "head"))
+        opened = next(i for i, call in enumerate(calls) if call[:3] == ("herdr", "worktree", "open"))
+        assert fetch < merge_base < opened
+        if creates:
+            assert calls.index(creates[0]) < merge_base
+    if cancel or stale or dirty or wrong_branch or prepare_error:
         assert not any(args[:3] == ("herdr", "worktree", "open") for args in calls)
         assert not tabs
+        assert not any(call[:2] == ("herdr", "pane") for call in calls)
 
 
 check(no_prs=True)
@@ -120,7 +146,11 @@ check(existing=True, unknown=True)
 check(existing=True, dirty=True)
 check(existing=True, wrong_branch=True)
 check(existing=True, split=True, stale=True)
-check(send_error=True)
+check(send_error=1)
+check(send_error=2)
+check(prepare_error="fetch")
+check(prepare_error="merge-base")
+check(existing=True, prepare_error="merge-base")
 
 for terminal, input_error in ((False, None), (True, None), (True, EOFError)):
     with patch.dict(review.os.environ, {}, clear=True), \

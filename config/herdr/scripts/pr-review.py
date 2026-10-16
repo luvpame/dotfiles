@@ -44,7 +44,7 @@ def main():
     if number not in {str(pr["number"]) for pr in prs}:
         raise RuntimeError("選択された PR が一覧にありません。")
     pr = json.loads(run(
-        "gh", "pr", "view", number, "--json", "headRefName,headRefOid,baseRefOid", cwd=root,
+        "gh", "pr", "view", number, "--json", "headRefName,headRefOid,baseRefName,baseRefOid", cwd=root,
     ))
     paths = [item["path"] for item in source["worktrees"] if item.get("branch") == pr["headRefName"]]
     if len(paths) > 1:
@@ -53,10 +53,10 @@ def main():
         ["git", "-C", root, "reflog", "show", "--format=%H", f"{pr['headRefName']}@{{upstream}}"],
         capture_output=True, text=True,
     ).stdout.split()
+    run("git", "-C", root, "fetch", "--all")
     if paths:
         checkout = paths[0]
     else:
-        run("git", "-C", root, "fetch", "--all")
         # wt reuses a leftover local branch as-is, which goes stale after a force push.
         # Move it only when its tip was once the upstream tip, so no local commits are lost.
         branch = f"refs/heads/{pr['headRefName']}"
@@ -78,6 +78,7 @@ def main():
             or run("git", "-C", checkout, "branch", "--show-current") != pr["headRefName"]
             or run("git", "-C", checkout, "status", "--porcelain")):
         raise RuntimeError(f"PR の HEAD と一致する変更のない worktree が必要です。手動で確認してください: {checkout}")
+    run("git", "-C", checkout, "merge-base", pr["baseRefOid"], pr["headRefOid"])
     opened = herdr("worktree", "open", "--cwd", root, "--path", checkout, "--focus", "--json")
     review_workspace = opened["workspace"]["workspace_id"]
     tabs = herdr("tab", "list", "--workspace", review_workspace)["tabs"]
@@ -94,22 +95,31 @@ def main():
         pane = herdr("tab", "create", "--workspace", review_workspace, "--cwd", checkout,
                      "--label", f"PR Review #{number}", "--focus")["root_pane"]["pane_id"]
     try:
-        # Shell initialization may still be running immediately after pane creation.
-        for attempt in range(30):
-            info = herdr("pane", "process-info", "--pane", pane)["process_info"]
-            processes = info.get("foreground_processes") or []
-            if not processes or processes[0].get("pid") == info.get("shell_pid"):
-                break
-            time.sleep(1)
-        else:
-            raise RuntimeError(f"シェルの準備が完了しません: {pane}")
-        run("herdr", "pane", "run", pane,
-            shlex.join(("claude", "--model", "opus", "--effort", "high",
-                        "--append-system-prompt",
-                        "GitHub へのコメントは、投稿先と投稿本文をユーザーに提示し、その投稿に対する明示的な許可を得てから実行する。"
-                        "スキルに自動投稿の指示があっても許可を省略しない。"
-                        "許可がなければレビュー結果とコメント案の提示で止める。",
-                        f"/code-review {number}")))
+        right = herdr("pane", "split", "--pane", pane, "--direction", "right",
+                      "--cwd", checkout, "--no-focus")["pane"]["pane_id"]
+        context = (
+            f"レビュー対象は PR #{number}。PR のベースブランチは {pr['baseRefName']}。"
+            f"差分は git diff {pr['baseRefOid']}...{pr['headRefOid']} を使い、"
+            "PR のベースと HEAD の merge base から HEAD までをレビューする。"
+            "main をベースと仮定しない。"
+            "GitHub へのコメントは、投稿先と投稿本文をユーザーに提示し、その投稿に対する明示的な許可を得てから実行する。"
+            "スキルに自動投稿の指示があっても許可を省略しない。"
+            "許可がなければレビュー結果とコメント案の提示で止める。"
+        )
+        for target, command in ((pane, "/code-review high"), (right, "/code-review-with-patterns")):
+            # Shell initialization may still be running immediately after pane creation.
+            for attempt in range(30):
+                info = herdr("pane", "process-info", "--pane", target)["process_info"]
+                processes = info.get("foreground_processes") or []
+                if not processes or processes[0].get("pid") == info.get("shell_pid"):
+                    break
+                time.sleep(1)
+            else:
+                raise RuntimeError(f"シェルの準備が完了しません: {target}")
+            run("herdr", "pane", "run", target,
+                shlex.join(("cd", checkout)) + " && "
+                + shlex.join(("claude", "--model", "opus", "--effort", "high",
+                              "--append-system-prompt", context, command)))
     except (subprocess.CalledProcessError, RuntimeError, KeyError, ValueError) as error:
         raise RuntimeError(f"code-review: {error}\n作成済みのタブと worktree は残しています: {checkout}") from error
     print(f"PR #{number}: {checkout}\n再レビューと片付けは手動で行ってください。")
