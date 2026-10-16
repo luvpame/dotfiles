@@ -30,6 +30,7 @@ in
     zoxide
     gh
     git
+    inputs.git-surgeon.packages.${system}.default
     mergiraf
     just
     nh

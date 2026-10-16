@@ -360,6 +360,27 @@
         "type": "github"
       }
     },
+    "git-surgeon": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791662132,
+        "narHash": "sha256-oWrPbQHa9IVlhFnJen/lf/DS73/zNTyBeh/Gb3ioaSo=",
+        "owner": "raine",
+        "repo": "git-surgeon",
+        "rev": "ecf6dc42172ba757cc03bce1800ba1db45779f46",
+        "type": "github"
+      },
+      "original": {
+        "owner": "raine",
+        "repo": "git-surgeon",
+        "rev": "ecf6dc42172ba757cc03bce1800ba1db45779f46",
+        "type": "github"
+      }
+    },
     "gitignore": {
       "inputs": {
         "nixpkgs": [
@@ -660,6 +681,7 @@
         "cognitive-rhythm-writing": "cognitive-rhythm-writing",
         "crit": "crit",
         "explainer": "explainer",
+        "git-surgeon": "git-surgeon",
         "guard-and-guide": "guard-and-guide",
         "herdr-skills": "herdr-skills",
         "home-manager": "home-manager",

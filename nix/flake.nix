@@ -7,7 +7,7 @@
       url = "github:Kyure-A/agent-skills-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # 外部スキルを追加するときは、ここに取得元の入力（flake = false）を追加し、
+    # 外部スキルだけを取得するときは、ここに取得元の入力（flake = false）を追加し、
     # nix-darwin/home-manager/skills.nix の sources と skills.enable に登録する。
     # 入力の変更後は nix/ で nix flake lock path:. → just check → just switch。
     # URLにコミットを指定した入力の更新は、URLのコミットも変更する必要がある。
@@ -83,6 +83,11 @@
     };
     guard-and-guide = {
       url = "github:kawarimidoll/guard-and-guide";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    git-surgeon = {
+      # v0.1.17 タグには Flake がないため、Flake 追加後の同版コミットに固定する。
+      url = "github:raine/git-surgeon/ecf6dc42172ba757cc03bce1800ba1db45779f46";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hunk = {

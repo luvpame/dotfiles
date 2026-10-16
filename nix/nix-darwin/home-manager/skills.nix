@@ -84,7 +84,7 @@ in
     enable = true;
     # 外部スキルの取得元。input は nix/flake.nix の入力名、subdir は取得元内の探索場所。
     # 同じ取得元から追加する場合は nameRegex も広げる（例: "(skill-a|skill-b)"）。
-    # 新しい取得元なら nix/flake.nix に flake = false の入力を追加し、ここから参照する。
+    # 新しい取得元なら nix/flake.nix に入力を追加し、ここから参照する。スキルのみなら flake = false。
     sources.agent-browser = {
       input = "agent-browser-skills";
       subdir = "skills";
@@ -100,6 +100,11 @@ in
       input = "agent-memory-repo";
       subdir = "skills";
       filter.nameRegex = "agent-memory-repo";
+    };
+    sources.git-surgeon = {
+      input = "git-surgeon";
+      subdir = "skills";
+      filter.nameRegex = "git-surgeon";
     };
     sources.no-ai-slop = {
       input = "no-ai-slop";
@@ -127,6 +132,7 @@ in
       "cognitive-rhythm-writing"
       "empirical-prompt-tuning"
       "explainer"
+      "git-surgeon"
       "herdr"
       "japanese-tech-writing"
       "no-ai-slop"
