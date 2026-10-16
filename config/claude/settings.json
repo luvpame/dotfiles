@@ -101,7 +101,7 @@
     "ruby-lsp@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "claude-security@claude-plugins-official": true,
-    "mattpocock-skills@mattpocock": false,
+    "mattpocock-skills@mattpocock": true,
     "i-have-adhd@i-have-adhd": true,
     "launchpad@sandbox-launchpad": true,
     "pstack@pstack-claude": true,
