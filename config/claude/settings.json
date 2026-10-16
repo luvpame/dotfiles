@@ -104,7 +104,8 @@
     "mattpocock-skills@mattpocock": false,
     "i-have-adhd@i-have-adhd": true,
     "launchpad@sandbox-launchpad": true,
-    "pstack@pstack-claude": true
+    "pstack@pstack-claude": true,
+    "cc-plugin-you-should-know@builtin": true
   },
   "extraKnownMarketplaces": {
     "cclens": {
