@@ -150,6 +150,12 @@ def check(cancel=False, existing=False, stale=False, split=False, busy=False, no
             assert "親は検証結果を待ってから最終報告" in workflow
             assert "confirmed だけを指摘" in workflow
             assert "rejected の理由と unverified の保留事項・制約を区別" in workflow
+            assert "結論の変化の有無によらず" in workflow
+            assert "最後に単独で読めるレビュー全体の最終結果をユーザーに提示" in workflow
+            assert "総合結論を示し" in workflow
+            assert "初回から変更のないものも含む confirmed 全件" in workflow
+            assert "重要度・ファイル位置・発生条件・影響とともにまとめる" in workflow
+            assert "confirmed が 0 件なら確認済みの指摘はないと明記" in workflow
             assert "起動できなければ独立検証未実施" in workflow
             assert "自己点検を独立検証の代わりにせず" in workflow
             assert "未検証の候補は保留" in workflow
