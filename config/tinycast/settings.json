@@ -401,7 +401,7 @@
     "commands": {}
   },
   "snippets": {
-    "showInLauncher": false,
+    "showInLauncher": true,
     "folder": null,
     "commands": {}
   },
