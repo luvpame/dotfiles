@@ -127,15 +127,16 @@
       "inputs": {
         "crane": "crane",
         "flake-utils": "flake-utils",
+        "nix-github-release": "nix-github-release",
         "nixpkgs": "nixpkgs",
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1789525842,
-        "narHash": "sha256-RdQsL8gnPvLbVwn2/A7huqJA2xBlqLzj7lxeOXIveFU=",
+        "lastModified": 1792231472,
+        "narHash": "sha256-frBdSlj3LToboaYmWH934/qjcPxzb74hnXky111Ve0U=",
         "owner": "lambdalisue",
         "repo": "cclens",
-        "rev": "3df5f76eb14a53c4cb03d975fd4dbd4eb2f7cc70",
+        "rev": "408c64102a4ce0a9876eb40c355cac364defc279",
         "type": "github"
       },
       "original": {
@@ -411,11 +412,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792215579,
-        "narHash": "sha256-20wpUWNTPwQnX00THlohN4n4ppxTw4BtSQejYEkyRow=",
+        "lastModified": 1792229324,
+        "narHash": "sha256-jrZQE7+SdA9RpEKKBvqbcb4nl6Ta6Zu3fLpjFTsHDRc=",
         "owner": "kawarimidoll",
         "repo": "guard-and-guide",
-        "rev": "dbcd0eb0e0326817bb8ccaa1fcdc2583b92b765d",
+        "rev": "9b613eb326197ac40a88a8292642bf605557e057",
         "type": "github"
       },
       "original": {
@@ -567,6 +568,28 @@
       "original": {
         "owner": "LnL7",
         "repo": "nix-darwin",
+        "type": "github"
+      }
+    },
+    "nix-github-release": {
+      "inputs": {
+        "nixpkgs": [
+          "cclens",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792229108,
+        "narHash": "sha256-b/qstrahkUL3srof00dgB1fyzhI47Mx2KjowkV2/TmE=",
+        "owner": "lambdalisue",
+        "repo": "nix-github-release",
+        "rev": "e844b6e7523cf03de4f9ce50d5f70837b4ebd57f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lambdalisue",
+        "ref": "v0.1.0",
+        "repo": "nix-github-release",
         "type": "github"
       }
     },
