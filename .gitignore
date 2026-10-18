@@ -27,7 +27,6 @@ config/fish/completions/
 config/fish/conf.d/*
 !config/fish/conf.d/direnv.fish
 !config/fish/conf.d/git_keybindings.fish
-!config/fish/conf.d/load-dotenv.fish
 !config/fish/conf.d/nix.fish
 !config/fish/conf.d/yazi.fish
 config/fish/functions/*

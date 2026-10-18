@@ -87,10 +87,6 @@ in
       path = import ./external-skills.nix { inherit config inputs pkgs; };
       filter.maxDepth = 1;
     };
-    sources.typesafe = {
-      path = inputs.typesafe-skills + "/skills";
-      filter.maxDepth = 1;
-    };
     # 外部スキルの追加・配布停止はこの一覧で指定する。sources の絞り込み条件にも含める。
     # 変更後は just switch。入力も変更した場合は、その前に nix/ で nix flake lock path:. を実行。
     # 内容の更新は nix/flake.nix の取得リビジョンを変更する（配布済みファイルは編集しない）。
@@ -102,7 +98,6 @@ in
       "herdr"
       "japanese-tech-writing"
       "show-me"
-      "typesafe-ai"
     ];
     # 外部スキルの配布先。変更時は上のローカル用 targets も揃える。
     # プラグイン由来のスキル、Codex の .system と chronicle は、それぞれの管理元に任せる。

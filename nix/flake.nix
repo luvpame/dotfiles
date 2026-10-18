@@ -35,10 +35,6 @@
       url = "github:mizchi/skills/95b8a50edf0684620c29d09848591de453b99831";
       flake = false;
     };
-    typesafe-skills = {
-      url = "github:typesafe-ai/skills/65a39f393687675ce170e6094757de20370365b9";
-      flake = false;
-    };
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin = {
       url = "github:LnL7/nix-darwin";

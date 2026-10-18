@@ -174,9 +174,6 @@ trusted_hash = "sha256:8f2f4447ec4d9fd60c29739595bae78459d8160d975cc09e3403539be
 [hooks.state."/Users/luvpame/.codex/hooks.json:permission_request:0:0"]
 trusted_hash = "sha256:4e6515990af2c1ba18ac3963b1e77c1267c7342b13b13ab1f03f88e1f8e8c8a9"
 
-[hooks.state."/Users/luvpame/.codex/hooks.json:post_tool_use:0:0"]
-trusted_hash = "sha256:b50325340ace646f0594c730bacf99564890b127c9127cf6b57e95d4301f513d"
-
 [hooks.state."/Users/luvpame/.codex/hooks.json:user_prompt_submit:1:0"]
 trusted_hash = "sha256:995f3097a1b9209ebce92f2c251a1f078d8d3dd5edf8b12eec840acbdeb8fb7b"
 

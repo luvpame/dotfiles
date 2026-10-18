@@ -1,18 +1,5 @@
 {
   "hooks": {
-    "PostToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "fish -c 'python3 \"$HOME/.codex/hooks/jev-monitor.py\"'",
-            "timeout": 12,
-            "additionalContextLimit": 600,
-            "statusMessage": "Jev が作業の進め方を確認しています",
-            "type": "command"
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "hooks": [
