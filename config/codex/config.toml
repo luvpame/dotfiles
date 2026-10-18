@@ -1,7 +1,7 @@
-model_reasoning_effort = "low"
+model_reasoning_effort = "high"
 personality = "friendly"
 forced_login_method = "chatgpt"
-model = "gpt-6-astra"
+model = "gpt-6.1-sol"
 model_context_window = 1000000
 model_auto_compact_token_limit = 900000
 web_search = "live"
@@ -21,15 +21,18 @@ enabled = false
 network_access = true
 
 [tui]
-status_line = ["model-with-reasoning", "project-name", "git-branch", "context-used", "five-hour-limit", "weekly-limit", "codex-version", "pull-request-number", "branch-changes", "run-state", "fast-mode", "task-progress", "approval-mode"]
+status_line = ["model-with-reasoning", "project-name", "git-branch", "context-used", "weekly-limit", "codex-version", "branch-changes", "run-state", "fast-mode", "task-progress", "approval-mode"]
 theme = "catppuccin-latte"
 status_line_use_colors = true
 pet = "disabled"
+screen_reader_detection_done = true
+fullscreen_transcript = true
 
 [tui.model_availability_nux]
 "gpt-5.5" = 4
 "gpt-5.6-sol" = 4
 gpt-6-astra = 4
+"gpt-6.1-sol" = 4
 
 [projects."/Users/luvpame/dev/github.com/luvpame/dotfiles"]
 trust_level = "trusted"
@@ -37,13 +40,19 @@ trust_level = "trusted"
 [projects."/Users/luvpame/dev/github.com/luvpame/tsuregoro"]
 trust_level = "trusted"
 
-[projects."/Users/luvpame/Documents/Codex/2026-09-15/t"]
-trust_level = "trusted"
-
-[projects."/Users/luvpame/Documents/Codex/2026-09-15/x20"]
-trust_level = "trusted"
-
 [projects."/Users/nasuno.ayumu/Documents/Codex/2026-09-17/url-30-id-claude-code-codex"]
+trust_level = "trusted"
+
+[projects."/Users/nasuno.ayumu/Documents/Codex/2026-09-18/new-chat"]
+trust_level = "trusted"
+
+[projects."/Users/nasuno.ayumu/dev/github.com/luvpame"]
+trust_level = "trusted"
+
+[projects."/Users/nasuno.ayumu/dev/github.com/luvpame/luvpame-browser-extension"]
+trust_level = "trusted"
+
+[projects."/Users/nasuno.ayumu/dev/github.com/luvpame/nikki"]
 trust_level = "trusted"
 
 [marketplaces.openai-bundled]
@@ -62,6 +71,10 @@ source = "https://github.com/mattpocock/skills.git"
 source_type = "git"
 source = "https://github.com/ayghri/i-have-adhd.git"
 ref = "main"
+
+[marketplaces.pstack-claude]
+source_type = "git"
+source = "https://github.com/michael-denyer/pstack-claude.git"
 
 [plugins."superpowers@openai-curated"]
 enabled = false
@@ -82,7 +95,7 @@ enabled = false
 enabled = true
 
 [plugins."chrome@openai-bundled"]
-enabled = false
+enabled = true
 
 [plugins."documents@openai-primary-runtime"]
 enabled = false
@@ -109,9 +122,6 @@ enabled = true
 enabled = true
 
 [plugins."computer-use@openai-bundled"]
-enabled = false
-
-[plugins."computer-history@openai-bundled"]
 enabled = true
 
 [hooks.state]
@@ -132,13 +142,13 @@ trusted_hash = "sha256:c7e90260f748ca2cf997296319e0e5e2523852533151925c503c7c997
 trusted_hash = "sha256:bdc746f856ae64e9f31d4775827bf8823a09a8272a17959d196b42f4c9ff06f8"
 
 [hooks.state."ponytail@ponytail:hooks/claude-codex-hooks.json:session_start:0:0"]
-trusted_hash = "sha256:5f81d38f47448a1581c08ec877e044d9e04dd6f814dce3f2671f7a8edadd719b"
+trusted_hash = "sha256:55a39116e94ed8399271043701d3e9b8859aee77c30ef85529e7eab067d8acd9"
 
 [hooks.state."ponytail@ponytail:hooks/claude-codex-hooks.json:user_prompt_submit:0:0"]
-trusted_hash = "sha256:6a6f42bc3b58d6262db38bfd74d7f340fcca2b09cdb134aad365063f0bfefca4"
+trusted_hash = "sha256:29dcb3bf3cd3d77af301058521d2fd4e414c523345f8fe70942f7f30027acc94"
 
 [hooks.state."ponytail@ponytail:hooks/claude-codex-hooks.json:subagent_start:0:0"]
-trusted_hash = "sha256:1423b56c1322f96c8f74c51c1e7ae9a047b904c1fa43ee9165d462fd7a6e70ef"
+trusted_hash = "sha256:6e210f506560ddd14e490c7dd80623572d504b8f0cfcf8c64c4d4c2ab4d23ae1"
 
 [hooks.state."/Users/luvpame/.codex/hooks.json:session_start:0:1"]
 trusted_hash = "sha256:b0d480f84b028d26ee9a2384f70653cac0565870b0543aa317e4c67d5d75e3d5"
@@ -176,6 +186,9 @@ trusted_hash = "sha256:e3c01ec4afd1ee7f868f56d8c838d2264c59b3b3c6150630975881184
 [hooks.state."/Users/luvpame/.codex/hooks.json:stop:1:0"]
 trusted_hash = "sha256:1cb735e2f878432c3fad7f182c5d895aedcd071b625a937a9aa9472bfc8b90c8"
 
+[hooks.state."pstack@pstack-claude:hooks/codex-hooks.json:session_start:0:0"]
+trusted_hash = "sha256:ba5a989f28dad7759bb342207253f3de8ad200d793456ebcc8611632f96bfa3b"
+
 [desktop]
 appearanceTheme = "system"
 appearanceLightCodeThemeId = "catppuccin"
@@ -210,26 +223,12 @@ defaultTerminalLocation = "right"
 toys-confetti-enabled = true
 toys-audio-visualizer-enabled = true
 avatar-overlay-pet-visible = false
-browser-show-full-url = true
-git-pr-watch-auto-merge = false
-git-pr-instructions = """
-## Issue の紐付け
-関連する Issue を PR に紐づけること
-
-## PR descriptionの書き方
-
-- 「何を変更したか」と「レビュアーが見るべき点」に絞る。実装の手順を逐一説明しない
-- Design docへのリンクを貼り、設計の詳細はそちらに譲る（PR本文に重複させない）
-- 実装ファイルの一覧など、diffを見れば分かる情報は書かない
-
-## 避けるべき表現
-
-- 「〜することができます」など回りくどい語尾（「〜します」で言い切る）
-- 自明なメリット・デメリットの羅列（例:「コード量が増える」「可読性が向上する」だけで終わる説明）
-- 同じ主張を異なる見出しで繰り返すこと"""
+"browser-family-enabled:chrome" = false
+default-workspace-full-view = false
+agent-usage-reset-enabled = true
+git-pr-watch-auto-merge = true
+code-review-sidebar-sections = ["waiting_for_review", "needs_my_review", "needs_my_teams_review", "merged"]
 worktree-upstream-refresh-mode = "best-effort"
-git-always-force-push = true
-browser-annotation-screenshots-mode = "necessary"
 
 [desktop.appearanceLightChromeTheme]
 accent = "#8839ef"
@@ -283,16 +282,10 @@ startup_timeout_sec = 120
 NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
 NODE_REPL_NODE_MODULE_DIRS = "/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
 NODE_REPL_NODE_PATH = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node"
-NODE_REPL_TRUSTED_CODE_PATHS = "/Users/luvpame/.codex:/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
-CODEX_HOME = "/Users/luvpame/.codex"
-BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 BROWSER_USE_TINYSKY_ENABLED = "1"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.915.31945"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/luvpame/.codex/plugins/cache/openai-bundled/browser/26.915.31945/scripts/browser-service.mjs"}'
-CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
 
 [[skills.config]]
 name = "superpowers:using-superpowers"

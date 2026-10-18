@@ -5,12 +5,15 @@ import json
 import os
 import re
 import subprocess
+import sys
 import tempfile
 import time
 from pathlib import Path
+from urllib.parse import urlparse
 
 
 CACHE_TTL_SECONDS = 60
+CACHE_VERSION = 4
 REVIEW_SPACE_PATTERN = re.compile(r"^review-#[0-9]+$")
 REVIEW_SPACE_ICON = ""
 METADATA_TOKENS = (
@@ -30,13 +33,14 @@ PR_ICONS = {
     "closed": "",
 }
 REVIEW_STATUSES = {
+    "AUTHORED": "● authored",
     "APPROVED": "✓ approved",
-    "CHANGES_REQUESTED": "× changes",
-    "REVIEW_REQUIRED": "○ review",
+    "REVIEWED": "✓ reviewed",
+    "UNREVIEWED": "○ unreviewed",
 }
 
 
-def run(*args, cwd=None, timeout=None):
+def run(*args, cwd=None, timeout=5):
     try:
         return subprocess.run(
             args,
@@ -58,12 +62,12 @@ def stdout(*args, cwd=None):
     return result.stdout.strip()
 
 
-def pane_cwd(pane_id):
-    result = stdout("herdr", "pane", "get", pane_id)
+def herdr_data(name, *args):
+    result = stdout("herdr", *args)
     if result is None:
         return None
     try:
-        return json.loads(result)["result"]["pane"]["foreground_cwd"]
+        return json.loads(result)["result"][name]
     except (json.JSONDecodeError, KeyError, TypeError):
         return None
 
@@ -74,6 +78,27 @@ def checkout(cwd):
     if not root or not branch:
         return None
     return Path(root), branch
+
+
+def pane_checkout(pane):
+    for name in ("foreground_cwd", "cwd"):
+        cwd = pane.get(name)
+        if isinstance(cwd, str) and cwd:
+            current_checkout = checkout(cwd)
+            if current_checkout is not None:
+                return current_checkout
+    return None
+
+
+def workspace_checkout(workspace, pane_checkouts):
+    worktree = workspace.get("worktree")
+    if isinstance(worktree, dict):
+        cwd = worktree.get("checkout_path")
+        return checkout(cwd) if isinstance(cwd, str) and cwd else None
+    for pane_id in sorted(pane_checkouts):
+        if pane_checkouts[pane_id] is not None:
+            return pane_checkouts[pane_id]
+    return None
 
 
 def cache_path(root, branch):
@@ -92,6 +117,8 @@ def read_cache(path):
         data = json.loads(path.read_text())
     except (OSError, json.JSONDecodeError, TypeError):
         return None
+    if not isinstance(data, dict) or data.get("version") != CACHE_VERSION:
+        return None
     queried_at = data.get("queried_at")
     pull_requests = data.get("pull_requests")
     if not isinstance(queried_at, (int, float)) or not isinstance(pull_requests, list):
@@ -109,7 +136,11 @@ def write_cache(path, pull_requests):
             "w", dir=path.parent, delete=False, encoding="utf-8"
         ) as file:
             json.dump(
-                {"queried_at": time.time(), "pull_requests": pull_requests},
+                {
+                    "version": CACHE_VERSION,
+                    "queried_at": time.time(),
+                    "pull_requests": pull_requests,
+                },
                 file,
             )
             temporary_path = Path(file.name)
@@ -127,35 +158,111 @@ def write_cache(path, pull_requests):
 
 def pull_requests(root, branch):
     path = cache_path(root, branch)
-    cached = read_cache(path)
-    if cached is not None:
-        return cached
+    found = read_cache(path)
+    changed = found is None
+    if found is None:
+        result = run(
+            "gh",
+            "pr",
+            "list",
+            "--head",
+            branch,
+            "--state",
+            "all",
+            "--limit",
+            "100",
+            "--json",
+            "id,url,number,state,isDraft,baseRefName,updatedAt",
+            cwd=root,
+            timeout=3,
+        )
+        if result is None or result.returncode != 0:
+            return None
+        try:
+            found = json.loads(result.stdout)
+        except json.JSONDecodeError:
+            return None
+        if not isinstance(found, list):
+            return None
+    pull_request = select_pull_request(found)
+    if (
+        sys.argv[1:] == ["--all-workspaces"]
+        and pull_request is not None
+        and pull_request["state"] == "OPEN"
+        and "viewerReviewState" not in pull_request
+    ):
+        pull_request["viewerReviewState"] = viewer_review_state(root, pull_request)
+        changed = True
+    if changed:
+        write_cache(path, found)
+    return found
 
+
+def viewer_review_state(root, pull_request):
+    node_id = pull_request.get("id")
+    url = pull_request.get("url")
+    if not isinstance(node_id, str) or not isinstance(url, str):
+        return None
+    try:
+        host = urlparse(url).hostname
+    except ValueError:
+        return None
+    if not host:
+        return None
+    login = stdout(
+        "gh", "api", "user", "--hostname", host, "--jq", ".login", cwd=root
+    )
+    if not login:
+        return None
     result = run(
         "gh",
-        "pr",
-        "list",
-        "--head",
-        branch,
-        "--state",
-        "all",
-        "--limit",
-        "100",
-        "--json",
-        "number,state,isDraft,baseRefName,updatedAt,reviewDecision",
+        "api",
+        "graphql",
+        "--hostname",
+        host,
+        "-f",
+        "query=query($id:ID!,$login:String!){node(id:$id){... on PullRequest{viewerDidAuthor "
+        "reviews(author:$login,states:[COMMENTED,APPROVED,CHANGES_REQUESTED,DISMISSED],"
+        "first:1){totalCount}decision:reviews(author:$login,"
+        "states:[APPROVED,CHANGES_REQUESTED,DISMISSED],last:1){nodes{state}}}}}",
+        "-f",
+        f"id={node_id}",
+        "-f",
+        f"login={login}",
         cwd=root,
         timeout=3,
     )
     if result is None or result.returncode != 0:
         return None
     try:
-        found = json.loads(result.stdout)
-    except json.JSONDecodeError:
+        data = json.loads(result.stdout)
+        if data.get("errors"):
+            return None
+        node = data["data"]["node"]
+        if node["viewerDidAuthor"] is True:
+            return "AUTHORED"
+        if node["viewerDidAuthor"] is not False:
+            return None
+        count = node["reviews"]["totalCount"]
+        decisions = node["decision"]["nodes"]
+    except (json.JSONDecodeError, KeyError, TypeError, AttributeError):
         return None
-    if not isinstance(found, list):
+    if type(count) is not int or count < 0 or not isinstance(decisions, list):
         return None
-    write_cache(path, found)
-    return found
+    if len(decisions) > 1:
+        return None
+    decision = None
+    if decisions:
+        if not isinstance(decisions[0], dict):
+            return None
+        decision = decisions[0].get("state")
+        if not isinstance(decision, str) or decision not in {
+            "APPROVED", "CHANGES_REQUESTED", "DISMISSED"
+        }:
+            return None
+    if count == 0:
+        return "UNREVIEWED" if decision is None else None
+    return "APPROVED" if decision == "APPROVED" else "REVIEWED"
 
 
 def select_pull_request(candidates):
@@ -188,7 +295,8 @@ def pull_request_state(pull_request):
 def review_status(pull_request):
     if pull_request is None or pull_request.get("state") != "OPEN":
         return ""
-    return REVIEW_STATUSES.get(pull_request.get("reviewDecision"), "")
+    state = pull_request.get("viewerReviewState")
+    return REVIEW_STATUSES.get(state, "") if isinstance(state, str) else ""
 
 
 def metadata(root, branch):
@@ -204,16 +312,6 @@ def metadata(root, branch):
         state = pull_request_state(pull_request)
         tokens[f"pr_{state}"] = f"{PR_ICONS[state]} #{pull_request['number']}"
     return tokens, pull_request
-
-
-def workspace_label(workspace_id):
-    result = stdout("herdr", "workspace", "get", workspace_id)
-    if result is None:
-        return None
-    try:
-        return json.loads(result)["result"]["workspace"]["label"]
-    except (json.JSONDecodeError, KeyError, TypeError):
-        return None
 
 
 def review_space_icon(label):
@@ -242,10 +340,10 @@ def agent_summary(workspace_id):
     return f"{count} agent" if count == 1 else f"{count} agents"
 
 
-def workspace_metadata(workspace_id, tokens, pull_request):
-    label = workspace_label(workspace_id)
+def workspace_metadata(workspace, tokens, pull_request):
+    label = workspace.get("label")
     workspace_tokens = {
-        "agent_summary": agent_summary(workspace_id),
+        "agent_summary": agent_summary(workspace["workspace_id"]),
         **tokens,
         "review_status": review_status(pull_request),
         "review_space": review_space_icon(label),
@@ -276,26 +374,62 @@ def report_metadata(target, target_id, source, tokens):
     run(*args)
 
 
+def checkout_metadata(current_checkout):
+    if current_checkout is None:
+        return {name: "" for name in METADATA_TOKENS}, None
+    return metadata(*current_checkout)
+
+
+def update_workspace(workspace, *, report_panes=False):
+    workspace_id = workspace["workspace_id"]
+    panes = herdr_data("panes", "pane", "list", "--workspace", workspace_id)
+    if not isinstance(panes, list):
+        return
+    pane_checkouts = {
+        pane["pane_id"]: pane_checkout(pane)
+        for pane in panes
+        if isinstance(pane, dict) and isinstance(pane.get("pane_id"), str)
+    }
+    if report_panes:
+        for pane_id, current_checkout in pane_checkouts.items():
+            tokens, _ = checkout_metadata(current_checkout)
+            report_metadata("pane", pane_id, "agent-git", tokens)
+    tokens, pull_request = checkout_metadata(
+        workspace_checkout(workspace, pane_checkouts)
+    )
+    report_metadata(
+        "workspace",
+        workspace_id,
+        "workspace-git",
+        workspace_metadata(workspace, tokens, pull_request),
+    )
+
+
 def main():
+    if sys.argv[1:] == ["--all-workspaces"]:
+        workspaces = herdr_data("workspaces", "workspace", "list")
+        if isinstance(workspaces, list):
+            for workspace in workspaces:
+                if isinstance(workspace, dict) and isinstance(
+                    workspace.get("workspace_id"), str
+                ):
+                    update_workspace(workspace, report_panes=True)
+        return
+    if sys.argv[1:]:
+        return
     pane_id = os.environ.get("HERDR_PANE_ID")
     workspace_id = os.environ.get("HERDR_WORKSPACE_ID")
     if os.environ.get("HERDR_ENV") != "1" or not pane_id:
         return
 
-    tokens = {name: "" for name in METADATA_TOKENS}
-    pull_request = None
-    cwd = pane_cwd(pane_id)
-    current_checkout = checkout(cwd) if cwd else None
-    if current_checkout is not None:
-        tokens, pull_request = metadata(*current_checkout)
-    report_metadata("pane", pane_id, "agent-git", tokens)
+    pane = herdr_data("pane", "pane", "get", pane_id)
+    if isinstance(pane, dict):
+        tokens, _ = checkout_metadata(pane_checkout(pane))
+        report_metadata("pane", pane_id, "agent-git", tokens)
     if workspace_id:
-        report_metadata(
-            "workspace",
-            workspace_id,
-            "workspace-git",
-            workspace_metadata(workspace_id, tokens, pull_request),
-        )
+        workspace = herdr_data("workspace", "workspace", "get", workspace_id)
+        if isinstance(workspace, dict) and workspace.get("workspace_id") == workspace_id:
+            update_workspace(workspace)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,1 @@
+{ "name": "usage-band", "version": "0.1.0", "description": "Show 5h / 1w rate limits and this session's task progress above the prompt", "types": "./types/index.d.ts" }

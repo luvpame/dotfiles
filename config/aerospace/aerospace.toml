@@ -60,8 +60,8 @@ if.app-id = "com.openai.codex"
 run = "move-node-to-workspace 1" # Codexをワークスペース1に移動
 
 [[on-window-detected]]
-if.app-id = "com.github.wez.wezterm"
-run = "move-node-to-workspace 2" # WezTermをワークスペース2に移動
+if.app-id = "so.pen.herdr-gpui"
+run = "move-node-to-workspace 3" # Herdr GPUIをワークスペース3に移動
 
 [[on-window-detected]]
 if.app-id = "com.spotify.client"

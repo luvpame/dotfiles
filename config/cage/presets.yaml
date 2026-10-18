@@ -11,8 +11,8 @@ presets:
       - "/dev"
       # npm/npx キャッシュ (MCP サーバー等)
       - "$HOME/.npm"
-      # pnpm (lefthook)
-      - "$HOME/Library/pnpm/.tools/pnpm/"
+      # pnpm
+      - "$HOME/Library/pnpm"
       # bun キャッシュ (bunx for ccstatusline 等)
       - "$HOME/.bun"
       # 各種キャッシュ
@@ -22,11 +22,12 @@ presets:
         eval-symlinks: true
       # ローカル state/bin (nvim, pnpm, mise 等)
       - "$HOME/.local"
-      # ランタイムで書き込まれるツール設定 (op, gcloud 等)
-      - path: "$HOME/.config"
-        eval-symlinks: true
-      - path: "$HOME/.dotfiles"
-        eval-symlinks: true
+      # Homebrew のインストール先、ログ、信頼設定
+      - "/opt/homebrew"
+      - "/Applications"
+      - "$HOME/Library/Logs/Homebrew"
+      - "$HOME/.config/homebrew"
+      - "$HOME/.homebrew"
   codex:
     allow:
       - path: "$HOME/.codex"

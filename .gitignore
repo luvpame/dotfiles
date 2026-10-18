@@ -1,4 +1,5 @@
 *.local.*
+!config/herdr/config-gpui.local.toml
 !config/git/config.local.example
 config/git/config.local
 .DS_Store
@@ -14,6 +15,7 @@ build/
 .data/
 .state/
 .cache/
+.audit/
 .claude/
 config/herdr/*.log
 config/herdr/*.sock

@@ -1,0 +1,27 @@
+theme = "Follow Herdr"
+confirm_close_tab = false
+show_agents = true
+contrast = "high"
+
+[layout ]
+mode = "comfortable-rounded"
+sidebar_gap = 1.0
+
+[sidebar]
+family = "HackGen Console NF"
+size = 14.0
+
+[tabs]
+family = "HackGen Console NF"
+size = 14.0
+
+[terminal]
+family = "HackGen Console NF"
+
+[ui]
+family = "HackGen Console NF"
+size = 14.0
+
+[notifications]
+position = "bottom-right"
+enabled = true

@@ -20,6 +20,7 @@ in
         ./packages.nix
         ./files.nix
         ./skills.nix
+        ./services/agent-browser.nix
         ./services/herdr.nix
       ];
 

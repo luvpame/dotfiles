@@ -1,0 +1,122 @@
+--- a/skills/explainer/SKILL.md
++++ b/skills/explainer/SKILL.md
+@@ -16,18 +16,16 @@
+ 
+ 読了が 20 分を超える、演習が要る、概念に順序がある。このどれかなら、章立ての `explainer-book` を使う。
+ 
+-## 準備（初回だけ）
++## この環境での実行
+ 
+-スクリプトは、このスキルのディレクトリ（以下 `<skill>`）の `scripts/` にあります。
+-依存は、資料を置くリポジトリに入れます。Node 24 以上が必要です。
++スキルと Node の依存関係は Nix で版を固定して配布する。
++初回だけ `explainer setup` で対応する Chromium を専用キャッシュに取得する。
++確認だけなら `explainer setup --dry-run` を使う。
+ 
+-```sh
+-npm i -D @mizchi/vlmkit @mizchi/vlmkit-anim marked playwright
+-```
+-
+-Mermaid の図（`figures/*.mmd`）を使うときは `mermaid` も入れます。
+-形式手法の例を扱うときは、TLC（Java 11+）や Apalache（Java 17+）、`z3-solver` も入れます。
+-`verify-doc.mjs` は `$TLA2TOOLS`（tla2tools.jar）と `$APALACHE`（apalache-mc）を、リポジトリの `.tools/` から探します。
++スクリプトは `explainer run <スクリプト名>.mjs <引数>`、vlmkit は `explainer vlmkit <引数>`、vlmkit-anim は `explainer vlmkit-anim <引数>` で実行する。
++入力・出力の相対パスは呼び出した作業ディレクトリから解決される。
++資料を置くリポジトリに npm の依存物を追加せず、ブラウザーの版が合わなければ `explainer setup` を再実行する。
++形式手法の例に必要な TLC / Apalache / Z3 は、その例を扱う場合だけ別途用意する。
+ 
+ ## 手順
+ 
+@@ -38,7 +36,7 @@
+ 4. 実物を作る   主張ごとに、実行できる例（コード・モデル・コマンド）を先に作って走らせる
+ 5. 書く        references/writing.md の型で。出力は貼る、打ち直さない
+ 6. 図          references/figures.md。事実シート（*.expect.json）を先に、図は後
+-7. 検証        node <skill>/scripts/verify-doc.mjs <doc-dir> が VERIFIED になるまで
++7. 検証        explainer run verify-doc.mjs <doc-dir> が VERIFIED になるまで
+ 8. 読ませる    first-reader スキルで、ペルソナ本人を読み手にして読ませる。途中で離脱した箇所と、翌日残ったものを見る
+ 9. 渡す        HTML（dist/index.html）と要約。検証できなかったことは「未検証」と明記
+ ```
+@@ -129,14 +127,14 @@
+ `<doc-dir>/checks.json` に、本文が引用する出力を再生成するコマンドと、期待する行を書く。
+ 
+ ```
+-node <skill>/scripts/verify-doc.mjs <doc-dir>          # 検査
+-node <skill>/scripts/verify-doc.mjs <doc-dir> --write  # 図の SVG を描き直す
++explainer run verify-doc.mjs <doc-dir>          # 検査
++explainer run verify-doc.mjs <doc-dir> --write  # 図の SVG を描き直す
+ ```
+ 
+ `verify-doc.mjs` が見るもの：
+ 
+ 1. `checks.json` の各コマンドの出力に、期待する行が順に出るか
+-2. 図：`vlmkit-anim check --expect` / `layout` / SVG が最新か
++2. 図：`explainer vlmkit-anim check --expect` / `layout` / SVG が最新か
+ 3. 本文：`output` / `source` の引用が実物と一致するか。画像が存在するか
+ 4. HTML：`vlmkit check integrity`（`<details>` を開いた版で厳格に）と `check a11y contrast`
+ 
+@@ -175,7 +173,7 @@
+ 差分はファイル順ではなく、説明の順に並べる（literate diff）。
+ 
+ 実物は次の 2 つ。
+-- `vlmkit-anim pr --base origin/main` の変更地図
++- `explainer vlmkit-anim pr --base origin/main` の変更地図
+ - 変更前後で振る舞いが変わる最小の例（テストの追加・変更から選ぶ）
+ 
+ ## やってはいけないこと
+--- a/skills/explainer/references/figures.md
++++ b/skills/explainer/references/figures.md
+@@ -2,7 +2,7 @@
+ 
+ 図は `@mizchi/vlmkit-anim` のシーン（JSON）で描く。
+ 座標は書かない。書くのは「種類（kind）」と「意図」。
+-書き方の詳細は vlmkit の `docs/anim-ir.md` と `vlmkit-anim schema --kind <kind>` を参照する。
++書き方の詳細は vlmkit の `docs/anim-ir.md` と `explainer vlmkit-anim schema --kind <kind>` を参照する。
+ 
+ ## 描くか
+ 
+@@ -24,8 +24,8 @@
+ | 反例はどういう順序で起きたか | `state-machine` の `trace` / `sequence` / `distributed` | TLC・Apalache・Quint の反例トレース |
+ | A は B に含まれるか（集合・範囲） | `diagram` の入れ子 `groups` | 道具の出力（到達可能状態の一覧、型の定義） |
+ | どう分岐するか | `flowchart` の `walk` | 条件分岐のコード |
+-| どういう構造か（モジュール） | `modules` | `vlmkit-anim facts <dir> --depth 1` |
+-| この PR で何が変わるか | `vlmkit-anim pr --base origin/main` | git |
++| どういう構造か（モジュール） | `modules` | `explainer vlmkit-anim facts <dir> --depth 1` |
++| この PR で何が変わるか | `explainer vlmkit-anim pr --base origin/main` | git |
+ 
+ 1 つの問いに図は 1 枚。
+ 
+@@ -34,10 +34,10 @@
+ ```
+ 1. 事実シート  <name>.expect.json を道具の出力から作る（手で書くなら、出どころを本文に書く）
+ 2. シーン     <name>.scene.json。id は ASCII、表示は label に
+-3. check      vlmkit-anim check <name>.scene.json --expect <name>.expect.json   ✗ を 0 に
+-4. layout     vlmkit-anim layout <name>.scene.json                              重なり・はみ出し 0 に
+-5. explain    vlmkit-anim explain <name>.scene.json                             キャプションが「なぜ」を言っているか
+-6. still      vlmkit-anim still <name>.scene.json --out <name>.svg              一度は目で見る（.png で Read）
++3. check      explainer vlmkit-anim check <name>.scene.json --expect <name>.expect.json   ✗ を 0 に
++4. layout     explainer vlmkit-anim layout <name>.scene.json                              重なり・はみ出し 0 に
++5. explain    explainer vlmkit-anim explain <name>.scene.json                             キャプションが「なぜ」を言っているか
++6. still      explainer vlmkit-anim still <name>.scene.json --out <name>.svg              一度は目で見る（.png で Read）
+ ```
+ 
+ `verify-doc.mjs` は 3・4・6 を毎回やり直す。
+@@ -53,7 +53,7 @@
+ 
+ - `canvas ... over 2000px`：ラベルが長い。`tlc-to-scene.mjs --bare --abbrev read=R,...` で短くし、凡例を本文に書く。`layout` を `tb` / `lr` で比べる。
+ - `state ... drawn but the trace never enters it`：全状態を描き、反例だけを歩く図では想定内の警告。本文で「描いたが歩かない状態」の意味を説明する。
+-- GIF は重い（13 状態で 5 MB）。README には SVG を置く。動きは `build-html.mjs` が作る再生ページ（`vlmkit-anim html`）で見せる。
++- GIF は重い（13 状態で 5 MB）。README には SVG を置く。動きは `build-html.mjs` が作る再生ページ（`explainer vlmkit-anim html`）で見せる。
+ 
+ ## 手で描く図（Mermaid / D2 / SVG / HTML）と、目で見るループ
+ 
+@@ -86,8 +86,8 @@
+ ### ループ（1 回 = 描画 → 機械の検査 → 目で見る → 直す）
+ 
+ ```
+-node <skill>/scripts/figure-check.mjs figures/<name>.svg|.fig.html|.d2|.mmd [--write]
+-node <skill>/scripts/figure-variants.mjs figures/<name>.d2|.mmd          # 配置が不自然なとき
++explainer run figure-check.mjs figures/<name>.svg|.fig.html|.d2|.mmd [--write]
++explainer run figure-variants.mjs figures/<name>.d2|.mmd          # 配置が不自然なとき
+ ```
+ 
+ D2 と Mermaid は、書いたのは意味（箱と辺）だけで、配置は道具が決める。
