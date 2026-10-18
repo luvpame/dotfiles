@@ -13,7 +13,7 @@ if status is-interactive
     abbr -a v nvim
     abbr -a cdg cd-gitroot
     abbr -a cat bat
-    abbr -a co 'cage codex'
+    abbr -a co 'cage codex --no-daemon'
     abbr -a lg lazygit
     abbr -a tm tmux
     abbr -a hd herdr
