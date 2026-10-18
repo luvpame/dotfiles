@@ -23,11 +23,13 @@ class HerdrConfigSyncTest(unittest.TestCase):
         for name in FILES:
             (self.source / name).write_text("original\n")
         module = (ROOT / "nix/nix-darwin/home-manager/files.nix").read_text()
-        self.script = re.search(
+        activation = re.search(
             r"home\.activation\.copyHerdrConfig = .*? ''\n(.*?)\n  '';",
             module,
             re.DOTALL,
-        ).group(1)
+        )
+        self.assertIsNotNone(activation, "Herdr 設定の配布処理が必要")
+        self.script = activation.group(1)
         substitutions = {
             "${configRoot}": str(self.root / "repo"),
             "${config.xdg.configHome}": str(self.root / "config"),
@@ -92,6 +94,16 @@ class HerdrConfigSyncTest(unittest.TestCase):
         (self.target / FILES[0]).unlink()
         self.sync()
         self.assertEqual((self.target / FILES[0]).read_text(), "original\n")
+
+    def test_managed_symlink_becomes_writable_file(self):
+        source = self.source / FILES[0]
+        target = self.target / FILES[0]
+        target.symlink_to(source)
+        self.sync()
+        self.assertFalse(target.is_symlink())
+        self.assertEqual(target.read_text(), "original\n")
+        target.write_text("GUI\n")
+        self.assertEqual(source.read_text(), "original\n")
 
     def test_dry_run_does_not_write_settings_or_state(self):
         self.sync(dry_run=True)

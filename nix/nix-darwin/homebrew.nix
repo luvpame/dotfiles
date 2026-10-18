@@ -54,6 +54,7 @@ let
     "productdevbook/tap" # portkiller
     "fayazara/tap" # screendrop
     "gauthierpiarrette/highball"
+    "penso/tap" # herdr-gpui
   ];
   trustedTaps = map (name: {
     inherit name;
@@ -66,6 +67,7 @@ let
     "discord"
     "rekordbox"
     "wezterm"
+    "herdr-gpui"
     "1password"
     "1password-cli"
     "aerospace"

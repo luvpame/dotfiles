@@ -2,10 +2,7 @@ theme = "Follow Herdr"
 confirm_close_tab = false
 show_agents = true
 contrast = "high"
-
-[layout ]
-mode = "comfortable-rounded"
-sidebar_gap = 1.0
+layout = "comfortable-rounded"
 
 [sidebar]
 family = "HackGen Console NF"
@@ -17,6 +14,7 @@ size = 14.0
 
 [terminal]
 family = "HackGen Console NF"
+padding_x = [1.0, 0.0]
 
 [ui]
 family = "HackGen Console NF"
