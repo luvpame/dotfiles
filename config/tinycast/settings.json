@@ -306,6 +306,11 @@
         "alias": null,
         "showInLauncher": false
       },
+      "com.apple.FollowUpSettings.FollowUpSettingsExtension": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
       "com.apple.Game-Center-Settings.extension": {
         "shortcut": null,
         "alias": null,
@@ -335,7 +340,17 @@
         "alias": null,
         "showInLauncher": false
       },
+      "define": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
       "import-from-raycast": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
+      },
+      "settings": {
         "shortcut": null,
         "alias": null,
         "showInLauncher": false
@@ -379,7 +394,7 @@
     "mode": "pushToTalk",
     "shortcut": "hyper+d",
     "model": "qwen-0.6b",
-    "microphone": "LogiGamingAudio:Generic:Blue Microphones:LT_250119102039AD020050_111000:1",
+    "microphone": null,
     "destination": "both",
     "adaptsCapitalization": true,
     "releaseAfterMinutes": 1,
