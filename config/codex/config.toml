@@ -127,6 +127,12 @@ enabled = true
 [plugins."computer-history@openai-bundled"]
 enabled = true
 
+[plugins."pstack@pstack-claude"]
+enabled = true
+
+[plugins."gmail@openai-curated-remote"]
+enabled = true
+
 [hooks.state]
 
 [hooks.state."/Users/luvpame/.codex/hooks.json:pre_tool_use:0:0"]
@@ -212,14 +218,14 @@ mac-menu-bar-enabled = true
 show-context-window-usage = true
 appearanceDiffMarkerStyle = "symbols"
 ambient-suggestions-enabled = false
-dock-icon-preference = "codex-system"
+dock-icon-preference = "space-system"
 avatar-overlay-mascot-width-px = 80
 appshotDestination = "automatic"
 show-ultra-in-model-picker-slider = false
 enabled-reasoning-efforts = ["low", "medium", "high", "xhigh", "ultra", "max"]
 git-pull-request-merge-method = "squash"
 realtimeVoiceScreenContextEnabled = true
-defaultTerminalLocation = "right"
+defaultTerminalLocation = "bottom"
 toys-confetti-enabled = true
 toys-audio-visualizer-enabled = true
 avatar-overlay-pet-visible = false
@@ -229,6 +235,8 @@ agent-usage-reset-enabled = true
 git-pr-watch-auto-merge = true
 code-review-sidebar-sections = ["waiting_for_review", "needs_my_review", "needs_my_teams_review", "merged"]
 worktree-upstream-refresh-mode = "best-effort"
+autoArchiveAfterDays = 1
+browser-show-full-url = true
 
 [desktop.appearanceLightChromeTheme]
 accent = "#8839ef"
