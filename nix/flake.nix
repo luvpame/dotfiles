@@ -52,7 +52,7 @@
       flake = false;
     };
     yomiyasu = {
-      url = "github:nanaism/yomiyasu/c2ffae670994fec96daef92e0bc219f5c1923113";
+      url = "github:nanaism/yomiyasu/79d15a621751cb7ad3bea556832209e9112e575f";
       flake = false;
     };
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
