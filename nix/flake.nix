@@ -68,10 +68,6 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    cage = {
-      url = "github:Warashi/cage/v0.1.13";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     claude-code-source = {
       url = "github:ryoppippi/claude-code-overlay";
       flake = false;

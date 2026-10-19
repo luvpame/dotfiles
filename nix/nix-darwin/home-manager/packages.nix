@@ -73,9 +73,6 @@ in
     (callPackage ../../pkgs/tree-sitter-cli/default.nix { })
     awscli2
     inputs.crit.packages.${system}.default
-    inputs.cage.packages.${system}.default
-    # macOS の setuid /bin/ps は Cage 内で実行できないため、Codex の daemon 用に配置する。
-    darwin.ps
     cclens
     claude-code
     cliamp

@@ -25,7 +25,7 @@ in
     tmux.source = oos "${configRoot}/tmux";
     "tinycast/settings.json".source = oos "${configRoot}/tinycast/settings.json";
     "herdr/scripts".source = oos "${configRoot}/herdr/scripts";
-    cage.source = oos "${configRoot}/cage";
+    # cage: archive/cage へ退避
 
     # Runtime stateを含むHunkの親directory linkはT24でfile単位へ分割する。
     "worktrunk/config.toml".source = oos "${configRoot}/worktrunk/config.toml";
