@@ -6,6 +6,7 @@ import os
 import shlex
 import subprocess
 import sys
+import tempfile
 import time
 
 
@@ -175,11 +176,23 @@ def main():
                 time.sleep(1)
             else:
                 raise RuntimeError(f"シェルの準備が完了しません: {target}")
-            run("herdr", "pane", "run", target,
-                shlex.join(("cd", checkout)) + " && "
-                + shlex.join(("claude", "--model", "opus", "--effort", "high" if target == pane else "medium",
-                              "--append-system-prompt",
-                              orchestration_context if target == pane else review_context, command)))
+            # A fresh PTY may still truncate long input before the shell disables canonical mode.
+            with tempfile.NamedTemporaryFile("w", encoding="utf-8", prefix="herdr-pr-review-",
+                                             suffix=".sh", delete=False) as launcher:
+                launcher.write('rm -- "$0"\n' + shlex.join(("cd", checkout)) + " && exec "
+                               + shlex.join(("claude", "--model", "opus", "--effort",
+                                             "high" if target == pane else "medium",
+                                             "--append-system-prompt",
+                                             orchestration_context if target == pane else review_context,
+                                             command)) + "\n")
+            try:
+                run("herdr", "pane", "run", target, shlex.join(("bash", launcher.name)))
+            except subprocess.CalledProcessError:
+                try:
+                    os.unlink(launcher.name)
+                except FileNotFoundError:
+                    pass
+                raise
     except (subprocess.CalledProcessError, RuntimeError, KeyError, ValueError) as error:
         raise RuntimeError(f"code-review: {error}\n作成済みのタブと worktree は残しています: {checkout}") from error
     print(f"PR #{number}: {checkout}\n再レビューと片付けは手動で行ってください。")
