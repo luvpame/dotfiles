@@ -6,7 +6,7 @@
     "popToRootSeconds": 0,
     "escapeKeyBehavior": "navigateBackOrClose",
     "autoSwitchInputSource": "com.apple.keylayout.UnicodeHexInput",
-    "supportReminders": true
+    "supportReminders": false
   },
   "appearance": {
     "theme": "system",
