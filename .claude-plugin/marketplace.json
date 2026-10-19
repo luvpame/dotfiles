@@ -1,0 +1,12 @@
+{
+  "name": "luvpame-dotfiles",
+  "description": "Experimental portable skills from dotfiles",
+  "owner": { "name": "luvpame" },
+  "plugins": [
+    {
+      "name": "dotfiles",
+      "description": "Experimental portable skills from dotfiles",
+      "source": "./config/claude/cloud-skills/plugin"
+    }
+  ]
+}
