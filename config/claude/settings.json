@@ -134,6 +134,7 @@
       }
     }
   },
+  "outputStyle": "Concise",
   "viewMode": "focus",
   "language": "日本語",
   "modelSettings": {
@@ -144,11 +145,15 @@
       "effortLevel": "medium"
     },
     "claude-opus-5-5": {
-      "effortLevel": "medium"
+      "effortLevel": "high"
     }
   },
   "advisorModel": "fable",
   "tui": "fullscreen",
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
   "autoMemoryEnabled": false,
   "skipWorkflowUsageWarning": true,
   "theme": "light",
@@ -171,10 +176,5 @@
       "Bash(make m:*) in backend/ when ALLOW_DESTRUCTIVE_SCHEMA_CHANGE is set (destructive Ridgepole schema change, per .claude/rules/db-schema.md)",
       "gh workflow run / deploy-prod* and ecs-exec-prod-backend-api* GitHub Actions workflows"
     ]
-  },
-  "voice": {
-    "enabled": true,
-    "mode": "hold"
-  },
-  "outputStyle": "Concise"
+  }
 }
