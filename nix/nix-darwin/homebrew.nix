@@ -83,6 +83,7 @@ let
     "thebrowsercompany-dia"
     "spotify"
     "azookey"
+    "yksr-melt/meltype/meltype"
     "a-bar"
     "keycastr"
     "codex"
@@ -123,7 +124,13 @@ in
       extraFlags = [ "--force-cleanup" ];
     };
     brews = brewPackages;
-    taps = trustedTaps;
+    taps = trustedTaps ++ [
+      {
+        name = "yksr-melt/meltype";
+        clone_target = "https://github.com/yksr-melt/Meltype.git";
+        trusted = true;
+      }
+    ];
     casks = caskNames;
     masApps = masApplications;
   };
