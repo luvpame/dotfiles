@@ -27,12 +27,24 @@
       url = "github:humanlayer/skills/3c2629142c5d437428269b1b722b08c0b87f574d";
       flake = false;
     };
+    imozuru = {
+      url = "github:MaryCache/imozuru/4f8fec7b686750c0c4083336691bdc6ea075aa32";
+      flake = false;
+    };
     japanese-tech-writing = {
       url = "git+https://gist.github.com/fd287c3133457c4fd8f5601d34aa817d.git?rev=5ed08e4475365fd233aa0d3ab71c19b87e1a5732";
       flake = false;
     };
     mizchi-skills = {
       url = "github:mizchi/skills/95b8a50edf0684620c29d09848591de453b99831";
+      flake = false;
+    };
+    no-ai-slop = {
+      url = "github:petergyang/no-ai-slop/000650b156983f5159695b441477f4e63b25dc85";
+      flake = false;
+    };
+    yomiyasu = {
+      url = "github:nanaism/yomiyasu/79d15a621751cb7ad3bea556832209e9112e575f";
       flake = false;
     };
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -48,10 +60,6 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    cage = {
-      url = "github:Warashi/cage/v0.1.13";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     claude-code-source = {
       url = "github:ryoppippi/claude-code-overlay";
       flake = false;
@@ -63,6 +71,11 @@
     };
     guard-and-guide = {
       url = "github:kawarimidoll/guard-and-guide";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    git-surgeon = {
+      # v0.1.17 タグには Flake がないため、Flake 追加後の同版コミットに固定する。
+      url = "github:raine/git-surgeon/ecf6dc42172ba757cc03bce1800ba1db45779f46";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hunk = {

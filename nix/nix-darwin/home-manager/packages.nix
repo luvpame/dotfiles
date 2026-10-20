@@ -51,14 +51,17 @@ in
     devenv
     nix-direnv
     lazygit
-    openssl_3
+    openssl
     (yazi.override {
       _7zz = pkgs._7zz-rar;
     })
     _7zz-rar
     imagemagick
     resvg
-    poppler
+    poppler-utils
+    python3
+    tesseract
+    yt-dlp
     # rtk 0.43.0 fails to compile its test target with warnings = "deny".
     (rtk.overrideAttrs { doCheck = false; })
     socat
@@ -70,7 +73,6 @@ in
     (callPackage ../../pkgs/site2skill/default.nix { })
     (callPackage ../../pkgs/tree-sitter-cli/default.nix { })
     inputs.crit.packages.${system}.default
-    inputs.cage.packages.${system}.default
     cliamp
   ];
 }
