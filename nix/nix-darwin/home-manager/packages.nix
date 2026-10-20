@@ -59,7 +59,10 @@ in
     _7zz-rar
     imagemagick
     resvg
-    poppler
+    poppler-utils
+    python3
+    tesseract
+    yt-dlp
     # rtk 0.43.0 fails to compile its test target with warnings = "deny".
     (rtk.overrideAttrs { doCheck = false; })
     socat

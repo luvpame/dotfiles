@@ -399,6 +399,23 @@
         "type": "github"
       }
     },
+    "imozuru": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1792449956,
+        "narHash": "sha256-2QcOPNjgmzyDFRltWx6V5zu0oyTLQCnovLUo73AUqXI=",
+        "owner": "MaryCache",
+        "repo": "imozuru",
+        "rev": "4f8fec7b686750c0c4083336691bdc6ea075aa32",
+        "type": "github"
+      },
+      "original": {
+        "owner": "MaryCache",
+        "repo": "imozuru",
+        "rev": "4f8fec7b686750c0c4083336691bdc6ea075aa32",
+        "type": "github"
+      }
+    },
     "import-tree": {
       "locked": {
         "lastModified": 1763762820,
@@ -591,6 +608,7 @@
         "home-manager": "home-manager",
         "humanlayer-skills": "humanlayer-skills",
         "hunk": "hunk",
+        "imozuru": "imozuru",
         "japanese-tech-writing": "japanese-tech-writing",
         "mizchi-skills": "mizchi-skills",
         "nix-darwin": "nix-darwin",

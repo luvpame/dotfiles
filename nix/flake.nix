@@ -35,6 +35,10 @@
       url = "github:humanlayer/skills/3c2629142c5d437428269b1b722b08c0b87f574d";
       flake = false;
     };
+    imozuru = {
+      url = "github:MaryCache/imozuru/4f8fec7b686750c0c4083336691bdc6ea075aa32";
+      flake = false;
+    };
     japanese-tech-writing = {
       url = "git+https://gist.github.com/fd287c3133457c4fd8f5601d34aa817d.git?rev=5ed08e4475365fd233aa0d3ab71c19b87e1a5732";
       flake = false;

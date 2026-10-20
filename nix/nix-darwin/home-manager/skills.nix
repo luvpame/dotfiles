@@ -106,6 +106,11 @@ in
       subdir = "skills";
       filter.nameRegex = "git-surgeon";
     };
+    sources.imozuru = {
+      input = "imozuru";
+      subdir = "skills";
+      filter.nameRegex = "imozuru";
+    };
     sources.no-ai-slop = {
       input = "no-ai-slop";
       subdir = "skills";
@@ -134,6 +139,7 @@ in
       "explainer"
       "git-surgeon"
       "herdr"
+      "imozuru"
       "japanese-tech-writing"
       "no-ai-slop"
       "show-me"
