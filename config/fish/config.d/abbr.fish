@@ -10,6 +10,7 @@ if status is-interactive
     abbr -a ccs 'CLAUDE_CODE_NO_FLICKER=1 claude --model sonnet --effort high'
     abbr -a ccf 'CLAUDE_CODE_NO_FLICKER=1 claude --model fable'
     abbr -a cch 'CLAUDE_CODE_NO_FLICKER=1 claude --model haiku --effort high'
+    abbr -a co 'codex --no-daemon'
     abbr -a v nvim
     abbr -a cdg cd-gitroot
     abbr -a cat bat
