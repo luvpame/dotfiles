@@ -125,6 +125,20 @@
     };
   };
 
+  # eMudhra の中間 CA 秘密鍵漏洩への対策 https://emudhra.we-have-a-problem.com/
+  security.pki.caCertificateBlacklist = [
+    "Comodo AAA Services root"
+    "emSign ECC Root CA - G3"
+  ];
+
+  # 各 CLI が独自の古い CA バンドルへ戻らないよう、拒否設定済みのバンドルを使う。
+  environment.variables = {
+    CURL_CA_BUNDLE = "/etc/ssl/certs/ca-certificates.crt";
+    GIT_SSL_CAINFO = "/etc/ssl/certs/ca-certificates.crt";
+    PIP_CERT = "/etc/ssl/certs/ca-certificates.crt";
+    SSL_CERT_FILE = "/etc/ssl/certs/ca-certificates.crt";
+  };
+
   security.pam.services.sudo_local = {
     reattach = true;
     touchIdAuth = true;
