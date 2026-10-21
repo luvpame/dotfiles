@@ -69,6 +69,8 @@ def main():
             "direnv", "exec", root, "wt", "-C", root, "switch", "--no-cd",
             "--no-hooks", f"pr:{number}", "--format=json",
         ))["path"]
+        # --no-hooks would also skip pre-start, which sets up the checkout (e.g. shogun's devenv files).
+        run("direnv", "exec", root, "wt", "-C", checkout, "hook", "pre-start", "--foreground")
     # A branch wt creates from a lagging remote-tracking ref, or an old worktree, can still be
     # stale. Reset only a clean checkout whose tip was once upstream, so no local commits are lost.
     head = run("git", "-C", checkout, "rev-parse", "HEAD")

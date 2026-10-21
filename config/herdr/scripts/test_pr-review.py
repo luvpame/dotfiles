@@ -121,8 +121,12 @@ def check(cancel=False, existing=False, stale=False, split=False, busy=False, no
         return
     acknowledge.assert_not_called()
     starts = [args for args in calls if args[:3] == ("herdr", "pane", "run")]
-    creates = [args for args in calls if args[0] == "direnv"]
+    creates = [args for args in calls if args[0] == "direnv" and "switch" in args]
     assert len(creates) == (0 if cancel or existing or prepare_error == "fetch" else 1)
+    setups = [args for args in calls if args[0] == "direnv" and "pre-start" in args]
+    assert setups == [("direnv", "exec", "/repo", "wt", "-C", checkout, "hook", "pre-start", "--foreground")] * len(creates)
+    if setups:
+        assert calls.index(creates[0]) < calls.index(setups[0])
     expected_starts = 0 if cancel or stale or dirty or wrong_branch or prepare_error else send_error or 4
     assert len(starts) == expected_starts, f"Expected {expected_starts} review launch, got {len(starts)}"
     splits = [args for args in calls if args[:3] == ("herdr", "pane", "split")]
