@@ -55,6 +55,10 @@
       url = "github:petergyang/no-ai-slop/000650b156983f5159695b441477f4e63b25dc85";
       flake = false;
     };
+    security-audit-skill = {
+      url = "github:cloudflare/security-audit-skill/c1c8a8c1471069fb0e188eeaff69b8e8db6564a8";
+      flake = false;
+    };
     yomiyasu = {
       url = "github:nanaism/yomiyasu/79d15a621751cb7ad3bea556832209e9112e575f";
       flake = false;

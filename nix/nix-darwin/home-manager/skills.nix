@@ -116,6 +116,11 @@ in
       subdir = "skills";
       filter.nameRegex = "no-ai-slop";
     };
+    sources.security-audit = {
+      input = "security-audit-skill";
+      subdir = "skills";
+      filter.nameRegex = "security-audit";
+    };
     sources.yomiyasu = {
       input = "yomiyasu";
       subdir = "skills";
@@ -142,6 +147,7 @@ in
       "imozuru"
       "japanese-tech-writing"
       "no-ai-slop"
+      "security-audit"
       "show-me"
       "yomiyasu"
     ];
