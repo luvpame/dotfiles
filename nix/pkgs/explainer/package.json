@@ -3,11 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@iconify-json/logos": "1.2.15",
+    "@iconify-json/lucide": "1.2.137",
     "@mizchi/vlmkit": "0.22.0",
     "@mizchi/vlmkit-anim": "0.22.0",
     "@playwright/test": "1.61.1",
     "marked": "18.0.14",
     "mermaid": "12.0.0",
-    "playwright": "1.61.1"
+    "playwright": "1.61.1",
+    "vega": "6.4.0",
+    "vega-lite": "6.4.3"
   }
 }

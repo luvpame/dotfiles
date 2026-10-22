@@ -3,17 +3,19 @@
 @@ -1,6 +1,6 @@
  ---
  name: empirical-prompt-tuning
--description: agent 向けテキスト指示（skill / slash command / task プロンプト / CLAUDE.md 節 / コード生成プロンプト）を、バイアスを排した実行者に動かしてもらい、両面（実行者の自己申告 + 指示側メトリクス）で評価して反復改善する手法。改善が頭打ちになるまで回す。プロンプトや skill を新規作成・大幅改訂した直後、またはエージェントの挙動が期待通りにならない原因を指示側の曖昧さに求めたいときに使う。
-+description: agent 向けテキスト指示（skill / slash command / task プロンプト / CLAUDE.md, AGENTS.md 節 / コード生成プロンプト）を、バイアスを排した実行者に動かしてもらい、両面（実行者の自己申告 + 指示側メトリクス）で評価して反復改善する手法。改善が頭打ちになるまで回す。プロンプトや skill を新規作成・大幅改訂した直後、またはエージェントの挙動が期待通りにならない原因を指示側の曖昧さに求めたいときに使う。
+-description: Methodology for iteratively improving agent-facing instructions (skills / slash commands / CLAUDE.md / code-gen prompts) via bias-free executor + two-sided evaluation (self-report + instruction-side metrics). Meta-skill, invoke ONLY when the user explicitly asks for an "empirical" eval of a prompt or skill, or for the Iter-0 description / body consistency check. Do NOT auto-invoke after every skill edit; this loop is operator-triggered by name.
++description: Methodology for iteratively improving agent-facing instructions (skills / slash commands / CLAUDE.md / AGENTS.md / code-gen prompts) via bias-free executor + two-sided evaluation (self-report + instruction-side metrics). Meta-skill, invoke ONLY when the user explicitly asks for an "empirical" eval of a prompt or skill, or for the Iter-0 description / body consistency check. Do NOT auto-invoke after every skill edit; this loop is operator-triggered by name.
  ---
  
  # Empirical Prompt Tuning
-@@ -184,8 +184,3 @@
- - **イテレーションごとに変更多すぎ**: 「あのときの修正のどれが効いたか」が追えなくなる。1 修正 1 イテレーション
- - **シナリオを修正に合わせてチューニング**: 不明瞭点が潰れたように見せるため、シナリオ側を簡単にする → 本末転倒
- 
--## 関連
+@@ -236,10 +236,3 @@
+ - **Only looking at metrics**: chasing only time reduction strips important explanations and makes it fragile
+ - **Too many changes per iteration**: you can no longer trace "which fix back then worked". One fix per iteration
+ - **Tuning scenarios to match the fix**: making the scenario side easier just to make unclear points look eliminated → putting the cart before the horse
 -
--- `superpowers:writing-skills` — skill 作成時の TDD アプローチ。本 skill の「subagent で baseline → 修正 → 再実行」と本質的に同じ
--- `retrospective-codify` — タスク後の学び固定化。本 skill はプロンプト開発中、retrospective-codify はタスク終了後、と使い分ける
--- `superpowers:dispatching-parallel-agents` — 複数シナリオを並列で走らせるときの作法
+-## Related
+-
+-- `superpowers:writing-skills` — the TDD approach for skill creation. Essentially the same as this skill's "baseline → fix → rerun with a subagent"
+-- `retrospective-codify` — fixating learnings after a task. This skill is during prompt development, retrospective-codify is after a task ends; use them differently
+-- `superpowers:dispatching-parallel-agents` — conventions for running multiple scenarios in parallel
+-- `waxa-eval` — operating manual for the `waxa` CLI, which automates the eval / iterate loop into an external process with a YAML scenario format and persistent ledger. This skill (empirical-prompt-tuning) covers the **methodology and the in-session Task-tool subagent flow**; `waxa-eval` covers the **CLI operation and YAML authoring**. They are complementary — use empirical for the Iter 0 static check, the `[critical]`-tagged checklist, and `tool_uses`-based skill diagnosis (none of which are accessible to a CLI process); use waxa-eval when persistence, CI repeatability, or external adoption gates are needed.

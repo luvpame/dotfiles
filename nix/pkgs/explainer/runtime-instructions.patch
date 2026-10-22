@@ -1,122 +1,244 @@
 --- a/skills/explainer/SKILL.md
 +++ b/skills/explainer/SKILL.md
-@@ -16,18 +16,16 @@
- 
+@@ -16,18 +16,18 @@
+
  読了が 20 分を超える、演習が要る、概念に順序がある。このどれかなら、章立ての `explainer-book` を使う。
- 
+
 -## 準備（初回だけ）
-+## この環境での実行
- 
+-
 -スクリプトは、このスキルのディレクトリ（以下 `<skill>`）の `scripts/` にあります。
 -依存は、資料を置くリポジトリに入れます。Node 24 以上が必要です。
-+スキルと Node の依存関係は Nix で版を固定して配布する。
-+初回だけ `explainer setup` で対応する Chromium を専用キャッシュに取得する。
-+確認だけなら `explainer setup --dry-run` を使う。
- 
+-
 -```sh
--npm i -D @mizchi/vlmkit @mizchi/vlmkit-anim marked playwright
+-npm i -D @mizchi/vlmkit marked playwright mermaid
 -```
 -
--Mermaid の図（`figures/*.mmd`）を使うときは `mermaid` も入れます。
+-D2 の図（`figures/*.d2`）を使うときは `d2` の CLI、データの図（`figures/*.vl.json`）を使うときは `vega` と `vega-lite`、アイコンを使うときは `@iconify-json/lucide` と `@iconify-json/logos` も入れます。
 -形式手法の例を扱うときは、TLC（Java 11+）や Apalache（Java 17+）、`z3-solver` も入れます。
 -`verify-doc.mjs` は `$TLA2TOOLS`（tla2tools.jar）と `$APALACHE`（apalache-mc）を、リポジトリの `.tools/` から探します。
++## この環境での実行
++
++スキル、Node の依存関係、D2 は Nix で版を固定して配布する。
++初回だけ `explainer setup` で対応する Chromium を専用キャッシュに取得する。
++確認だけなら `explainer setup --dry-run` を使う。
++
 +スクリプトは `explainer run <スクリプト名>.mjs <引数>`、vlmkit は `explainer vlmkit <引数>`、vlmkit-anim は `explainer vlmkit-anim <引数>` で実行する。
 +入力・出力の相対パスは呼び出した作業ディレクトリから解決される。
 +資料を置くリポジトリに npm の依存物を追加せず、ブラウザーの版が合わなければ `explainer setup` を再実行する。
++D2 は dagre が既定で、ELK も使える。TALA はこの環境には含まれない。
 +形式手法の例に必要な TLC / Apalache / Z3 は、その例を扱う場合だけ別途用意する。
- 
++`verify-doc.mjs` は `$TLA2TOOLS`（tla2tools.jar）と `$APALACHE`（apalache-mc）を、リポジトリの `.tools/` から探す。
+
  ## 手順
- 
-@@ -38,7 +36,7 @@
+
+@@ -38,7 +38,7 @@
  4. 実物を作る   主張ごとに、実行できる例（コード・モデル・コマンド）を先に作って走らせる
- 5. 書く        references/writing.md の型で。出力は貼る、打ち直さない
- 6. 図          references/figures.md。事実シート（*.expect.json）を先に、図は後
+ 5. 書く        references/writing.md の型で。価値を先に、根拠は後に。出力は貼る、打ち直さない。書き終えたら削除テストと「読みやすい日本語」（チャットの返答も）
+ 6. 図          references/figures.md。事実シート（*.facts.json）を先に、図は後
 -7. 検証        node <skill>/scripts/verify-doc.mjs <doc-dir> が VERIFIED になるまで
 +7. 検証        explainer run verify-doc.mjs <doc-dir> が VERIFIED になるまで
  8. 読ませる    first-reader スキルで、ペルソナ本人を読み手にして読ませる。途中で離脱した箇所と、翌日残ったものを見る
  9. 渡す        HTML（dist/index.html）と要約。検証できなかったことは「未検証」と明記
  ```
-@@ -129,14 +127,14 @@
+@@ -181,8 +181,8 @@
  `<doc-dir>/checks.json` に、本文が引用する出力を再生成するコマンドと、期待する行を書く。
- 
+
  ```
 -node <skill>/scripts/verify-doc.mjs <doc-dir>          # 検査
 -node <skill>/scripts/verify-doc.mjs <doc-dir> --write  # 図の SVG を描き直す
 +explainer run verify-doc.mjs <doc-dir>          # 検査
 +explainer run verify-doc.mjs <doc-dir> --write  # 図の SVG を描き直す
  ```
- 
- `verify-doc.mjs` が見るもの：
- 
+
+ `verify-doc.mjs` が見るものは次の 4 つ。
+@@ -190,7 +190,7 @@
  1. `checks.json` の各コマンドの出力に、期待する行が順に出るか
--2. 図：`vlmkit-anim check --expect` / `layout` / SVG が最新か
-+2. 図：`explainer vlmkit-anim check --expect` / `layout` / SVG が最新か
+ 2. 図：`figure-check.mjs`（重なり・はみ出し・矢印・事実シート）と、SVG がソースより新しいか
  3. 本文：`output` / `source` の引用が実物と一致するか。画像が存在するか
- 4. HTML：`vlmkit check integrity`（`<details>` を開いた版で厳格に）と `check a11y contrast`
- 
-@@ -175,7 +173,7 @@
- 差分はファイル順ではなく、説明の順に並べる（literate diff）。
- 
- 実物は次の 2 つ。
--- `vlmkit-anim pr --base origin/main` の変更地図
-+- `explainer vlmkit-anim pr --base origin/main` の変更地図
- - 変更前後で振る舞いが変わる最小の例（テストの追加・変更から選ぶ）
- 
- ## やってはいけないこと
+-4. HTML：`vlmkit check integrity`（`<details>` を開いた版で厳格に）と `check a11y contrast`
++4. HTML：`explainer vlmkit check integrity`（`<details>` を開いた版で厳格に）と `check a11y contrast`
+
+ 落ちた行は「何が・どこで・どう直すか」を 1 行で出す。
+ 直して再実行し、`verdict: VERIFIED` になるまで繰り返す。
+@@ -248,6 +248,6 @@
+ | `scripts/build-html.mjs` | README.md → 自己完結 HTML（SVG をインラインで埋め込む） |
+ | `scripts/figure-check.mjs` | 手で書いた SVG / HTML / D2 / Mermaid の図と Vega-Lite の spec を描画し、重なり・はみ出し・枠線や線と文字の交差・小さすぎる文字・豆腐（字形の無い文字）・輪郭になった文字・事実シートを検査し、目で見るシートを作る |
+ | `scripts/figure-arrows.mjs` | 矢印の読みやすさ（2 本が重なって走る・箱を突き抜ける・交差・遠回り・逆向き）と、辺を 1 本ずつ強調したシート。figure-check が使う |
+-| `scripts/figure-variants.mjs` | D2 / Mermaid の配置の候補（TALA の seed・ELK・dagre、向き）を描き、点数つきで並べる |
++| `scripts/figure-variants.mjs` | D2 / Mermaid の配置の候補（ELK・dagre、向き）を描き、点数つきで並べる |
+ | `scripts/icons.mjs` | Iconify のアイコンセット（lucide・logos）からアイコンを探し、候補を 1 枚に並べ、図の隣に置いて出典を ICONS.md に残す |
+ | `scripts/tlc-to-mermaid.mjs` | TLC の状態グラフと反例 → Mermaid の flowchart（反例の道を太枠）と事実シート |
 --- a/skills/explainer/references/figures.md
 +++ b/skills/explainer/references/figures.md
-@@ -2,7 +2,7 @@
- 
- 図は `@mizchi/vlmkit-anim` のシーン（JSON）で描く。
- 座標は書かない。書くのは「種類（kind）」と「意図」。
--書き方の詳細は vlmkit の `docs/anim-ir.md` と `vlmkit-anim schema --kind <kind>` を参照する。
-+書き方の詳細は vlmkit の `docs/anim-ir.md` と `explainer vlmkit-anim schema --kind <kind>` を参照する。
- 
- ## 描くか
- 
-@@ -24,8 +24,8 @@
- | 反例はどういう順序で起きたか | `state-machine` の `trace` / `sequence` / `distributed` | TLC・Apalache・Quint の反例トレース |
- | A は B に含まれるか（集合・範囲） | `diagram` の入れ子 `groups` | 道具の出力（到達可能状態の一覧、型の定義） |
- | どう分岐するか | `flowchart` の `walk` | 条件分岐のコード |
--| どういう構造か（モジュール） | `modules` | `vlmkit-anim facts <dir> --depth 1` |
--| この PR で何が変わるか | `vlmkit-anim pr --base origin/main` | git |
-+| どういう構造か（モジュール） | `modules` | `explainer vlmkit-anim facts <dir> --depth 1` |
-+| この PR で何が変わるか | `explainer vlmkit-anim pr --base origin/main` | git |
- 
- 1 つの問いに図は 1 枚。
- 
-@@ -34,10 +34,10 @@
- ```
- 1. 事実シート  <name>.expect.json を道具の出力から作る（手で書くなら、出どころを本文に書く）
- 2. シーン     <name>.scene.json。id は ASCII、表示は label に
--3. check      vlmkit-anim check <name>.scene.json --expect <name>.expect.json   ✗ を 0 に
--4. layout     vlmkit-anim layout <name>.scene.json                              重なり・はみ出し 0 に
--5. explain    vlmkit-anim explain <name>.scene.json                             キャプションが「なぜ」を言っているか
--6. still      vlmkit-anim still <name>.scene.json --out <name>.svg              一度は目で見る（.png で Read）
-+3. check      explainer vlmkit-anim check <name>.scene.json --expect <name>.expect.json   ✗ を 0 に
-+4. layout     explainer vlmkit-anim layout <name>.scene.json                              重なり・はみ出し 0 に
-+5. explain    explainer vlmkit-anim explain <name>.scene.json                             キャプションが「なぜ」を言っているか
-+6. still      explainer vlmkit-anim still <name>.scene.json --out <name>.svg              一度は目で見る（.png で Read）
- ```
- 
- `verify-doc.mjs` は 3・4・6 を毎回やり直す。
-@@ -53,7 +53,7 @@
- 
- - `canvas ... over 2000px`：ラベルが長い。`tlc-to-scene.mjs --bare --abbrev read=R,...` で短くし、凡例を本文に書く。`layout` を `tb` / `lr` で比べる。
- - `state ... drawn but the trace never enters it`：全状態を描き、反例だけを歩く図では想定内の警告。本文で「描いたが歩かない状態」の意味を説明する。
--- GIF は重い（13 状態で 5 MB）。README には SVG を置く。動きは `build-html.mjs` が作る再生ページ（`vlmkit-anim html`）で見せる。
-+- GIF は重い（13 状態で 5 MB）。README には SVG を置く。動きは `build-html.mjs` が作る再生ページ（`explainer vlmkit-anim html`）で見せる。
- 
- ## 手で描く図（Mermaid / D2 / SVG / HTML）と、目で見るループ
- 
-@@ -86,8 +86,8 @@
+@@ -57,7 +57,7 @@
+ ## データの図（グラフ）
+
+ 数値の分布・関係・モデルの診断を見せる図は、Vega-Lite の spec（`figures/<name>.vl.json`）で書く。
+-`figure-check.mjs` が vega で SVG にし、ほかの図と同じ検査をする（`npm i -D vega vega-lite`）。
++`figure-check.mjs` が vega で SVG にし、ほかの図と同じ検査をする（依存は Nix で配布済み）。
+
+ - 文字が SVG の `<text>` のまま出るので、重なり・はみ出し・小さすぎる文字・事実シートの検査が届く。
+ - spec は JSON なので、題と値を事実シートや `checks.json` と照合できる。
+@@ -119,14 +119,14 @@
+ 1. **Mermaid で済むなら Mermaid**：フロー・シーケンス・状態遷移など。GitHub の Markdown（PR 本文・Issue）がそのまま描くので、PR の説明に置く図はこれが一番安い。
+ 2. **Mermaid で足りない構造なら D2**：次のどれかに当たるとき。
+    - サブグラフの中の向きを変えたいが、中の箱が外とつながる（Mermaid は中の `direction` をエラーを出さずに無視する）
+-   - 箱の名前の上を線が通る（Mermaid・ELK・dagre で起きた。TALA で避けられた）
+-   - 位置の固定や `near` が要る
+-   - エンジン（TALA / ELK）を選びたい
++   - 箱の名前の上を線が通る（dagre / ELK でも直らなければ図の構造を変える）
++   - 入れ子のコンテナが要る
++   - エンジン（dagre / ELK）を選びたい
+ 3. **D2 の「箱と線」に乗らない自由な図なら SVG / HTML**：位置そのものに意味があるなら SVG、文字とコードが主なら HTML。
+
+ | 形式 | 向いているもの | 置き場所 |
+ |---|---|---|
+-| Mermaid（`figures/<name>.mmd`） | 箱と線だけで崩れない図。GitHub にそのまま貼る図 | `--write` で `<name>.svg` を作り、それを参照する（`mermaid` をプロジェクトに入れる） |
++| Mermaid（`figures/<name>.mmd`） | 箱と線だけで崩れない図。GitHub にそのまま貼る図 | `--write` で `<name>.svg` を作り、それを参照する（`mermaid` は Nix で配布済み） |
+ | SVG（`figures/<name>.svg`） | 位置に意味がある図：包含関係、範囲、平面上の配置 | Markdown から `![…](figures/<name>.svg)` |
+ | HTML（`figures/<name>.fig.html`） | 文字とコードが主で、箱で区切る図。ページのライト / ダークに従う | Markdown からは `![…](figures/<name>.fig.png)`。HTML に組むときは `.fig.html` が埋め込まれる |
+ | D2（`figures/<name>.d2`） | 分岐・流れ・依存。レイアウトを道具に任せたい図 | `--write` で `<name>.svg` を作り、それを参照する |
+@@ -142,8 +142,8 @@
  ### ループ（1 回 = 描画 → 機械の検査 → 目で見る → 直す）
- 
+
  ```
 -node <skill>/scripts/figure-check.mjs figures/<name>.svg|.fig.html|.d2|.mmd [--write]
 -node <skill>/scripts/figure-variants.mjs figures/<name>.d2|.mmd          # 配置が不自然なとき
 +explainer run figure-check.mjs figures/<name>.svg|.fig.html|.d2|.mmd [--write]
 +explainer run figure-variants.mjs figures/<name>.d2|.mmd          # 配置が不自然なとき
  ```
- 
+
  D2 と Mermaid は、書いたのは意味（箱と辺）だけで、配置は道具が決める。
+@@ -173,11 +173,11 @@
+      - 分かれ目や合流点で、別の線に乗り換えたように見えないか
+      - △ の付いた辺（赤枠）：逆向きの辺は、戻る辺として意図したものか。交差は避けられないものか
+ 3. **配置が不自然なら、選び直す**：`figure-variants.mjs` で候補を並べる。
+-   - D2 は、TALA の seed 1〜6・ELK・dagre（`--directions down,right` で向きも掛け合わせる）。Mermaid は、向き × 線の曲げ方。
++   - D2 は、ELK・dagre（`--directions down,right` で向きも掛け合わせる）。Mermaid は、向き × 線の曲げ方。
+    - 各候補を figure-check に通し、減点（✗ の重みづけ）・矢印の点数・△ の数の順に並べた `<name>.variants.png` を出す。これを Read で開いて見比べる。
+    - 機械の順位は、明らかに悪い候補を落とすためのもの。残った候補から、目で見て選ぶ。
+-   - 選んだら、出力の「選んだら：」のとおりソースに書き、選んだ理由をコメントに 1 行残す（例：`# 既定の seed では…に見えた。seed 4〜9 を並べて、5 を選んだ`）。
+-   - どの候補にも ✗ が残るなら、配置では直らない。図の構造（箱の分け方・向き・ラベルの長さ）を変える。Mermaid で足りないなら D2（TALA）に移す。
++   - 選んだら、出力の「選んだら：」のとおりソースに書き、選んだ理由をコメントに 1 行残す（例：`# dagre では…に見えたため、ELK を選んだ`）。
++   - どの候補にも ✗ が残るなら、配置では直らない。図の構造（箱の分け方・向き・ラベルの長さ）を変える。Mermaid で足りないなら D2（dagre / ELK）に移す。
+ 4. **直す**：目で見つけた誤りのうち、機械で捉えられる種類のものは、先に `figure-check.mjs` か `figure-arrows.mjs` の検査に足す（`tests/figure-check/` に悪い例を 1 つ足す）。意味の誤りは `forbidden` に足す。
+ 5. 上限は 5 回。それでも直らなければ、図をやめて文章にするか、分け方を変える。
+
+@@ -186,21 +186,21 @@
+ アイコンは、箱の種類（利用者・サーバ・データベース）や、製品そのもの（PostgreSQL・Redis）を一目で分けたいときだけ使う。
+ 飾りのために足さない。ラベルは消さない（アイコンだけでは読めない人がいる）。
+
+-`scripts/icons.mjs` が、プロジェクトに入っている Iconify のアイコンセットから探して、図の隣に置く。
++`scripts/icons.mjs` が、Nix で配布した Iconify のアイコンセットから探して、図の隣に置く。
+
+ | セット | 中身 | ライセンス | 入れ方 |
+ |---|---|---|---|
+-| `lucide` | 線のアイコン（約 1900 個）。箱の中に置く | ISC | `npm i -D @iconify-json/lucide` |
+-| `logos` | 技術のロゴ（色つき、約 2200 個）。その製品そのものを指すときだけ | CC0（ロゴは各社の商標） | `npm i -D @iconify-json/logos` |
+-
+-```
+-node <skill>/scripts/icons.mjs search database --sheet /tmp/icons.png   # 候補を探し、1 枚に並べて目で選ぶ
+-node <skill>/scripts/icons.mjs add lucide:database                      # figures/icons/database.svg を書き、ICONS.md に出典を残す
+-node <skill>/scripts/icons.mjs inline lucide:database --size 24 --x 10 --y 10   # 手書きの SVG / HTML に貼る <svg>
++| `lucide` | 線のアイコン（約 1900 個）。箱の中に置く | ISC | Nix で配布済み |
++| `logos` | 技術のロゴ（色つき、約 2200 個）。その製品そのものを指すときだけ | CC0（ロゴは各社の商標） | Nix で配布済み |
++
++```
++explainer run icons.mjs search database --sheet /tmp/icons.png   # 候補を探し、1 枚に並べて目で選ぶ
++explainer run icons.mjs add lucide:database                      # figures/icons/database.svg を書き、ICONS.md に出典を残す
++explainer run icons.mjs inline lucide:database --size 24 --x 10 --y 10   # 手書きの SVG / HTML に貼る <svg>
+ ```
+
+ - **D2**：`db: DB {icon: ./icons/database.svg}`。パスは `.d2` から見た相対パス。ロゴを主役にするなら `shape: image` にし、`width: 72; height: 72` のように大きさを決める（決めないと、ロゴが図の中で一番大きくなった）。
+-- **Mermaid**：`db@{ icon: "lucide:database", label: "DB", pos: "b" }`。figure-check が、プロジェクトに入っているセットを Mermaid に登録して描く。
++- **Mermaid**：`db@{ icon: "lucide:database", label: "DB", pos: "b" }`。figure-check が、Nix で配布したセットを Mermaid に登録して描く。
+ - **SVG / HTML**：`icons.mjs inline` の出力を貼る。線の色は `--color` で決める（既定は `#1f2328`）。
+ - figure-check は、次の 2 つを落とす。
+   - 図に埋め込まれていない画像。ファイルが無いか、パスが違うと、D2 は画像を埋め込まずにパスだけを残す。
+@@ -212,14 +212,11 @@
+ - **HTML**：色は `var(--fg)` などのページのトークンを使う。固有の色は、ダーク用の値を `:root[data-theme="dark"]` と `@media (prefers-color-scheme: dark)` の両方に書く。スマホ幅（〜520px）では 1 列に落とす。
+ - **Mermaid**：文字は SVG の `<text>` で描かせる（`figure-check.mjs` がそう設定する）。辺のラベルは線の上に背景つきで置かれるので、`through` では数えない。サブグラフの名前を線が通るのは数える。
+ - **D2 のエンジン**（測った結果は `docs/figure-cheatsheet/`）：
+-  - **TALA**（既定）：箱の入れ子（アーキテクチャ）、箱ごとの `direction`、固定位置（`top` / `left`）、`near: 別の箱`。後ろの 3 つは TALA しかできない。
+-    - direction を書かないと、入口が上に来ないことがある。書く。
+-    - seed で配置がすべて変わる。線の分かれ目が別の矢印に見えたら（arrows の shared）、`figure-variants.mjs` で seed を並べて選ぶ。v0.9.0 はファイルの `vars` に seed を書けないので、`# d2-flags: --tala-seeds=N` の行を書く（`figure-check.mjs` が d2 に渡す）。
+-    - 箱の数に対して描画時間が急に伸びる（40 個で ELK の 10 倍以上）。
++  - **TALA**：この環境では利用不可。箱ごとの `direction`、固定位置、`near` は使わず、dagre / ELK で表せる構造にする。
+   - **ELK**：一方向の長い DAG、戻る辺のある手順、何度も描き直す大きい図。1 つ足しても配置があまり動かない。
+     - 箱をまたぐ線が箱の名前を通る（`through` で落ちる）。
+     - **箱ごとの `direction` を、エラーを出さずに無視する**。箱の中を縦にするなら `grid-columns: 1`。
+-  - **dagre**：ELK より良い場面は見つかっていない。
++  - **dagre**（この環境の既定）：ELK より良い場面は見つかっていない。
+   - 横に長い流れは、どのエンジンでもスマホで文字が潰れる。縦に流す。
+ - **D2**：戻る辺があると、TALA は戻り先を上に置くことがあり、入口が上に来ない。入口を上にしたいときは、ファイルの先頭で ELK を選ぶ。
+   ```d2
+--- a/skills/explainer/scripts/figure-check.mjs
++++ b/skills/explainer/scripts/figure-check.mjs
+@@ -3,7 +3,7 @@
+ //
+ //   node figure-check.mjs <fig.svg | fig.fig.html | fig.d2 | fig.mmd> [--facts f.facts.json] [--write] [--out dir]
+ //
+-// 1. D2 は d2 で SVG にする（既定は TALA。ファイルの vars.d2-config.layout-engine があればそれ）。
++// 1. D2 は d2 で SVG にする（既定は dagre。ファイルの vars.d2-config.layout-engine があればそれ）。
+ //    ほかのフラグは、ファイルの `# d2-flags: --tala-seeds=5` の行から渡す。
+ //    Mermaid（.mmd）は、プロジェクトの mermaid をブラウザで動かして SVG にする。--write のとき <name>.svg を隣に書く
+ // 2. ブラウザで描画し、3 つの見え方を 1 枚にまとめた <out>/<name>.sheet.png を作る
+@@ -108,13 +108,13 @@
+   const f = sh(d2, ['fmt', '--check', src]);
+   f.status === 0 ? ok('d2 fmt --check') : ng('d2 is not formatted', `run: ${d2} fmt ${src}`);
+   const svgOut = join(out, `${name}.svg`);
+-  // 既定は TALA。ファイルが vars.d2-config.layout-engine を持っていれば、それに従う
++  // 既定は dagre。ファイルが vars.d2-config.layout-engine を持っていれば、それに従う
+   const engine = d2Source.match(/layout-engine:\s*(\w+)/)?.[1];
+   // ファイルの中に書けない d2 のフラグは、`# d2-flags: --tala-seeds=5` の行で渡す
+   // （d2 v0.9.0 は vars.d2-config.tala-seeds を受け付けない）
+   const flags = d2Source.match(/^#\s*d2-flags:\s*(.+)$/m)?.[1].trim().split(/\s+/) ?? [];
+-  const r = sh(d2, [...(engine ? [] : ['--layout=tala']), '--pad=16', ...flags, src, svgOut]);
+-  ok(`layout: ${engine ?? 'tala (default)'}${flags.length ? ` ${flags.join(' ')}` : ''}`);
++  const r = sh(d2, [...(engine ? [] : ['--layout=dagre']), '--pad=16', ...flags, src, svgOut]);
++  ok(`layout: ${engine ?? 'dagre (default)'}${flags.length ? ` ${flags.join(' ')}` : ''}`);
+   if (r.status !== 0) { ng(`d2 render failed: ${(r.stderr || '').trim().split('\n').at(-1)}`); process.exit(1); }
+   const svg = readFileSync(svgOut, 'utf8');
+   if (opt.write) { writeFileSync(join(dir, `${name}.svg`), svg); ok(`wrote ${name}.svg`); }
+--- a/skills/explainer/scripts/figure-variants.mjs
++++ b/skills/explainer/scripts/figure-variants.mjs
+@@ -1,10 +1,10 @@
+ #!/usr/bin/env node
+ // 同じ図を、配置だけ変えて何通りか描き、機械の検査の点数つきで 1 枚に並べる。目で見比べて選ぶためのもの。
+ //
+-//   node figure-variants.mjs <fig.d2 | fig.mmd> [--seeds 1-6] [--directions down,right] [--out dir]
++//   node figure-variants.mjs <fig.d2 | fig.mmd> [--directions down,right] [--out dir]
+ //
+ // 候補
+-//   D2       TALA の seed（既定 1〜6）・ELK・dagre。--directions を付けると、向きも変えて掛け合わせる
++//   D2       ELK・dagre。--directions を付けると、向きも変えて掛け合わせる
+ //   Mermaid  向き（既定 TD と LR）× 線の曲げ方（basis と linear）
+ // 各候補を figure-check.mjs に通し（--json）、減点（✗ を重みづけしたもの）、矢印の点数、△ の数で並べる。小さいほど良い。
+ // 出力
+@@ -21,11 +21,11 @@
+ const here = dirname(fileURLToPath(import.meta.url));
+ const { values: opt, positionals } = parseArgs({
+   allowPositionals: true,
+-  options: { seeds: { type: 'string', default: '1-6' }, directions: { type: 'string' }, out: { type: 'string' } },
++  options: { directions: { type: 'string' }, out: { type: 'string' } },
+ });
+ const src = resolve(positionals[0] ?? '');
+ const kind = extname(src).slice(1);
+-if (!existsSync(src) || !['d2', 'mmd'].includes(kind)) { console.error('usage: figure-variants.mjs <fig.d2|fig.mmd> [--seeds 1-6] [--directions down,right]'); process.exit(2); }
++if (!existsSync(src) || !['d2', 'mmd'].includes(kind)) { console.error('usage: figure-variants.mjs <fig.d2|fig.mmd> [--directions down,right]'); process.exit(2); }
+ const name = basename(src).replace(/\.(d2|mmd)$/, '');
+ const out = resolve(opt.out ?? join(dirname(src), '.figure-check', name, 'variants'));
+ mkdirSync(out, { recursive: true });
+@@ -39,12 +39,9 @@
+   // 配置を決める行（エンジン・d2-flags・トップレベルの direction）を外した本体
+   const body = source.split('\n').filter((l) => !/^\s*layout-engine:/.test(l) && !/^#\s*d2-flags:/.test(l)).join('\n');
+   const dirs = opt.directions ? opt.directions.split(',') : [null];
+-  const [s0, s1] = opt.seeds.split('-').map(Number);
+   const withDir = (b, d) => (d ? `direction: ${d}\n${b.replace(/^direction:\s*\w+\s*$/m, '')}` : b);
+   for (const d of dirs) {
+     const tag = d ? ` / direction: ${d}` : '';
+-    for (let s = s0; s <= (s1 ?? s0); s++)
+-      candidates.push({ label: `TALA seed ${s}${tag}`, text: `# d2-flags: --tala-seeds=${s}\n${withDir(body, d)}`, apply: `ファイルに「# d2-flags: --tala-seeds=${s}」の行を書き、layout-engine の指定を消す${d ? `。direction: ${d}` : ''}` });
+     for (const e of ['elk', 'dagre'])
+       candidates.push({ label: `${e.toUpperCase()}${tag}`, text: `vars: {d2-config: {layout-engine: ${e}}}\n${withDir(body, d)}`, apply: `ファイルの先頭に vars: { d2-config: { layout-engine: ${e} } } を書く${d ? `。direction: ${d}` : ''}` });
+   }
