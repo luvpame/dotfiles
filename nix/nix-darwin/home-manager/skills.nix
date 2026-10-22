@@ -10,7 +10,7 @@ let
   # 既存ファイルの編集は即時反映されるため、just switch は不要。
   # 追加: 上記ディレクトリを作り、この一覧に名前を追加して just switch を実行する。
   # 配布停止: この一覧から名前を外して just switch。原本はその後で削除または退避できる。
-  # 外部へ移行した6スキルの旧原本は、反映後に archive/agents/skills/ へ退避する。
+  # 外部へ移行した4スキルの旧原本は、反映後に archive/agents/skills/ へ退避する。
   localSkills = [
     "conventional-commit"
     "eli33"
@@ -88,9 +88,9 @@ in
       filter.nameRegex = "agent-browser";
     };
     sources.external = {
-      # 既存6スキルのファイル名変換と差分保持は external-skills.nix で行う。
+      # 既存4スキルのファイル名変換と差分保持は external-skills.nix で行う。
       # この取得元の追加・削除時は、同ファイルのコピー処理と原本hashも更新する。
-      path = import ./external-skills.nix { inherit config inputs pkgs; };
+      path = import ./external-skills.nix { inherit inputs pkgs; };
       filter.maxDepth = 1;
     };
     sources.agent-memory-repo = {
@@ -118,10 +118,16 @@ in
       subdir = "skills";
       filter.nameRegex = "yomiyasu";
     };
+    sources.explainer = {
+      path = "${
+        (pkgs.callPackage ../../pkgs/explainer/default.nix { src = inputs.explainer; }).runtime
+      }/skills";
+      filter.nameRegex = "explainer";
+    };
     # 外部スキルの追加・配布停止はこの一覧で指定する。sources の絞り込み条件にも含める。
     # 変更後は just switch。入力も変更した場合は、その前に nix/ で nix flake lock path:. を実行。
     # 内容の更新は nix/flake.nix の取得リビジョンを変更する（配布済みファイルは編集しない）。
-    # コピー済み6件の内容変更は skill-patches/ と external-skills.nix で管理する。
+    # コピー済み4件の内容変更は skill-patches/ と external-skills.nix で管理する。
     skills.enable = [
       "agent-browser"
       "code-simplifier"

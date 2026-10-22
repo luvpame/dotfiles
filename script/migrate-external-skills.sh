@@ -3,7 +3,7 @@ set -euo pipefail
 
 # 外部スキルへの切り替え後に旧原本を退避する。反映前には移動しない。
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
-names=(show-me japanese-tech-writing cognitive-rhythm-writing code-simplifier empirical-prompt-tuning herdr)
+names=(show-me code-simplifier empirical-prompt-tuning herdr)
 case "${1:-}" in
   --dry-run)
     printf 'After just switch, archive these local originals under archive/agents/skills/:\n'
