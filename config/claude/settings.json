@@ -85,6 +85,16 @@
             "statusMessage": "worktree をセットアップ中"
           }
         ]
+      },
+      {
+        "matcher": "^(startup|clear|compact)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"$HOME/.claude/hooks/poteto-mode.sh\"",
+            "timeout": 5
+          }
+        ]
       }
     ]
   },
@@ -105,8 +115,9 @@
     "mattpocock-skills@mattpocock": true,
     "i-have-adhd@i-have-adhd": true,
     "launchpad@sandbox-launchpad": true,
-    "pstack@pstack-claude": true,
-    "cc-plugin-you-should-know@builtin": true
+    "pstack@pstack-claude": false,
+    "cc-plugin-you-should-know@builtin": true,
+    "pstack@cursor-plugins": true
   },
   "extraKnownMarketplaces": {
     "cclens": {
@@ -131,6 +142,12 @@
       "source": {
         "source": "github",
         "repo": "michael-denyer/pstack-claude"
+      }
+    },
+    "cursor-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "cursor/plugins"
       }
     }
   },
