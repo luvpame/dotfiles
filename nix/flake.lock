@@ -137,23 +137,6 @@
         "type": "github"
       }
     },
-    "cognitive-rhythm-writing": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1783600534,
-        "narHash": "sha256-Zo3iVnTvVG6IfU9vBf4Zv/bEcKmNKnI2IY1D0uvzkNM=",
-        "ref": "refs/heads/main",
-        "rev": "a3b1e26beced71d582e13314fb6f5b179b023c76",
-        "revCount": 3,
-        "type": "git",
-        "url": "https://gist.github.com/eb2929f13ed19c97188393d297be8432.git"
-      },
-      "original": {
-        "rev": "a3b1e26beced71d582e13314fb6f5b179b023c76",
-        "type": "git",
-        "url": "https://gist.github.com/eb2929f13ed19c97188393d297be8432.git"
-      }
-    },
     "crane": {
       "locked": {
         "lastModified": 1781825982,
@@ -431,23 +414,6 @@
         "type": "github"
       }
     },
-    "japanese-tech-writing": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1781587188,
-        "narHash": "sha256-+3k6/lvdMCEUEbtWM4O8uyNQhDgNOVXxQgWulzT/eF4=",
-        "ref": "refs/heads/main",
-        "rev": "5ed08e4475365fd233aa0d3ab71c19b87e1a5732",
-        "revCount": 4,
-        "type": "git",
-        "url": "https://gist.github.com/fd287c3133457c4fd8f5601d34aa817d.git"
-      },
-      "original": {
-        "rev": "5ed08e4475365fd233aa0d3ab71c19b87e1a5732",
-        "type": "git",
-        "url": "https://gist.github.com/fd287c3133457c4fd8f5601d34aa817d.git"
-      }
-    },
     "mizchi-skills": {
       "flake": false,
       "locked": {
@@ -574,23 +540,6 @@
         "type": "github"
       }
     },
-    "no-ai-slop": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1788322740,
-        "narHash": "sha256-l/BZaNnPvFKTUN7jVs5p5aEtRvOUbwMElu37cnP+k8E=",
-        "owner": "petergyang",
-        "repo": "no-ai-slop",
-        "rev": "000650b156983f5159695b441477f4e63b25dc85",
-        "type": "github"
-      },
-      "original": {
-        "owner": "petergyang",
-        "repo": "no-ai-slop",
-        "rev": "000650b156983f5159695b441477f4e63b25dc85",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "agent-browser-skills": "agent-browser-skills",
@@ -599,7 +548,6 @@
         "anthropic-skills": "anthropic-skills",
         "cclens": "cclens",
         "claude-code-source": "claude-code-source",
-        "cognitive-rhythm-writing": "cognitive-rhythm-writing",
         "crit": "crit",
         "explainer": "explainer",
         "git-surgeon": "git-surgeon",
@@ -609,12 +557,10 @@
         "humanlayer-skills": "humanlayer-skills",
         "hunk": "hunk",
         "imozuru": "imozuru",
-        "japanese-tech-writing": "japanese-tech-writing",
         "mizchi-skills": "mizchi-skills",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs_2",
-        "no-ai-slop": "no-ai-slop",
         "security-audit-skill": "security-audit-skill",
         "yomiyasu": "yomiyasu"
       }

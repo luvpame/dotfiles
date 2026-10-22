@@ -19,10 +19,6 @@
       url = "github:anthropics/claude-plugins-official/022b3c274938ddfb9fd928fc582eb9b9ed0f537f";
       flake = false;
     };
-    cognitive-rhythm-writing = {
-      url = "git+https://gist.github.com/eb2929f13ed19c97188393d297be8432.git?rev=a3b1e26beced71d582e13314fb6f5b179b023c76";
-      flake = false;
-    };
     explainer = {
       url = "github:mizchi/explainer/1e393e0b3039a8a38a77d436f387ea58ab48b2fb";
       flake = false;
@@ -39,20 +35,12 @@
       url = "github:MaryCache/imozuru/4f8fec7b686750c0c4083336691bdc6ea075aa32";
       flake = false;
     };
-    japanese-tech-writing = {
-      url = "git+https://gist.github.com/fd287c3133457c4fd8f5601d34aa817d.git?rev=5ed08e4475365fd233aa0d3ab71c19b87e1a5732";
-      flake = false;
-    };
     mizchi-skills = {
       url = "github:mizchi/skills/95b8a50edf0684620c29d09848591de453b99831";
       flake = false;
     };
     agent-memory-repo = {
       url = "github:AgentMemoryRepo/agentmemoryrepo/1db04a5735adbc4f2158308f2077fd960e243c04";
-      flake = false;
-    };
-    no-ai-slop = {
-      url = "github:petergyang/no-ai-slop/000650b156983f5159695b441477f4e63b25dc85";
       flake = false;
     };
     security-audit-skill = {

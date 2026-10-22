@@ -15,9 +15,6 @@ let
     "conventional-commit"
     "eli33"
     "evidence-code-review"
-    "japanese"
-    "japanese-end-focus"
-    "mo"
     "obsidian"
     "pr-review-assist"
   ];
@@ -111,11 +108,6 @@ in
       subdir = "skills";
       filter.nameRegex = "imozuru";
     };
-    sources.no-ai-slop = {
-      input = "no-ai-slop";
-      subdir = "skills";
-      filter.nameRegex = "no-ai-slop";
-    };
     sources.security-audit = {
       input = "security-audit-skill";
       subdir = "skills";
@@ -126,12 +118,6 @@ in
       subdir = "skills";
       filter.nameRegex = "yomiyasu";
     };
-    sources.explainer = {
-      path = "${
-        (pkgs.callPackage ../../pkgs/explainer/default.nix { src = inputs.explainer; }).runtime
-      }/skills";
-      filter.nameRegex = "explainer";
-    };
     # 外部スキルの追加・配布停止はこの一覧で指定する。sources の絞り込み条件にも含める。
     # 変更後は just switch。入力も変更した場合は、その前に nix/ で nix flake lock path:. を実行。
     # 内容の更新は nix/flake.nix の取得リビジョンを変更する（配布済みファイルは編集しない）。
@@ -139,14 +125,11 @@ in
     skills.enable = [
       "agent-browser"
       "code-simplifier"
-      "cognitive-rhythm-writing"
       "empirical-prompt-tuning"
       "explainer"
       "git-surgeon"
       "herdr"
       "imozuru"
-      "japanese-tech-writing"
-      "no-ai-slop"
       "security-audit"
       "show-me"
       "yomiyasu"
