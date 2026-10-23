@@ -17,6 +17,7 @@ let
     "evidence-code-review"
     "obsidian"
     "pr-review-assist"
+    "voicevox-tts"
   ];
   skillsRoot = "${config.home.homeDirectory}/.dotfiles/config/agents/skills";
   # ローカルスキルの配布先。変更時は下の programs.agent-skills.targets も揃える。
