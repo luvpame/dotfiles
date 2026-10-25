@@ -23,6 +23,11 @@
             "command": "\"$HOME/.config/herdr/scripts/agent-git-metadata.py\"",
             "timeout": 5,
             "type": "command"
+          },
+          {
+            "command": "printf '%s\\n' 'pstack:poteto-mode スキルを読み、このセッションに適用すること。モデルと推論強度は AGENTS.md の pstack 設定を優先する。'",
+            "timeout": 5,
+            "type": "command"
           }
         ]
       }

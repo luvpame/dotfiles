@@ -76,6 +76,10 @@ ref = "main"
 source_type = "git"
 source = "https://github.com/michael-denyer/pstack-claude.git"
 
+[marketplaces.cursor-plugins]
+source_type = "git"
+source = "https://github.com/cursor/plugins.git"
+
 [plugins."superpowers@openai-curated"]
 enabled = false
 
@@ -127,7 +131,7 @@ enabled = true
 [plugins."computer-history@openai-bundled"]
 enabled = true
 
-[plugins."pstack@pstack-claude"]
+[plugins."pstack@cursor-plugins"]
 enabled = true
 
 [plugins."gmail@openai-curated-remote"]
@@ -194,6 +198,9 @@ trusted_hash = "sha256:1cb735e2f878432c3fad7f182c5d895aedcd071b625a937a9aa9472bf
 
 [hooks.state."pstack@pstack-claude:hooks/codex-hooks.json:session_start:0:0"]
 trusted_hash = "sha256:ba5a989f28dad7759bb342207253f3de8ad200d793456ebcc8611632f96bfa3b"
+
+[hooks.state."/Users/nasuno.ayumu/.codex/hooks.json:session_start:0:3"]
+trusted_hash = "sha256:49130f7696b290ae4f9c74a31d96acc5da5c9b975496e276a8d6ce25ba8c2ed3"
 
 [desktop]
 appearanceTheme = "system"

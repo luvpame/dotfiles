@@ -12,39 +12,31 @@
     # 入力の変更後は nix/ で nix flake lock path:. → just check → just switch。
     # URLにコミットを指定した入力の更新は、URLのコミットも変更する必要がある。
     anthropic-skills = {
-      url = "github:anthropics/claude-plugins-official/022b3c274938ddfb9fd928fc582eb9b9ed0f537f";
-      flake = false;
-    };
-    cognitive-rhythm-writing = {
-      url = "git+https://gist.github.com/eb2929f13ed19c97188393d297be8432.git?rev=a3b1e26beced71d582e13314fb6f5b179b023c76";
+      url = "github:anthropics/claude-plugins-official/465f09344424225c25d438f2e052732c3d688d2f";
       flake = false;
     };
     herdr-skills = {
-      url = "github:herdrdev/herdr/9eb521456ac0d19d3ab3d9d7cea3cca10baa8a4c";
+      url = "github:herdrdev/herdr/5bd900d88c80d95f5b145397e45bbeea398b8165";
       flake = false;
     };
     humanlayer-skills = {
-      url = "github:humanlayer/skills/3c2629142c5d437428269b1b722b08c0b87f574d";
+      url = "github:humanlayer/skills/653b6411c1f70c275a18e37673b042ff99f67ceb";
       flake = false;
     };
     imozuru = {
-      url = "github:MaryCache/imozuru/4f8fec7b686750c0c4083336691bdc6ea075aa32";
-      flake = false;
-    };
-    japanese-tech-writing = {
-      url = "git+https://gist.github.com/fd287c3133457c4fd8f5601d34aa817d.git?rev=5ed08e4475365fd233aa0d3ab71c19b87e1a5732";
+      url = "github:MaryCache/imozuru/ecb82c71b611872a0f49e783eda3bec987c80d91";
       flake = false;
     };
     mizchi-skills = {
-      url = "github:mizchi/skills/95b8a50edf0684620c29d09848591de453b99831";
+      url = "github:mizchi/skills/ab4eb2f7a92a13fb37c225ab427f2f492143ace1";
       flake = false;
     };
-    no-ai-slop = {
-      url = "github:petergyang/no-ai-slop/000650b156983f5159695b441477f4e63b25dc85";
+    security-audit-skill = {
+      url = "github:cloudflare/security-audit-skill/c1c8a8c1471069fb0e188eeaff69b8e8db6564a8";
       flake = false;
     };
     yomiyasu = {
-      url = "github:nanaism/yomiyasu/79d15a621751cb7ad3bea556832209e9112e575f";
+      url = "github:nanaism/yomiyasu/c09270bc93daab14e253fb3ef406182011b79ccb";
       flake = false;
     };
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -80,7 +72,7 @@
     };
     hunk = {
       # イベント駆動の watch を含む main commit に固定する。
-      url = "github:modem-dev/hunk/c58b70714bc32691a999134c49a2de16e464cea2";
+      url = "github:modem-dev/hunk/43138ca1b997a1245fa3d2e5523a140f7d456766";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
