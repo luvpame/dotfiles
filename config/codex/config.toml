@@ -172,7 +172,7 @@ trusted_hash = "sha256:5b2c1dfa8c7ecc5e8881c8e69479f65d46ed727e0bc5b8e7b4553cee9
 trusted_hash = "sha256:51035e20f9602e121fe6afe94e36283df3a6589eebe02f4ad319ee304d16351e"
 
 [hooks.state."/Users/luvpame/.codex/hooks.json:session_start:0:2"]
-trusted_hash = "sha256:51035e20f9602e121fe6afe94e36283df3a6589eebe02f4ad319ee304d16351e"
+trusted_hash = "sha256:49130f7696b290ae4f9c74a31d96acc5da5c9b975496e276a8d6ce25ba8c2ed3"
 
 [hooks.state."/Users/luvpame/.codex/hooks.json:stop:0:1"]
 trusted_hash = "sha256:7c52bf2a50e603e45d405cb482d234f2abb8c8940c6dae7aaa334a7ac514fe01"
@@ -296,6 +296,7 @@ global = "systemDefault"
 [mcp_servers.node_repl]
 args = []
 command = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node_repl"
+env_vars = ["BROWSER_USE_ACCESS_EXECUTOR_ID", "BROWSER_USE_ACCESS_PIPE_PATH", "BROWSER_USE_ACCESS_VERIFYING_IDENTITY"]
 startup_timeout_sec = 120
 
 [mcp_servers.node_repl.env]
@@ -310,8 +311,8 @@ NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.1013.40934"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/luvpame/.codex/plugins/cache/openai-bundled/browser/26.1013.40934/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
+BROWSER_USE_CODEX_APP_VERSION = "26.1021.31345"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/luvpame/.codex/plugins/cache/openai-bundled/browser/26.1021.31345/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
 SKY_CUA_SERVICE_PATH = "/Users/luvpame/.codex/computer-use/Codex Computer Use.app"
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex"
 
