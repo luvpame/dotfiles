@@ -78,6 +78,10 @@ source = "https://github.com/michael-denyer/pstack-claude.git"
 source_type = "git"
 source = "https://github.com/cursor/plugins.git"
 
+[marketplaces.anthropic-agent-skills]
+source_type = "git"
+source = "https://github.com/anthropics/skills.git"
+
 [plugins."superpowers@openai-curated"]
 enabled = false
 
@@ -133,6 +137,9 @@ enabled = true
 enabled = true
 
 [plugins."gmail@openai-curated-remote"]
+enabled = true
+
+[plugins."example-skills@anthropic-agent-skills"]
 enabled = true
 
 [hooks.state]
