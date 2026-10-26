@@ -169,7 +169,7 @@
       "effortLevel": "medium"
     },
     "claude-opus-5-5": {
-      "effortLevel": "high"
+      "effortLevel": "medium"
     }
   },
   "advisorModel": "fable",
@@ -183,6 +183,7 @@
   "theme": "light",
   "editorMode": "vim",
   "verbose": false,
+  "switchModelsOnFlag": true,
   "autoContinueAtUsageLimit": true,
   "skipAutoPermissionPrompt": true,
   "useAutoModeDuringPlan": true,
