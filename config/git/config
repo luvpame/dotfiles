@@ -37,7 +37,7 @@
   path = ~/.config/git/config.local
 [credential "https://github.com"]
 	helper = 
-	helper = !/nix/store/7acyfp9kyyxm341rb3mivz9kmbamambd-gh-2.100.0/bin/.gh-wrapped auth git-credential
+	helper = !gh auth git-credential
 [credential "https://gist.github.com"]
 	helper = 
-	helper = !/nix/store/7acyfp9kyyxm341rb3mivz9kmbamambd-gh-2.100.0/bin/.gh-wrapped auth git-credential
+	helper = !gh auth git-credential
