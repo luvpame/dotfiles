@@ -56,8 +56,8 @@ if.app-id = "com.stengo.DeskPad"
 run = "move-node-to-workspace 1" # DeskPadをワークスペース1に移動
 
 [[on-window-detected]]
-if.app-id = "company.thebrowser.dia"
-run = "move-node-to-workspace 1" # Diaをワークスペース1に移動
+if.app-id = "dev.serafim.fast"
+run = "move-node-to-workspace 1" # yabをワークスペース1に移動
 
 [[on-window-detected]]
 if.app-id = "com.tinyspeck.slackmacgap"
