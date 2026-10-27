@@ -82,6 +82,9 @@ def main():
             or run("git", "-C", checkout, "status", "--porcelain")):
         raise RuntimeError(f"PR の HEAD と一致する変更のない worktree が必要です。手動で確認してください: {checkout}")
     run("git", "-C", checkout, "merge-base", pr["baseRefOid"], pr["headRefOid"])
+    # The panes below load direnv at once. On a cold devenv eval cache they serialize
+    # (48s for four vs 11s for one), so shells miss the readiness wait. Warm it once first.
+    subprocess.run(["direnv", "exec", checkout, "true"], stdout=subprocess.DEVNULL)
     opened = herdr("worktree", "open", "--cwd", root, "--path", checkout, "--focus", "--json")
     review_workspace = opened["workspace"]["workspace_id"]
     tabs = herdr("tab", "list", "--workspace", review_workspace)["tabs"]

@@ -101,7 +101,8 @@ def check(cancel=False, existing=False, stale=False, split=False, busy=False, no
             patch.object(tempfile, "tempdir", launch_directory), \
             patch.dict(review.os.environ, HERDR_ACTIVE_WORKSPACE_ID="w1"), \
             patch.object(review, "run", side_effect=run), \
-            patch.object(review.subprocess, "run", return_value=selection) as select, \
+            patch.object(review.subprocess, "run",
+                         side_effect=lambda args, **_: calls.append(tuple(args)) or selection) as select, \
             patch("builtins.input", return_value="") as acknowledge:
         try:
             review.main()
@@ -257,7 +258,8 @@ def check(cancel=False, existing=False, stale=False, split=False, busy=False, no
         fetch = calls.index(("git", "-C", "/repo", "fetch", "--all"))
         merge_base = calls.index(("git", "-C", checkout, "merge-base", "base", "head"))
         opened = next(i for i, call in enumerate(calls) if call[:3] == ("herdr", "worktree", "open"))
-        assert fetch < merge_base < opened
+        warm = calls.index(("direnv", "exec", checkout, "true"))
+        assert fetch < merge_base < warm < opened, "Load the checkout's env once before any pane shell"
         if creates:
             assert calls.index(creates[0]) < merge_base
     if cancel or stale or dirty or wrong_branch or prepare_error:
