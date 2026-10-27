@@ -1,7 +1,7 @@
-model_reasoning_effort = "high"
+model_reasoning_effort = "max"
 personality = "friendly"
 forced_login_method = "chatgpt"
-model = "gpt-6.1-sol"
+model = "gpt-6.1-terra"
 model_context_window = 1000000
 model_auto_compact_token_limit = 900000
 web_search = "live"
