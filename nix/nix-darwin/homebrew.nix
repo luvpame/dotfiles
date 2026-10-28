@@ -57,10 +57,18 @@ let
     "driceroland/tap" # search
     "penso/tap" # herdr-gpui
   ];
-  trustedTaps = map (name: {
-    inherit name;
-    trusted = true;
-  }) tapNames;
+  trustedTaps =
+    map (name: {
+      inherit name;
+      trusted = true;
+    }) tapNames
+    ++ [
+      {
+        name = "yksr-melt/Meltype";
+        clone_target = "https://github.com/yksr-melt/Meltype.git";
+        trusted = true;
+      }
+    ];
 
   caskNames = [
     ### GUI Applications
@@ -100,6 +108,7 @@ let
     "sequel-ace"
     "herdr-gpui"
     "linear"
+    "yksr-melt/Meltype/meltype"
 
     ### Fonts
     "font-hackgen-nerd"
