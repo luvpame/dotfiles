@@ -1,0 +1,87 @@
+---
+title: "Introduction"
+source_url: "https://linear.app/quality"
+fetched_at: "2026-10-27T08:17:41.028425+00:00"
+---
+
+
+
+[![](https://static.linear.app/assets/web/quality/teaser-bg-poster.1B814E19-AFCE-4902-8F94-861A45D625C3.jpg)](https://static.linear.app/assets/web/quality/teaser-bg.C217867F-8FC5-46F4-828B-205FD915079E.mp4)![](https://static.linear.app/assets/web/quality/teaser-bg-poster.1B814E19-AFCE-4902-8F94-861A45D625C3.jpg)
+
+[Conversations
+ on Quality](https://linear.app/quality.html)
+
+# Introduction
+
+What is quality? It seems hard to describe and even harder to measure, but you can feel it when it’s there. You know it when you experience it.
+This is a series of conversations with those who seek to create products of this undefinable quality. And an attempt to answer the central question: How do things of quality get built?
+
+[Play](https://www.youtube.com/watch?v=VcwhJaV6ZYs)
+
+Play teaser`P`
+
+Follow
+
+·
+
+Oct 11, 2024 · 1 min
+
+[![](https://static.linear.app/assets/web/quality/zoe-thumbnail.33780897-504E-446E-A976-1306A3B3664B.jpg)
+
+Introduction
+
+## Linear](quality/00.html)
+
+[![](https://static.linear.app/assets/web/quality/dick-thumbnail.9FC0B7FD-8506-4AF2-AC1D-34C8DD929530.jpg)
+
+Episode 01
+
+## Dick Costolo](quality/01.html)
+
+[![](https://static.linear.app/assets/web/quality/karri-thumbnail.A8961CC0-EF82-401E-81D4-7B49EA486ABD.jpg)
+
+Episode 02
+
+## Karri Saarinen](quality/02.html)
+
+[![](https://static.linear.app/assets/web/quality/jeff-thumbnail.FDC31D70-5BCE-443F-8AC5-7B700CFA8207.jpg)
+
+Episode 03
+
+## Jeff Weinstein](quality/03.html)
+
+[![](https://static.linear.app/assets/web/quality/henry-thumbnail.D3790824-2FC1-42FC-983E-1EE1BA7F2A0A.jpg)
+
+Episode 04
+
+## Henry Modisett](quality/04.html)
+
+[![](https://static.linear.app/assets/web/quality/adena-thumbnail.7037D0D3-F0CC-40E2-81E3-C7ED5DC3C91D.jpg)
+
+Episode 05
+
+## Adena Nadler](quality/05.html)
+
+[![](https://static.linear.app/assets/web/quality/tara-thumbnail.CDEFB54C-B06D-420D-966E-DA06B9CF3296.jpg)
+
+Episode 06
+
+## Tara Feener](quality/06.html)
+
+[![](https://static.linear.app/assets/web/quality/basheer-thumbnail.43A0394B-254C-471B-9105-77F9491784CF.jpg)
+
+Episode 07
+
+## Basheer Tome](quality/07.html)
+
+[![](https://static.linear.app/assets/web/quality/kevin-thumbnail.06F9783F-BED7-42BC-8F1C-91767236D4F3.jpg)
+
+Episode 08
+
+## Kevin Twohy](quality/08.html)
+
+[![](https://static.linear.app/assets/web/quality/ethan-thumbnail.588691D0-D631-46B9-9292-7C71DDADF624.jpg)
+
+Episode 09
+
+## Ethan Eismann](quality/09.html)
