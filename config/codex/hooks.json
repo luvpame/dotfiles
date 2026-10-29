@@ -60,15 +60,26 @@
             "type": "command"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.config/herdr/scripts/agent-activity.py\"",
+            "timeout": 60,
+            "async": true
+          }
+        ]
       }
     ],
     "UserPromptSubmit": [
       {
         "hooks": [
           {
-            "command": "bash \"$HOME/.codex/hooks/herdr-tab-rename-reminder.sh\"",
-            "timeout": 5,
-            "type": "command"
+            "type": "command",
+            "command": "python3 \"$HOME/.config/herdr/scripts/agent-activity.py\"",
+            "timeout": 60,
+            "async": true
           }
         ]
       }

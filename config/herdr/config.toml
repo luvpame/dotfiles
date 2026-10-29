@@ -83,43 +83,31 @@ sidebar_max_width = 72
 confirm_close = false
 hide_tab_bar_when_single_tab = false
 tab_bar_position = "bottom"
-tab_bar_right = [
-  { type = "zoom" },
-  { type = "command", command = "gh api --method GET search/issues -f 'q=is:pr is:open review-requested:@me' -f per_page=1 --jq '\"PR review: \\(.total_count)\"'", interval_seconds = 60, timeout_seconds = 10 },
-  { type = "datetime", format = "%H:%M" },
-]
-tab_bar_right_separator = " · "
 agent_panel_sort = "spaces"
 status_indicators = "symbols"
 
 [ui.sidebar.agents.rows_by_agent]
 claude = [
-  ["state_icon", "workspace", "tab"],
+  ["state_icon", { token = "$agent_icon", fg = "#303446", bold = true }, "machine", "workspace"],
   [
-    "agent",
-    { token = "$context", fg = "#1e66f5" },
-  ],
-  [
-    { token = "$git_branch", fg = "#1e66f5" },
+    "$git_branch",
     { token = "$pr_open", fg = "#40a02b" },
     { token = "$pr_draft", fg = "#9ca0b0" },
     { token = "$pr_merged", fg = "#8839ef" },
     { token = "$pr_closed", fg = "#d20f39" },
   ],
+  ["$activity"],
 ]
 codex = [
-  ["state_icon", "workspace", "tab"],
+  ["state_icon", { token = "$agent_icon", fg = "#303446", bold = true }, "machine", "workspace"],
   [
-    "agent",
-    { token = "$context", fg = "#1e66f5" },
-  ],
-  [
-    { token = "$git_branch", fg = "#1e66f5" },
+    "$git_branch",
     { token = "$pr_open", fg = "#40a02b" },
     { token = "$pr_draft", fg = "#9ca0b0" },
     { token = "$pr_merged", fg = "#8839ef" },
     { token = "$pr_closed", fg = "#d20f39" },
   ],
+  ["$activity"],
 ]
 
 [ui.sidebar.spaces]

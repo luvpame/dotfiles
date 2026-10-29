@@ -39,9 +39,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$HOME/.claude/hooks/herdr-tab-rename.sh\"",
-            "timeout": 5,
-            "statusMessage": "herdr タブ名を更新中"
+            "command": "python3 \"$HOME/.config/herdr/scripts/agent-activity.py\"",
+            "timeout": 60,
+            "async": true
           },
           {
             "type": "command",
@@ -91,6 +91,18 @@
             "type": "command",
             "command": "sh \"$HOME/.claude/hooks/poteto-mode.sh\"",
             "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.config/herdr/scripts/agent-activity.py\"",
+            "timeout": 60,
+            "async": true
           }
         ]
       }

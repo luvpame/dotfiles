@@ -54,7 +54,7 @@ class AgentGitMetadataTest(unittest.TestCase):
             "workspaces = json.loads(os.environ['HERDR_WORKSPACES'])\n"
             "panes = json.loads(os.environ['HERDR_PANES'])\n"
             "if action == 'pane get':\n"
-            "    result = {'pane': {'foreground_cwd': os.environ['TEST_REPO']}}\n"
+            "    result = {'pane': {'foreground_cwd': os.environ['TEST_REPO'], 'agent': os.environ.get('TEST_AGENT')}}\n"
             "elif action == 'workspace get':\n"
             "    result = {'workspace': next(w for w in workspaces if w['workspace_id'] == args[2])}\n"
             "elif action == 'workspace list':\n"
@@ -116,6 +116,7 @@ class AgentGitMetadataTest(unittest.TestCase):
         gh_exit=0,
         workspace_label="workspace",
         all_workspaces=False,
+        current_agent="",
         workspaces=None,
         panes=None,
         herdr_fail="",
@@ -154,6 +155,7 @@ class AgentGitMetadataTest(unittest.TestCase):
             "GH_REVIEW_RESPONSE": json.dumps(review_response),
             "GH_HOST": github_host,
             "TEST_REPO": str(self.repo),
+            "TEST_AGENT": current_agent,
             "HERDR_WORKSPACES": json.dumps(workspaces),
             "HERDR_PANES": json.dumps(panes),
             "HERDR_FAIL": herdr_fail,
@@ -186,7 +188,7 @@ class AgentGitMetadataTest(unittest.TestCase):
             "pane report-metadata w1:p1 --source agent-git "
             "--token git_branch=\ue0a0 feature/sidebar "
             "--token pr_open=\uf407 #42 --token pr_draft= "
-            "--token pr_merged= --token pr_closed=",
+            "--token pr_merged= --token pr_closed= --token agent_icon=",
         )
         self.assertEqual(
             report.splitlines()[1],
@@ -202,6 +204,17 @@ class AgentGitMetadataTest(unittest.TestCase):
         report = self.run_reporter([], workspace_label="review-#123")
 
         self.assertIn("--token review_space=", report)
+
+    def test_reports_agent_icons_and_clears_other_agents(self):
+        for all_workspaces in (False, True):
+            for agent, icon in (("claude", ""), ("codex", ""), ("other", "")):
+                with self.subTest(agent=agent, all_workspaces=all_workspaces):
+                    self.herdr_log.unlink(missing_ok=True)
+                    report = self.run_reporter(
+                        [], all_workspaces=all_workspaces, current_agent=agent,
+                        panes={"w1": [{"pane_id": "w1:p1", "foreground_cwd": str(self.repo), "agent": agent}]},
+                    )
+                    self.assertTrue(report.splitlines()[0].endswith(f"--token agent_icon={icon}"))
 
     def test_does_not_mark_non_review_workspace(self):
         report = self.run_reporter([], workspace_label="review-#123-extra")

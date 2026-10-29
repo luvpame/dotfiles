@@ -16,6 +16,7 @@ CACHE_TTL_SECONDS = 60
 CACHE_VERSION = 4
 REVIEW_SPACE_PATTERN = re.compile(r"^review-#[0-9]+$")
 REVIEW_SPACE_ICON = ""
+AGENT_ICONS = {"claude": "", "codex": ""}
 METADATA_TOKENS = (
     "git_branch",
     "pr_open",
@@ -385,14 +386,16 @@ def update_workspace(workspace, *, report_panes=False):
     panes = herdr_data("panes", "pane", "list", "--workspace", workspace_id)
     if not isinstance(panes, list):
         return
-    pane_checkouts = {
-        pane["pane_id"]: pane_checkout(pane)
+    panes_by_id = {
+        pane["pane_id"]: pane
         for pane in panes
         if isinstance(pane, dict) and isinstance(pane.get("pane_id"), str)
     }
+    pane_checkouts = {pane_id: pane_checkout(pane) for pane_id, pane in panes_by_id.items()}
     if report_panes:
         for pane_id, current_checkout in pane_checkouts.items():
             tokens, _ = checkout_metadata(current_checkout)
+            tokens["agent_icon"] = AGENT_ICONS.get(panes_by_id[pane_id].get("agent"), "")
             report_metadata("pane", pane_id, "agent-git", tokens)
     tokens, pull_request = checkout_metadata(
         workspace_checkout(workspace, pane_checkouts)
@@ -425,6 +428,7 @@ def main():
     pane = herdr_data("pane", "pane", "get", pane_id)
     if isinstance(pane, dict):
         tokens, _ = checkout_metadata(pane_checkout(pane))
+        tokens["agent_icon"] = AGENT_ICONS.get(pane.get("agent"), "")
         report_metadata("pane", pane_id, "agent-git", tokens)
     if workspace_id:
         workspace = herdr_data("workspace", "workspace", "get", workspace_id)
