@@ -116,19 +116,22 @@ rows = [
     "state_icon",
     { token = "$review_space", fg = "#8839ef" },
     "workspace",
-    "branch",
     "git_status",
-    { token = "$dev_server", fg = "#fe640b" },
   ],
   [
+    "branch",
     { token = "$pr_open", fg = "#40a02b" },
     { token = "$pr_draft", fg = "#9ca0b0" },
     { token = "$pr_merged", fg = "#8839ef" },
     { token = "$pr_closed", fg = "#d20f39" },
+  ],
+  [
     { token = "$review_status", fg = "#8839ef", rules = [
       { equals = "✓ approved", fg = "#40a02b" },
       { equals = "○ unreviewed", fg = "#df8e1d" },
     ] },
+    "$agent_summary",
+    { token = "$dev_server", fg = "#fe640b" },
   ],
 ]
 
