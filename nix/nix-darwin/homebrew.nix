@@ -118,7 +118,7 @@ let
     "luvpame/dotfiles-local/opie"
 
     ### Fonts
-    "font-hackgen-nerd"
+    "font-plemol-jp-nf"
     "font-monaspace"
   ];
 

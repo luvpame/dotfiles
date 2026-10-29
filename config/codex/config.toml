@@ -340,13 +340,13 @@ opaqueWindows = false
 surface = "#eff1f5"
 
 [desktop.appearanceLightChromeTheme.fonts]
-code = '"HackGen Console NF"'
-ui = '"HackGen Console NF"'
+code = '"PlemolJP Console NF"'
+ui = '"PlemolJP Console NF"'
 
 [desktop.appearanceLightChromeTheme.fonts.codeFace]
-family = "HackGen Console NF"
-fullName = "HackGen Console NF Bold"
-postscriptName = "HackGenConsoleNF-Bold"
+family = "PlemolJP Console NF"
+fullName = "PlemolJP Console NF Bold"
+postscriptName = "PlemolJPConsoleNF-Bold"
 
 [desktop.appearanceLightChromeTheme.semanticColors]
 diffAdded = "#40a02b"
@@ -361,7 +361,7 @@ opaqueWindows = false
 surface = "#1e1e2e"
 
 [desktop.appearanceDarkChromeTheme.fonts]
-code = "HackGen Console NF"
+code = "PlemolJP Console NF"
 ui = "Gen Interface JP"
 
 [desktop.appearanceDarkChromeTheme.semanticColors]

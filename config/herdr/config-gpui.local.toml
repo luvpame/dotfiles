@@ -8,18 +8,18 @@ mode = "comfortable-rounded"
 sidebar_gap = 1.0
 
 [sidebar]
-family = "HackGen Console NF"
+family = "PlemolJP Console NF"
 size = 14.0
 
 [tabs]
-family = "HackGen Console NF"
+family = "PlemolJP Console NF"
 size = 14.0
 
 [terminal]
-family = "HackGen Console NF"
+family = "PlemolJP Console NF"
 
 [ui]
-family = "HackGen Console NF"
+family = "PlemolJP Console NF"
 size = 14.0
 
 [notifications]
