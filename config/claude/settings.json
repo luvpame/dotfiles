@@ -116,7 +116,8 @@
     "pstack@pstack-claude": false,
     "cc-plugin-you-should-know@builtin": true,
     "pstack@cursor-plugins": true,
-    "demo-video@demo-video": true
+    "demo-video@demo-video": true,
+    "hyperframes@hyperframes": true
   },
   "extraKnownMarketplaces": {
     "cclens": {
@@ -153,6 +154,12 @@
       "source": {
         "source": "github",
         "repo": "luvpame/demo-video"
+      }
+    },
+    "hyperframes": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/heygen-com/hyperframes.git"
       }
     }
   },
