@@ -88,6 +88,10 @@ in
       subdir = "skills";
       filter.nameRegex = "agent-browser";
     };
+    sources.emil-skills = {
+      input = "emil-skills";
+      subdir = "skills";
+    };
     sources.external = {
       # 既存4スキルのファイル名変換と差分保持は external-skills.nix で行う。
       # この取得元の追加・削除時は、同ファイルのコピー処理と原本hashも更新する。
@@ -131,14 +135,30 @@ in
     # コピー済み4件の内容変更は skill-patches/ と external-skills.nix で管理する。
     skills.enable = [
       "agent-browser"
+      "animate"
+      "animate-expo"
+      "animation-performance"
+      "animation-vocabulary"
+      "apple-design"
+      "ask-sonner"
+      "break-ui"
       "code-simplifier"
+      "emil-design-eng"
       "empirical-prompt-tuning"
       "explainer"
+      "find-animation-opportunities"
       "git-surgeon"
       "herdr"
       "imozuru"
+      "improve-animations"
+      "mobile-native"
+      "pick-ui-library"
+      "prototype"
+      "remove-animations"
+      "review-animations"
       "security-audit"
       "show-me"
+      "write-swift"
       "yomiyasu"
     ];
     # Claude Code 専用。Codex 等（.agents/skills）には配らない。

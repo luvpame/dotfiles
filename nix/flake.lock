@@ -172,6 +172,23 @@
         "url": "https://github.com/tomasz-tomczyk/crit.git"
       }
     },
+    "emil-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1793211928,
+        "narHash": "sha256-w97pQjOyN3ehZ6yjUo/MUQutWH9On00m9O1acssw5P0=",
+        "owner": "emilkowalski",
+        "repo": "skills",
+        "rev": "a81dbca07f2217b7103e510c0f13f8d5b017afc9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "emilkowalski",
+        "repo": "skills",
+        "rev": "a81dbca07f2217b7103e510c0f13f8d5b017afc9",
+        "type": "github"
+      }
+    },
     "explainer": {
       "flake": false,
       "locked": {
@@ -549,6 +566,7 @@
         "cclens": "cclens",
         "claude-code-source": "claude-code-source",
         "crit": "crit",
+        "emil-skills": "emil-skills",
         "explainer": "explainer",
         "git-surgeon": "git-surgeon",
         "guard-and-guide": "guard-and-guide",

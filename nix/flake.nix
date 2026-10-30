@@ -19,6 +19,10 @@
       url = "github:anthropics/claude-plugins-official/465f09344424225c25d438f2e052732c3d688d2f";
       flake = false;
     };
+    emil-skills = {
+      url = "github:emilkowalski/skills/a81dbca07f2217b7103e510c0f13f8d5b017afc9";
+      flake = false;
+    };
     explainer = {
       url = "github:mizchi/explainer/ccdd7bacfb47451e38506d837af8a629504960b2";
       flake = false;
