@@ -7,7 +7,7 @@ import shlex
 import subprocess
 import sys
 import tempfile
-from rex_worktrees import worktrees, open_session
+from rex_worktrees import worktrees
 
 
 def run(*args, cwd=None):
@@ -81,14 +81,23 @@ def main():
     # The panes below load direnv at once. On a cold devenv eval cache they serialize
     # (48s for four vs 11s for one), so shells miss the readiness wait. Warm it once first.
     subprocess.run(["direnv", "exec", checkout, "true"], stdout=subprocess.DEVNULL)
-    review_workspace = open_session(checkout)
     launcher_dir = tempfile.mkdtemp(prefix="rex-pr-review-")
     launchers = [os.path.join(launcher_dir, str(i)) for i in range(4)]
     wait_for_launcher = 'for i in {1..1200}; do if [[ -f "$1" ]]; then exec bash "$1"; fi; sleep 0.1; done; echo "レビューの起動準備がタイムアウトしました" >&2; exit 1'
-    created = json.loads(run("rex", "window", "new", "-s", review_workspace,
-                             "-c", checkout, f"PR Review #{number}", "--json",
-                             "--", "bash", "-c", wait_for_launcher, "bash", launchers[0]))
-    pane = created["block_ids"][0]
+    existing = next((item.get("open_workspace_id") for item in worktrees()["worktrees"]
+                     if item["path"] == checkout), None)
+    command = ("bash", "-c", wait_for_launcher, "bash", launchers[0])
+    if existing:
+        review_workspace = existing
+        created = json.loads(run("rex", "window", "new", "-s", existing, "-c", checkout,
+                                 f"PR Review #{number}", "--json", "--", *command))
+        pane = created["block_ids"][0]
+    else:
+        created = json.loads(run("rex", "new", os.path.basename(checkout), "-c", checkout,
+                                 "--window", f"PR Review #{number}", "--json", "--", *command))
+        review_workspace = created["session_id"]
+        pane = created["initial_windows"][0]["block_ids"][0]
+    run("rex", "do", "session.select", f"session_id={review_workspace}")
     try:
         right = json.loads(run("rex", "split", "-s", review_workspace, "-b", pane,
                                "-c", checkout, "--split=right", "--focus=false", "--json", "--", "bash", "-c", wait_for_launcher, "bash", launchers[1]))["block_ids"][0]
