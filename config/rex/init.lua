@@ -99,14 +99,29 @@ rex.action {
   name = "lazygit_pane",
   title = "Open Lazygit Pane",
   run = function(ctx)
-    local result, err = rex.session.new_split {
-      anchor_id = ctx.block_id,
-      direction = "horizontal",
-      side = "after",
-      layout = terminal_layout(ctx, { "lazygit" }),
+    local view, err = rex.session.view {}
+    if err then error(err, 0) end
+    for _, window in ipairs(view.windows) do
+      if window.window_id == view.active_window_id then
+        for _, layer in ipairs(window.layers) do
+          for _, block in ipairs(layer.blocks) do
+            if layer.kind == "floating" and block.label == "lazygit-popup" then
+              local result, close_err = rex.session.close_layer { layer_id = layer.layer_id }
+              if close_err then error(close_err, 0) end
+              return result
+            end
+          end
+        end
+      end
+    end
+    local layout = terminal_layout(ctx, { "lazygit" })
+    layout.block.label = "lazygit-popup"
+    local result, new_err = rex.session.new_layer {
+      bounds = { 0.1, 0.1, 0.8, 0.8 },
+      layout = layout,
       focus = true,
     }
-    if err then error(err, 0) end
+    if new_err then error(new_err, 0) end
     return result
   end,
 }
