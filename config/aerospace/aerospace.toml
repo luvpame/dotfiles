@@ -64,8 +64,8 @@ if.app-id = "com.tinyspeck.slackmacgap"
 run = "move-node-to-workspace 2" # Slackをワークスペース2に移動
 
 [[on-window-detected]]
-if.app-id = "so.pen.herdr-gpui"
-run = "move-node-to-workspace 3" # Herdr GPUIをワークスペース3に移動
+if.app-id = "dev.herdr.app"
+run = "move-node-to-workspace 3" # Herdrをワークスペース3に移動
 
 [[on-window-detected]]
 if.app-id = "com.anthropic.claudefordesktop"

@@ -25,6 +25,9 @@ in
     tmux.source = oos "${configRoot}/tmux";
     "tinycast/settings.json".source = oos "${configRoot}/tinycast/settings.json";
     "herdr/scripts".source = oos "${configRoot}/herdr/scripts";
+    "rex/init.lua".source = oos "${configRoot}/rex/init.lua";
+    "rex/repository-picker.fish".source = oos "${configRoot}/rex/repository-picker.fish";
+    "rex/scripts".source = oos "${configRoot}/rex/scripts";
     # cage: archive/cage へ退避
 
     # Runtime stateを含むHunkの親directory linkはT24でfile単位へ分割する。
@@ -42,12 +45,13 @@ in
     };
   };
 
+  # herdr-gpui: archive/herdr/config-gpui.toml へ退避
   # GUI が共有設定の symlink を拒否するため、通常ファイルとしてコピーする。
   home.activation.copyHerdrConfig = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
     herdr_state_dir="${config.xdg.stateHome}/dotfiles/herdr"
     run ${pkgs.coreutils}/bin/install -dm700 "$herdr_state_dir"
 
-    for file in config.toml config-gpui.local.toml; do
+    for file in config.toml; do
       source="${configRoot}/herdr/$file"
       target="${config.xdg.configHome}/herdr/$file"
       previous="$herdr_state_dir/$file"

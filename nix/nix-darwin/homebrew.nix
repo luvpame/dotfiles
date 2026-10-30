@@ -60,7 +60,6 @@ let
     "productdevbook/tap" # portkiller
     "fayazara/tap" # screendrop
     "driceroland/tap" # search
-    "penso/tap" # herdr-gpui
     "luvpame/dotfiles-local"
   ];
   trustedTaps =
@@ -112,7 +111,6 @@ let
     "claude"
     "tablepro"
     "sequel-ace"
-    "herdr-gpui"
     "linear"
     "yksr-melt/Meltype/meltype"
     "luvpame/dotfiles-local/opie"
