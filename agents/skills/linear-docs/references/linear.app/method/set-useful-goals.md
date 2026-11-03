@@ -1,0 +1,22 @@
+---
+title: "Set useful goals - Linear Method"
+source_url: "https://linear.app/method/set-useful-goals"
+fetched_at: "2026-10-27T08:17:41.028425+00:00"
+---
+
+
+
+1. [Method](https://linear.app/method.html)
+2. Direction
+
+# Set useful goals
+
+Startups move so fast that it’s normal not to know what you’re working on the next day let alone the next week. Goals are important to remind you what matters for the medium or long term success of the company. You might not feel like you have enough users or historical data to make decisions on what your goals should be. That’s normal and in those situations, create a goal that propels you forward in some measurable way.
+
+In the early days, it can be hard to hit those goals when you start from zero. The way to think about it is to walk back from that goal, what is the path there. Path to 10 users starts with 1 user, which starts with having a product that someone can find and start using. Your first meaningful goal getting there could be to find 10 users to use your product, then 100, then $1000 in MRR. Successful startups often start with something small, figure it out, and then scale. And remember, there is no limit to how fast you can grow.
+
+[2.1
+
+Set the product direction](https://linear.app/method/product-direction.html)[2.3
+
+Prioritize enablers and blockers](https://linear.app/method/prioritize-enablers-and-blockers.html)

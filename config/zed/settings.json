@@ -51,7 +51,7 @@
   "auto_signature_help": false,
   "autosave": "on_focus_change",
   "base_keymap": "VSCode",
-  "buffer_font_family": "HackGen Console NF",
+  "buffer_font_family": "PlemolJP Console NF",
   "buffer_font_features": {
     "calt": false,
   },
@@ -187,7 +187,7 @@
     "minimum_contrast": 0,
   },
   "theme": "Catppuccin Latte Transparent",
-  "ui_font_family": "HackGen Console NF",
+  "ui_font_family": "PlemolJP Console NF",
   "agent_buffer_font_size": 18,
   "ui_font_size": 20,
   "vim": {

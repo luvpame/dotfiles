@@ -2,6 +2,11 @@
 let
   primaryUser = config.dotfiles.user.name;
   homebrewPrefix = "/opt/homebrew";
+  localTapSource = builtins.path {
+    path = ../homebrew-tap;
+    name = "dotfiles-homebrew-tap";
+  };
+  localTapPath = "${homebrewPrefix}/Library/Taps/luvpame/homebrew-dotfiles-local";
   brewBin = "${homebrewPrefix}/bin/brew";
   moBin = "${homebrewPrefix}/opt/mo/bin/mo";
   moleBin = "${homebrewPrefix}/opt/mole/bin/mole";
@@ -55,11 +60,20 @@ let
     "fayazara/tap" # screendrop
     "gauthierpiarrette/highball"
     "penso/tap" # herdr-gpui
+    "luvpame/dotfiles-local"
   ];
-  trustedTaps = map (name: {
-    inherit name;
-    trusted = true;
-  }) tapNames;
+  trustedTaps =
+    map (name: {
+      inherit name;
+      trusted = true;
+    }) tapNames
+    ++ [
+      {
+        name = "yksr-melt/Meltype";
+        clone_target = "https://github.com/yksr-melt/Meltype.git";
+        trusted = true;
+      }
+    ];
 
   caskNames = [
     ### GUI Applications
@@ -89,7 +103,7 @@ let
     "steam"
     "highball"
     "azookey"
-    "yksr-melt/meltype/meltype"
+    "yksr-melt/Meltype/meltype"
     "a-bar"
     "keycastr"
     "chatgpt"
@@ -100,9 +114,11 @@ let
     "firefox"
     "orbstack"
     "sequel-ace"
+    "linear"
+    "luvpame/dotfiles-local/opie"
 
     ### Fonts
-    "font-hackgen-nerd"
+    "font-plemol-jp-nf"
     "font-monaspace"
   ];
 
@@ -124,19 +140,25 @@ in
       extraFlags = [ "--force-cleanup" ];
     };
     brews = brewPackages;
-    taps = trustedTaps ++ [
-      {
-        name = "yksr-melt/meltype";
-        clone_target = "https://github.com/yksr-melt/Meltype.git";
-        trusted = true;
-      }
-    ];
+    taps = trustedTaps;
     casks = caskNames;
     masApps = masApplications;
   };
 
   # `mo` と `mole` は同名バイナリを含むため、brew 管理の link を外して衝突を避ける。
   system.activationScripts.preActivation.text = ''
+    if [ -L "${localTapPath}" ]; then
+      if ! [[ "$(readlink "${localTapPath}")" =~ ^/nix/store/[0-9a-z]{32}-dotfiles-homebrew-tap$ ]]; then
+        printf '%s\n' "Refusing to replace an unmanaged tap symlink: ${localTapPath}" >&2
+        exit 1
+      fi
+    elif [ -e "${localTapPath}" ]; then
+      printf '%s\n' "Refusing to replace an existing tap: ${localTapPath}" >&2
+      exit 1
+    fi
+    sudo -u ${primaryUser} mkdir -p "${homebrewPrefix}/Library/Taps/luvpame"
+    sudo -u ${primaryUser} ln -sfn "${localTapSource}" "${localTapPath}"
+
     if [ -x ${brewBin} ]; then
       ${brewBin} unlink mo >/dev/null 2>&1 || true
       ${brewBin} unlink mole >/dev/null 2>&1 || true

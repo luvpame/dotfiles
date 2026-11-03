@@ -7,7 +7,7 @@ config.color_scheme = "Catppuccin Latte"
 
 -- Font Settings
 config.font = wezterm.font_with_fallback({
-  "HackGen Console NF",
+  { family = "PlemolJP Console NF", weight = 450 },
   "Noto Color Emoji",
 })
 config.font_size = 16

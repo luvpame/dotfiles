@@ -1,0 +1,24 @@
+theme = "Follow Herdr"
+confirm_close_tab = false
+show_agents = true
+contrast = "high"
+layout = "comfortable-rounded"
+
+[sidebar]
+family = "PlemolJP Console NF"
+size = 14.0
+
+[tabs]
+family = "PlemolJP Console NF"
+size = 14.0
+
+[terminal]
+family = "PlemolJP Console NF"
+
+[ui]
+family = "PlemolJP Console NF"
+size = 14.0
+
+[notifications]
+position = "bottom-right"
+enabled = true
