@@ -72,8 +72,12 @@ if.app-id = "com.superlogical.rex"
 run = ["move-node-to-workspace 3", "layout tiling"] # Rex Betaをワークスペース3に移動
 
 [[on-window-detected]]
+if.app-id = "com.linear"
+run = "move-node-to-workspace 4" # Linearをワークスペース4に移動
+
+[[on-window-detected]]
 if.app-id = "com.anthropic.claudefordesktop"
-run = "move-node-to-workspace 4" # Claudeをワークスペース4に移動
+run = "move-node-to-workspace 5" # Claudeをワークスペース5に移動
 
 [[on-window-detected]]
 if.app-id = "com.spotify.client"
