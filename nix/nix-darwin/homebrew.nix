@@ -99,6 +99,7 @@ let
     "a-bar"
     "keycastr"
     "codex"
+    "t3-code"
     "portkiller"
     "nani"
     "wallspace"
