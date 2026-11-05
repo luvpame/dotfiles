@@ -64,10 +64,6 @@ if.app-id = "com.tinyspeck.slackmacgap"
 run = "move-node-to-workspace 2" # Slackをワークスペース2に移動
 
 [[on-window-detected]]
-if.app-id = "dev.herdr.app"
-run = "move-node-to-workspace 3" # Herdrをワークスペース3に移動
-
-[[on-window-detected]]
 if.app-id = "com.superlogical.rex"
 run = ["move-node-to-workspace 3", "layout tiling"] # Rex Betaをワークスペース3に移動
 
@@ -149,9 +145,9 @@ inner.horizontal = 4
 inner.vertical = 4
 outer.left = 4
 outer.bottom = [
-  { monitor.main = 88 },
-  { monitor.'DeskPad*' = 32 },
-  { monitor.'Built-in' = 32 },
+  { monitor.main = 34 },
+  { monitor.'DeskPad*' = 34 },
+  { monitor.'Built-in' = 34 },
   4
 ]
 outer.top = 4
