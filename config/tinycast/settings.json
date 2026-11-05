@@ -6,20 +6,23 @@
     "popToRootSeconds": 0,
     "escapeKeyBehavior": "navigateBackOrClose",
     "autoSwitchInputSource": "com.apple.keylayout.UnicodeHexInput",
-    "supportReminders": false
+    "supportReminders": false,
+    "language": "ja"
   },
   "appearance": {
     "theme": "system",
+    "animations": true,
     "interfaceSize": "larger",
     "compactMode": true,
-    "showFavoritesInCompactMode": false,
+    "compactBarCommands": [],
     "followCursorAcrossDisplays": true,
     "dragToReposition": false
   },
   "hyperKey": {
     "key": "rightCommand",
     "includesShift": true,
-    "quickPress": "none"
+    "quickPress": "none",
+    "secureInputCompatibility": false
   },
   "calculator": {
     "numberStyle": "system"
@@ -325,6 +328,11 @@
         "shortcut": null,
         "alias": null,
         "showInLauncher": false
+      },
+      "com.apple.WalletSettingsExtension": {
+        "shortcut": null,
+        "alias": null,
+        "showInLauncher": false
       }
     }
   },
@@ -368,7 +376,7 @@
     "enabled": true,
     "showInLauncher": true,
     "opensNewWindow": false,
-    "selectionFallback": "ask",
+    "passesSelectedText": false,
     "confirmsBeforeDelete": true,
     "commands": {}
   },
@@ -378,6 +386,8 @@
   "ai": {
     "enabled": true,
     "webSearch": true,
+    "choices": true,
+    "expandsReasoning": false,
     "systemPrompt": "いついかなる時も必ず日本語で回答すること。",
     "systemPromptEnabled": true,
     "retentionDays": 7,
@@ -393,10 +403,12 @@
   "dictation": {
     "mode": "pushToTalk",
     "shortcut": "hyper+d",
+    "playsSounds": true,
     "model": "qwen-0.6b",
     "microphone": null,
     "destination": "both",
     "adaptsCapitalization": true,
+    "liveInsertion": false,
     "releaseAfterMinutes": 1,
     "language": "Japanese"
   },
@@ -406,12 +418,15 @@
       "~"
     ],
     "ignorePatterns": [],
+    "removedDefaultPatterns": [],
+    "showInLauncher": false,
     "commands": {}
   },
   "notes": {
     "enabled": false,
     "rendersMarkdown": true,
     "showsFormattingBar": true,
+    "showsInMenuBar": false,
     "folder": null,
     "commands": {}
   },
@@ -431,6 +446,8 @@
     "showInLauncher": true,
     "gap": 0,
     "cycle": "off",
+    "wrapDisplays": true,
+    "keepProportions": true,
     "layoutsShowInLauncher": true,
     "roomsShowInLauncher": true,
     "shortcuts": {
@@ -464,6 +481,10 @@
       "move-right": null,
       "move-up": null,
       "move-down": null,
+      "move-to-left-edge": null,
+      "move-to-right-edge": null,
+      "move-to-top-edge": null,
+      "move-to-bottom-edge": null,
       "next-display": null,
       "previous-display": null,
       "toggle-fullscreen": null,
@@ -517,9 +538,9 @@
     "autoJoinNamedProvidersOnly": false,
     "meetingBrowser": null,
     "menuBar": "meetingTitle",
-    "menuBarUpcomingEvents": 30,
+    "menuBarUpcomingEvents": 5,
     "menuBarLinkedEventsOnly": true,
-    "menuBarHidesWhenEmpty": true,
+    "menuBarHidesWhenEmpty": false,
     "hideCurrentEventAfterMinutes": "never",
     "commands": {
       "create-event": {
