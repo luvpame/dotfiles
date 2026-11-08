@@ -1,4 +1,4 @@
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "high"
 personality = "friendly"
 forced_login_method = "chatgpt"
 model = "gpt-6.1-sol"
@@ -128,7 +128,7 @@ enabled = true
 enabled = true
 
 [plugins."computer-use@openai-bundled"]
-enabled = true
+enabled = false
 
 [plugins."computer-history@openai-bundled"]
 enabled = true
@@ -215,7 +215,7 @@ sansFontSize = 16
 codeFontSize = 16
 usePointerCursors = true
 followUpQueueMode = "steer"
-composerEnterBehavior = "enter"
+composerEnterBehavior = "cmdAlways"
 reviewDelivery = "detached"
 localeOverride = "ja-JP"
 preventSleepWhileRunning = true
@@ -249,6 +249,7 @@ code-review-sidebar-sections = ["waiting_for_review", "needs_my_review", "needs_
 worktree-upstream-refresh-mode = "best-effort"
 autoArchiveAfterDays = 1
 browser-show-full-url = true
+migratedFollowUpQueueToSteer = false
 
 [desktop.appearanceLightChromeTheme]
 accent = "#8839ef"
@@ -309,11 +310,9 @@ BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab,mcpapps"
 BROWSER_USE_TINYSKY_ENABLED = "1"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
-NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.1021.31345"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/luvpame/.codex/plugins/cache/openai-bundled/browser/26.1021.31345/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
-SKY_CUA_SERVICE_PATH = "/Users/luvpame/.codex/computer-use/Codex Computer Use.app"
+BROWSER_USE_CODEX_APP_VERSION = "26.1103.41825"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/luvpame/.codex/plugins/cache/openai-bundled/browser/26.1103.41825/scripts/browser-service.mjs"}'
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex"
 
 [[skills.config]]
