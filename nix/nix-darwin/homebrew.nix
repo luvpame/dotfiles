@@ -117,6 +117,7 @@ let
     "sequel-ace"
     "linear"
     "luvpame/dotfiles-local/opie"
+    "luvpame/dotfiles-local/rex-beta"
 
     ### Fonts
     "font-plemol-jp-nf"
