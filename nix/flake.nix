@@ -15,6 +15,10 @@
       url = "github:anthropics/claude-plugins-official/465f09344424225c25d438f2e052732c3d688d2f";
       flake = false;
     };
+    emil-skills = {
+      url = "github:emilkowalski/skills/a81dbca07f2217b7103e510c0f13f8d5b017afc9";
+      flake = false;
+    };
     herdr-skills = {
       url = "github:herdrdev/herdr/5bd900d88c80d95f5b145397e45bbeea398b8165";
       flake = false;

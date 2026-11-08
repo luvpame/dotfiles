@@ -64,8 +64,12 @@ if.app-id = "com.openai.codex"
 run = "move-node-to-workspace 1" # Codexをワークスペース1に移動
 
 [[on-window-detected]]
-if.app-id = "dev.herdr.app"
-run = "move-node-to-workspace 3" # Herdrをワークスペース3に移動
+if.app-id = "com.superlogical.rex"
+run = ["move-node-to-workspace 3", "layout tiling"] # Rex Betaをワークスペース3に移動
+
+[[on-window-detected]]
+if.app-id = "com.linear"
+run = "move-node-to-workspace 4" # Linearをワークスペース4に移動
 
 [[on-window-detected]]
 if.app-id = "com.spotify.client"

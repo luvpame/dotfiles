@@ -107,6 +107,7 @@ let
     "a-bar"
     "keycastr"
     "chatgpt"
+    "t3-code"
     "portkiller"
     "nani"
     "wallspace"

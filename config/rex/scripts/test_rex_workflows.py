@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import tempfile
 import unittest
 from unittest.mock import patch
 
@@ -55,6 +56,51 @@ class RexWorkflowsTest(unittest.TestCase):
             review.main()
         self.assertEqual(len(calls), 1)
         self.assertEqual(calls[0][:3], ('gh', 'pr', 'list'))
+
+    def test_review_launches_each_agent_in_its_own_pane(self):
+        review = load('review', 'pr-review.py')
+        splits = []
+        def run(*args, **kwargs):
+            if args[:3] == ('gh', 'pr', 'list'):
+                return json.dumps([{'number': 42, 'title': 't'}])
+            if args[:3] == ('gh', 'pr', 'view'):
+                return json.dumps({'headRefName': 'topic', 'headRefOid': 'h', 'baseRefName': 'main',
+                                   'baseRefOid': 'b', 'url': 'https://github.com/o/r/pull/42'})
+            if '--git-path' in args:
+                return '/repo/.git/worktrees/wt/rex-dev-server.md'
+            if args[-2:] == ('rev-parse', 'HEAD'):
+                return 'h'
+            if args[-1] == '--show-current':
+                return 'topic'
+            if args[:2] == ('rex', 'new'):
+                return json.dumps({'session_id': 's2', 'initial_windows': [{'block_ids': ['p0']}], 'launcher': args[-1]})
+            if args[:3] == ('rex', 'window', 'new'):
+                splits.append(args[-1])
+                return json.dumps({'block_ids': [f'p{len(splits)}']})
+            return ''
+        source = {'source': {'repo_root': '/repo'}, 'worktrees': [{'path': '/repo/wt', 'branch': 'topic'}]}
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        mkdtemp = tempfile.mkdtemp
+        with patch.dict(os.environ, {'REX_SESSION': 's'}), patch.object(review, 'worktrees', return_value=source), \
+                patch.object(review, 'run', side_effect=run) as mocked, \
+                patch.object(review.tempfile, 'mkdtemp', side_effect=lambda prefix: mkdtemp(prefix=prefix, dir=temporary.name)), \
+                patch.object(review.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0, stdout='42\t"t"')):
+            review.main()
+        orchestrator = next(c.args[-1] for c in mocked.call_args_list if c.args[:2] == ('rex', 'new'))
+        scripts = [Path(path).read_text(encoding='utf-8') for path in (orchestrator, *splits)]
+        expected = [('opus', '/rex '), ('opus', '/code-review medium'), ('opus', '/code-review-with-patterns'),
+                    ('sonnet', '/agent-browser 開発サーバーを起動'), ('sonnet', '/agent-browser レビューで出た')]
+        for script, (model, command) in zip(scripts, expected, strict=True):
+            self.assertIn(f'--model {model} ', script)
+            self.assertIn(command, script)
+        results = Path(scripts[1].split('最終レビュー全体を ')[1].split(' に保存')[0]).parent
+        for name in ('review-1.md', 'review-2.md', 'qa.md', 'repro.md'):
+            self.assertIn(str(results / name), scripts[0])
+        self.assertIn(str(results / 'review-2.md'), scripts[4])
+        self.assertIn('サマリーのコメントには、動作確認コメントへのリンクだけを添える', scripts[0])
+        self.assertIn('-R o/r ', scripts[3])
+        self.assertIn('/repo/.git/worktrees/wt/rex-dev-server.md.lock', scripts[3])
 
     def test_invalid_picker_action_does_not_execute(self):
         picker = load('picker', 'worktree-picker.py')

@@ -78,6 +78,10 @@ in
     # 外部スキルの取得元。input は nix/flake.nix の入力名、subdir は取得元内の探索場所。
     # 同じ取得元から追加する場合は nameRegex も広げる（例: "(skill-a|skill-b)"）。
     # 新しい取得元なら nix/flake.nix に flake = false の入力を追加し、ここから参照する。
+    sources.emil-skills = {
+      input = "emil-skills";
+      subdir = "skills";
+    };
     sources.external = {
       # 既存4スキルのファイル名変換と差分保持は external-skills.nix で行う。
       # この取得元の追加・削除時は、同ファイルのコピー処理と原本hashも更新する。
@@ -109,13 +113,29 @@ in
     # 内容の更新は nix/flake.nix の取得リビジョンを変更する（配布済みファイルは編集しない）。
     # コピー済み4件の内容変更は skill-patches/ と external-skills.nix で管理する。
     skills.enable = [
+      "animate"
+      "animate-expo"
+      "animation-performance"
+      "animation-vocabulary"
+      "apple-design"
+      "ask-sonner"
+      "break-ui"
       "code-simplifier"
+      "emil-design-eng"
       "empirical-prompt-tuning"
+      "find-animation-opportunities"
       "git-surgeon"
       "herdr"
       "imozuru"
+      "improve-animations"
+      "mobile-native"
+      "pick-ui-library"
+      "prototype"
+      "remove-animations"
+      "review-animations"
       "security-audit"
       "show-me"
+      "write-swift"
       "yomiyasu"
     ];
     # 外部スキルの配布先。変更時は上のローカル用 targets も揃える。
