@@ -43,6 +43,10 @@
       url = "github:mizchi/skills/ab4eb2f7a92a13fb37c225ab427f2f492143ace1";
       flake = false;
     };
+    natural-japanese = {
+      url = "github:coji/natural-japanese/840bd400cbcb64c8b64d492a144da54fc05776c5";
+      flake = false;
+    };
     agent-memory-repo = {
       url = "github:AgentMemoryRepo/agentmemoryrepo/8798cb26c817d451a5ed6cba0ad8d9eca8d5ec3e";
       flake = false;

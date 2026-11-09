@@ -448,6 +448,23 @@
         "type": "github"
       }
     },
+    "natural-japanese": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1793968308,
+        "narHash": "sha256-9A0b6zuScFD7L6dfuVYTc/cfcDtveArBIkmfZrLHCcE=",
+        "owner": "coji",
+        "repo": "natural-japanese",
+        "rev": "840bd400cbcb64c8b64d492a144da54fc05776c5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "coji",
+        "repo": "natural-japanese",
+        "rev": "840bd400cbcb64c8b64d492a144da54fc05776c5",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -576,6 +593,7 @@
         "hunk": "hunk",
         "imozuru": "imozuru",
         "mizchi-skills": "mizchi-skills",
+        "natural-japanese": "natural-japanese",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs_2",
