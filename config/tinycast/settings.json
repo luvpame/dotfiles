@@ -413,7 +413,7 @@
     "language": "Japanese"
   },
   "fileSearch": {
-    "enabled": false,
+    "enabled": true,
     "scopes": [
       "~"
     ],
@@ -538,7 +538,7 @@
     "autoJoinNamedProvidersOnly": false,
     "meetingBrowser": null,
     "menuBar": "meetingTitle",
-    "menuBarUpcomingEvents": 5,
+    "menuBarUpcomingEvents": 30,
     "menuBarLinkedEventsOnly": true,
     "menuBarHidesWhenEmpty": false,
     "hideCurrentEventAfterMinutes": "never",
