@@ -105,13 +105,13 @@
         TrackpadRightClick = true;
       };
       menuExtraClock = {
-        # 日付なしのアナログ時計を表示する
-        IsAnalog = true;
+        FlashDateSeparators = true;
+        IsAnalog = false;
         Show24Hour = false;
-        ShowDate = 2;
+        ShowDate = 1;
         ShowDayOfMonth = false;
-        ShowDayOfWeek = false;
-        ShowSeconds = false;
+        ShowDayOfWeek = true;
+        ShowSeconds = true;
       };
       screensaver = {
         # 復帰時に即座に認証を要求する
