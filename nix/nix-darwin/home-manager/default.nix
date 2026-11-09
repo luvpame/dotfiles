@@ -22,6 +22,7 @@ in
         ./skills.nix
         ./services/agent-browser.nix
         ./services/herdr.nix
+        ./services/ollama.nix
       ];
 
       home.stateVersion = "24.11";
