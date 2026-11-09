@@ -109,6 +109,27 @@ class RexWorkflowsTest(unittest.TestCase):
                 picker.main()
         worktrees.assert_not_called()
 
+    def test_picker_launches_claude_for_root_existing_and_new_worktrees(self):
+        picker = load('picker', 'worktree-picker.py')
+        source = {'source': {'repo_root': '/repo', 'source_checkout_path': '/repo'},
+                  'worktrees': [{'path': '/repo'}, {'path': '/repo/topic', 'branch': 'topic'}]}
+        cases = [(['Original Root'], '/repo'),
+                 (['Worktree 作成・移動', '0\t["topic", "/repo/topic"]'], '/repo/topic'),
+                 (['Worktree 作成・移動', 'New Worktree'], '/repo/new-topic')]
+        for selections, path in cases:
+            with self.subTest(selections=selections), \
+                    patch.dict(os.environ, {'REX_SESSION': 's'}), \
+                    patch.object(picker, 'select', side_effect=selections), \
+                    patch.object(picker, 'worktrees', return_value=source), \
+                    patch.object(picker, 'run', side_effect=['', 'main', '{"path":"/repo/new-topic"}']), \
+                    patch.object(picker.subprocess, 'run'), \
+                    patch('builtins.input', return_value='new-topic'), \
+                    patch.object(rex_worktrees, 'worktrees', return_value=source), \
+                    patch.object(rex_worktrees, 'run', return_value='{"session_id":"new"}') as run:
+                picker.main()
+                run.assert_any_call('rex', 'new', os.path.basename(path), '-c', path, '--json', '--',
+                                    'env', 'CLAUDE_CODE_NO_FLICKER=1', 'claude', '--model', 'opus', '--effort', 'high')
+
     def test_open_worktree_is_excluded_from_removal(self):
         remove = load('remove', 'worktree-remove.py')
         source = {'source': {'repo_root': '/repo', 'source_checkout_path': '/repo'},

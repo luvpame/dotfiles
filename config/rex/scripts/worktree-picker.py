@@ -38,7 +38,7 @@ def main():
     data = worktrees()
     root = data['source']['repo_root']
     if action == 'Original Root':
-        open_session(root, ['cc'])
+        open_session(root, ['env', 'CLAUDE_CODE_NO_FLICKER=1', 'claude', '--model', 'opus', '--effort', 'high'])
         return
     entries = [entry for entry in data['worktrees'] if entry['path'] not in
                (root, data['source']['source_checkout_path'])]
@@ -62,7 +62,7 @@ def main():
         if selection not in rows:
             raise RuntimeError('選択された worktree が一覧にありません。')
         path = entries[int(selection.split('\t', 1)[0])]['path']
-    open_session(path, ['cc'])
+    open_session(path, ['env', 'CLAUDE_CODE_NO_FLICKER=1', 'claude', '--model', 'opus', '--effort', 'high'])
 
 
 if __name__ == '__main__':
