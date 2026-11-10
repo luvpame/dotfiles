@@ -83,6 +83,10 @@ run = "move-node-to-workspace 8" # Spotifyをワークスペース8に移動
 if.app-id = "md.obsidian"
 run = "move-node-to-workspace 9" # Obsidianをワークスペース9に移動
 
+[[on-window-detected]]
+if.app-id = "com.google.chrome.for.testing"
+run = "move-node-to-workspace 7" # テスト用の Chrome をワークスペース7に移動
+
 # フローティングで扱うアプリ
 [[on-window-detected]]
 if.app-id = "com.apple.finder" # Finder
