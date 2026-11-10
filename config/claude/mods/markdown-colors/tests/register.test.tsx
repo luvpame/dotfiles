@@ -51,12 +51,28 @@ test('each syntax gets its own color', async ($, on) => {
   const styleOf = (text: string) => texts.findLast(t => t.text === text)?.props
 
   expect(styleOf('見出し')?.color).toBe('claude')
-  expect(styleOf('-')?.color).toBe('success')
+  expect(styleOf('•')?.color).toBe('success')
   expect(styleOf('斜体')?.color).toBe('magenta')
   expect(styleOf('消し')?.strikethrough).toBe(true)
   expect(styleOf('リンク')?.underline).toBe(true)
   expect(styleOf('引用')?.italic).toBe(true)
   expect(texts.some(t => t.text === 'case')).toBe(false)
   expect((await ui.find({ type: 'Link' }))?.props.href).toBe('https://example.com')
+  await ui.unmount()
+})
+
+test('nested bullets change glyph by depth and tasks show a check', async ($, on) => {
+  on('ui.render', ($, e) => {
+    const { Text } = $.ui.resolve(e)
+    return <Text>engine</Text>
+  })
+
+  const ui = await $.ui.mount(MESSAGE('- 外\n  * 中\n    + 内\n\n1. 番号\n   - 番号の下\n\n- [x] 済み\n- [ ] 未'))
+  const texts = await ui.findAll({ type: 'Text' })
+  const glyphs = texts.map(t => t.text).filter(t => ['•', '◦', '▪', '✔', '☐', '-', '*', '+'].includes(t))
+
+  expect(glyphs).toEqual(['•', '◦', '▪', '◦', '✔', '☐'])
+  expect(texts.find(t => t.text === '済み')?.props.dimColor).toBe(true)
+  expect(texts.find(t => t.text === '未')?.props.dimColor).toBe(false)
   await ui.unmount()
 })

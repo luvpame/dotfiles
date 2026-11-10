@@ -8,8 +8,12 @@ const STYLE = {
   link: { color: 'green', underline: true },
   heading: { color: 'claude', weight: 'bold' },
   listMarker: { color: 'success' },
+  nestedListMarker: { color: 'subtle' },
+  taskTodo: { color: 'subtle' },
   quote: { color: 'subtle', italic: true },
 } as const
+
+const BULLETS = ['•', '◦', '▪']
 
 type Block = { kind: 'markdown' | 'styled'; text: string }
 
@@ -17,6 +21,7 @@ const FENCE = /^\s*(```|~~~)/
 const LIST = /^(\s*)([-*+]|\d+[.)])\s+/
 const HEADING = /^#{1,6}\s+/
 const QUOTE = /^>\s?/
+const TASK = /^\[([ xX])\]\s+/
 // Code comes first so that markers inside it stay literal; bold before italic so
 // `**` is not read as two italics. `_x_` needs non-word edges to skip snake_case.
 const INLINE =
@@ -50,6 +55,19 @@ export function splitBlocks(text: string): Block[] {
   return blocks
 }
 
+// Depth follows the indents seen so far rather than indent / 2, since items nested
+// under `1.` indent by 3 spaces while those under `-` indent by 2.
+export function listDepths(lines: string[]): number[] {
+  const indents: number[] = []
+  return lines.map(l => {
+    const indent = LIST.exec(l)?.[1]?.length
+    if (indent === undefined) return 0
+    while ((indents.at(-1) ?? -1) > indent) indents.pop()
+    if (indents.at(-1) !== indent) indents.push(indent)
+    return indents.length - 1
+  })
+}
+
 export const register: Register = on => {
   on('ui.render', { component: 'AssistantMessage' }, ($, e, next) => {
     const blocks = splitBlocks(e.props.text)
@@ -74,7 +92,7 @@ export const register: Register = on => {
         return <Text {...STYLE.italic}>{inline(part.slice(1, -1))}</Text>
       })
 
-    const line = (raw: string) => {
+    const line = (raw: string, depth: number) => {
       const heading = HEADING.exec(raw)
       if (heading) return <Text {...STYLE.heading}>{inline(raw.slice(heading[0].length))}</Text>
 
@@ -90,21 +108,32 @@ export const register: Register = on => {
 
       const list = LIST.exec(raw)
       if (list) {
-        const [marker, indent = '', bullet = ''] = list
+        const [marker, , bullet = ''] = list
+        const rest = raw.slice(marker.length)
+        const task = TASK.exec(rest)
+        const done = task !== null && task[1] !== ' '
+        const [symbol, style] = task
+          ? done
+            ? ['✔', STYLE.listMarker]
+            : ['☐', STYLE.taskTodo]
+          : [/\d/.test(bullet) ? bullet : (BULLETS[depth % BULLETS.length] ?? '•'), depth ? STYLE.nestedListMarker : STYLE.listMarker]
         return (
-          <Box flexDirection="row">
-            <Box width={marker.length} flexShrink={0}>
-              <Text>
-                {indent}
-                <Text {...STYLE.listMarker}>{bullet}</Text>
-              </Text>
+          <Box flexDirection="row" marginLeft={depth * 2}>
+            <Box width={symbol.length + 1} flexShrink={0}>
+              <Text {...style}>{symbol}</Text>
             </Box>
-            <Text>{inline(raw.slice(marker.length))}</Text>
+            <Text dimColor={done}>{inline(rest.slice(task?.[0].length ?? 0))}</Text>
           </Box>
         )
       }
 
       return <Text>{inline(raw)}</Text>
+    }
+
+    const styledLines = (text: string) => {
+      const lines = text.split('\n')
+      const depths = listDepths(lines)
+      return lines.map((l, i) => line(l, depths[i] ?? 0))
     }
 
     // A tree of our own replaces the engine's whole row, its bullet and margin included.
@@ -116,7 +145,7 @@ export const register: Register = on => {
         <Box flexDirection="column" flexGrow={1}>
           {blocks.map((b, i) => (
             <Box flexDirection="column" marginTop={i ? 1 : 0}>
-              {b.kind === 'markdown' ? <Markdown text={b.text} /> : b.text.split('\n').map(line)}
+              {b.kind === 'markdown' ? <Markdown text={b.text} /> : styledLines(b.text)}
             </Box>
           ))}
         </Box>
