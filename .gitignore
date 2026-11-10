@@ -39,3 +39,7 @@ config/fish/functions/*
 !config/fish/functions/tre.fish
 
 config/tmux/plugins/
+
+# Claude Code が Mod の読み込み時に生成する型と tsconfig
+config/claude/mods/*/.claude-plugin/types/
+config/claude/mods/*/tsconfig.json
