@@ -190,7 +190,7 @@
   "viewMode": "focus",
   "language": "日本語",
   "modelSettings": {
-    "claude-fable-5-1": {
+    "claude-fable-5-2": {
       "effortLevel": "medium"
     },
     "claude-fable-5": {
@@ -208,26 +208,11 @@
   },
   "autoMemoryEnabled": false,
   "skipWorkflowUsageWarning": true,
-  "theme": "light",
+  "theme": "light-daltonized",
   "editorMode": "vim",
   "verbose": false,
   "switchModelsOnFlag": true,
   "autoContinueAtUsageLimit": true,
   "skipAutoPermissionPrompt": true,
-  "useAutoModeDuringPlan": true,
-  "autoMode": {
-    "allow": [
-      "$defaults",
-      "Bash(make rspec:*)",
-      "Bash(make rubocop:*)",
-      "Bash(pnpm test:once:*)",
-      "Bash(pnpm lint:*)",
-      "Bash(curl) POST to Slack incoming webhooks (https://hooks.slack.com/services/*) to notify the team channel from the review-migration-adr routine; payload is a short PR-review request message"
-    ],
-    "soft_deny": [
-      "$defaults",
-      "Bash(make m:*) in backend/ when ALLOW_DESTRUCTIVE_SCHEMA_CHANGE is set (destructive Ridgepole schema change, per .claude/rules/db-schema.md)",
-      "gh workflow run / deploy-prod* and ecs-exec-prod-backend-api* GitHub Actions workflows"
-    ]
-  }
+  "useAutoModeDuringPlan": true
 }
