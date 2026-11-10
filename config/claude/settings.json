@@ -10,7 +10,7 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "sonnet",
+  "model": "claude-fable-5-2",
   "enableAllProjectMcpServers": true,
   "hooks": {
     "PreToolUse": [

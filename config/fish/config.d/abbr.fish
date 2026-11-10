@@ -8,7 +8,7 @@ if status is-interactive
     abbr -a j just
     abbr -a cc 'CLAUDE_CODE_NO_FLICKER=1 claude --model opus --effort high'
     abbr -a ccs 'CLAUDE_CODE_NO_FLICKER=1 claude --model sonnet --effort high'
-    abbr -a ccf 'CLAUDE_CODE_NO_FLICKER=1 claude --model fable'
+    abbr -a ccf 'CLAUDE_CODE_NO_FLICKER=1 claude --model fable --effort medium'
     abbr -a cch 'CLAUDE_CODE_NO_FLICKER=1 claude --model haiku --effort high'
     abbr -a co 'codex --no-daemon'
     abbr -a v nvim
