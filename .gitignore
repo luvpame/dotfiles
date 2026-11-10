@@ -3,6 +3,8 @@
 !config/git/config.local.example
 config/git/config.local
 .DS_Store
+__pycache__/
+*.py[co]
 fish_variables
 nix/result
 .nvimlog
