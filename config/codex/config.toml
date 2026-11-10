@@ -1,7 +1,7 @@
-model_reasoning_effort = "medium"
+model_reasoning_effort = "high"
 personality = "friendly"
 forced_login_method = "chatgpt"
-model = "gpt-6.1-sol"
+model = "gpt-6-astra"
 model_context_window = 1000000
 model_auto_compact_token_limit = 900000
 web_search = "live"
