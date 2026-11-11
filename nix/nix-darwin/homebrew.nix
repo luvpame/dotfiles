@@ -2,11 +2,6 @@
 let
   primaryUser = config.dotfiles.user.name;
   homebrewPrefix = "/opt/homebrew";
-  localTapSource = builtins.path {
-    path = ../homebrew-tap;
-    name = "dotfiles-homebrew-tap";
-  };
-  localTapPath = "${homebrewPrefix}/Library/Taps/luvpame/homebrew-dotfiles-local";
   brewBin = "${homebrewPrefix}/bin/brew";
   moBin = "${homebrewPrefix}/opt/mo/bin/mo";
   moleBin = "${homebrewPrefix}/opt/mole/bin/mole";
@@ -60,7 +55,6 @@ let
     "productdevbook/tap" # portkiller
     "fayazara/tap" # screendrop
     "driceroland/tap" # search
-    "luvpame/dotfiles-local"
   ];
   trustedTaps =
     map (name: {
@@ -114,7 +108,6 @@ let
     "sequel-ace"
     "linear"
     "yksr-melt/Meltype/meltype"
-    "luvpame/dotfiles-local/opie"
 
     ### Fonts
     "font-plemol-jp-nf"
@@ -145,18 +138,6 @@ in
 
   # `mo` と `mole` は同名バイナリを含むため、brew 管理の link を外して衝突を避ける。
   system.activationScripts.preActivation.text = ''
-    if [ -L "${localTapPath}" ]; then
-      if ! [[ "$(readlink "${localTapPath}")" =~ ^/nix/store/[0-9a-z]{32}-dotfiles-homebrew-tap$ ]]; then
-        printf '%s\n' "Refusing to replace an unmanaged tap symlink: ${localTapPath}" >&2
-        exit 1
-      fi
-    elif [ -e "${localTapPath}" ]; then
-      printf '%s\n' "Refusing to replace an existing tap: ${localTapPath}" >&2
-      exit 1
-    fi
-    sudo -u ${primaryUser} mkdir -p "${homebrewPrefix}/Library/Taps/luvpame"
-    sudo -u ${primaryUser} ln -sfn "${localTapSource}" "${localTapPath}"
-
     if [ -x ${brewBin} ]; then
       ${brewBin} unlink mo >/dev/null 2>&1 || true
       ${brewBin} unlink mole >/dev/null 2>&1 || true
