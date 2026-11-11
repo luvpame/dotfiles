@@ -43,6 +43,10 @@ status_line_use_colors = true
 pet = "disabled"
 screen_reader_detection_done = true
 fullscreen_transcript = true
+notification_condition = "always"
+vim_mode_default = true
+resume_cwd = "session"
+copy_on_select_clear_selection = true
 
 [tui.model_availability_nux]
 "gpt-5.5" = 4
