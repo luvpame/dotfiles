@@ -448,6 +448,23 @@
         "type": "github"
       }
     },
+    "modern-web-guidance": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1794280113,
+        "narHash": "sha256-bqsUEI1yaGy1sd8DBJzG5cOv4Yv0RSYac6e9egqYFJU=",
+        "owner": "GoogleChrome",
+        "repo": "modern-web-guidance",
+        "rev": "4dd968349e54ca45a05dd5c818fb035c9054b022",
+        "type": "github"
+      },
+      "original": {
+        "owner": "GoogleChrome",
+        "repo": "modern-web-guidance",
+        "rev": "4dd968349e54ca45a05dd5c818fb035c9054b022",
+        "type": "github"
+      }
+    },
     "natural-japanese": {
       "flake": false,
       "locked": {
@@ -593,6 +610,7 @@
         "hunk": "hunk",
         "imozuru": "imozuru",
         "mizchi-skills": "mizchi-skills",
+        "modern-web-guidance": "modern-web-guidance",
         "natural-japanese": "natural-japanese",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",

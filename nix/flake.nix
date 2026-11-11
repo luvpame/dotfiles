@@ -15,6 +15,10 @@
       url = "github:vercel-labs/agent-browser/v0.41.2";
       flake = false;
     };
+    modern-web-guidance = {
+      url = "github:GoogleChrome/modern-web-guidance/4dd968349e54ca45a05dd5c818fb035c9054b022";
+      flake = false;
+    };
     anthropic-skills = {
       url = "github:anthropics/claude-plugins-official/ea686bae367e20a4092b2fd4327ffd299bb60f24";
       flake = false;

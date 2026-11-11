@@ -113,6 +113,11 @@ in
       subdir = "skills";
       filter.nameRegex = "imozuru";
     };
+    sources.modern-web-guidance = {
+      input = "modern-web-guidance";
+      subdir = "skills";
+      filter.nameRegex = "modern-web-guidance";
+    };
     sources.natural-japanese = {
       input = "natural-japanese";
       subdir = "skills";
@@ -157,6 +162,7 @@ in
       "imozuru"
       "improve-animations"
       "mobile-native"
+      "modern-web-guidance"
       "natural-japanese"
       "pick-ui-library"
       "prototype"
