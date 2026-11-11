@@ -191,7 +191,7 @@
   "language": "日本語",
   "modelSettings": {
     "claude-fable-5-2": {
-      "effortLevel": "medium"
+      "effortLevel": "low"
     },
     "claude-fable-5": {
       "effortLevel": "medium"
