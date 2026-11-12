@@ -167,6 +167,10 @@ source = "https://github.com/michael-denyer/pstack-claude.git"
 source_type = "git"
 source = "https://github.com/cursor/plugins.git"
 
+[marketplaces.skills]
+source_type = "git"
+source = "https://github.com/mathbullet/skills.git"
+
 [plugins."superpowers@openai-curated"]
 enabled = true
 
@@ -222,6 +226,9 @@ enabled = false
 enabled = true
 
 [plugins."pstack@cursor-plugins"]
+enabled = true
+
+[plugins."html@skills"]
 enabled = true
 
 [hooks.state]

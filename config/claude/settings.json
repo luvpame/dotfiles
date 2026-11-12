@@ -140,9 +140,16 @@
     "cc-plugin-you-should-know@builtin": true,
     "pstack@cursor-plugins": true,
     "demo-video@demo-video": true,
-    "hyperframes@hyperframes": true
+    "hyperframes@hyperframes": true,
+    "html@skills": true
   },
   "extraKnownMarketplaces": {
+    "skills": {
+      "source": {
+        "source": "github",
+        "repo": "mathbullet/skills"
+      }
+    },
     "cclens": {
       "source": {
         "source": "github",
