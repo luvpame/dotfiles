@@ -53,7 +53,6 @@ let
     "k1LoW/tap" # mo (browser markdown viewer)
     "Jean-Tinland/a-bar" # menubar
     "productdevbook/tap" # portkiller
-    "fayazara/tap" # screendrop
     "driceroland/tap" # search
   ];
   trustedTaps =
@@ -97,7 +96,8 @@ let
     "portkiller"
     "nani"
     "wallspace"
-    "screendrop"
+    "cap"
+    "shottr"
     "firefox"
     "search"
     "obsidian"
