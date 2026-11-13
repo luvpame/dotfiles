@@ -124,11 +124,11 @@
     "claude-code-source": {
       "flake": false,
       "locked": {
-        "lastModified": 1794517347,
-        "narHash": "sha256-UFP75biFkXM0jcYetBfHq5wWVkCQ9d+uzr+/pIoHxR8=",
+        "lastModified": 1794603736,
+        "narHash": "sha256-7YmhcFLDnmSWauUMOQWNcjmhkdyMAVJGg3uEpCGuB8g=",
         "owner": "ryoppippi",
         "repo": "claude-code-overlay",
-        "rev": "a6771418171c48bd692a1902c4e4e7d086732d62",
+        "rev": "719fc01606a3b955ba1d26227f84b48f58254994",
         "type": "github"
       },
       "original": {
@@ -159,11 +159,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794505579,
-        "narHash": "sha256-4vTweGw1vCTdCOfa7J0is7PST3R3tM7bUJx8Yr1XhMU=",
+        "lastModified": 1794596355,
+        "narHash": "sha256-Ej8In4XSX2aRWTLUZrsDDCfw9OIMwD+WaC9x8O0swXU=",
         "ref": "refs/heads/main",
-        "rev": "0eacd5e2872e6054fad04b55bdd1acc0fb68864f",
-        "revCount": 1034,
+        "rev": "bfce56ffc935a15c4f99cc526f1085cd5450aeeb",
+        "revCount": 1040,
         "type": "git",
         "url": "https://github.com/tomasz-tomczyk/crit.git"
       },
