@@ -14,6 +14,58 @@ def run(*args, cwd=None):
     return subprocess.check_output(args, cwd=cwd, text=True).strip()
 
 
+def review_rows(requested, open_prs):
+    prs = {pr["number"]: pr for pr in open_prs}
+    for pr in requested:
+        prs[pr["number"]] = prs.get(pr["number"], {}) | pr
+    requested_numbers = {pr["number"] for pr in requested}
+    heads = {}
+    for pr in open_prs:
+        if not pr["isCrossRepository"]:
+            heads.setdefault(pr["headRefName"], []).append(pr["number"])
+    parents = {number: heads.get(pr["baseRefName"], []) for number, pr in prs.items()}
+    children = {}
+    for number, parent_numbers in parents.items():
+        for parent in parent_numbers:
+            children.setdefault(parent, []).append(number)
+    connected = set()
+    pending = list(requested_numbers)
+    while pending:
+        number = pending.pop()
+        if number in connected:
+            continue
+        connected.add(number)
+        pending.extend(parents[number])
+        pending.extend(children.get(number, []))
+
+    rows = []
+    visited = set()
+    roots = [number for number in prs if number in connected and not parents[number]]
+    # Cycles have no root; the remaining nodes also provide a bounded fallback for them.
+    for root in roots + list(prs):
+        if root not in connected or root in visited:
+            continue
+        visited.add(root)
+        pending = [(root, "", "")]
+        while pending:
+            number, prefix, branch = pending.pop()
+            pr = prs[number]
+            # JSON encoding prevents titles and branch names from injecting terminal controls or rows.
+            title = json.dumps(pr["title"], ensure_ascii=False)
+            base = json.dumps(pr["baseRefName"], ensure_ascii=False)
+            marker = " [参考]" if number not in requested_numbers else ""
+            rows.append(f'{number}\t{prefix}{branch}#{number} {title} base {base}{marker}')
+            descendants = [child for child in children.get(number, []) if child not in visited]
+            visited.update(descendants)
+            child_prefix = prefix
+            if branch:
+                child_prefix += "│  " if branch == "├─ " else "   "
+            for index in range(len(descendants) - 1, -1, -1):
+                connector = "└─ " if index == len(descendants) - 1 else "├─ "
+                pending.append((descendants[index], child_prefix, connector))
+    return rows
+
+
 def main():
     workspace = os.environ.get("REX_SESSION")
     if not workspace:
@@ -22,24 +74,35 @@ def main():
     root = source["source"]["repo_root"]
     prs = json.loads(run(
         "gh", "pr", "list", "--search", "review-requested:@me", "--state", "open",
-        "--limit", "1000", "--json", "number,title", cwd=root,
+        "--limit", "1000", "--json", "number,title,baseRefName", cwd=root,
     ))
     if not prs:
         input("レビュー依頼のある PR はありません。Enter で閉じます。")
         return
-    # JSON encoding prevents PR titles from injecting terminal control characters or rows.
-    rows = "\n".join(f'{pr["number"]}\t{json.dumps(pr["title"], ensure_ascii=False)}' for pr in prs)
-    selection = subprocess.run(
-        ["fzf", "--layout=reverse", "--prompt=PR Review> ",
-         "--header=選択すると worktree を準備してレビューを起動します"],
-        input=rows, text=True, stdout=subprocess.PIPE,
-    )
-    if selection.returncode in (1, 130):
-        return
-    selection.check_returncode()
-    number = selection.stdout.split("\t", 1)[0]
-    if number not in {str(pr["number"]) for pr in prs}:
-        raise RuntimeError("選択された PR が一覧にありません。")
+    # shortcut: Stack detection covers 1000 open PRs; paginate when a repository exceeds this.
+    open_prs = json.loads(run(
+        "gh", "pr", "list", "--state", "open", "--limit", "1000", "--json",
+        "number,title,headRefName,baseRefName,isCrossRepository", cwd=root,
+    ))
+    rows = review_rows(prs, open_prs)
+    listed = {row.split("\t", 1)[0] for row in rows}
+    requested = {str(pr["number"]) for pr in prs}
+    header = "選択すると worktree を準備してレビューを起動します。[参考] はレビュー対象外です"
+    while True:
+        selection = subprocess.run(
+            ["fzf", "--layout=reverse", "--prompt=PR Review> ",
+             "--delimiter=\t", "--with-nth=2..", "--no-sort", f"--header={header}"],
+            input="\n".join(rows), text=True, stdout=subprocess.PIPE,
+        )
+        if selection.returncode in (1, 130):
+            return
+        selection.check_returncode()
+        number = selection.stdout.split("\t", 1)[0]
+        if number not in listed:
+            raise RuntimeError("選択された PR が一覧にありません。")
+        if number in requested:
+            break
+        header = f"PR #{number} はレビュー対象外です。レビュー依頼のある PR を選択してください"
     pr = json.loads(run(
         "gh", "pr", "view", number, "--json", "headRefName,headRefOid,baseRefName,baseRefOid,url", cwd=root,
     ))
