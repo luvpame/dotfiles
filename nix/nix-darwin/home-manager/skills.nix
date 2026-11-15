@@ -98,6 +98,16 @@ in
       subdir = "skills";
       filter.nameRegex = "imozuru";
     };
+    sources.modern-web-guidance = {
+      input = "modern-web-guidance";
+      subdir = "skills";
+      filter.nameRegex = "modern-web-guidance";
+    };
+    sources.natural-japanese = {
+      input = "natural-japanese";
+      subdir = "skills";
+      filter.nameRegex = "natural-japanese";
+    };
     sources.security-audit = {
       input = "security-audit-skill";
       subdir = "skills";
@@ -129,6 +139,8 @@ in
       "imozuru"
       "improve-animations"
       "mobile-native"
+      "modern-web-guidance"
+      "natural-japanese"
       "pick-ui-library"
       "prototype"
       "remove-animations"

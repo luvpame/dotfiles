@@ -11,28 +11,36 @@
     # nix-darwin/home-manager/skills.nix の sources と skills.enable に登録する。
     # 入力の変更後は nix/ で nix flake lock path:. → just check → just switch。
     # URLにコミットを指定した入力の更新は、URLのコミットも変更する必要がある。
+    modern-web-guidance = {
+      url = "github:GoogleChrome/modern-web-guidance/4dd968349e54ca45a05dd5c818fb035c9054b022";
+      flake = false;
+    };
     anthropic-skills = {
-      url = "github:anthropics/claude-plugins-official/465f09344424225c25d438f2e052732c3d688d2f";
+      url = "github:anthropics/claude-plugins-official/ea686bae367e20a4092b2fd4327ffd299bb60f24";
       flake = false;
     };
     emil-skills = {
-      url = "github:emilkowalski/skills/a81dbca07f2217b7103e510c0f13f8d5b017afc9";
+      url = "github:emilkowalski/skills/715c1807e08c497cfd1dc4feb450a2a3300ef2a9";
       flake = false;
     };
     herdr-skills = {
-      url = "github:herdrdev/herdr/5bd900d88c80d95f5b145397e45bbeea398b8165";
+      url = "github:herdrdev/herdr/ee5bfb5041bb3e4a49d591c72308aae3c81ecdde";
       flake = false;
     };
     humanlayer-skills = {
-      url = "github:humanlayer/skills/653b6411c1f70c275a18e37673b042ff99f67ceb";
+      url = "github:humanlayer/skills/4d69d20f6e9b57b4fcf0d501ccfb1be961f0f329";
       flake = false;
     };
     imozuru = {
-      url = "github:MaryCache/imozuru/ecb82c71b611872a0f49e783eda3bec987c80d91";
+      url = "github:MaryCache/imozuru/808407e501bc5a1e596655b0a6d62e1f3b20ba1b";
       flake = false;
     };
     mizchi-skills = {
       url = "github:mizchi/skills/ab4eb2f7a92a13fb37c225ab427f2f492143ace1";
+      flake = false;
+    };
+    natural-japanese = {
+      url = "github:coji/natural-japanese/840bd400cbcb64c8b64d492a144da54fc05776c5";
       flake = false;
     };
     security-audit-skill = {
@@ -40,7 +48,7 @@
       flake = false;
     };
     yomiyasu = {
-      url = "github:nanaism/yomiyasu/c09270bc93daab14e253fb3ef406182011b79ccb";
+      url = "github:nanaism/yomiyasu/7b212ff2f037953b8c233ae315e5c08e7fc36da6";
       flake = false;
     };
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";

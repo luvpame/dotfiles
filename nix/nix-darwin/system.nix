@@ -105,13 +105,13 @@
         TrackpadRightClick = true;
       };
       menuExtraClock = {
-        # 日付なしのデジタル時計を表示する
+        FlashDateSeparators = true;
         IsAnalog = false;
         Show24Hour = false;
-        ShowDate = 2;
+        ShowDate = 1;
         ShowDayOfMonth = false;
-        ShowDayOfWeek = false;
-        ShowSeconds = false;
+        ShowDayOfWeek = true;
+        ShowSeconds = true;
       };
       screensaver = {
         # 復帰時に即座に認証を要求する
@@ -124,12 +124,6 @@
       };
     };
   };
-
-  # eMudhra の中間 CA 秘密鍵漏洩への対策 https://emudhra.we-have-a-problem.com/
-  security.pki.caCertificateBlacklist = [
-    "Comodo AAA Services root"
-    "emSign ECC Root CA - G3"
-  ];
 
   # 各 CLI が独自の古い CA バンドルへ戻らないよう、拒否設定済みのバンドルを使う。
   environment.variables = {

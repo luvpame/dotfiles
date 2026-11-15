@@ -55,9 +55,7 @@ let
     "nikitabobko/tap" # aerospace
     "daipeihust/tap" # im-select
     "k1LoW/tap" # mo (browser markdown viewer)
-    "Jean-Tinland/a-bar" # menubar
     "productdevbook/tap" # portkiller
-    "fayazara/tap" # screendrop
     "gauthierpiarrette/highball"
     "penso/tap" # herdr-gpui
     "luvpame/dotfiles-local"
@@ -104,19 +102,18 @@ let
     "highball"
     "azookey"
     "yksr-melt/Meltype/meltype"
-    "a-bar"
     "keycastr"
     "chatgpt"
     "t3-code"
     "portkiller"
     "nani"
     "wallspace"
-    "screendrop"
+    "cap"
+    "shottr"
     "firefox"
     "orbstack"
     "sequel-ace"
     "linear"
-    "luvpame/dotfiles-local/opie"
     "luvpame/dotfiles-local/rex-beta"
 
     ### Fonts

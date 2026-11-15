@@ -4,15 +4,6 @@ config-version = 2
 # AeroSpace起動後に実行するコマンドを追加できます
 # 利用可能なコマンド: https://nikitabobko.github.io/AeroSpace/commands
 after-startup-command = []
-on-focus-changed = [
-  "exec-and-forget osascript -e 'tell application \"a-bar\" to refresh \"aerospace\"'",
-]
-
-exec-on-workspace-change = [
-  '/bin/zsh',
-  '-c',
-  '/usr/bin/osascript -e "tell application \"a-bar\" to refresh \"aerospace\""',
-]
 # ログイン時にAeroSpaceを起動する
 start-at-login = true
 # 正規化設定。参照: https://nikitabobko.github.io/AeroSpace/guide#normalization
@@ -75,6 +66,14 @@ run = "move-node-to-workspace 4" # Linearをワークスペース4に移動
 if.app-id = "com.spotify.client"
 run = "move-node-to-workspace 0" # Spotifyをワークスペース0に移動
 
+[[on-window-detected]]
+if.app-id = "com.sequel-ace.sequel-ace"
+run = "move-node-to-workspace 6"
+
+[[on-window-detected]]
+if.app-id = "com.google.chrome.for.testing"
+run = "move-node-to-workspace 7" # テスト用の Chrome をワークスペース7に移動
+
 # フローティングで扱うアプリ
 [[on-window-detected]]
 if.app-id = "com.apple.finder" # Finder
@@ -89,7 +88,11 @@ if.app-id = "jp.kiok.nani" # Nani
 run = "layout floating"
 
 [[on-window-detected]]
-if.app-id = "com.fayazahmed.Screendrop" # Screendrop
+if.app-id = "so.cap.desktop" # Cap
+run = "layout floating"
+
+[[on-window-detected]]
+if.app-id = "cc.ffitch.shottr" # Shottr
 run = "layout floating"
 
 # 設定可能な値: (qwerty|dvorak|colemak)
