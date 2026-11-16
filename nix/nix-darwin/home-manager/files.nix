@@ -32,6 +32,7 @@ in
     "worktrunk/config.toml".source = oos "${configRoot}/worktrunk/config.toml";
     # auth.json と trust.json は秘密情報と Runtime state のため、設定ファイルだけを配置する。
     "muse/settings.json".source = oos "${configRoot}/muse/settings.json";
+    "muse/AGENTS.md".source = oos "${configRoot}/muse/AGENTS.md";
     hunk.source = oos "${configRoot}/hunk";
     wezterm.source = oos "${configRoot}/wezterm";
     zed.source = oos "${configRoot}/zed";
