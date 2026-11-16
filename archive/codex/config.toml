@@ -1,4 +1,4 @@
-model_reasoning_effort = "high"
+model_reasoning_effort = "medium"
 personality = "friendly"
 forced_login_method = "chatgpt"
 model = "gpt-6.1-sol"
@@ -178,7 +178,7 @@ trusted_hash = "sha256:49130f7696b290ae4f9c74a31d96acc5da5c9b975496e276a8d6ce25b
 trusted_hash = "sha256:7c52bf2a50e603e45d405cb482d234f2abb8c8940c6dae7aaa334a7ac514fe01"
 
 [hooks.state."/Users/luvpame/.codex/hooks.json:session_start:1:0"]
-trusted_hash = "sha256:cc5c6e44d9c3c62647bf43372eb8362c3e06655300eaa4600e92b6a55df9d6d7"
+trusted_hash = "sha256:7ac16f27c7b29bec5952047d0a2193dc7595d731faca5a12c3c476194bd2d532"
 
 [hooks.state."i-have-adhd@i-have-adhd:hooks/hooks.json:session_start:0:0"]
 trusted_hash = "sha256:f14f820a4bb04f568faf482695f08471d7ed733a25fd94181693a7be4f06a637"
@@ -311,8 +311,8 @@ BROWSER_USE_TINYSKY_ENABLED = "1"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.1103.41825"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/luvpame/.codex/plugins/cache/openai-bundled/browser/26.1103.41825/scripts/browser-service.mjs"}'
+BROWSER_USE_CODEX_APP_VERSION = "26.1111.21308"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/luvpame/.codex/plugins/cache/openai-bundled/browser/26.1111.21308/scripts/browser-service.mjs"}'
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex"
 
 [[skills.config]]

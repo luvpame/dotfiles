@@ -30,6 +30,8 @@ in
 
     # Runtime stateを含むHunkの親directory linkはT24でfile単位へ分割する。
     "worktrunk/config.toml".source = oos "${configRoot}/worktrunk/config.toml";
+    # auth.json と trust.json は秘密情報と Runtime state のため、設定ファイルだけを配置する。
+    "muse/settings.json".source = oos "${configRoot}/muse/settings.json";
     hunk.source = oos "${configRoot}/hunk";
     wezterm.source = oos "${configRoot}/wezterm";
     zed.source = oos "${configRoot}/zed";
