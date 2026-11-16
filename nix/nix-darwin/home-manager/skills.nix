@@ -13,8 +13,9 @@ let
   # 外部へ移行した4スキルの旧原本は、反映後に archive/agents/skills/ へ退避する。
   localSkills = [
     "conventional-commit"
-    "eli33"
+    "rex"
   ];
+  # eli33 は棚卸しにより archive/agents/skills/eli33 へ退避（2026-11-16）。
   skillsRoot = "${config.home.homeDirectory}/.dotfiles/config/agents/skills";
   # ローカルスキルの配布先。変更時は下の programs.agent-skills.targets も揃える。
   targets = [
@@ -88,16 +89,6 @@ in
       path = import ./external-skills.nix { inherit inputs pkgs; };
       filter.maxDepth = 1;
     };
-    sources.git-surgeon = {
-      input = "git-surgeon";
-      subdir = "skills";
-      filter.nameRegex = "git-surgeon";
-    };
-    sources.imozuru = {
-      input = "imozuru";
-      subdir = "skills";
-      filter.nameRegex = "imozuru";
-    };
     sources.modern-web-guidance = {
       input = "modern-web-guidance";
       subdir = "skills";
@@ -121,7 +112,7 @@ in
     # 外部スキルの追加・配布停止はこの一覧で指定する。sources の絞り込み条件にも含める。
     # 変更後は just switch。入力も変更した場合は、その前に nix/ で nix flake lock path:. を実行。
     # 内容の更新は nix/flake.nix の取得リビジョンを変更する（配布済みファイルは編集しない）。
-    # コピー済み4件の内容変更は skill-patches/ と external-skills.nix で管理する。
+    # コピー済み1件（code-simplifier）の内容変更は skill-patches/ と external-skills.nix で管理する。
     skills.enable = [
       "animate"
       "animate-expo"
@@ -132,11 +123,7 @@ in
       "break-ui"
       "code-simplifier"
       "emil-design-eng"
-      "empirical-prompt-tuning"
       "find-animation-opportunities"
-      "git-surgeon"
-      "herdr"
-      "imozuru"
       "improve-animations"
       "mobile-native"
       "modern-web-guidance"
@@ -146,7 +133,6 @@ in
       "remove-animations"
       "review-animations"
       "security-audit"
-      "show-me"
       "write-swift"
       "yomiyasu"
     ];
