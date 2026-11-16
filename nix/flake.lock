@@ -87,22 +87,6 @@
         "type": "github"
       }
     },
-    "claude-code-source": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1794603736,
-        "narHash": "sha256-7YmhcFLDnmSWauUMOQWNcjmhkdyMAVJGg3uEpCGuB8g=",
-        "owner": "ryoppippi",
-        "repo": "claude-code-overlay",
-        "rev": "719fc01606a3b955ba1d26227f84b48f58254994",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ryoppippi",
-        "repo": "claude-code-overlay",
-        "type": "github"
-      }
-    },
     "crane": {
       "locked": {
         "lastModified": 1781825982,
@@ -229,27 +213,6 @@
         "type": "github"
       }
     },
-    "git-surgeon": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1791662132,
-        "narHash": "sha256-oWrPbQHa9IVlhFnJen/lf/DS73/zNTyBeh/Gb3ioaSo=",
-        "owner": "raine",
-        "repo": "git-surgeon",
-        "rev": "ecf6dc42172ba757cc03bce1800ba1db45779f46",
-        "type": "github"
-      },
-      "original": {
-        "owner": "raine",
-        "repo": "git-surgeon",
-        "rev": "ecf6dc42172ba757cc03bce1800ba1db45779f46",
-        "type": "github"
-      }
-    },
     "guard-and-guide": {
       "inputs": {
         "git-hooks": "git-hooks",
@@ -271,23 +234,6 @@
         "type": "github"
       }
     },
-    "herdr-skills": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1793278609,
-        "narHash": "sha256-0B58jR/v1vxbK7cwoq++SnOCsED0sHDkgqVMvsrjezE=",
-        "owner": "herdrdev",
-        "repo": "herdr",
-        "rev": "ee5bfb5041bb3e4a49d591c72308aae3c81ecdde",
-        "type": "github"
-      },
-      "original": {
-        "owner": "herdrdev",
-        "repo": "herdr",
-        "rev": "ee5bfb5041bb3e4a49d591c72308aae3c81ecdde",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -305,23 +251,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "home-manager",
-        "type": "github"
-      }
-    },
-    "humanlayer-skills": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1793567589,
-        "narHash": "sha256-ZuDObFjOFAahsvrxqDbL9FHrMVWx6Lnh5dttdsW+czo=",
-        "owner": "humanlayer",
-        "repo": "skills",
-        "rev": "4d69d20f6e9b57b4fcf0d501ccfb1be961f0f329",
-        "type": "github"
-      },
-      "original": {
-        "owner": "humanlayer",
-        "repo": "skills",
-        "rev": "4d69d20f6e9b57b4fcf0d501ccfb1be961f0f329",
         "type": "github"
       }
     },
@@ -348,23 +277,6 @@
         "type": "github"
       }
     },
-    "imozuru": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1793197058,
-        "narHash": "sha256-LrYzlLo4LYLmgFdQcHjlL3ALP1jbOr+oqTgoAdunWGU=",
-        "owner": "MaryCache",
-        "repo": "imozuru",
-        "rev": "808407e501bc5a1e596655b0a6d62e1f3b20ba1b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "MaryCache",
-        "repo": "imozuru",
-        "rev": "808407e501bc5a1e596655b0a6d62e1f3b20ba1b",
-        "type": "github"
-      }
-    },
     "import-tree": {
       "locked": {
         "lastModified": 1763762820,
@@ -377,23 +289,6 @@
       "original": {
         "owner": "vic",
         "repo": "import-tree",
-        "type": "github"
-      }
-    },
-    "mizchi-skills": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1792324323,
-        "narHash": "sha256-QYE0a9wYoMPaH+mnWzLx5DjDcuTtWE14fs60kX41fKA=",
-        "owner": "mizchi",
-        "repo": "skills",
-        "rev": "ab4eb2f7a92a13fb37c225ab427f2f492143ace1",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mizchi",
-        "repo": "skills",
-        "rev": "ab4eb2f7a92a13fb37c225ab427f2f492143ace1",
         "type": "github"
       }
     },
@@ -545,17 +440,11 @@
         "agent-skills": "agent-skills",
         "anthropic-skills": "anthropic-skills",
         "cclens": "cclens",
-        "claude-code-source": "claude-code-source",
         "crit": "crit",
         "emil-skills": "emil-skills",
-        "git-surgeon": "git-surgeon",
         "guard-and-guide": "guard-and-guide",
-        "herdr-skills": "herdr-skills",
         "home-manager": "home-manager",
-        "humanlayer-skills": "humanlayer-skills",
         "hunk": "hunk",
-        "imozuru": "imozuru",
-        "mizchi-skills": "mizchi-skills",
         "modern-web-guidance": "modern-web-guidance",
         "natural-japanese": "natural-japanese",
         "nix-darwin": "nix-darwin",

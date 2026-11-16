@@ -23,22 +23,6 @@
       url = "github:emilkowalski/skills/715c1807e08c497cfd1dc4feb450a2a3300ef2a9";
       flake = false;
     };
-    herdr-skills = {
-      url = "github:herdrdev/herdr/ee5bfb5041bb3e4a49d591c72308aae3c81ecdde";
-      flake = false;
-    };
-    humanlayer-skills = {
-      url = "github:humanlayer/skills/4d69d20f6e9b57b4fcf0d501ccfb1be961f0f329";
-      flake = false;
-    };
-    imozuru = {
-      url = "github:MaryCache/imozuru/808407e501bc5a1e596655b0a6d62e1f3b20ba1b";
-      flake = false;
-    };
-    mizchi-skills = {
-      url = "github:mizchi/skills/ab4eb2f7a92a13fb37c225ab427f2f492143ace1";
-      flake = false;
-    };
     natural-japanese = {
       url = "github:coji/natural-japanese/840bd400cbcb64c8b64d492a144da54fc05776c5";
       flake = false;
@@ -64,10 +48,6 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    claude-code-source = {
-      url = "github:ryoppippi/claude-code-overlay";
-      flake = false;
-    };
     cclens.url = "github:lambdalisue/cclens";
     crit = {
       url = "git+https://github.com/tomasz-tomczyk/crit.git";
@@ -75,11 +55,6 @@
     };
     guard-and-guide = {
       url = "github:kawarimidoll/guard-and-guide";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    git-surgeon = {
-      # v0.1.17 タグには Flake がないため、Flake 追加後の同版コミットに固定する。
-      url = "github:raine/git-surgeon/ecf6dc42172ba757cc03bce1800ba1db45779f46";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hunk = {

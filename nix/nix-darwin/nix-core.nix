@@ -12,11 +12,6 @@ in
   nixpkgs = {
     config.allowUnfree = true;
     overlays = [
-      (final: _: {
-        claude-code = final.callPackage ../pkgs/claude-code/default.nix {
-          claudeCodeSource = inputs.claude-code-source;
-        };
-      })
       (_: prev: {
         # Temporary workaround for statix snapshot tests failing on darwin.
         statix = prev.statix.overrideAttrs (_: {
@@ -50,14 +45,10 @@ in
       ];
       # 開発CLI用のバイナリキャッシュ。
       extra-substituters = [
-        "https://cclens.cachix.org"
-        "https://ryoppippi.cachix.org"
         "https://luvpame.cachix.org"
       ];
       # バイナリキャッシュの公開鍵。
       extra-trusted-public-keys = [
-        "cclens.cachix.org-1:0QUNU6PuVyf+yXOvg3n1rd3FksBoB3s3/Jty50iKRNQ="
-        "ryoppippi.cachix.org-1:b2LbtWNvJeL/qb1B6TYOMK+apaCps4SCbzlPRfSQIms="
         "luvpame.cachix.org-1:2LWxP7zffWxE3HweuI51NQrKJFpTsbelIkkP/YYMcNk="
       ];
     };

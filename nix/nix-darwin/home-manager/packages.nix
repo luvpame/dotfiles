@@ -5,7 +5,6 @@
 }:
 let
   system = pkgs.stdenv.hostPlatform.system;
-  cclens = inputs.cclens.packages.${system}.default;
   guardAndGuide = inputs.guard-and-guide.packages.${system}.default;
 in
 {
@@ -69,9 +68,6 @@ in
     guardAndGuide
     pkgs.herdr
     inputs.hunk.packages.${system}.default
-    (callPackage ../../pkgs/pique/default.nix { })
-    (callPackage ../../pkgs/site2skill/default.nix { })
-    (callPackage ../../pkgs/tree-sitter-cli/default.nix { })
     inputs.crit.packages.${system}.default
     cliamp
   ];
