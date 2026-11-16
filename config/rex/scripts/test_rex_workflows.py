@@ -211,6 +211,10 @@ class RexWorkflowsTest(unittest.TestCase):
         self.assertIn('サマリーのコメントには、動作確認コメントへのリンクだけを添える', scripts[0])
         self.assertIn('-R o/r ', scripts[3])
         self.assertIn('/repo/.git/worktrees/wt/rex-dev-server.md.lock', scripts[3])
+        for script in scripts[3:]:
+            self.assertIn('ユーザーの許可を待たずに起動役がそれを止めて進める', script)
+            self.assertTrue(script.rstrip().endswith("そのサーバーを止めて進めてよい。'"))
+        self.assertIn('そのサーバーと再開方法を総合レビューに書く', scripts[0])
 
     def test_invalid_picker_action_does_not_execute(self):
         picker = load('picker', 'worktree-picker.py')
