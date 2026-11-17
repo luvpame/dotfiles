@@ -58,6 +58,7 @@ let
     "nani"
     "wallspace"
     "cap"
+    "capsomnia"
     "shottr"
     "luvpame/dotfiles-local/rex-beta"
     "luvpame/dotfiles-local/mozkey"
