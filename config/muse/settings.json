@@ -23,6 +23,7 @@
       "session_id": false
     },
     "auto_session_title_enabled": true,
+    "voice_enabled": false,
     "voice_shortcut_mode": "hold_to_talk",
     "editor_mode": "vim",
     "theme": "catppuccin-latte",
