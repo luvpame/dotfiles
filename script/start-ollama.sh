@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-launchctl setenv OLLAMA_ORIGINS 'chrome-extension://bpoadfkcbjbfhfodiogcnhhhpibjhbnh'
+launchctl setenv OLLAMA_ORIGINS 'chrome-extension://bpoadfkcbjbfhfodiogcnhhhpibjhbnh,chrome-extension://gcnajhebohnllhhogomhmkndgfehaipo'
 
 # ログイン項目が先に起動した Ollama にも、新しい許可設定を読み込ませる。
 if pgrep -x Ollama >/dev/null; then

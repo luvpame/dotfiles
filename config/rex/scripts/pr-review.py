@@ -201,10 +201,18 @@ def main():
             "状態ファイルの URL が応答しない（前回の残り）ときだけ、状態ファイルとロックを消して起動役を取り直す。"
             "起動役は対象プロジェクトの手順と記憶に従い、依存関係・DB・必要なサービスとサーバーを起動し、"
             "応答を確かめてから、URL・ポート・ログイン方法・止め方を一時ファイルに書いて状態ファイルへ rename する。"
+            "別の worktree などの既存の開発サーバー（devenv・DB・rails・next dev など）がポートや DB を"
+            "使っていて起動できないときは、ユーザーの許可を待たずに起動役がそれを止めて進める。"
+            "止めるのは ps と lsof の cwd で開発サーバーだと確かめたプロセスだけにし、"
+            "そのプロジェクトの停止手順か TERM で止める。"
+            "止めたサーバーとその再開方法は状態ファイルと自分の結果に書く。"
             "起動役でない担当は状態ファイルができるまで待ち、自分では起動しない。"
-            "起動に失敗したら理由を状態ファイルに書き、ロックは消さない。"
-            "サーバーの停止は総合レビュー担当だけが行う。"
+            "既存のサーバーを止めても起動に失敗したら理由を状態ファイルに書き、ロックは消さない。"
+            "この worktree で共有するサーバーの停止は総合レビュー担当だけが行う。"
         )
+        # Repeated in the typed prompt: the same kill was refused by auto mode when only the
+        # system prompt allowed it, and went through once the user typed the permission.
+        stop_existing = "既存のサーバーが起動していて確認できない場合は、そのサーバーを止めて進めてよい。"
         reading_context = (
             f"レビュー前に gh pr view {number} --json body で PR 本文を取得して読む。"
             "本文のリンクを全件抽出し、必ず各リンク先を開いて内容を読む。"
@@ -268,6 +276,7 @@ def main():
             "最後に各担当の取得状況と動作確認・再現確認の結果、制約を含む、単独で読める総合レビュー全体を提示する。"
             "コメント案のうち差分行でないサマリーのコメントには、動作確認コメントへのリンクだけを添える。"
             "スクショや確認項目のテーブルは載せない。"
+            "状態ファイルに止めた既存のサーバーが書かれていれば、そのサーバーと再開方法を総合レビューに書く。"
             f"全担当の結果がそろったら、状態ファイルの止め方で開発サーバーを止め、{server_state} と {server_state}.lock を消す。"
             "コードの編集と GitHub への自動投稿は禁止する。"
         )
@@ -276,8 +285,10 @@ def main():
             *(("opus", "medium", review_context + f"最終レビュー全体を {result} に保存する。" + save_rule, command)
               for (_, command), result in zip(reviewers, results)),
             ("sonnet", "medium", qa_context,
-             "/agent-browser 開発サーバーを起動して動作確認して。足りないデータがあれば作成して。結果のスクショをMarkdownのテーブルとしてPRに投稿して。"),
-            ("sonnet", "medium", repro_context, "/agent-browser レビューで出た指摘候補が開発サーバーで再現するかを確かめて。"),
+             "/agent-browser 開発サーバーを起動して動作確認して。足りないデータがあれば作成して。結果のスクショをMarkdownのテーブルとしてPRに投稿して。"
+             + stop_existing),
+            ("sonnet", "medium", repro_context,
+             "/agent-browser レビューで出た指摘候補が開発サーバーで再現するかを確かめて。" + stop_existing),
         )
         pending = []
         for model, effort, context, command in agents:

@@ -102,17 +102,6 @@ claude = [
   ],
   ["$activity"],
 ]
-codex = [
-  ["state_icon", { token = "$agent_icon", fg = "#303446", bold = true }, "machine", "workspace"],
-  [
-    "$git_branch",
-    { token = "$pr_open", fg = "#40a02b" },
-    { token = "$pr_draft", fg = "#9ca0b0" },
-    { token = "$pr_merged", fg = "#8839ef" },
-    { token = "$pr_closed", fg = "#d20f39" },
-  ],
-  ["$activity"],
-]
 
 [ui.sidebar.spaces]
 rows = [

@@ -78,7 +78,6 @@ in
       source = oos "${configRoot}/zsh/.zshrc";
       force = true;
     };
-    ".agents/.skill-lock.json".source = oos "${configRoot}/agents/.skill-lock.json";
     ".codex/agents".source = oos "${configRoot}/codex/agents";
     ".codex/hooks".source = oos "${configRoot}/codex/hooks";
     ".codex/hooks.json".source = oos "${configRoot}/codex/hooks.json";

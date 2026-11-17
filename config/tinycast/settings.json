@@ -419,7 +419,7 @@
     ],
     "ignorePatterns": [],
     "removedDefaultPatterns": [],
-    "showInLauncher": false,
+    "showInLauncher": true,
     "commands": {}
   },
   "notes": {
@@ -433,6 +433,7 @@
   "snippets": {
     "showInLauncher": true,
     "folder": null,
+    "defaultAction": "paste",
     "commands": {}
   },
   "navigation": {

@@ -1,0 +1,6 @@
+{
+  "name": "turn-timeline",
+  "version": "0.1.0",
+  "description": "Shows the task tree, progress and your own prompts of a session in a pane",
+  "types": "./types/index.d.ts"
+}

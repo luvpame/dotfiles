@@ -22,16 +22,6 @@ for relative in .agents .claude/skills; do
     paths+=("$target")
   fi
 done
-for name in cloudflare-deploy web-perf; do
-  target="$HOME/.codex/skills/$name"
-  if [[ -L "$target" || ( -e "$target" && ! -d "$target" ) ]]; then
-    printf 'Refusing unexpected skill path: %s\n' "$target" >&2
-    exit 1
-  fi
-  if [[ -d "$target" ]]; then
-    paths+=("$target")
-  fi
-done
 
 if $dry_run; then
   printf 'Build, authenticate with sudo, back up these paths, then run just switch:\n'

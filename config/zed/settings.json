@@ -14,9 +14,6 @@
   },
   "diff_view_style": "unified",
   "agent_servers": {
-    "codex-acp": {
-      "type": "registry",
-    },
     "claude-acp": {
       "type": "registry",
     },

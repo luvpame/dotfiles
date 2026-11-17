@@ -21,7 +21,6 @@
   flake input を更新します。
 
 コマンドは `nix/` ディレクトリで実行してください。
-`nix flake` 系コマンドは Codex 実行環境だと極端に遅くなるため、必要時はユーザー環境での実行を依頼してください。
 
 ## Coding Style & Naming Conventions
 - Nix は 2 スペースインデント、属性順は一貫させる。
@@ -36,7 +35,6 @@
 - PR/コミット前に `nix flake check` を必ず実行する。
 - サービスやパッケージ変更後は switch 実行後に動作確認する（例: `launchctl list | grep <service>`）。
 - 新規スクリプトには可能な限り dry-run オプションを追加し、Apple Silicon macOS で確認する。
-- Codex からは `nix flake check` などが遅延しやすいため、検証コマンド実行は基本的にユーザーに依頼する。
 
 ## Security & Configuration Tips
 - 秘密情報はコミットしない。
