@@ -207,7 +207,7 @@ class AgentGitMetadataTest(unittest.TestCase):
 
     def test_reports_agent_icons_and_clears_other_agents(self):
         for all_workspaces in (False, True):
-            for agent, icon in (("claude", ""), ("codex", ""), ("other", "")):
+            for agent, icon in (("claude", ""), ("other", "")):
                 with self.subTest(agent=agent, all_workspaces=all_workspaces):
                     self.herdr_log.unlink(missing_ok=True)
                     report = self.run_reporter(

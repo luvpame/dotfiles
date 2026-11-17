@@ -33,7 +33,6 @@ let
     "im-select"
     "worktrunk"
     "media-control" # macOS Now Playing metadata
-    "ripgrep" # codex formula dependency; keep cleanup from trying to remove it
     "roots"
     # `mo` と `mole` は同名バイナリを含むため、必要な link だけ activation で戻す。
     {
@@ -91,7 +90,7 @@ let
     "azookey"
     "a-bar"
     "keycastr"
-    "codex"
+    "muse-code"
     "t3-code"
     "portkiller"
     "nani"

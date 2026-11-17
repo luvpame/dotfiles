@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "tui": {
+    "foreign_context_notice_shown": true
+  },
+  "contributor_mode_enabled": true,
+  "contributor_mode_disclosure_acknowledged": true
+}

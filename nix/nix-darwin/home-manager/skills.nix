@@ -173,13 +173,13 @@ in
       "write-swift"
       "yomiyasu"
     ];
-    # Claude Code 専用。Codex 等（.agents/skills）には配らない。
+    # Claude Code 専用。.agents/skills には配らない。
     skills.explicit.agent-memory-repo = {
       from = "agent-memory-repo";
       agents = [ "claude" ];
     };
     # 外部スキルの配布先。変更時は上のローカル用 targets も揃える。
-    # プラグイン由来のスキル、Codex の .system と chronicle は、それぞれの管理元に任せる。
+    # プラグイン由来のスキルは、それぞれの管理元に任せる。
     targets = {
       agents = {
         enable = true;

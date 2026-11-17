@@ -2,7 +2,6 @@
   "version": 3,
   "skills": {},
   "lastSelectedAgents": [
-    "codex",
     "claude-code"
   ],
   "dismissed": {

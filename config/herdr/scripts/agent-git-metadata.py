@@ -16,7 +16,7 @@ CACHE_TTL_SECONDS = 60
 CACHE_VERSION = 4
 REVIEW_SPACE_PATTERN = re.compile(r"^review-#[0-9]+$")
 REVIEW_SPACE_ICON = ""
-AGENT_ICONS = {"claude": "", "codex": ""}
+AGENT_ICONS = {"claude": ""}
 METADATA_TOKENS = (
     "git_branch",
     "pr_open",

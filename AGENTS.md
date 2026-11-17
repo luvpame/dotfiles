@@ -3,7 +3,7 @@
 ## プロジェクト構成とモジュール構成
 - `archive/`: 使用を終了した設定を現行設定から分離して保存する。退避手順は `archive/README.md` に従う。
 - `nix/`: Flake のエントリポイント（`flake.nix` / `flake.lock`）と、macOS の system、Homebrew、Home Manager 状態を管理する `nix-darwin/`、カスタム package 定義の `pkgs/` を持つ。
-- `config/`: 各種ツール設定を集約するディレクトリ。`config/fish/` にシェル設定、`config/git/` に Git 設定、`config/agents/skills/` に再利用可能なエージェントスキルを保存する。加えて `config/aerospace/`、`config/efm-langserver/`、`config/gh/`、`config/guard-and-guide/`、`config/herdr/`、`config/hunk/`、`config/lazygit/`、`config/mise/`、`config/nvim/`、`config/thaw/`、`config/tinycast/`、`config/tmux/`、`config/wezterm/`、`config/worktrunk/`、`config/yazi/`、`config/zed/`、`config/ziggity/`、`config/zsh/` などのツール別設定を配置する。`config/claude/` には `CLAUDE.md`・`RTK.md`・`settings.json`・`statusline.py`・`hooks/` と、`settings.json` の `CLAUDE_CODE_PLUGIN_DIRS` から読み込む Mod の `mods/`、`config/codex/` には `AGENTS.md`・`agents/`・`hooks.json`・`hooks/`・`config.toml` を配置する。
+- `config/`: 各種ツール設定を集約するディレクトリ。`config/fish/` にシェル設定、`config/git/` に Git 設定、`config/agents/skills/` に再利用可能なエージェントスキルを保存する。加えて `config/aerospace/`、`config/efm-langserver/`、`config/gh/`、`config/guard-and-guide/`、`config/herdr/`、`config/hunk/`、`config/lazygit/`、`config/mise/`、`config/muse/`、`config/nvim/`、`config/thaw/`、`config/tinycast/`、`config/tmux/`、`config/wezterm/`、`config/worktrunk/`、`config/yazi/`、`config/zed/`、`config/ziggity/`、`config/zsh/` などのツール別設定を配置する。`config/claude/` には `CLAUDE.md`・`RTK.md`・`settings.json`・`statusline.py`・`hooks/` と、`settings.json` の `CLAUDE_CODE_PLUGIN_DIRS` から読み込む Mod の `mods/` を配置する。
 - `script/`: ユーティリティ Bash スクリプトを配置するディレクトリ。`set-fish-default.sh`、`setup-git-signing.sh`、エージェントスキル移行用の `migrate-agent-skills.sh` と `migrate-external-skills.sh` がある。
 - `menubar-script/`: `ime/` のメニューバー連携用スクリプト。使用を終了した `herdr/`・`media/`・`vpn/` は `archive/menubar-script/` に保存。
 - `docs/`: ADR を `docs/adr/` に、エージェント向けガイドを `docs/agents/` に、調査資料を `docs/research/` に、Superpowers の計画書や仕様メモを `docs/superpowers/` 配下に保存する。
@@ -30,7 +30,7 @@
 - Nix の入力やサービスを変更した後は darwin の switch コマンドを再実行し、サービスをスポットチェック（例: `launchctl list | grep herdr`）。
 
 ## コミット & PR ガイドライン
-- コミットメッセージは Conventional Commits（スコープ付き。例: `chore(nix): ...`、`docs(codex): ...`、`chore(fish): ...`）。命令形を使用。
+- コミットメッセージは Conventional Commits（スコープ付き。例: `chore(nix): ...`、`docs(claude): ...`、`chore(fish): ...`）。命令形を使用。
 - コミットは焦点を絞る。無関係なツール設定と Nix 変更を混ぜない。
 - PR には以下を含める: 簡単な概要、影響範囲（Nix/Fish/アプリ設定）、実行したコマンド（`cd nix && nix flake check`、`just switch`）、UI 変更がある場合はスクリーンショット。
 
