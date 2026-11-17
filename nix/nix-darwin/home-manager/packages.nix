@@ -72,6 +72,7 @@ in
     inputs.hunk.packages.${system}.default
     (callPackage ../../pkgs/pique/default.nix { })
     (callPackage ../../pkgs/explainer/default.nix { src = inputs.explainer; })
+    (callPackage ../../pkgs/heygen/default.nix { })
     (callPackage ../../pkgs/site2skill/default.nix { })
     (callPackage ../../pkgs/tree-sitter-cli/default.nix { })
     awscli2
