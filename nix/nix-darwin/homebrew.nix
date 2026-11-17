@@ -60,6 +60,7 @@ let
     "cap"
     "shottr"
     "luvpame/dotfiles-local/rex-beta"
+    "luvpame/dotfiles-local/mozkey"
 
     ### Fonts
     "font-plemol-jp-nf"
