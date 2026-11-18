@@ -108,11 +108,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1792829207,
-        "narHash": "sha256-oOY8dx8pvhebaxO0mELOCc+uSMYH2BWKug5cLQGkK10=",
+        "lastModified": 1794986606,
+        "narHash": "sha256-iGJvN7iISypeztKpCUBK14rKUzVMw+Y2Z9oiSC4Tdrg=",
         "owner": "lambdalisue",
         "repo": "cclens",
-        "rev": "39cadc2d22522c09a99010659155393361780695",
+        "rev": "83c74d83d17fc1f96cbc10ac1e4775d43d891ab8",
         "type": "github"
       },
       "original": {
@@ -159,11 +159,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794931467,
-        "narHash": "sha256-myBLDk5EjJJ4VFLOKMh7qfjZ+afQ6Ujm/lpcjDdA1lk=",
+        "lastModified": 1795010445,
+        "narHash": "sha256-yIItQGEZEYEKdXGr3eT+z6szvnNVcUH9ijDB+yPpVn0=",
         "ref": "refs/heads/main",
-        "rev": "6574a40cf9fbf345a8f689179d540afbd405ecc8",
-        "revCount": 1045,
+        "rev": "93dfbce315f9cde7c74e03ee0f1b85e403d4e32f",
+        "revCount": 1046,
         "type": "git",
         "url": "https://github.com/tomasz-tomczyk/crit.git"
       },
@@ -309,11 +309,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794904821,
-        "narHash": "sha256-Va0k8ROqvaoPm5C/GD0FBXlYnoUOPSALSFJAbpXkCs8=",
+        "lastModified": 1794996352,
+        "narHash": "sha256-hewxSzuLX0IYAPCnW8E3AMkOCJ8BeE5PsKA3oxaSRKU=",
         "owner": "kawarimidoll",
         "repo": "guard-and-guide",
-        "rev": "7d570026d2989df214bed102dc7f8b7d987bc904",
+        "rev": "4134b5c66533d0ba2198ba5054c120e370572574",
         "type": "github"
       },
       "original": {
