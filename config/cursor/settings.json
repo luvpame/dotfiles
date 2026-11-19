@@ -10,5 +10,11 @@
     "update.releaseTrack": "dev",
     "git.blame.editorDecoration.enabled": true,
     "editor.formatOnSave": true,
-    "cursor.chatMaxWidth": 1080
+    "cursor.chatMaxWidth": 1080,
+    "files.autoSave": "afterDelay",
+    "editor.fontFamily": "PlemolJP Console NF",
+    "editor.tabSize": 2,
+    "editor.fontSize": 16,
+    "json.format.keepLines": true,
+    "editor.defaultFormatter": "vscode.json-language-features"
 }
