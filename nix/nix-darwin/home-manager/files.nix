@@ -24,7 +24,6 @@ in
     tmux.source = oos "${configRoot}/tmux";
     "tinycast/settings.json".source = oos "${configRoot}/tinycast/settings.json";
     "rex/init.lua".source = oos "${configRoot}/rex/init.lua";
-    "rex/repository-picker.fish".source = oos "${configRoot}/rex/repository-picker.fish";
     "rex/scripts".source = oos "${configRoot}/rex/scripts";
     # cage: archive/cage へ退避
 
