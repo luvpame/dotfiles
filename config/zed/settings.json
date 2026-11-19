@@ -7,19 +7,16 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "proxy": "",
   "preview_tabs": {
     "enable_keep_preview_on_code_navigation": true,
     "enable_preview_multibuffer_from_code_navigation": true,
     "enable_preview_from_file_finder": true
   },
   "diff_view_style": "unified",
-  "agent_servers": {
-    "claude-acp": {
-      "type": "registry",
-    },
-  },
+  "agent_servers": {},
   "toolbar": {
-    "agent_review": false,
+    "agent_review": true,
     "breadcrumbs": true,
     "code_actions": false,
     "quick_actions": false,
@@ -28,6 +25,9 @@
   "document_symbols": "on",
   "use_system_path_prompts": true,
   "agent": {
+    "threads_sidebar": {
+      "position": "right"
+    },
     "dock": "right",
     "message_editor_min_lines": 6,
     "show_turn_stats": true,
@@ -42,9 +42,6 @@
     "single_file_review": true,
   },
   "always_treat_brackets_as_autoclosed": true,
-  "audio": {
-    "experimental.auto_microphone_volume": false
-  },
   "auto_signature_help": false,
   "autosave": "on_focus_change",
   "base_keymap": "VSCode",
@@ -72,14 +69,6 @@
     },
   },
   "disable_ai": false,
-  "edit_predictions": {
-    "ollama": {
-      "model": "qwen3.5:2b",
-      "prompt_format": "qwen",
-    },
-    "mode": "eager",
-    "provider": "ollama",
-  },
   "file_finder": {
     "include_ignored": "smart",
   },
@@ -115,7 +104,6 @@
     "collapse_untracked_diff": false,
     "dock": "left",
     "tree_view": false,
-    "sort_by_path": true,
     "status_style": "label_color",
     "show_count_badge": true,
     "file_icons": true,
@@ -159,7 +147,7 @@
   "show_edit_predictions": true,
   "show_signature_help_after_edits": true,
   "sticky_scroll": {
-    "enabled": false,
+    "enabled": true,
   },
   "tab_bar": {
     "show_nav_history_buttons": false,
