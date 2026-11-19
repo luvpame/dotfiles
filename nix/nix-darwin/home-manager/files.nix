@@ -89,5 +89,7 @@ in
     ".claude/CLAUDE.md".source = oos "${configRoot}/claude/CLAUDE.md";
     ".claude/RTK.md".source = oos "${configRoot}/claude/RTK.md";
     ".claude/pstack-models.md".source = oos "${configRoot}/claude/pstack-models.md";
+    # config.toml はローカル状態を含むため、スクリプトだけをリンクする。
+    ".grok/statusline.py".source = oos "${configRoot}/grok/statusline.py";
   };
 }
