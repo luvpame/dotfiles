@@ -15,5 +15,4 @@ if status is-interactive
     abbr -a cat bat
     abbr -a lg lazygit
     abbr -a tm tmux
-    abbr -a hd herdr
 end

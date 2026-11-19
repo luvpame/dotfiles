@@ -1,6 +1,6 @@
 ---
 name: verify-dotfiles
-description: Drive this dotfiles repo from the terminal and prove just recipes and the Herdr config copy. Use when a change touches the justfile, nix/flake.nix, or nix/nix-darwin/home-manager/files.nix and the result has to be shown on the real commands, not only by reading them.
+description: Drive this dotfiles repo from the terminal and prove just recipes. Use when a change touches the justfile, nix/flake.nix, or nix/nix-darwin/home-manager/files.nix and the result has to be shown on the real commands, not only by reading them.
 ---
 
 # Verify dotfiles
@@ -17,7 +17,7 @@ From the repo root:
 bash .cursor/skills/verify-dotfiles/scripts/doctor.sh
 ```
 
-Ready when the last line is `doctor ok`. There is no port and no seed database. `just check` needs network access to Nix. The switch guard and the Herdr unit test do not.
+Ready when the last line is `doctor ok`. There is no port and no seed database. `just check` needs network access to Nix. The switch guard does not.
 
 ## Doctor
 
@@ -27,19 +27,18 @@ Run doctor again whenever a command fails before assuming the recipe is wrong.
 
 ## Drive
 
-Run commands from the repo root. The harness is the shell scripts in `.cursor/skills/verify-dotfiles/scripts/` plus the repo's own `just` and `python3 script/test-herdr-config-sync.py`.
+Run commands from the repo root. The harness is the shell scripts in `.cursor/skills/verify-dotfiles/scripts/` plus the repo's own `just`.
 
 - Flake check: `just check`. Exit 0 is the proof. This evaluates `nix/flake.nix`. It does not activate the config.
 - Switch guard: `bash .cursor/skills/verify-dotfiles/scripts/switch-guard.sh`. It copies the guard out of the `switch` recipe in `justfile`, from the `repo_root=` line up to but not including `nh darwin switch`, and runs that fragment with `HOME` set to a temp directory and the working directory set to `nix/`, which is where `just` runs the recipe.
-- Herdr copy: `python3 .cursor/skills/verify-herdr-config-sync/check.py`. It extracts `home.activation.copyHerdrConfig` from `nix/nix-darwin/home-manager/files.nix` and runs that bash on every small file state. `python3 script/test-herdr-config-sync.py` currently errors because it also expects `config-gpui.local.toml`, which the activation loop does not write.
 
 Refuse `just switch`, `just update-and-switch`, `just clean`, and `script/migrate-agent-skills.sh` without `--dry-run`. Those write the live home or the Nix system profile.
 
 ## Evidence
 
-Write one directory per feature under `.state/verify-dotfiles/evidence/<feature>/`. Keep the command, stdout, stderr, and exit code. For the switch guard, also keep `*.observe`, which records the temp `$HOME/.dotfiles` kind and the sentinel file. For Herdr, the unit test's `OK` line is the visible result; the formal check in `verify-herdr-config-sync` is the exhaustive one.
+Write one directory per feature under `.state/verify-dotfiles/evidence/<feature>/`. Keep the command, stdout, stderr, and exit code. For the switch guard, also keep `*.observe`, which records the temp `$HOME/.dotfiles` kind and the sentinel file.
 
-A passing dry-run is not proof that the real command skipped a write. `switch-guard.sh` never calls `nh`. Say that in the proof. `check.py` does not run home-manager. Say that too.
+A passing dry-run is not proof that the real command skipped a write. `switch-guard.sh` never calls `nh`. Say that in the proof.
 
 Proof has to show the action and the resulting state. A zero exit code alone is not enough when the feature claims a file was kept or replaced.
 

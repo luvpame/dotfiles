@@ -31,10 +31,6 @@
       url = "github:mizchi/explainer/ccdd7bacfb47451e38506d837af8a629504960b2";
       flake = false;
     };
-    herdr-skills = {
-      url = "github:herdrdev/herdr/ee5bfb5041bb3e4a49d591c72308aae3c81ecdde";
-      flake = false;
-    };
     humanlayer-skills = {
       url = "github:humanlayer/skills/4d69d20f6e9b57b4fcf0d501ccfb1be961f0f329";
       flake = false;

@@ -322,23 +322,6 @@
         "type": "github"
       }
     },
-    "herdr-skills": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1793278609,
-        "narHash": "sha256-0B58jR/v1vxbK7cwoq++SnOCsED0sHDkgqVMvsrjezE=",
-        "owner": "herdrdev",
-        "repo": "herdr",
-        "rev": "ee5bfb5041bb3e4a49d591c72308aae3c81ecdde",
-        "type": "github"
-      },
-      "original": {
-        "owner": "herdrdev",
-        "repo": "herdr",
-        "rev": "ee5bfb5041bb3e4a49d591c72308aae3c81ecdde",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -604,7 +587,6 @@
         "explainer": "explainer",
         "git-surgeon": "git-surgeon",
         "guard-and-guide": "guard-and-guide",
-        "herdr-skills": "herdr-skills",
         "home-manager": "home-manager",
         "humanlayer-skills": "humanlayer-skills",
         "hunk": "hunk",

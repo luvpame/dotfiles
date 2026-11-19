@@ -68,7 +68,6 @@ in
     socat
     ov
     guardAndGuide
-    pkgs.herdr
     inputs.hunk.packages.${system}.default
     (callPackage ../../pkgs/pique/default.nix { })
     (callPackage ../../pkgs/explainer/default.nix { src = inputs.explainer; })

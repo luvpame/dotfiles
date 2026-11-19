@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   pkgs,
   ...
 }:
@@ -24,14 +23,12 @@ in
     yazi.source = oos "${configRoot}/yazi";
     tmux.source = oos "${configRoot}/tmux";
     "tinycast/settings.json".source = oos "${configRoot}/tinycast/settings.json";
-    "herdr/scripts".source = oos "${configRoot}/herdr/scripts";
     "rex/init.lua".source = oos "${configRoot}/rex/init.lua";
     "rex/repository-picker.fish".source = oos "${configRoot}/rex/repository-picker.fish";
     "rex/scripts".source = oos "${configRoot}/rex/scripts";
     # cage: archive/cage へ退避
 
     # Runtime stateを含むHunkの親directory linkはT24でfile単位へ分割する。
-    "worktrunk/config.toml".source = oos "${configRoot}/worktrunk/config.toml";
     hunk.source = oos "${configRoot}/hunk";
     wezterm.source = oos "${configRoot}/wezterm";
     zed.source = oos "${configRoot}/zed";
@@ -44,27 +41,6 @@ in
       text = "source ${pkgs.nix-direnv}/share/nix-direnv/direnvrc";
     };
   };
-
-  # herdr-gpui: archive/herdr/config-gpui.toml へ退避
-  # GUI が共有設定の symlink を拒否するため、通常ファイルとしてコピーする。
-  home.activation.copyHerdrConfig = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-    herdr_state_dir="${config.xdg.stateHome}/dotfiles/herdr"
-    run ${pkgs.coreutils}/bin/install -dm700 "$herdr_state_dir"
-
-    for file in config.toml; do
-      source="${configRoot}/herdr/$file"
-      target="${config.xdg.configHome}/herdr/$file"
-      previous="$herdr_state_dir/$file"
-
-      # 初回は既存設定を残し、以後は dotfiles の変更時だけ GUI 設定を上書きする。
-      if [ ! -e "$target" ] || {
-        [ -e "$previous" ] && ! ${pkgs.diffutils}/bin/cmp -s "$source" "$previous"
-      }; then
-        run ${pkgs.coreutils}/bin/install -Dm600 "$source" "$target"
-      fi
-      run ${pkgs.coreutils}/bin/install -Dm600 "$source" "$previous"
-    done
-  '';
 
   # Agent設定もRepository内で直接編集し、各Agentへ即時反映する。
   home.file = {

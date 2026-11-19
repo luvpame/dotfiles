@@ -62,8 +62,8 @@ agent-memory-repo のメモはセッションのファイルシステムに依�
 継続利用のための private remote は、この試験では設定しない。
 empirical-prompt-tuning は Claude Code の subagent 機能を使う。
 
-除外する8件は agent-browser、conventional-commit、explainer、git-surgeon、
-herdr、mo、obsidian、pr-review-assist。
+除外する7件は agent-browser、conventional-commit、explainer、git-surgeon、
+mo、obsidian、pr-review-assist。
 conventional-commit も部分ステージ時に専用の git-surgeon CLI を要求するため除外する。
 
 ## 撤去

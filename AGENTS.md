@@ -3,9 +3,9 @@
 ## プロジェクト構成とモジュール構成
 - `archive/`: 使用を終了した設定を現行設定から分離して保存する。退避手順は `archive/README.md` に従う。
 - `nix/`: Flake のエントリポイント（`flake.nix` / `flake.lock`）と、macOS の system、Homebrew、Home Manager 状態を管理する `nix-darwin/`、カスタム package 定義の `pkgs/` を持つ。
-- `config/`: 各種ツール設定を集約するディレクトリ。`config/fish/` にシェル設定、`config/git/` に Git 設定、`config/agents/skills/` に再利用可能なエージェントスキルを保存する。加えて `config/aerospace/`、`config/cursor/`、`config/efm-langserver/`、`config/gh/`、`config/guard-and-guide/`、`config/herdr/`、`config/hunk/`、`config/lazygit/`、`config/mise/`、`config/nvim/`、`config/thaw/`、`config/tinycast/`、`config/tmux/`、`config/wezterm/`、`config/worktrunk/`、`config/yazi/`、`config/zed/`、`config/ziggity/`、`config/zsh/` などのツール別設定を配置する。`config/claude/` には `CLAUDE.md`・`RTK.md`・`settings.json`・`statusline.py`・`hooks/` と、`settings.json` の `CLAUDE_CODE_PLUGIN_DIRS` から読み込む Mod の `mods/` を配置する。`config/grok/` にはステータス行の `statusline.py` だけを置く。`~/.grok/config.toml` はローカル状態を持つ実ファイルのままにする。`config/cursor/` にはエディタの `settings.json` と CLI の `cli-config.json` を置く。`argv.json`、拡張機能、プロジェクト状態、組み込みスキルはローカルのままにする。
+- `config/`: 各種ツール設定を集約するディレクトリ。`config/fish/` にシェル設定、`config/git/` に Git 設定、`config/agents/skills/` に再利用可能なエージェントスキルを保存する。加えて `config/aerospace/`、`config/cursor/`、`config/efm-langserver/`、`config/gh/`、`config/guard-and-guide/`、`config/hunk/`、`config/lazygit/`、`config/mise/`、`config/nvim/`、`config/thaw/`、`config/tinycast/`、`config/tmux/`、`config/wezterm/`、`config/yazi/`、`config/zed/`、`config/ziggity/`、`config/zsh/` などのツール別設定を配置する。`config/claude/` には `CLAUDE.md`・`RTK.md`・`settings.json`・`statusline.py`・`hooks/` と、`settings.json` の `CLAUDE_CODE_PLUGIN_DIRS` から読み込む Mod の `mods/` を配置する。`config/grok/` にはステータス行の `statusline.py` だけを置く。`~/.grok/config.toml` はローカル状態を持つ実ファイルのままにする。`config/cursor/` にはエディタの `settings.json` と CLI の `cli-config.json` を置く。`argv.json`、拡張機能、プロジェクト状態、組み込みスキルはローカルのままにする。
 - `script/`: ユーティリティ Bash スクリプトを配置するディレクトリ。`set-fish-default.sh`、`setup-git-signing.sh`、エージェントスキル移行用の `migrate-agent-skills.sh` と `migrate-external-skills.sh` がある。
-- `menubar-script/`: `ime/` のメニューバー連携用スクリプト。使用を終了した `herdr/`・`media/`・`vpn/` は `archive/menubar-script/` に保存。
+- `menubar-script/`: `ime/` のメニューバー連携用スクリプト。使用を終了した `media/`・`vpn/` は `archive/menubar-script/` に保存。
 - `docs/`: ADR を `docs/adr/` に、エージェント向けガイドを `docs/agents/` に、調査資料を `docs/research/` に、Superpowers の計画書や仕様メモを `docs/superpowers/` 配下に保存する。
 - 補助生成物として `build/`（`download/` と `markdown/` を含む）、運用コマンドの入口としてトップレベルの `justfile` がある。隠しディレクトリとして `.claude/`（`settings.local.json`）に加え、ツール実行時のキャッシュや状態を保持する `.cache/`・`.data/`・`.state/` がルートに現れる。`nvim.log` は Neovim 実行時に生成される補助ログである。
 
@@ -27,7 +27,7 @@
 ## テストガイドライン
 - Nix の評価やパッケージ、設定の配布に影響する変更は、コミット/PR 前に `just check` を実行。文書や既存スキル本文だけの変更は、内容と参照先を確認する。
 - 新規スクリプトでは可能な限り dry-run フラグを追加し、macOS（Apple Silicon）で手動テスト。
-- Nix の入力やサービスを変更した後は darwin の switch コマンドを再実行し、サービスをスポットチェック（例: `launchctl list | grep herdr`）。
+- Nix の入力やサービスを変更した後は darwin の switch コマンドを再実行し、サービスをスポットチェック（例: `launchctl list | grep ollama`）。
 
 ## コミット & PR ガイドライン
 - コミットメッセージは Conventional Commits（スコープ付き。例: `chore(nix): ...`、`docs(claude): ...`、`chore(fish): ...`）。命令形を使用。

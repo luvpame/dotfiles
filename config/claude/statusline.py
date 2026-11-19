@@ -5,7 +5,6 @@ import os
 import subprocess
 import sys
 from datetime import datetime
-from pathlib import Path
 
 try:
     data = json.load(sys.stdin)
@@ -145,54 +144,6 @@ def git_info():
     return repo, branch
 
 
-def report_herdr_usage(context):
-    if os.environ.get("HERDR_ENV") != "1" or not os.environ.get("HERDR_PANE_ID"):
-        return
-    args = [
-        "herdr",
-        "pane",
-        "report-metadata",
-        os.environ["HERDR_PANE_ID"],
-        "--source",
-        "claude-statusline",
-    ]
-    if context is None:
-        args.extend(("--clear-token", "context"))
-    else:
-        args.extend(("--token", f"context={round(context)}%"))
-    for name in ("model", "effort"):
-        args.extend(("--clear-token", name))
-    try:
-        subprocess.run(
-            args,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            check=False,
-        )
-    except OSError:
-        pass
-
-
-def report_herdr_git_metadata():
-    if os.environ.get("HERDR_ENV") != "1" or not os.environ.get("HERDR_PANE_ID"):
-        return
-    configured_home = os.environ.get("XDG_CONFIG_HOME")
-    config_home = Path(configured_home) if configured_home else Path.home() / ".config"
-    reporter = config_home / "herdr" / "scripts" / "agent-git-metadata.py"
-    if not reporter.is_file():
-        return
-    try:
-        subprocess.run(
-            [reporter],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            check=False,
-            timeout=4,
-        )
-    except (OSError, subprocess.TimeoutExpired):
-        pass
-
-
 model = data.get("model", {}).get("display_name", "Claude")
 effort = nested_value(data, ("effort", "level"))
 
@@ -218,7 +169,6 @@ metrics = [
     ("five_hour", "5h", ("rate_limits", "five_hour", "used_percentage")),
     ("seven_day", "7d", ("rate_limits", "seven_day", "used_percentage")),
 ]
-context_usage = None
 reset_times = {
     "five_hour": format_reset_time(
         nested_value(data, ("rate_limits", "five_hour", "resets_at"))
@@ -231,13 +181,9 @@ reset_times = {
 for name, label, keys in metrics:
     val = nested_value(data, keys)
     if isinstance(val, (int, float)):
-        if name == "context":
-            context_usage = val
         line = fmt(label, val)
         if reset_time := reset_times.get(name):
             line += f" {LABEL_COLOR}↻ {reset_time}{R}"
         lines.append(line)
 
-report_herdr_usage(context_usage)
-report_herdr_git_metadata()
 print("\n".join(lines), end="")
