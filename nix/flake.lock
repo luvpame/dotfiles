@@ -124,11 +124,11 @@
     "claude-code-source": {
       "flake": false,
       "locked": {
-        "lastModified": 1794949264,
-        "narHash": "sha256-W9IcFFI76+D9GECAPmChLvvc41mefYkHowxrZSGI9jc=",
+        "lastModified": 1795046516,
+        "narHash": "sha256-C+nkURGvrX3YzdjoXYWg+mH/7VtyuXvqMK1MsvyTNHE=",
         "owner": "ryoppippi",
         "repo": "claude-code-overlay",
-        "rev": "b176265279ad4d9ab2c5fa7f24ba9bd2ef25f80e",
+        "rev": "98952bcc1d63618b004868bc535852fa292fd66a",
         "type": "github"
       },
       "original": {
