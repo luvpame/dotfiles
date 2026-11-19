@@ -24,12 +24,6 @@ in
     yazi.source = oos "${configRoot}/yazi";
     tmux.source = oos "${configRoot}/tmux";
     "tinycast/settings.json".source = oos "${configRoot}/tinycast/settings.json";
-    # auth.json などの認証情報が同じ directory に生成されるため、file 単位で配る。
-    "muse/settings.json" = {
-      source = oos "${configRoot}/muse/settings.json";
-      force = true;
-    };
-    "muse/AGENTS.md".source = oos "${configRoot}/muse/AGENTS.md";
     "herdr/scripts".source = oos "${configRoot}/herdr/scripts";
     "rex/init.lua".source = oos "${configRoot}/rex/init.lua";
     "rex/repository-picker.fish".source = oos "${configRoot}/rex/repository-picker.fish";

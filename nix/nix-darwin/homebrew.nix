@@ -90,7 +90,6 @@ let
     "azookey"
     "a-bar"
     "keycastr"
-    "muse-code"
     "t3-code"
     "portkiller"
     "nani"
