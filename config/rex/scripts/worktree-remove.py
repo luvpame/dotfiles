@@ -55,13 +55,15 @@ def merged_pr(root, branch, head):
     return latest if latest and latest['state'] == 'MERGED' and latest['headRefOid'] == head else None
 
 
-def clean_head(path):
+DIRTY = ' ⚠ 未コミットの変更あり'
+
+
+def head_state(path):
     if not os.path.isdir(path):
         raise RuntimeError("ディレクトリが存在しません")
     try:
-        if run("git", "-C", path, "status", "--porcelain", "--untracked-files=all"):
-            raise RuntimeError("未コミットの変更があります")
-        return run("git", "-C", path, "rev-parse", "HEAD")
+        dirty = bool(run("git", "-C", path, "status", "--porcelain", "--untracked-files=all"))
+        return run("git", "-C", path, "rev-parse", "HEAD"), dirty
     except subprocess.CalledProcessError as error:
         raise RuntimeError("Git で worktree の状態を確認できません") from error
 
@@ -80,7 +82,7 @@ def main(merged=False):
             continue
         try:
             with loading(f"worktree を確認中… {index}/{len(source['worktrees'])}"):
-                head = clean_head(path)
+                head, dirty = head_state(path)
             pr = None
             if merged:
                 if not item.get('branch'):
@@ -88,7 +90,7 @@ def main(merged=False):
                 pr = merged_pr(root, item['branch'], head)
                 if not pr:
                     continue
-            candidates.append(dict(item, head=head, pr=pr))
+            candidates.append(dict(item, head=head, dirty=dirty, pr=pr))
         except RuntimeError as error:
             if os.path.isdir(path):
                 print(f"対象外: {json.dumps(path, ensure_ascii=False)} — {error}")
@@ -98,6 +100,7 @@ def main(merged=False):
         return
     if not merged:
         rows = '\n'.join(f"{index}\t{json.dumps([item.get('branch'), item['path']], ensure_ascii=False)}"
+                         f"{DIRTY if item['dirty'] else ''}"
                          for index, item in enumerate(candidates))
         selection = subprocess.run(
             ['fzf', '--no-height', '--multi', '--layout=reverse', '--prompt=Worktree 削除> ', '--with-nth=2..',
@@ -120,13 +123,15 @@ def main(merged=False):
         details = ''
         if item['pr']:
             details += f" / PR #{item['pr']['number']}"
-        rows.append(f"{label}{details} — {path}")
+        rows.append(f"{label}{details} — {path}{DIRTY if item['dirty'] else ''}")
     confirmation = subprocess.run(
         ['fzf', '--no-height', '--no-multi', '--disabled', '--layout=reverse',
          '--border=rounded', f'--border-label= 削除確認 · {len(candidates)} 件 ',
          '--prompt=対象一覧 > ', '--info=hidden',
          '--header=Enter: 一覧の全件を削除 / Esc: キャンセル\n'
          'Rex で開いている worktree は対象外です。\n'
+         + ('⚠ 未コミットの変更がある worktree を含みます。削除すると変更は破棄されます。\n'
+            if any(item['dirty'] for item in candidates) else '') +
          'ブランチは Worktrunk がマージ済みと確認できる場合のみ削除します。'],
         input='\n'.join(rows), text=True, stdout=subprocess.PIPE,
     )
@@ -144,13 +149,16 @@ def main(merged=False):
                     or len(matches) != 1
                     or matches[0].get('branch') != item.get('branch')
                     or matches[0].get('open_workspace_id') != item.get('open_workspace_id')
-                    or clean_head(path) != item['head']):
+                    or head_state(path) != (item['head'], item['dirty'])):
                 raise RuntimeError('確認後に worktree の状態が変わりました')
             if merged and not merged_pr(root, item['branch'], item['head']):
                 raise RuntimeError('マージ済み PR との一致を確認できません')
             if item.get('open_workspace_id'):
                 raise RuntimeError('開いている Rex セッションがあります')
-            result = json.loads(run('wt', '-C', root, 'remove', '--foreground', '--no-hooks', '--format=json', path))
+            # 常に --force を付けると、確認画面で警告していない変更まで黙って破棄してしまう。
+            force = ['--force'] if item['dirty'] else []
+            result = json.loads(run('wt', '-C', root, 'remove', '--foreground', '--no-hooks', '--format=json',
+                                    *force, path))
             branch_status = '削除' if result[0]['branch_outcome'] == 'deleted' else '保持'
             print(f"削除しました: {json.dumps(path, ensure_ascii=False)}（ブランチ: {branch_status}）")
         except (subprocess.CalledProcessError, RuntimeError) as error:

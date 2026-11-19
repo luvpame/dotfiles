@@ -248,9 +248,70 @@ class RexWorkflowsTest(unittest.TestCase):
         remove = load('remove', 'worktree-remove.py')
         source = {'source': {'repo_root': '/repo', 'source_checkout_path': '/repo'},
                   'worktrees': [{'path': '/repo'}, {'path': '/repo/active', 'open_workspace_id': 's'}]}
-        with patch.dict(os.environ, {'REX_SESSION': 's'}), patch.object(remove, 'worktrees', return_value=source), patch.object(remove, 'clean_head') as clean, patch('builtins.input', return_value=''):
+        with patch.dict(os.environ, {'REX_SESSION': 's'}), patch.object(remove, 'worktrees', return_value=source), patch.object(remove, 'head_state') as state, patch('builtins.input', return_value=''):
             remove.main()
-        clean.assert_not_called()
+        state.assert_not_called()
+
+    def test_merged_pr_worktree_with_uncommitted_changes_is_removed(self):
+        remove = load('remove', 'worktree-remove.py')
+        source = {'source': {'repo_root': '/repo', 'source_checkout_path': '/repo'},
+                  'worktrees': [{'path': '/repo'}, {'path': '/repo/done', 'branch': 'done'}]}
+        calls = []
+
+        def run(*args, cwd=None):
+            calls.append(args)
+            if args[:3] == ('gh', 'pr', 'list'):
+                return json.dumps([{'number': 1, 'state': 'MERGED', 'headRefName': 'done', 'headRefOid': 'abc'}])
+            if 'status' in args:
+                return ' M file'
+            if 'rev-parse' in args:
+                return 'abc'
+            return json.dumps([{'branch_outcome': 'deleted'}])
+
+        with patch.dict(os.environ, {'REX_SESSION': 's'}), \
+                patch.object(remove, 'worktrees', return_value=source), \
+                patch.object(remove, 'run', side_effect=run), \
+                patch.object(remove.os.path, 'isdir', return_value=True), \
+                patch.object(remove.subprocess, 'run') as fzf, \
+                patch('builtins.input', return_value=''):
+            fzf.side_effect = lambda *a, **k: subprocess.CompletedProcess(a, 0, stdout=k['input'])
+            remove.main(merged=True)
+        removals = [args for args in calls if args[0] == 'wt']
+        self.assertEqual(len(removals), 1)
+        self.assertIn('--force', removals[0])
+        self.assertEqual(removals[0][-1], '/repo/done')
+
+    def test_selected_worktree_with_uncommitted_changes_is_removed_after_warning(self):
+        remove = load('remove', 'worktree-remove.py')
+        source = {'source': {'repo_root': '/repo', 'source_checkout_path': '/repo'},
+                  'worktrees': [{'path': '/repo'}, {'path': '/repo/wip', 'branch': 'wip'},
+                                {'path': '/repo/clean', 'branch': 'clean'}]}
+        calls = []
+
+        def run(*args, cwd=None):
+            calls.append(args)
+            if 'status' in args:
+                return ' M file' if '/repo/wip' in args else ''
+            if 'rev-parse' in args:
+                return 'abc'
+            return json.dumps([{'branch_outcome': 'kept'}])
+
+        with patch.dict(os.environ, {'REX_SESSION': 's'}), \
+                patch.object(remove, 'worktrees', return_value=source), \
+                patch.object(remove, 'run', side_effect=run), \
+                patch.object(remove.os.path, 'isdir', return_value=True), \
+                patch.object(remove.subprocess, 'run') as fzf, \
+                patch('builtins.input', return_value=''):
+            fzf.side_effect = lambda *a, **k: subprocess.CompletedProcess(a, 0, stdout=k['input'].split('\n')[0])
+            remove.main()
+        selection, confirmation = (call.kwargs['input'].split('\n') for call in fzf.call_args_list)
+        self.assertIn('未コミットの変更あり', selection[0])
+        self.assertNotIn('未コミットの変更あり', selection[1])
+        self.assertIn('未コミットの変更あり', confirmation[0])
+        self.assertIn('変更は破棄されます', ' '.join(fzf.call_args_list[1].args[0]))
+        removals = [args for args in calls if args[0] == 'wt']
+        self.assertEqual([args[-1] for args in removals], ['/repo/wip'])
+        self.assertIn('--force', removals[0])
 
 
 if __name__ == '__main__':
