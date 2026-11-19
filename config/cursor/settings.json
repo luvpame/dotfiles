@@ -1,0 +1,14 @@
+{
+    "window.autoDetectColorScheme": true,
+    "cursor.composer.queueMessageDefaultBehavior": "steer",
+    "cursor.composer.queueManualSendBehavior2": "steer",
+    "cursor.composer.shouldChimeAfterChatFinishes": true,
+    "cursor.general.glassShowWarningNotifications": true,
+    "cursor.composer.conversationDensity": "compact-ungrouped",
+    "cursor.general.emailPrivacyEnabled": true,
+    "cursor.cpp.enablePartialAccepts": true,
+    "update.releaseTrack": "dev",
+    "git.blame.editorDecoration.enabled": true,
+    "editor.formatOnSave": true,
+    "cursor.chatMaxWidth": 1080
+}

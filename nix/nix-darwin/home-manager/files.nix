@@ -91,5 +91,19 @@ in
     ".claude/pstack-models.md".source = oos "${configRoot}/claude/pstack-models.md";
     # config.toml はローカル状態を含むため、スクリプトだけをリンクする。
     ".grok/statusline.py".source = oos "${configRoot}/grok/statusline.py";
+
+    # Cursor の User ディレクトリには履歴と拡張の状態が入る。設定ファイルだけをリンクする。
+    # argv.json は crash reporter ID を含むため、ローカルファイルのままにする。
+    # CLI は cli-config.json へ実行時カウンタも書き戻す。
+    ".cursor/cli-config.json" = {
+      source = oos "${configRoot}/cursor/cli-config.json";
+
+      # 導入前からある通常ファイルを、リポジトリへのリンクへ置き換える。
+      force = true;
+    };
+    "Library/Application Support/Cursor/User/settings.json" = {
+      source = oos "${configRoot}/cursor/settings.json";
+      force = true;
+    };
   };
 }
