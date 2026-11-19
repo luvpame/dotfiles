@@ -41,12 +41,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$HOME/.config/herdr/scripts/agent-activity.py\"",
-            "timeout": 60,
-            "async": true
-          },
-          {
-            "type": "command",
             "command": "sh \"$HOME/.claude/hooks/agent-memory-reminder.sh\"",
             "timeout": 5
           }
@@ -54,27 +48,6 @@
       }
     ],
     "SessionStart": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$HOME/.claude/hooks/herdr-agent-state.sh\" session",
-            "timeout": 10,
-            "statusMessage": "herdr にセッションを通知中"
-          }
-        ]
-      },
-      {
-        "matcher": "^(startup|resume|clear|compact|fork)$",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash '/Users/nasuno.ayumu/.claude/hooks/herdr-agent-state.sh' session",
-            "timeout": 10
-          }
-        ]
-      },
       {
         "matcher": "startup",
         "hooks": [
@@ -105,18 +78,6 @@
           }
         ]
       }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"$HOME/.config/herdr/scripts/agent-activity.py\"",
-            "timeout": 60,
-            "async": true
-          }
-        ]
-      }
     ]
   },
   "statusLine": {
@@ -124,7 +85,6 @@
     "command": "$HOME/.claude/statusline.py"
   },
   "enabledPlugins": {
-    "dotfiles@synced": false,
     "cclens@cclens": true,
     "code-review@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
@@ -136,12 +96,10 @@
     "mattpocock-skills@mattpocock": true,
     "i-have-adhd@i-have-adhd": true,
     "launchpad@sandbox-launchpad": true,
-    "pstack@pstack-claude": false,
     "cc-plugin-you-should-know@builtin": true,
     "pstack@cursor-plugins": true,
     "demo-video@demo-video": true,
-    "hyperframes@hyperframes": true,
-    "html@skills": true
+    "hyperframes@hyperframes": true
   },
   "extraKnownMarketplaces": {
     "skills": {
@@ -166,12 +124,6 @@
       "source": {
         "source": "github",
         "repo": "DietrichGebert/ponytail"
-      }
-    },
-    "pstack-claude": {
-      "source": {
-        "source": "github",
-        "repo": "michael-denyer/pstack-claude"
       }
     },
     "cursor-plugins": {
@@ -199,9 +151,6 @@
   "modelSettings": {
     "claude-fable-5-2": {
       "effortLevel": "low"
-    },
-    "claude-fable-5": {
-      "effortLevel": "medium"
     },
     "claude-opus-5-5": {
       "effortLevel": "medium"
