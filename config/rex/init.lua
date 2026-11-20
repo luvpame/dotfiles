@@ -18,13 +18,45 @@ local scripts = os.getenv("HOME") .. "/.config/rex/scripts"
 local pr_script = scripts .. "/pr-review.py"
 local picker_script = scripts .. "/worktree-picker.py"
 local remove_script = scripts .. "/worktree-remove.py"
+-- Rex.app の rex.exec は PATH が /usr/bin:/bin:/usr/sbin:/sbin だけなので、
+-- git は見つかるが rex と gh は見つからない。ログインシェルと同じ場所を前置し、
+-- 呼び出し元の PATH はその後ろに残す。
+local function command_path_prefix()
+  local home = os.getenv("HOME") or ""
+  local user = os.getenv("USER") or os.getenv("LOGNAME") or ""
+  return table.concat({
+    home .. "/.nix-profile/bin",
+    "/etc/profiles/per-user/" .. user .. "/bin",
+    "/run/current-system/sw/bin",
+    "/nix/var/nix/profiles/default/bin",
+    "/opt/homebrew/bin",
+    "/opt/homebrew/sbin",
+    home .. "/.local/bin",
+    home .. "/go/bin",
+    home .. "/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS",
+  }, ":")
+end
+
+local function exec_argv(argv)
+  local command = {
+    "/bin/sh", "-c",
+    'export PATH="$1${PATH:+:$PATH}"; shift; exec "$@"',
+    "rex-exec",
+    command_path_prefix(),
+  }
+  for _, arg in ipairs(argv) do
+    command[#command + 1] = arg
+  end
+  return command
+end
 
 local function exec_result(argv, cwd)
+  local command = exec_argv(argv)
   local result, err
   if cwd and cwd ~= "" then
-    result, err = rex.exec(argv, { cwd = cwd })
+    result, err = rex.exec(command, { cwd = cwd })
   else
-    result, err = rex.exec(argv)
+    result, err = rex.exec(command)
   end
   if result == nil then error(err, 0) end
   if not result.ok then error(result.stderr ~= "" and result.stderr or result.stdout, 0) end
