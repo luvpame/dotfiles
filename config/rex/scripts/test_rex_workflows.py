@@ -328,5 +328,74 @@ class RexWorkflowsTest(unittest.TestCase):
         self.assertIn('worktree', stderr.getvalue())
 
 
+class WorktreePickScriptTest(unittest.TestCase):
+    def run_pick(self, lines, fzf):
+        with tempfile.TemporaryDirectory() as tmp:
+            home = os.path.join(tmp, "home")
+            stub = os.path.join(tmp, "bin")
+            os.makedirs(home)
+            os.makedirs(stub)
+            fzf_path = os.path.join(stub, "fzf")
+            with open(fzf_path, "w", encoding="utf-8") as file:
+                file.write(fzf)
+            os.chmod(fzf_path, 0o755)
+            listed = os.path.join(tmp, "list")
+            result = os.path.join(tmp, "result")
+            with open(listed, "w", encoding="utf-8") as file:
+                file.write("".join(lines))
+            env = os.environ.copy()
+            env.update({
+                "HOME": home,
+                "USER": "nosuchuser",
+                "PATH": stub + ":/usr/bin:/bin",
+                "FZF_DEFAULT_OPTS": "--bind=enter:abort",
+            })
+            env.pop("FZF_DEFAULT_COMMAND", None)
+            completed = subprocess.run(
+                ["bash", str(Path(__file__).with_name("worktree-pick.sh")), result, listed, "Worktree", ""],
+                env=env, text=True, capture_output=True,
+            )
+            chosen = Path(result).read_text(encoding="utf-8") if os.path.exists(result) else None
+            err_path = result + ".err"
+            err = Path(err_path).read_text(encoding="utf-8") if os.path.exists(err_path) else ""
+            return completed, chosen, err
+
+    def test_pick_returns_selected_line_and_ignores_inherited_fzf_options(self):
+        completed, chosen, err = self.run_pick(
+            ["new\tNew Worktree\n", "/repo/topic\ttopic    /repo/topic\n"],
+            "#!/bin/sh\nif [ -n \"${FZF_DEFAULT_OPTS:-}\" ]; then echo leaked >&2; exit 2; fi\ncat\n",
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertEqual(err, "")
+        self.assertEqual(chosen, "new\tNew Worktree\n/repo/topic\ttopic    /repo/topic\n")
+
+    def test_pick_records_cancel_as_an_empty_result(self):
+        completed, chosen, err = self.run_pick(
+            ["/repo/topic\ttopic    /repo/topic\n"],
+            "#!/bin/sh\nexit 1\n",
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertEqual(chosen, "")
+        self.assertEqual(err, "")
+
+    def test_pick_reports_a_missing_fzf(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            home = os.path.join(tmp, "home")
+            os.makedirs(home)
+            listed = os.path.join(tmp, "list")
+            result = os.path.join(tmp, "result")
+            with open(listed, "w", encoding="utf-8") as file:
+                file.write("new\tNew\n")
+            env = os.environ.copy()
+            env.update({"HOME": home, "USER": "nosuchuser", "PATH": "/usr/bin:/bin"})
+            completed = subprocess.run(
+                ["bash", str(Path(__file__).with_name("worktree-pick.sh")), result, listed, "Worktree", "multi"],
+                env=env, text=True, capture_output=True,
+            )
+            self.assertEqual(completed.returncode, 1)
+            self.assertEqual(Path(result + ".err").read_text(encoding="utf-8"), "fzf が見つかりません\n")
+            self.assertEqual(Path(result).read_text(encoding="utf-8"), "")
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -18,6 +18,8 @@ local scripts = os.getenv("HOME") .. "/.config/rex/scripts"
 local pr_script = scripts .. "/pr-review.py"
 local picker_script = scripts .. "/worktree-picker.py"
 local remove_script = scripts .. "/worktree-remove.py"
+local wide_pick_script = scripts .. "/worktree-pick.sh"
+
 -- Rex.app の rex.exec は PATH が /usr/bin:/bin:/usr/sbin:/sbin だけなので、
 -- git は見つかるが rex と gh は見つからない。ログインシェルと同じ場所を前置し、
 -- 呼び出し元の PATH はその後ろに残す。
@@ -78,6 +80,90 @@ local function pick(spec)
     return nil
   end
   return value
+end
+
+-- rex.ui.pick の幅は Rex.app が固定していて、worktree のパスが途中で切れる。
+-- 一覧はウィンドウ幅の 92% のペインで出す。
+local function pick_wide(ctx, cwd, spec)
+  local base = os.tmpname()
+  os.remove(base)
+  local list_path = base .. ".list"
+  local result_path = base .. ".result"
+  local function cleanup()
+    os.remove(list_path)
+    os.remove(result_path)
+    os.remove(result_path .. ".part")
+    os.remove(result_path .. ".err")
+  end
+  local file, open_err = io.open(list_path, "w")
+  if not file then error(open_err, 0) end
+  for _, item in ipairs(spec.items or {}) do
+    local label = item.title or ""
+    if item.subtitle and item.subtitle ~= "" and item.subtitle ~= item.title then
+      label = label .. "    " .. item.subtitle
+    end
+    if item.detail and item.detail ~= "" then
+      label = label .. "    " .. item.detail
+    end
+    file:write((item.id or ""):gsub("[\t\r\n]", " "), "\t", label:gsub("[\t\r\n]", " "), "\n")
+  end
+  file:close()
+
+  local layout = rex.layout.block {
+    flavor = "com.superlogical.terminal.shell",
+    options = {
+      cwd = cwd,
+      command = {
+        "/bin/bash", wide_pick_script, result_path, list_path, spec.title or ">",
+        spec.multiple and "multi" or "",
+      },
+      exit = { on_completion = true },
+    },
+  }
+  layout.block.label = spec.title
+  local layer_args = {
+    bounds = { 0.04, 0.12, 0.92, 0.76 },
+    focus = true,
+    layout = layout,
+  }
+  if ctx.session_id then layer_args.session_id = ctx.session_id end
+  local opened, layer_err = rex.session.new_layer(layer_args)
+  if layer_err then
+    cleanup()
+    error(layer_err, 0)
+  end
+
+  local waited = rex.exec({
+    "/bin/sh", "-c",
+    'i=0; while [ ! -f "$1" ]; do i=$((i+1)); if [ "$i" -gt 6000 ]; then exit 1; fi; sleep 0.05; done',
+    "wait", result_path,
+  }, { timeout = 320 })
+  if opened and opened.layer_id then
+    local close_args = { layer_id = opened.layer_id }
+    if ctx.session_id then close_args.session_id = ctx.session_id end
+    rex.session.close_layer(close_args)
+  end
+
+  local err_file = io.open(result_path .. ".err", "r")
+  local err_text = err_file and err_file:read("*a") or nil
+  if err_file then err_file:close() end
+  local result_file = io.open(result_path, "r")
+  local text = result_file and result_file:read("*a") or ""
+  if result_file then result_file:close() end
+  cleanup()
+  if err_text and err_text ~= "" then error((err_text:gsub("%s+$", "")), 0) end
+  if not waited or not waited.ok then
+    rex.log("warn", (spec.title or "pick") .. ": 選択の待ち時間が切れました")
+    return nil
+  end
+  local ids = {}
+  for line in (text .. "\n"):gmatch("(.-)\n") do
+    local id = line:match("^[^\t]*")
+    if id and id ~= "" then ids[#ids + 1] = id end
+  end
+  if #ids == 0 then return nil end
+  if spec.multiple then return ids end
+  return ids[1]
 end
 
 local function ask_input(spec)
@@ -218,7 +304,7 @@ local function run_worktree_switch(ctx)
   for _, item in ipairs(data.items or {}) do
     items[#items + 1] = item
   end
-  local selected = pick({ title = "Worktree", items = palette_items(items) })
+  local selected = pick_wide(ctx, cwd, { title = "Worktree", items = items })
   if selected == nil then return end
   if selected == "new" then
     local name = ask_input({ title = "Worktree name", confirm = "作成" })
@@ -244,11 +330,10 @@ local function run_worktree_remove(ctx, merged)
   end
   local chosen = items
   if not merged then
-    local ids = pick({
+    local ids = pick_wide(ctx, cwd, {
       title = "Worktree 削除",
       multiple = true,
-      confirm = "削除確認へ",
-      items = palette_items(items),
+      items = items,
     })
     if ids == nil or #ids == 0 then return end
     local wanted = {}
