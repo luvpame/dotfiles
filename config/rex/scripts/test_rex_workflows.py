@@ -329,7 +329,7 @@ class RexWorkflowsTest(unittest.TestCase):
 
 
 class WorktreePickScriptTest(unittest.TestCase):
-    def run_pick(self, lines, fzf):
+    def run_pick(self, lines, fzf, extra=()):
         with tempfile.TemporaryDirectory() as tmp:
             home = os.path.join(tmp, "home")
             stub = os.path.join(tmp, "bin")
@@ -352,7 +352,7 @@ class WorktreePickScriptTest(unittest.TestCase):
             })
             env.pop("FZF_DEFAULT_COMMAND", None)
             completed = subprocess.run(
-                ["bash", str(Path(__file__).with_name("worktree-pick.sh")), result, listed, "Worktree", ""],
+                ["bash", str(Path(__file__).with_name("worktree-pick.sh")), result, listed, "Worktree", "", *extra],
                 env=env, text=True, capture_output=True,
             )
             chosen = Path(result).read_text(encoding="utf-8") if os.path.exists(result) else None
@@ -368,6 +368,26 @@ class WorktreePickScriptTest(unittest.TestCase):
         self.assertEqual(completed.returncode, 0, completed.stderr)
         self.assertEqual(err, "")
         self.assertEqual(chosen, "new\tNew Worktree\n/repo/topic\ttopic    /repo/topic\n")
+
+    def test_pick_omits_the_header_without_a_notice(self):
+        completed, _, err = self.run_pick(
+            ["a\tA\n"],
+            "#!/bin/sh\nprintf '%s\\n' \"$@\" >&2\ncat\n",
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertNotIn("--header", completed.stderr)
+        self.assertEqual(err, "")
+
+    def test_pick_passes_a_notice_as_the_fzf_header(self):
+        completed, chosen, err = self.run_pick(
+            ["9243\t└─ #9243 title    feature/topic    参考\n"],
+            "#!/bin/sh\nprintf '%s\\n' \"$@\" >&2\ncat\n",
+            extra=("PR #9243 はレビュー対象外です",),
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertIn("--header=PR #9243 はレビュー対象外です", completed.stderr)
+        self.assertEqual(chosen, "9243\t└─ #9243 title    feature/topic    参考\n")
+        self.assertEqual(err, "")
 
     def test_pick_records_cancel_as_an_empty_result(self):
         completed, chosen, err = self.run_pick(

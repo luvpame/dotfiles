@@ -82,7 +82,7 @@ local function pick(spec)
   return value
 end
 
--- rex.ui.pick の幅は Rex.app が固定していて、worktree のパスが途中で切れる。
+-- rex.ui.pick の幅は Rex.app が固定していて、パスや PR タイトルが途中で切れる。
 -- 一覧はウィンドウ幅の 92% のペインで出す。
 local function pick_wide(ctx, cwd, spec)
   local base = os.tmpname()
@@ -116,6 +116,7 @@ local function pick_wide(ctx, cwd, spec)
       command = {
         "/bin/bash", wide_pick_script, result_path, list_path, spec.title or ">",
         spec.multiple and "multi" or "",
+        spec.header or "",
       },
       exit = { on_completion = true },
     },
@@ -285,12 +286,12 @@ local function run_pr_review(ctx, args)
   for _, id in ipairs(data.reject_ids or {}) do
     reject[tostring(id)] = true
   end
-  local title = "PR Review"
+  local notice = nil
   while true do
-    local picked = pick({ title = title, items = palette_items(data.items) })
+    local picked = pick_wide(ctx, cwd, { title = "PR Review", header = notice, items = data.items })
     if picked == nil then return end
     if reject[tostring(picked)] then
-      title = "PR #" .. picked .. " はレビュー対象外です。レビュー依頼のある PR を選択してください"
+      notice = "PR #" .. picked .. " はレビュー対象外です。レビュー依頼のある PR を選択してください"
     else
       return run_in_layer(ctx, cwd, { "python3", pr_script, "--number", tostring(picked) })
     end
