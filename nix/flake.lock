@@ -309,11 +309,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795311109,
-        "narHash": "sha256-i1TCpAyQJOLvAm3skdDlB6LHHH2KtbKTX5lJ/BYlfcw=",
+        "lastModified": 1795323132,
+        "narHash": "sha256-ubLuIU4HwKpcX+mu6N4inn9Gmkwywh4boFL+NHJTXmE=",
         "owner": "kawarimidoll",
         "repo": "guard-and-guide",
-        "rev": "3a5b8813ec7b5e11b68db3d9ad9c3fe0bea7cbbc",
+        "rev": "ec34ed8fe0acfc1340592968ee7253612e21f237",
         "type": "github"
       },
       "original": {
@@ -329,11 +329,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795268568,
-        "narHash": "sha256-1RJm4DEu7YHJv94sjSY7sjqT+kHx/AUwmtUN4dtFBUo=",
+        "lastModified": 1795340038,
+        "narHash": "sha256-RtgZbV+4BDtJqMImbiPJri3fmVDbCbrz/B0cuPQUJQY=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "6857c7f7c338ad181729c52071386b0d3afa24bc",
+        "rev": "03885bcd0b477bdecebebc57b213b0f8f0826d51",
         "type": "github"
       },
       "original": {
@@ -514,11 +514,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794739050,
-        "narHash": "sha256-PCGNIyAydZcdUXCxEXTjrS1+wWS+k9E+ENqBkUK2Mpg=",
+        "lastModified": 1795345257,
+        "narHash": "sha256-p1dA8lUFQTLJfDI2gaTZQ+CcMKw3nxvyHNbwpVMy2rY=",
         "owner": "nix-community",
         "repo": "nix-index-database",
-        "rev": "9bd074026d6db75b59aae8cd6071b5f2fe27a36c",
+        "rev": "905f3e6f1e78165e79457c0bbe7ec4b885a5fce1",
         "type": "github"
       },
       "original": {
