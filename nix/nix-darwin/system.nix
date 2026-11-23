@@ -9,9 +9,8 @@
     stateVersion = 6;
 
     keyboard = {
+      # 空の割り当てを適用して、Caps Lock の Control 化を外す。
       enableKeyMapping = true;
-      # CapsLockをControlにマッピング
-      remapCapsLockToControl = true;
     };
 
     defaults = {
@@ -45,8 +44,8 @@
       controlcenter = {
         # メニューバーにAirDropを表示しない
         AirDrop = false;
-        # メニューバーにバッテリー残量を表示しない
-        BatteryShowPercentage = false;
+        # メニューバーにバッテリー残量を表示する
+        BatteryShowPercentage = true;
         # メニューバーにBluetoothを表示しない
         Bluetooth = false;
       };

@@ -26,10 +26,11 @@ in
 
       home.stateVersion = "24.11";
 
-      # macOS Tahoe の設定画面で非表示時の値を確認済み。
       targets.darwin.currentHostDefaults."com.apple.controlcenter" = {
-        Battery = 9;
+        # macOS Tahoe 26.7 でメニューバーにバッテリーを表示する値。
+        Battery = 11;
         BatteryShowEnergyMode = 0;
+        # メニューバーに天気を表示しない値。
         Weather = 8;
       };
 
