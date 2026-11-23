@@ -52,7 +52,6 @@ let
     "thebrowsercompany-dia"
     "spotify"
     "azookey"
-    "a-bar"
     "keycastr"
     "ardia-browser/tap/ardia"
     "steam"
