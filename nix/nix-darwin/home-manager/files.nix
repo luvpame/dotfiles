@@ -27,7 +27,6 @@ in
     # cage: archive/cage へ退避
 
     # Runtime stateを含むHunkの親directory linkはT24でfile単位へ分割する。
-    "worktrunk/config.toml".source = oos "${configRoot}/worktrunk/config.toml";
     hunk.source = oos "${configRoot}/hunk";
     wezterm.source = oos "${configRoot}/wezterm";
     zed.source = oos "${configRoot}/zed";

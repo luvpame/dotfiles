@@ -1,6 +1,0 @@
-[post-start]
-herdr-workspace = '''
-if [ "${HERDR_ENV:-}" = "1" ]; then
-    herdr worktree open --cwd {{ primary_worktree_path }} --path {{ worktree_path }} --focus
-fi
-'''
