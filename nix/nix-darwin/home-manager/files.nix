@@ -57,7 +57,12 @@ in
     ".codex/AGENTS.md".source = oos "${configRoot}/codex/AGENTS.md";
     ".codex/config.toml".source = oos "${configRoot}/codex/config.toml";
     ".agents/.skill-lock.json".source = oos "${configRoot}/agents/.skill-lock.json";
-    # config.toml はローカル状態を含むため、スクリプトだけをリンクする。
+    # Grok の設定保存は葉のシンボリックリンクを辿り、リポジトリのファイルを書き換える。
+    # 導入前からある通常ファイルを、リポジトリへのリンクへ置き換える。
+    ".grok/config.toml" = {
+      source = oos "${configRoot}/grok/config.toml";
+      force = true;
+    };
     ".grok/statusline.py".source = oos "${configRoot}/grok/statusline.py";
 
     # Cursor の User ディレクトリには履歴と拡張の状態が入る。設定ファイルだけをリンクする。

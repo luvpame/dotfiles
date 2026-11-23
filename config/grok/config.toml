@@ -1,0 +1,27 @@
+[marketplace]
+default_skills_installs_purged = true
+official_marketplace_auto_installed = true
+
+[[marketplace.sources]]
+name = "xAI Official"
+git = "https://github.com/xai-org/plugin-marketplace.git"
+
+[privacy]
+privacy_banner_acked = "2026-11-23T03:22:30Z"
+
+[ui]
+permission_mode = "always-approve"
+tool_call_density = "compact-ungrouped"
+compact_mode = true
+screen_mode = "fullscreen"
+show_timeline = true
+theme = "auto"
+combine_queued_prompts = true
+single_ctrl_c_quit = true
+follow_up_behavior = "steer"
+voice_keybind_enabled = false
+remember_tool_approvals = true
+hunk_tracker_mode = "all_dirty"
+
+[keys]
+vim = "all"
