@@ -22,15 +22,12 @@ if status is-interactive
     # Configurations for Worktrunk
     if command -q wt
         command wt config shell init fish | source
-        configure_worktrunk
     end
 
     # Configurations for mise
     if command -q mise
         mise activate fish | source
     end
-
-    herdr completion fish | source
 end
 
 # Added by OrbStack: command-line tools and integration

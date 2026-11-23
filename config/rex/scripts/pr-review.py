@@ -50,11 +50,15 @@ def review_rows(requested, open_prs):
         while pending:
             number, prefix, branch = pending.pop()
             pr = prs[number]
-            # JSON encoding prevents titles and branch names from injecting terminal controls or rows.
-            title = json.dumps(pr["title"], ensure_ascii=False)
-            base = json.dumps(pr["baseRefName"], ensure_ascii=False)
-            marker = " [参考]" if number not in requested_numbers else ""
-            rows.append(f'{number}\t{prefix}{branch}#{number} {title} base {base}{marker}')
+            item = {
+                "id": str(number),
+                "title": f"{prefix}{branch}#{number} {pr['title']}",
+                "subtitle": pr["baseRefName"],
+                "icon": "branch",
+            }
+            if number not in requested_numbers:
+                item["detail"] = "参考"
+            rows.append(item)
             descendants = [child for child in children.get(number, []) if child not in visited]
             visited.update(descendants)
             child_prefix = prefix
@@ -66,43 +70,42 @@ def review_rows(requested, open_prs):
     return rows
 
 
-def main():
-    workspace = os.environ.get("REX_SESSION")
-    if not workspace:
-        raise RuntimeError("Rex のカスタムコマンドから実行してください。")
-    source = worktrees()
-    root = source["source"]["repo_root"]
+def listed_prs(root):
     prs = json.loads(run(
         "gh", "pr", "list", "--search", "review-requested:@me", "--state", "open",
         "--limit", "1000", "--json", "number,title,baseRefName", cwd=root,
     ))
-    if not prs:
-        input("レビュー依頼のある PR はありません。Enter で閉じます。")
-        return
-    # shortcut: Stack detection covers 1000 open PRs; paginate when a repository exceeds this.
     open_prs = json.loads(run(
         "gh", "pr", "list", "--state", "open", "--limit", "1000", "--json",
         "number,title,headRefName,baseRefName,isCrossRepository", cwd=root,
-    ))
-    rows = review_rows(prs, open_prs)
-    listed = {row.split("\t", 1)[0] for row in rows}
+    )) if prs else []
+    items = review_rows(prs, open_prs) if prs else []
+    return prs, items
+
+
+def catalog():
+    source = worktrees()
+    root = source["source"]["repo_root"]
+    prs, items = listed_prs(root)
     requested = {str(pr["number"]) for pr in prs}
-    header = "選択すると worktree を準備してレビューを起動します。[参考] はレビュー対象外です"
-    while True:
-        selection = subprocess.run(
-            ["fzf", "--layout=reverse", "--prompt=PR Review> ",
-             "--delimiter=\t", "--with-nth=2..", "--no-sort", f"--header={header}"],
-            input="\n".join(rows), text=True, stdout=subprocess.PIPE,
-        )
-        if selection.returncode in (1, 130):
-            return
-        selection.check_returncode()
-        number = selection.stdout.split("\t", 1)[0]
-        if number not in listed:
-            raise RuntimeError("選択された PR が一覧にありません。")
-        if number in requested:
-            break
-        header = f"PR #{number} はレビュー対象外です。レビュー依頼のある PR を選択してください"
+    return {
+        "repo_root": root,
+        "items": items,
+        "reject_ids": [item["id"] for item in items if item["id"] not in requested],
+    }
+
+
+def launch(number):
+    number = str(number)
+    source = worktrees()
+    root = source["source"]["repo_root"]
+    prs, items = listed_prs(root)
+    listed = {item["id"] for item in items}
+    requested = {str(pr["number"]) for pr in prs}
+    if number not in listed:
+        raise RuntimeError("選択された PR が一覧にありません。")
+    if number not in requested:
+        raise RuntimeError("レビュー依頼のある PR を選択してください。")
     pr = json.loads(run(
         "gh", "pr", "view", number, "--json", "headRefName,headRefOid,baseRefName,baseRefOid,url", cwd=root,
     ))
@@ -305,14 +308,21 @@ def main():
     print(f"PR #{number}: {checkout}\n再レビューと片付けは手動で行ってください。")
 
 
+def main(argv=None):
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if argv == ["--catalog"]:
+        json.dump(catalog(), sys.stdout, ensure_ascii=False)
+        sys.stdout.write("\n")
+        return
+    if len(argv) == 2 and argv[0] == "--number":
+        launch(argv[1])
+        return
+    raise SystemExit("usage: pr-review.py --catalog | --number N")
+
+
 if __name__ == "__main__":
     try:
         main()
     except (subprocess.CalledProcessError, RuntimeError, KeyError, ValueError) as error:
         print(str(error), file=sys.stderr)
-        if sys.stdin.isatty():
-            try:
-                input("Enter で閉じます。")
-            except EOFError:
-                pass
         sys.exit(1)

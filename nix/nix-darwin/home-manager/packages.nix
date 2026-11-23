@@ -66,7 +66,6 @@ in
     socat
     ov
     guardAndGuide
-    pkgs.herdr
     inputs.hunk.packages.${system}.default
     inputs.crit.packages.${system}.default
     cliamp

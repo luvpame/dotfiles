@@ -1,5 +1,4 @@
 *.local.*
-!config/herdr/config-gpui.local.toml
 !config/git/config.local.example
 config/git/config.local
 .DS_Store
@@ -19,10 +18,6 @@ build/
 .cache/
 .audit/
 .claude/
-config/herdr/*.log
-config/herdr/*.sock
-config/herdr/release-notes.json
-config/herdr/session*.json
 
 # Fisher 管理ファイルを無視し、自作ファイルだけ追跡する
 config/fish/completions/
@@ -34,7 +29,6 @@ config/fish/conf.d/*
 config/fish/functions/*
 !config/fish/functions/fzf_git_branch.fish
 !config/fish/functions/ghq_cd_fzf.fish
-!config/fish/functions/configure_worktrunk.fish
 !config/fish/functions/tmux.fish
 !config/fish/functions/tre.fish
 

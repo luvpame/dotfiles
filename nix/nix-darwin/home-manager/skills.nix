@@ -10,7 +10,7 @@ let
   # 既存ファイルの編集は即時反映されるため、just switch は不要。
   # 追加: 上記ディレクトリを作り、この一覧に名前を追加して just switch を実行する。
   # 配布停止: この一覧から名前を外して just switch。原本はその後で削除または退避できる。
-  # 外部へ移行した4スキルの旧原本は、反映後に archive/agents/skills/ へ退避する。
+  # 外部へ移行したスキルの旧原本は、反映後に archive/agents/skills/ へ退避する。
   localSkills = [
     "conventional-commit"
     "rex"
@@ -84,7 +84,7 @@ in
       subdir = "skills";
     };
     sources.external = {
-      # 既存4スキルのファイル名変換と差分保持は external-skills.nix で行う。
+      # 既存3スキルのファイル名変換と差分保持は external-skills.nix で行う。
       # この取得元の追加・削除時は、同ファイルのコピー処理と原本hashも更新する。
       path = import ./external-skills.nix { inherit inputs pkgs; };
       filter.maxDepth = 1;

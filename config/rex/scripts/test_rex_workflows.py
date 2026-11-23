@@ -1,4 +1,5 @@
 import importlib.util
+from io import StringIO
 import json
 import os
 from pathlib import Path
@@ -54,8 +55,8 @@ class RexWorkflowsTest(unittest.TestCase):
             if '--search' in args:
                 return json.dumps([{'number': 42, 'title': 'test', 'baseRefName': 'main'}])
             return '[]'
-        with patch.dict(os.environ, {'REX_SESSION': 's'}), patch.object(review, 'worktrees', return_value={'source': {'repo_root': '/repo'}, 'worktrees': []}), patch.object(review, 'run', side_effect=run), patch.object(review.subprocess, 'run', return_value=subprocess.CompletedProcess([], 130, stdout='')):
-            review.main()
+        with patch.dict(os.environ, {'REX_SESSION': 's'}), patch.object(review, 'worktrees', return_value={'source': {'repo_root': '/repo'}, 'worktrees': []}), patch.object(review, 'run', side_effect=run):
+            review.catalog()
         self.assertEqual(len(calls), 2)
         self.assertTrue(all(call[:3] == ('gh', 'pr', 'list') for call in calls))
 
@@ -88,28 +89,27 @@ class RexWorkflowsTest(unittest.TestCase):
             return json.dumps(open_prs)
         with patch.dict(os.environ, {'REX_SESSION': 's'}), \
                 patch.object(review, 'worktrees', return_value={'source': {'repo_root': '/repo'}, 'worktrees': []}), \
-                patch.object(review, 'run', side_effect=run), \
-                patch.object(review.subprocess, 'run', return_value=subprocess.CompletedProcess([], 130, stdout='')) as fzf:
-            review.main()
-        rows = fzf.call_args.kwargs['input'].splitlines()
-        self.assertEqual(rows, [
-            '1\t#1 "test" base "main"',
-            '2\t├─ #2 "test" base "root"',
-            '3\t│  └─ #3 "test" base "middle"',
-            '10\t└─ #10 "test" base "root" [参考]',
-            '4\t#4 "test" base "release"',
-            '5\t#5 "test" base "main" [参考]',
-            '6\t└─ #6 "test" base "outside-review"',
-            '8\t#8 "test" base "fork-only"',
-            '9\t#9 "title\\t\\n\\u001b[31m" base "base\\n\\u001b[31m"',
+                patch.object(review, 'run', side_effect=run):
+            data = review.catalog()
+        self.assertEqual(data['items'], [
+            {'id': '1', 'title': '#1 test', 'subtitle': 'main', 'icon': 'branch'},
+            {'id': '2', 'title': '├─ #2 test', 'subtitle': 'root', 'icon': 'branch'},
+            {'id': '3', 'title': '│  └─ #3 test', 'subtitle': 'middle', 'icon': 'branch'},
+            {'id': '10', 'title': '└─ #10 test', 'subtitle': 'root', 'icon': 'branch', 'detail': '参考'},
+            {'id': '4', 'title': '#4 test', 'subtitle': 'release', 'icon': 'branch'},
+            {'id': '5', 'title': '#5 test', 'subtitle': 'main', 'icon': 'branch', 'detail': '参考'},
+            {'id': '6', 'title': '└─ #6 test', 'subtitle': 'outside-review', 'icon': 'branch'},
+            {'id': '8', 'title': '#8 test', 'subtitle': 'fork-only', 'icon': 'branch'},
+            {'id': '9', 'title': '#9 title\t\n\x1b[31m', 'subtitle': 'base\n\x1b[31m', 'icon': 'branch'},
         ])
-        for option in ('--delimiter=\t', '--with-nth=2..', '--no-sort'):
-            self.assertIn(option, fzf.call_args.args[0])
+        self.assertEqual(data['reject_ids'], ['10', '5'])
 
     def test_review_tree_keeps_requested_pr_missing_from_open_list(self):
         review = load('review', 'pr-review.py')
         requested = [{'number': 42, 'title': 'missing', 'baseRefName': 'main'}]
-        self.assertEqual(review.review_rows(requested, []), ['42\t#42 "missing" base "main"'])
+        self.assertEqual(review.review_rows(requested, []), [
+            {'id': '42', 'title': '#42 missing', 'subtitle': 'main', 'icon': 'branch'},
+        ])
 
     def test_review_tree_visits_cycles_and_multiple_parents_once(self):
         review = load('review', 'pr-review.py')
@@ -123,7 +123,7 @@ class RexWorkflowsTest(unittest.TestCase):
                         'baseRefName': base, 'isCrossRepository': False}
                        for number, (head, base) in enumerate(branches, 1)]
                 rows = review.review_rows([prs[-1]], prs)
-                numbers = [int(row.split('\t', 1)[0]) for row in rows]
+                numbers = [int(row['id']) for row in rows]
                 self.assertCountEqual(numbers, range(1, len(prs) + 1))
 
     def test_review_tree_handles_a_thousand_nested_prs(self):
@@ -132,7 +132,7 @@ class RexWorkflowsTest(unittest.TestCase):
                 'baseRefName': str(number - 1), 'isCrossRepository': False}
                for number in range(1, 1001)]
         rows = review.review_rows([prs[-1]], prs)
-        self.assertEqual([int(row.split('\t', 1)[0]) for row in rows], list(range(1, 1001)))
+        self.assertEqual([int(row['id']) for row in rows], list(range(1, 1001)))
 
     def test_reference_selection_returns_to_picker_without_fetching_or_launching(self):
         review = load('review', 'pr-review.py')
@@ -140,28 +140,21 @@ class RexWorkflowsTest(unittest.TestCase):
             {'number': 1, 'title': 'parent', 'headRefName': 'parent', 'baseRefName': 'main', 'isCrossRepository': False},
             {'number': 2, 'title': 'child', 'headRefName': 'child', 'baseRefName': 'parent', 'isCrossRepository': False},
         ]
-        selections = [subprocess.CompletedProcess([], 0, stdout='1\t#1 "parent" [参考]'),
-                      subprocess.CompletedProcess([], 130, stdout='')]
         with patch.dict(os.environ, {'REX_SESSION': 's'}), \
                 patch.object(review, 'worktrees', return_value={'source': {'repo_root': '/repo'}, 'worktrees': []}), \
-                patch.object(review, 'run', side_effect=[json.dumps([prs[1]]), json.dumps(prs)]) as run, \
-                patch.object(review.subprocess, 'run', side_effect=selections) as fzf:
-            review.main()
+                patch.object(review, 'run', side_effect=[json.dumps([prs[1]]), json.dumps(prs)]) as run:
+            with self.assertRaisesRegex(RuntimeError, 'レビュー依頼のある PR'):
+                review.launch('1')
         self.assertEqual(run.call_count, 2)
-        self.assertEqual(fzf.call_count, 2)
-        self.assertTrue(all(call.args[0][0] == 'fzf' for call in fzf.call_args_list))
-        self.assertIn('--header=PR #1 はレビュー対象外です。レビュー依頼のある PR を選択してください',
-                      fzf.call_args.args[0])
 
     def test_review_rejects_a_number_outside_the_picker(self):
         review = load('review', 'pr-review.py')
         requested = [{'number': 42, 'title': 'test', 'baseRefName': 'main'}]
         with patch.dict(os.environ, {'REX_SESSION': 's'}), \
                 patch.object(review, 'worktrees', return_value={'source': {'repo_root': '/repo'}, 'worktrees': []}), \
-                patch.object(review, 'run', side_effect=[json.dumps(requested), '[]']) as run, \
-                patch.object(review.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0, stdout='99\tforged')):
+                patch.object(review, 'run', side_effect=[json.dumps(requested), '[]']) as run:
             with self.assertRaisesRegex(RuntimeError, '選択された PR が一覧にありません'):
-                review.main()
+                review.launch('99')
         self.assertEqual(run.call_count, 2)
 
     def test_review_launches_each_agent_in_its_own_pane(self):
@@ -195,8 +188,8 @@ class RexWorkflowsTest(unittest.TestCase):
         with patch.dict(os.environ, {'REX_SESSION': 's'}), patch.object(review, 'worktrees', return_value=source), \
                 patch.object(review, 'run', side_effect=run) as mocked, \
                 patch.object(review.tempfile, 'mkdtemp', side_effect=lambda prefix: mkdtemp(prefix=prefix, dir=temporary.name)), \
-                patch.object(review.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0, stdout='42\t"t"')):
-            review.main()
+                patch.object(review.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0, stdout='')):
+            review.launch('42')
         orchestrator = next(c.args[-1] for c in mocked.call_args_list if c.args[:2] == ('rex', 'new'))
         scripts = [Path(path).read_text(encoding='utf-8') for path in (orchestrator, *splits)]
         expected = [('opus', '/rex '), ('opus', '/code-review medium'), ('opus', '/code-review-with-patterns'),
@@ -216,41 +209,212 @@ class RexWorkflowsTest(unittest.TestCase):
             self.assertTrue(script.rstrip().endswith("そのサーバーを止めて進めてよい。'"))
         self.assertIn('そのサーバーと再開方法を総合レビューに書く', scripts[0])
 
-    def test_invalid_picker_action_does_not_execute(self):
+    def test_empty_worktree_name_does_not_fetch(self):
         picker = load('picker', 'worktree-picker.py')
-        with patch.dict(os.environ, {'REX_SESSION': 's'}), patch.object(picker, 'select', return_value='unexpected'), patch.object(picker, 'worktrees') as worktrees:
-            with self.assertRaises(RuntimeError):
-                picker.main()
-        worktrees.assert_not_called()
+        with patch.object(picker, 'run') as run:
+            picker.create('   ')
+        run.assert_not_called()
 
     def test_picker_launches_claude_for_root_existing_and_new_worktrees(self):
         picker = load('picker', 'worktree-picker.py')
         source = {'source': {'repo_root': '/repo', 'source_checkout_path': '/repo'},
                   'worktrees': [{'path': '/repo'}, {'path': '/repo/topic', 'branch': 'topic'}]}
-        cases = [(['Original Root'], '/repo'),
-                 (['Worktree 作成・移動', '0\t["topic", "/repo/topic"]'], '/repo/topic'),
-                 (['Worktree 作成・移動', 'New Worktree'], '/repo/new-topic')]
-        for selections, path in cases:
-            with self.subTest(selections=selections), \
-                    patch.dict(os.environ, {'REX_SESSION': 's'}), \
-                    patch.object(picker, 'select', side_effect=selections), \
-                    patch.object(picker, 'worktrees', return_value=source), \
-                    patch.object(picker, 'run', side_effect=['', 'main', '{"path":"/repo/new-topic"}']), \
-                    patch.object(picker.subprocess, 'run'), \
-                    patch('builtins.input', return_value='new-topic'), \
-                    patch.object(rex_worktrees, 'worktrees', return_value=source), \
-                    patch.object(rex_worktrees, 'run', return_value='{"session_id":"new"}') as run:
-                picker.main()
-                run.assert_any_call('rex', 'new', os.path.basename(path), '-c', path, '--json', '--',
-                                    'env', 'CLAUDE_CODE_NO_FLICKER=1', 'claude', '--model', 'opus', '--effort', 'high')
+        claude = ('env', 'CLAUDE_CODE_NO_FLICKER=1', 'claude', '--model', 'opus', '--effort', 'high')
+
+        def opened(run, path):
+            run.assert_any_call('rex', 'new', os.path.basename(path), '-c', path, '--json', '--', *claude)
+
+        with patch.object(picker, 'worktrees', return_value=source), \
+                patch.object(rex_worktrees, 'worktrees', return_value=source), \
+                patch.object(rex_worktrees, 'run', return_value='{"session_id":"new"}') as run:
+            picker.open_root()
+            opened(run, '/repo')
+            picker.open_path('/repo/topic')
+            opened(run, '/repo/topic')
+        with patch.object(picker, 'worktrees', return_value=source), \
+                patch.object(picker, 'run', side_effect=['', 'main', '{"path":"/repo/new-topic"}']), \
+                patch.object(picker.subprocess, 'run'), \
+                patch.object(rex_worktrees, 'worktrees', return_value=source), \
+                patch.object(rex_worktrees, 'run', return_value='{"session_id":"new"}') as run:
+            picker.create('new-topic')
+            opened(run, '/repo/new-topic')
 
     def test_open_worktree_is_excluded_from_removal(self):
         remove = load('remove', 'worktree-remove.py')
         source = {'source': {'repo_root': '/repo', 'source_checkout_path': '/repo'},
                   'worktrees': [{'path': '/repo'}, {'path': '/repo/active', 'open_workspace_id': 's'}]}
-        with patch.dict(os.environ, {'REX_SESSION': 's'}), patch.object(remove, 'worktrees', return_value=source), patch.object(remove, 'clean_head') as clean, patch('builtins.input', return_value=''):
-            remove.main()
-        clean.assert_not_called()
+        with patch.dict(os.environ, {'REX_SESSION': 's'}), patch.object(remove, 'worktrees', return_value=source), patch.object(remove, 'head_state') as state:
+            data = remove.catalog()
+        state.assert_not_called()
+        self.assertEqual(data['items'], [])
+
+    def test_merged_pr_worktree_with_uncommitted_changes_is_removed(self):
+        remove = load('remove', 'worktree-remove.py')
+        source = {'source': {'repo_root': '/repo', 'source_checkout_path': '/repo'},
+                  'worktrees': [{'path': '/repo'}, {'path': '/repo/done', 'branch': 'done'}]}
+        calls = []
+
+        def run(*args, cwd=None):
+            calls.append(args)
+            if args[:3] == ('gh', 'pr', 'list'):
+                return json.dumps([{'number': 1, 'state': 'MERGED', 'headRefName': 'done', 'headRefOid': 'abc'}])
+            if 'status' in args:
+                return ' M file'
+            if 'rev-parse' in args:
+                return 'abc'
+            return json.dumps([{'branch_outcome': 'deleted'}])
+
+        with patch.dict(os.environ, {'REX_SESSION': 's'}), \
+                patch.object(remove, 'worktrees', return_value=source), \
+                patch.object(remove, 'run', side_effect=run), \
+                patch.object(remove.os.path, 'isdir', return_value=True):
+            remove.remove_paths(['/repo/done'], merged=True)
+        removals = [args for args in calls if args[0] == 'wt']
+        self.assertEqual(len(removals), 1)
+        self.assertIn('--force', removals[0])
+        self.assertEqual(removals[0][-1], '/repo/done')
+
+    def test_selected_worktree_with_uncommitted_changes_is_removed_after_warning(self):
+        remove = load('remove', 'worktree-remove.py')
+        source = {'source': {'repo_root': '/repo', 'source_checkout_path': '/repo'},
+                  'worktrees': [{'path': '/repo'}, {'path': '/repo/wip', 'branch': 'wip'},
+                                {'path': '/repo/clean', 'branch': 'clean'}]}
+        calls = []
+
+        def run(*args, cwd=None):
+            calls.append(args)
+            if 'status' in args:
+                return ' M file' if '/repo/wip' in args else ''
+            if 'rev-parse' in args:
+                return 'abc'
+            return json.dumps([{'branch_outcome': 'kept'}])
+
+        with patch.dict(os.environ, {'REX_SESSION': 's'}), \
+                patch.object(remove, 'worktrees', return_value=source), \
+                patch.object(remove, 'run', side_effect=run), \
+                patch.object(remove.os.path, 'isdir', return_value=True):
+            data = remove.catalog()
+            self.assertEqual(data['items'][0]['detail'], '未コミットの変更あり')
+            self.assertTrue(data['items'][0]['dirty'])
+            self.assertNotIn('detail', data['items'][1])
+            self.assertNotIn('dirty', data['items'][1])
+            remove.remove_paths(['/repo/wip'])
+        removals = [args for args in calls if args[0] == 'wt']
+        self.assertEqual([args[-1] for args in removals], ['/repo/wip'])
+        self.assertIn('--force', removals[0])
+
+    def test_removal_catalog_keeps_progress_off_stdout(self):
+        remove = load('remove_stdout', 'worktree-remove.py')
+        source = {'source': {'repo_root': '/repo', 'source_checkout_path': '/repo'},
+                  'worktrees': [{'path': '/repo'}, {'path': '/repo/wip', 'branch': 'wip'}]}
+        stdout = StringIO()
+        stderr = StringIO()
+
+        def run(*args, cwd=None):
+            if 'status' in args:
+                return ''
+            if 'rev-parse' in args:
+                return 'abc'
+            raise AssertionError(args)
+
+        with patch.object(remove, 'rex_worktrees', return_value=source), \
+                patch.object(remove, 'run', side_effect=run), \
+                patch.object(remove.os.path, 'isdir', return_value=True), \
+                patch.object(remove.sys, 'stdout', stdout), \
+                patch.object(remove.sys, 'stderr', stderr):
+            data = remove.catalog()
+        self.assertEqual([item['id'] for item in data['items']], ['/repo/wip'])
+        self.assertEqual(stdout.getvalue(), '')
+        self.assertIn('worktree', stderr.getvalue())
+
+
+class WorktreePickScriptTest(unittest.TestCase):
+    def run_pick(self, lines, fzf, extra=()):
+        with tempfile.TemporaryDirectory() as tmp:
+            home = os.path.join(tmp, "home")
+            stub = os.path.join(tmp, "bin")
+            os.makedirs(home)
+            os.makedirs(stub)
+            fzf_path = os.path.join(stub, "fzf")
+            with open(fzf_path, "w", encoding="utf-8") as file:
+                file.write(fzf)
+            os.chmod(fzf_path, 0o755)
+            listed = os.path.join(tmp, "list")
+            result = os.path.join(tmp, "result")
+            with open(listed, "w", encoding="utf-8") as file:
+                file.write("".join(lines))
+            env = os.environ.copy()
+            env.update({
+                "HOME": home,
+                "USER": "nosuchuser",
+                "PATH": stub + ":/usr/bin:/bin",
+                "FZF_DEFAULT_OPTS": "--bind=enter:abort",
+            })
+            env.pop("FZF_DEFAULT_COMMAND", None)
+            completed = subprocess.run(
+                ["bash", str(Path(__file__).with_name("worktree-pick.sh")), result, listed, "Worktree", "", *extra],
+                env=env, text=True, capture_output=True,
+            )
+            chosen = Path(result).read_text(encoding="utf-8") if os.path.exists(result) else None
+            err_path = result + ".err"
+            err = Path(err_path).read_text(encoding="utf-8") if os.path.exists(err_path) else ""
+            return completed, chosen, err
+
+    def test_pick_returns_selected_line_and_ignores_inherited_fzf_options(self):
+        completed, chosen, err = self.run_pick(
+            ["new\tNew Worktree\n", "/repo/topic\ttopic    /repo/topic\n"],
+            "#!/bin/sh\nif [ -n \"${FZF_DEFAULT_OPTS:-}\" ]; then echo leaked >&2; exit 2; fi\ncat\n",
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertEqual(err, "")
+        self.assertEqual(chosen, "new\tNew Worktree\n/repo/topic\ttopic    /repo/topic\n")
+
+    def test_pick_omits_the_header_without_a_notice(self):
+        completed, _, err = self.run_pick(
+            ["a\tA\n"],
+            "#!/bin/sh\nprintf '%s\\n' \"$@\" >&2\ncat\n",
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertNotIn("--header", completed.stderr)
+        self.assertEqual(err, "")
+
+    def test_pick_passes_a_notice_as_the_fzf_header(self):
+        completed, chosen, err = self.run_pick(
+            ["9243\t└─ #9243 title    feature/topic    参考\n"],
+            "#!/bin/sh\nprintf '%s\\n' \"$@\" >&2\ncat\n",
+            extra=("PR #9243 はレビュー対象外です",),
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertIn("--header=PR #9243 はレビュー対象外です", completed.stderr)
+        self.assertEqual(chosen, "9243\t└─ #9243 title    feature/topic    参考\n")
+        self.assertEqual(err, "")
+
+    def test_pick_records_cancel_as_an_empty_result(self):
+        completed, chosen, err = self.run_pick(
+            ["/repo/topic\ttopic    /repo/topic\n"],
+            "#!/bin/sh\nexit 1\n",
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertEqual(chosen, "")
+        self.assertEqual(err, "")
+
+    def test_pick_reports_a_missing_fzf(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            home = os.path.join(tmp, "home")
+            os.makedirs(home)
+            listed = os.path.join(tmp, "list")
+            result = os.path.join(tmp, "result")
+            with open(listed, "w", encoding="utf-8") as file:
+                file.write("new\tNew\n")
+            env = os.environ.copy()
+            env.update({"HOME": home, "USER": "nosuchuser", "PATH": "/usr/bin:/bin"})
+            completed = subprocess.run(
+                ["bash", str(Path(__file__).with_name("worktree-pick.sh")), result, listed, "Worktree", "multi"],
+                env=env, text=True, capture_output=True,
+            )
+            self.assertEqual(completed.returncode, 1)
+            self.assertEqual(Path(result + ".err").read_text(encoding="utf-8"), "fzf が見つかりません\n")
+            self.assertEqual(Path(result).read_text(encoding="utf-8"), "")
 
 
 if __name__ == '__main__':
