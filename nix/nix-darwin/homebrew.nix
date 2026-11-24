@@ -19,7 +19,7 @@ let
 
   tapNames = [
     "abue-ammar/tinycast"
-    "ardia-browser/tap"
+    "yetanotherbrowser/tap"
     "nikitabobko/tap" # aerospace
     "gauthierpiarrette/highball"
     "luvpame/dotfiles-local"
@@ -53,7 +53,7 @@ let
     "spotify"
     "azookey"
     "keycastr"
-    "ardia-browser/tap/ardia"
+    "yetanotherbrowser/tap/yab"
     "steam"
     "highball"
     "cursor"
