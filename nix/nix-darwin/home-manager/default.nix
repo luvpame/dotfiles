@@ -30,6 +30,10 @@ in
         # macOS Tahoe 26.7 でメニューバーにバッテリーを表示する値。
         Battery = 11;
         BatteryShowEnergyMode = 0;
+        # メニューバーにバッテリー残量を表示しない。
+        BatteryShowPercentage = false;
+        # メニューバーに再生中を表示しない値。
+        NowPlaying = 24;
         # メニューバーに天気を表示しない値。
         Weather = 8;
       };

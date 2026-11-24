@@ -44,10 +44,12 @@
       controlcenter = {
         # メニューバーにAirDropを表示しない
         AirDrop = false;
-        # メニューバーにバッテリー残量を表示する
-        BatteryShowPercentage = true;
+        # メニューバーにバッテリー残量を表示しない
+        BatteryShowPercentage = false;
         # メニューバーにBluetoothを表示しない
         Bluetooth = false;
+        # メニューバーに再生中を表示しない
+        NowPlaying = false;
       };
       dock = {
         # アプリケーションスイッチャーを全てのディスプレイに表示する
@@ -110,7 +112,7 @@
         ShowDate = 1;
         ShowDayOfMonth = false;
         ShowDayOfWeek = true;
-        ShowSeconds = true;
+        ShowSeconds = false;
       };
       screensaver = {
         # 復帰時に即座に認証を要求する
