@@ -54,18 +54,10 @@ let
     "productdevbook/tap" # portkiller
     "driceroland/tap" # search
   ];
-  trustedTaps =
-    map (name: {
-      inherit name;
-      trusted = true;
-    }) tapNames
-    ++ [
-      {
-        name = "yksr-melt/Meltype";
-        clone_target = "https://github.com/yksr-melt/Meltype.git";
-        trusted = true;
-      }
-    ];
+  trustedTaps = map (name: {
+    inherit name;
+    trusted = true;
+  }) tapNames;
 
   caskNames = [
     ### GUI Applications
@@ -109,7 +101,6 @@ let
     "tablepro"
     "sequel-ace"
     "linear"
-    "yksr-melt/Meltype/meltype"
 
     ### Fonts
     "font-plemol-jp-nf"
