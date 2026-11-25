@@ -128,6 +128,11 @@ in
       subdir = "skills";
       filter.nameRegex = "security-audit";
     };
+    sources.tsuzuri = {
+      input = "tsuzuri";
+      subdir = "skills";
+      filter.nameRegex = "tsuzuri";
+    };
     sources.yomiyasu = {
       input = "yomiyasu";
       subdir = "skills";
@@ -169,6 +174,7 @@ in
       "review-animations"
       "security-audit"
       "show-me"
+      "tsuzuri"
       "write-swift"
       "yomiyasu"
     ];

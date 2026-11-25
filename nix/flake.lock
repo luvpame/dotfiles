@@ -598,6 +598,7 @@
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs_2",
         "security-audit-skill": "security-audit-skill",
+        "tsuzuri": "tsuzuri",
         "yomiyasu": "yomiyasu"
       }
     },
@@ -688,6 +689,23 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "tsuzuri": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1795465964,
+        "narHash": "sha256-AHzPOCLA6ZY9wsF+gFpkG15Xm4qYqW2A8x4VWeKqUwo=",
+        "owner": "MaryCache",
+        "repo": "tsuzuri",
+        "rev": "61e346b5d491b6b25b9b4be28f9496fdfc14789a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "MaryCache",
+        "repo": "tsuzuri",
+        "rev": "61e346b5d491b6b25b9b4be28f9496fdfc14789a",
         "type": "github"
       }
     },

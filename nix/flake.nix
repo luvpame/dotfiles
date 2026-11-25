@@ -39,6 +39,10 @@
       url = "github:MaryCache/imozuru/808407e501bc5a1e596655b0a6d62e1f3b20ba1b";
       flake = false;
     };
+    tsuzuri = {
+      url = "github:MaryCache/tsuzuri/61e346b5d491b6b25b9b4be28f9496fdfc14789a";
+      flake = false;
+    };
     mizchi-skills = {
       url = "github:mizchi/skills/ab4eb2f7a92a13fb37c225ab427f2f492143ace1";
       flake = false;
