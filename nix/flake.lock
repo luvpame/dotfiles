@@ -159,11 +159,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795601957,
-        "narHash": "sha256-8UshX2h8PQ5OvCwRTipAFCnJ77fFrTWUaYsV4tuPXrA=",
+        "lastModified": 1795639553,
+        "narHash": "sha256-t6AJp9tvbX6i2cwLQ4eZ0zcQzCk6FrLC5U9SUoksLQg=",
         "ref": "refs/heads/main",
-        "rev": "8eb98c79b84d94dbb218d5d486e604c9095f728a",
-        "revCount": 1082,
+        "rev": "e25b919b86a0af70318d5d5ab22d083b3b389abc",
+        "revCount": 1083,
         "type": "git",
         "url": "https://github.com/tomasz-tomczyk/crit.git"
       },
@@ -329,11 +329,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795534022,
-        "narHash": "sha256-xkRZ+PcPWaAyf9YrEBszYD5w2S6/Ac2tIfsufzd4dEQ=",
+        "lastModified": 1795618997,
+        "narHash": "sha256-d9Osol//t6hqeo1xlspsYMbhTJK507h6t0EmPyF5Db0=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "b56bcd042b5e69ad188eca20d9bec1bfbf3dd453",
+        "rev": "6a13737c0ed27c7c285f59e3be423ed972aa605f",
         "type": "github"
       },
       "original": {
