@@ -86,7 +86,6 @@ let
     "cursor-cli"
     "grok-build"
     "devin-cli"
-    "t3-code"
     "portkiller"
     "nani"
     "wallspace"
