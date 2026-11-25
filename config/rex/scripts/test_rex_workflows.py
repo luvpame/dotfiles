@@ -2,6 +2,7 @@ import importlib.util
 from io import StringIO
 import json
 import os
+import shlex
 from pathlib import Path
 import subprocess
 import tempfile
@@ -329,18 +330,25 @@ class RexWorkflowsTest(unittest.TestCase):
 
 
 class WorktreePickScriptTest(unittest.TestCase):
-    def run_pick(self, lines, fzf, extra=()):
+    def run_pick(self, lines, fzf, multi="", header="", rex_exit=0):
         with tempfile.TemporaryDirectory() as tmp:
             home = os.path.join(tmp, "home")
             stub = os.path.join(tmp, "bin")
             os.makedirs(home)
             os.makedirs(stub)
-            fzf_path = os.path.join(stub, "fzf")
-            with open(fzf_path, "w", encoding="utf-8") as file:
-                file.write(fzf)
-            os.chmod(fzf_path, 0o755)
+            calls = os.path.join(tmp, "rex-calls")
+            stubs = {
+                "fzf": fzf,
+                "rex": f"#!/bin/sh\nprintf '%s\\0' \"$@\" >>{shlex.quote(calls)}\nexit {rex_exit}\n",
+            }
+            for name, body in stubs.items():
+                if body is None:
+                    continue
+                path = os.path.join(stub, name)
+                with open(path, "w", encoding="utf-8") as file:
+                    file.write(body)
+                os.chmod(path, 0o755)
             listed = os.path.join(tmp, "list")
-            result = os.path.join(tmp, "result")
             with open(listed, "w", encoding="utf-8") as file:
                 file.write("".join(lines))
             env = os.environ.copy()
@@ -352,69 +360,60 @@ class WorktreePickScriptTest(unittest.TestCase):
             })
             env.pop("FZF_DEFAULT_COMMAND", None)
             completed = subprocess.run(
-                ["bash", str(Path(__file__).with_name("worktree-pick.sh")), result, listed, "Worktree", "", *extra],
-                env=env, text=True, capture_output=True,
+                ["bash", str(Path(__file__).with_name("worktree-pick.sh")),
+                 listed, "Worktree", multi, header, "pr_review", "/repo"],
+                env=env, text=True, capture_output=True, stdin=subprocess.DEVNULL,
             )
-            chosen = Path(result).read_text(encoding="utf-8") if os.path.exists(result) else None
-            err_path = result + ".err"
-            err = Path(err_path).read_text(encoding="utf-8") if os.path.exists(err_path) else ""
-            return completed, chosen, err
+            rex_args = Path(calls).read_text(encoding="utf-8").split("\0")[:-1] if os.path.exists(calls) else None
+            return completed, rex_args, os.path.exists(listed)
 
-    def test_pick_returns_selected_line_and_ignores_inherited_fzf_options(self):
-        completed, chosen, err = self.run_pick(
+    def test_pick_hands_the_chosen_ids_to_the_continuation_and_ignores_inherited_fzf_options(self):
+        completed, rex_args, list_left = self.run_pick(
             ["new\tNew Worktree\n", "/repo/topic\ttopic    /repo/topic\n"],
             "#!/bin/sh\nif [ -n \"${FZF_DEFAULT_OPTS:-}\" ]; then echo leaked >&2; exit 2; fi\ncat\n",
         )
         self.assertEqual(completed.returncode, 0, completed.stderr)
-        self.assertEqual(err, "")
-        self.assertEqual(chosen, "new\tNew Worktree\n/repo/topic\ttopic    /repo/topic\n")
+        self.assertEqual(rex_args, ["do", "wide_pick_done", "to=pr_review", "cwd=/repo", "picked=new\n/repo/topic"])
+        self.assertFalse(list_left)
 
     def test_pick_omits_the_header_without_a_notice(self):
-        completed, _, err = self.run_pick(
+        completed, _, _ = self.run_pick(
             ["a\tA\n"],
             "#!/bin/sh\nprintf '%s\\n' \"$@\" >&2\ncat\n",
         )
         self.assertEqual(completed.returncode, 0, completed.stderr)
         self.assertNotIn("--header", completed.stderr)
-        self.assertEqual(err, "")
 
     def test_pick_passes_a_notice_as_the_fzf_header(self):
-        completed, chosen, err = self.run_pick(
+        completed, rex_args, _ = self.run_pick(
             ["9243\t└─ #9243 title    feature/topic    参考\n"],
             "#!/bin/sh\nprintf '%s\\n' \"$@\" >&2\ncat\n",
-            extra=("PR #9243 はレビュー対象外です",),
+            header="PR #9243 はレビュー対象外です",
         )
         self.assertEqual(completed.returncode, 0, completed.stderr)
         self.assertIn("--header=PR #9243 はレビュー対象外です", completed.stderr)
-        self.assertEqual(chosen, "9243\t└─ #9243 title    feature/topic    参考\n")
-        self.assertEqual(err, "")
+        self.assertEqual(rex_args[-1], "picked=9243")
 
-    def test_pick_records_cancel_as_an_empty_result(self):
-        completed, chosen, err = self.run_pick(
+    def test_pick_cancel_does_not_continue(self):
+        completed, rex_args, list_left = self.run_pick(
             ["/repo/topic\ttopic    /repo/topic\n"],
             "#!/bin/sh\nexit 1\n",
         )
         self.assertEqual(completed.returncode, 0, completed.stderr)
-        self.assertEqual(chosen, "")
-        self.assertEqual(err, "")
+        self.assertIsNone(rex_args)
+        self.assertFalse(list_left)
+
+    def test_pick_reports_a_failed_continuation(self):
+        completed, rex_args, _ = self.run_pick(["a\tA\n"], "#!/bin/sh\ncat\n", rex_exit=1)
+        self.assertEqual(completed.returncode, 1)
+        self.assertIsNotNone(rex_args)
+        self.assertIn("pr_review を続けられませんでした", completed.stderr)
 
     def test_pick_reports_a_missing_fzf(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            home = os.path.join(tmp, "home")
-            os.makedirs(home)
-            listed = os.path.join(tmp, "list")
-            result = os.path.join(tmp, "result")
-            with open(listed, "w", encoding="utf-8") as file:
-                file.write("new\tNew\n")
-            env = os.environ.copy()
-            env.update({"HOME": home, "USER": "nosuchuser", "PATH": "/usr/bin:/bin"})
-            completed = subprocess.run(
-                ["bash", str(Path(__file__).with_name("worktree-pick.sh")), result, listed, "Worktree", "multi"],
-                env=env, text=True, capture_output=True,
-            )
-            self.assertEqual(completed.returncode, 1)
-            self.assertEqual(Path(result + ".err").read_text(encoding="utf-8"), "fzf が見つかりません\n")
-            self.assertEqual(Path(result).read_text(encoding="utf-8"), "")
+        completed, rex_args, _ = self.run_pick(["new\tNew\n"], None, multi="multi")
+        self.assertEqual(completed.returncode, 1)
+        self.assertIn("fzf が見つかりません", completed.stderr)
+        self.assertIsNone(rex_args)
 
 
 if __name__ == '__main__':

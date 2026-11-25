@@ -84,17 +84,10 @@ end
 
 -- rex.ui.pick の幅は Rex.app が固定していて、パスや PR タイトルが途中で切れる。
 -- 一覧はウィンドウ幅の 92% のペインで出す。
-local function pick_wide(ctx, cwd, spec)
-  local base = os.tmpname()
-  os.remove(base)
-  local list_path = base .. ".list"
-  local result_path = base .. ".result"
-  local function cleanup()
-    os.remove(list_path)
-    os.remove(result_path)
-    os.remove(result_path .. ".part")
-    os.remove(result_path .. ".err")
-  end
+-- init.lua の action は 30 秒で打ち切られるので選択を待たず、
+-- 選んだ ID はペインが wide_pick_done へ渡し、after_pick[to] が続きを行う。
+local function pick_wide(ctx, cwd, to, spec)
+  local list_path = os.tmpname()
   local file, open_err = io.open(list_path, "w")
   if not file then error(open_err, 0) end
   for _, item in ipairs(spec.items or {}) do
@@ -114,9 +107,10 @@ local function pick_wide(ctx, cwd, spec)
     options = {
       cwd = cwd,
       command = {
-        "/bin/bash", wide_pick_script, result_path, list_path, spec.title or ">",
+        "/bin/bash", wide_pick_script, list_path, spec.title or ">",
         spec.multiple and "multi" or "",
         spec.header or "",
+        to, cwd,
       },
       exit = { on_completion = true },
     },
@@ -130,41 +124,10 @@ local function pick_wide(ctx, cwd, spec)
   if ctx.session_id then layer_args.session_id = ctx.session_id end
   local opened, layer_err = rex.session.new_layer(layer_args)
   if layer_err then
-    cleanup()
+    os.remove(list_path)
     error(layer_err, 0)
   end
-
-  local waited = rex.exec({
-    "/bin/sh", "-c",
-    'i=0; while [ ! -f "$1" ]; do i=$((i+1)); if [ "$i" -gt 6000 ]; then exit 1; fi; sleep 0.05; done',
-    "wait", result_path,
-  }, { timeout = 320 })
-  if opened and opened.layer_id then
-    local close_args = { layer_id = opened.layer_id }
-    if ctx.session_id then close_args.session_id = ctx.session_id end
-    rex.session.close_layer(close_args)
-  end
-
-  local err_file = io.open(result_path .. ".err", "r")
-  local err_text = err_file and err_file:read("*a") or nil
-  if err_file then err_file:close() end
-  local result_file = io.open(result_path, "r")
-  local text = result_file and result_file:read("*a") or ""
-  if result_file then result_file:close() end
-  cleanup()
-  if err_text and err_text ~= "" then error((err_text:gsub("%s+$", "")), 0) end
-  if not waited or not waited.ok then
-    rex.log("warn", (spec.title or "pick") .. ": 選択の待ち時間が切れました")
-    return nil
-  end
-  local ids = {}
-  for line in (text .. "\n"):gmatch("(.-)\n") do
-    local id = line:match("^[^\t]*")
-    if id and id ~= "" then ids[#ids + 1] = id end
-  end
-  if #ids == 0 then return nil end
-  if spec.multiple then return ids end
-  return ids[1]
+  return opened
 end
 
 local function ask_input(spec)
@@ -218,16 +181,25 @@ local function repo_cwd(ctx)
   return cwd
 end
 
+-- 成功したら float window を閉じる。失敗したときはエラーを読めるよう Enter まで残す。
 local function run_in_layer(ctx, cwd, argv)
   if not cwd or cwd == "" then error("Cannot determine the working directory", 0) end
+  local command = {
+    "/bin/sh", "-c",
+    '"$@" && exit 0; status=$?; printf "\\n失敗しました（終了コード %s）。Enter で閉じる" "$status"; read _; exit "$status"',
+    "run-in-layer",
+  }
+  for _, arg in ipairs(argv) do
+    command[#command + 1] = arg
+  end
   local result, err = rex.session.new_layer {
     bounds = { 0.1, 0.1, 0.8, 0.8 },
     layout = rex.layout.block {
       flavor = "com.superlogical.terminal.shell",
       options = {
         cwd = cwd,
-        command = argv,
-        exit = { on_completion = false },
+        command = command,
+        exit = { on_completion = true },
       },
     },
     focus = true,
@@ -269,10 +241,26 @@ local function switch_repository(path)
   exec_result({ "rex", "do", "session.select", "session_id=" .. created.session_id })
 end
 
+local after_pick = {}
+
+-- レビューは別セッションのタブで進むので、起動用の float window は最小化して脇に置く。
+local function start_pr_review(ctx, cwd, number)
+  local opened = run_in_layer(ctx, cwd, { "python3", pr_script, "--number", number })
+  local state_args = { layer_id = opened.layer_id, state = "minimized" }
+  if ctx.session_id then state_args.session_id = ctx.session_id end
+  local _, err = rex.session.set_layer_state(state_args)
+  if err then error(err, 0) end
+  return opened
+end
+
+local function pick_pr(ctx, cwd, data, notice)
+  return pick_wide(ctx, cwd, "pr_review", { title = "PR Review", header = notice, items = data.items })
+end
+
 local function run_pr_review(ctx, args)
   local cwd = repo_cwd(ctx)
   if args.number ~= nil and tostring(args.number) ~= "" then
-    return run_in_layer(ctx, cwd, { "python3", pr_script, "--number", tostring(args.number) })
+    return start_pr_review(ctx, cwd, tostring(args.number))
   end
   local data = read_catalog(pr_script, nil, cwd)
   if #(data.items or {}) == 0 then
@@ -282,20 +270,18 @@ local function run_pr_review(ctx, args)
     })
     return
   end
-  local reject = {}
+  return pick_pr(ctx, cwd, data, nil)
+end
+
+after_pick.pr_review = function(ctx, cwd, ids)
+  local picked = ids[1]
+  local data = read_catalog(pr_script, nil, cwd)
   for _, id in ipairs(data.reject_ids or {}) do
-    reject[tostring(id)] = true
-  end
-  local notice = nil
-  while true do
-    local picked = pick_wide(ctx, cwd, { title = "PR Review", header = notice, items = data.items })
-    if picked == nil then return end
-    if reject[tostring(picked)] then
-      notice = "PR #" .. picked .. " はレビュー対象外です。レビュー依頼のある PR を選択してください"
-    else
-      return run_in_layer(ctx, cwd, { "python3", pr_script, "--number", tostring(picked) })
+    if tostring(id) == picked then
+      return pick_pr(ctx, cwd, data, "PR #" .. picked .. " はレビュー対象外です。レビュー依頼のある PR を選択してください")
     end
   end
+  return start_pr_review(ctx, cwd, picked)
 end
 
 local function run_worktree_switch(ctx)
@@ -305,8 +291,11 @@ local function run_worktree_switch(ctx)
   for _, item in ipairs(data.items or {}) do
     items[#items + 1] = item
   end
-  local selected = pick_wide(ctx, cwd, { title = "Worktree", items = items })
-  if selected == nil then return end
+  return pick_wide(ctx, cwd, "worktree_switch", { title = "Worktree", items = items })
+end
+
+after_pick.worktree_switch = function(ctx, cwd, ids)
+  local selected = ids[1]
   if selected == "new" then
     local name = ask_input({ title = "Worktree name", confirm = "作成" })
     if name == nil then return end
@@ -317,36 +306,7 @@ local function run_worktree_switch(ctx)
   exec_result({ "python3", picker_script, "--open", selected }, cwd)
 end
 
-local function run_worktree_remove(ctx, merged)
-  local cwd = repo_cwd(ctx)
-  local extra = merged and { "--merged" } or nil
-  local data = read_catalog(remove_script, extra, cwd)
-  local items = data.items or {}
-  if #items == 0 then
-    pick({
-      title = "Worktree 削除",
-      items = { { id = "none", title = "削除対象の worktree はありません" } },
-    })
-    return
-  end
-  local chosen = items
-  if not merged then
-    local ids = pick_wide(ctx, cwd, {
-      title = "Worktree 削除",
-      multiple = true,
-      items = items,
-    })
-    if ids == nil or #ids == 0 then return end
-    local wanted = {}
-    for _, id in ipairs(ids) do
-      wanted[id] = true
-    end
-    chosen = {}
-    for _, item in ipairs(items) do
-      if wanted[item.id] then chosen[#chosen + 1] = item end
-    end
-    if #chosen == 0 then return end
-  end
+local function confirm_worktree_remove(ctx, cwd, chosen, merged)
   local dirty = false
   for _, item in ipairs(chosen) do
     if item.dirty then dirty = true end
@@ -380,6 +340,55 @@ local function run_worktree_remove(ctx, merged)
   end
   return run_in_layer(ctx, cwd, argv)
 end
+
+local function run_worktree_remove(ctx, merged)
+  local cwd = repo_cwd(ctx)
+  local extra = merged and { "--merged" } or nil
+  local data = read_catalog(remove_script, extra, cwd)
+  local items = data.items or {}
+  if #items == 0 then
+    pick({
+      title = "Worktree 削除",
+      items = { { id = "none", title = "削除対象の worktree はありません" } },
+    })
+    return
+  end
+  if merged then return confirm_worktree_remove(ctx, cwd, items, true) end
+  return pick_wide(ctx, cwd, "worktree_remove", {
+    title = "Worktree 削除",
+    multiple = true,
+    items = items,
+  })
+end
+
+after_pick.worktree_remove = function(ctx, cwd, ids)
+  local wanted = {}
+  for _, id in ipairs(ids) do
+    wanted[id] = true
+  end
+  local chosen = {}
+  for _, item in ipairs(read_catalog(remove_script, nil, cwd).items or {}) do
+    if wanted[item.id] then chosen[#chosen + 1] = item end
+  end
+  if #chosen == 0 then return end
+  return confirm_worktree_remove(ctx, cwd, chosen, false)
+end
+
+rex.action {
+  name = "wide_pick_done",
+  title = "Continue Wide Pick (internal)",
+  args = { to = "string", cwd = "string", picked = "string" },
+  run = function(ctx, args)
+    local handler = after_pick[args.to]
+    if handler == nil then error("wide_pick_done: unknown to=" .. tostring(args.to), 0) end
+    local ids = {}
+    for id in args.picked:gmatch("[^\n]+") do
+      ids[#ids + 1] = id
+    end
+    if #ids == 0 then return end
+    return handler(ctx, args.cwd, ids)
+  end,
+}
 
 rex.action {
   name = "floating_terminal",
