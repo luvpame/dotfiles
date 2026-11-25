@@ -99,7 +99,8 @@
     "cc-plugin-you-should-know@builtin": true,
     "pstack@cursor-plugins": true,
     "demo-video@demo-video": true,
-    "hyperframes@hyperframes": true
+    "hyperframes@hyperframes": true,
+    "lua-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "skills": {
