@@ -15,7 +15,6 @@ let
     "conventional-commit"
     "eli33"
     "evidence-code-review"
-    "obsidian"
     "pr-review-assist"
     "voicevox-tts"
   ];
