@@ -19,6 +19,7 @@ in
       imports = [
         ./packages.nix
         ./files.nix
+        ./devin.nix
         ./skills.nix
         ./services/agent-browser.nix
         ./services/ollama.nix
