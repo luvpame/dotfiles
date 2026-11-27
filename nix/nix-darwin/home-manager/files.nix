@@ -53,6 +53,7 @@ in
       force = true;
     };
     ".agents/.skill-lock.json".source = oos "${configRoot}/agents/.skill-lock.json";
+    ".agent-browser/config.json".source = oos "${configRoot}/agent-browser/config.json";
     ".claude/settings.json" = {
       source = oos "${configRoot}/claude/settings.json";
 
